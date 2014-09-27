@@ -1,0 +1,4 @@
+backup/*
+tmp/*
+plugins.txt
+plugged/vim-tags
