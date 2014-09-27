@@ -1,0 +1,26 @@
+# Exports for bash/zsh
+
+export EDITOR="vim";
+
+# Terminal history handling
+export HISTCONTROL=ignoreboth:erasedups;
+export HISTSIZE=32768;
+export HISTFILESIZE=$HISTSIZE;
+export HISTFILESIZE=2000;
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
+
+# Python virtual env
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3;
+export WORKON_HOME=~/Envs;
+source /usr/local/bin/virtualenvwrapper.sh;
+
+# Environment variables/path
+export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
+export PYPATH="$HOME/src/scripts/Python";
+export GOROOT="/usr/local/go";
+export GOPATH="$HOME/src/Go";
+export GOBIN="$GOPATH/bin";
+export PATH="$PATH:$GOPATH/bin:$PYPATH";
+
+# 256 color terminal
+export TERM=xterm-256color;
