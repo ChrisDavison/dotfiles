@@ -32,6 +32,7 @@ Plug 'szw/vim-tags'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-commentary'
 Plug '~/.vim/plugged/tagbar-haskell'
 
 call plug#end()
@@ -125,26 +126,6 @@ cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 
-" ----------------
-" Custom fold text
-" ----------------
-function! MyFoldText() " {{{
-    let line = getline(v:foldstart)
-
-    let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 3
-    let foldedlinecount = v:foldend - v:foldstart
-
-    " expand tabs into spaces
-    let onetab = strpart(' ', 0, &tabstop)
-    let line = substitute(line, '\t', onetab, 'g')
-
-    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
-    return line . '…' . repeat(" ",fillcharcount) . foldedlinecount .'…' . ' '
-endfunction " }}}
-set foldtext=MyFoldText()
-
 " -------------------------------
 " Put all temp files in one place
 " -------------------------------
@@ -156,7 +137,8 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme seoul256
+colorscheme solarized
+set t_ut=
 
 " ------------------------------
 " Use C++11 syntastic by default
@@ -203,32 +185,13 @@ set completeopt=menuone,menu,longest,preview
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
 
-" -------------------------------------------
-" Additional highlighting when using hlsearch
-" -------------------------------------------
-" This rewires n and N to do the highlighing
-nnoremap <silent> n   n:call HLNext(0.4)<cr>
-nnoremap <silent> N   N:call HLNext(0.4)<cr>
-
-function! HLNext (blinktime)
-    highlight WhiteOnRed ctermfg=white ctermbg=red
-    let [bufnum, lnum, col, off] = getpos('.')
-    let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
-    let target_pat = '\c\%#'.@/
-    let ring = matchadd('WhiteOnRed', target_pat, 101)
-    redraw
-    exec 'sleep ' . float2nr(a:blinktime * 1000) . 'm'
-    call matchdelete(ring)
-    redraw
-endfunction
-
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
 if has('gui_running')
-    set gfn=Source\ Code\ Pro\ Medium\ 11
+    set gfn=Source\ Code\ Pro\ Medium\ 12
 endif
 let g:syntastic_ignore_files = ['.py']
 
@@ -246,3 +209,8 @@ let g:goyo_margin_bottom=1
 nnoremap \g :Goyo<CR>
 autocmd User GoyoEnter Limelight
 autocmd User GoyoLeave Limelight!
+
+set nofoldenable
+
+" Associate .rs filetype with rust syntax
+au BufRead,BufNewFile *.rs set syntax=rust
