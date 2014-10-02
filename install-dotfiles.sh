@@ -18,3 +18,11 @@ unset file;
 # Install software
 # Install Python and virtualenvs
 # Install Go, Rust, C, Haskell, Xcode command line
+
+if [ $(uname -s) == "Linux" ]; then
+
+    echo "Linux"
+else
+    echo "Installing Homebrew
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
