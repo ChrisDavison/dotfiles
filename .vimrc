@@ -34,6 +34,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
 Plug '~/.vim/plugged/tagbar-haskell'
+Plug 'christoomey/vim-tmux-navigator'  
 
 call plug#end()
 
@@ -72,14 +73,19 @@ nnoremap  <Right>  <nop>
 "       B - A - <start>
 
 " Map to visible rather than literal lines
-nnoremap  <buffer> <silent> k gk
-vnoremap  <buffer> <silent> k gk
-nnoremap  <buffer> <silent> j gj
-vnoremap  <buffer> <silent> j gj
-nnoremap  <buffer> <silent> 0 g0
-vnoremap  <buffer> <silent> 0 g0
-nnoremap  <buffer> <silent> $ g$
-vnoremap  <buffer> <silent> $ g$
+nnoremap  <buffer><silent>k gk
+vnoremap  <buffer><silent>k gk
+nnoremap  <buffer><silent>j gj
+vnoremap  <buffer><silent>j gj
+nnoremap  <buffer><silent>0 g0
+vnoremap  <buffer><silent>0 g0
+nnoremap  <buffer><silent>$ g$
+vnoremap  <buffer><silent>$ g$
+
+nnoremap <C-H> <C-W><C-H>
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
 
 " ---------------------
 " Execute code using F9
