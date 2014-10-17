@@ -21,20 +21,16 @@ Plug 'greyblake/vim-preview'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'kien/ctrlp.vim'
-Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
 Plug 'szw/vim-tags'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
-Plug '~/.vim/plugged/tagbar-haskell'
-Plug 'christoomey/vim-tmux-navigator'  
 
 call plug#end()
 
@@ -59,18 +55,6 @@ nnoremap \t :TagbarToggle<CR>
 nnoremap \e :NERDTreeToggle<CR>
 nnoremap \b :CtrlPBuffer<CR>
 nnoremap \p :Preview<CR>
-nnoremap \f :FZF<CR>
-
-" Don't allow arrow keys
-inoremap  <Up>     <nop>
-nnoremap  <Up>     <nop>
-inoremap  <Down>   <nop>
-nnoremap  <Down>   <nop>
-inoremap  <Left>   <nop>
-inoremap  <Right>  <nop>
-nnoremap  <Left>   <nop>
-nnoremap  <Right>  <nop>
-"       B - A - <start>
 
 " Map to visible rather than literal lines
 nnoremap  <buffer><silent>k gk
@@ -115,13 +99,8 @@ set lazyredraw
 set laststatus=2
 set nrformats=
 set title
-" set scrolloff=8 
 set sidescrolloff=15
 set sidescroll=1
-
-" Highlight cursor line in current window only
-" au WinEnter * setlocal cursorline
-" au WinLeave * setlocal nocursorline
 
 " ------------------------------------
 " Some common miss-types/abbreviations
@@ -143,15 +122,8 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme solarized
+colorscheme seoul256
 set t_ut=
-
-" ------------------------------
-" Use C++11 syntastic by default
-" ------------------------------
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-let g:syntastic_mode_map = { 'mode': 'passive'}
-
 
 " ---------------------------
 " CtrlP plugin settings/setup
@@ -164,27 +136,7 @@ if executable('ag')
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
     let g:ctrlp_use_caching = 0
 endif
-
-" -----------------
-" OmniCPPCompletion
-" -----------------
-" build tags of your own project with CTRL+F12
-noremap <F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<cr>
-inoremap <F12> <Esc>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<cr>
-
-" OmniCppComplete
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_ShowAccess = 1
-let OmniCpp_MayCompleteDot = 1
-let OmniCpp_MayCompleteArrow = 1
-let OmniCpp_MayCompleteScope = 1
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
-
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest,preview
-
+"
 " ----------------------------------------
 " Highlight a character in the 81st column
 " ----------------------------------------
@@ -199,7 +151,6 @@ set guioptions-=L
 if has('gui_running')
     set gfn=Source\ Code\ Pro\ Medium\ 12
 endif
-let g:syntastic_ignore_files = ['.py']
 
 " Allow Gundo
 nnoremap <F5> :GundoToggle<CR>
@@ -220,3 +171,6 @@ set nofoldenable
 
 " Associate .rs filetype with rust syntax
 au BufRead,BufNewFile *.rs set syntax=rust
+
+" Disable folding for markdown
+let g:vim_markdown_folding_disabled=1

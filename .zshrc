@@ -15,3 +15,4 @@ unset file;
 plugins=(git pep8 autopep8)
 
 source $ZSH/oh-my-zsh.sh
+source $HOME/.z-jump/z.sh
