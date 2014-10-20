@@ -9,11 +9,6 @@ export HISTFILESIZE=$HISTSIZE;
 export HISTFILESIZE=2000;
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
 
-# Python virtual env
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3;
-export WORKON_HOME=~/Envs;
-source /usr/local/bin/virtualenvwrapper.sh;
-
 # Environment variables/path
 export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
 export PYPATH="$HOME/src/scripts/Python";

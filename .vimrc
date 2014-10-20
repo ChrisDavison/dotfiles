@@ -31,6 +31,7 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
+Plug 'rizzatti/dash.vim'
 
 call plug#end()
 
@@ -148,9 +149,9 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-if has('gui_running')
-    set gfn=Source\ Code\ Pro\ Medium\ 12
-endif
+" if has('gui_running')
+"     set gfn=Source\ Code\ Pro\ Medium\ 12
+" endif
 
 " Allow Gundo
 nnoremap <F5> :GundoToggle<CR>
