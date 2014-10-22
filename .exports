@@ -15,7 +15,8 @@ export PYPATH="$HOME/src/scripts/Python";
 export GOROOT="/usr/local/go";
 export GOPATH="$HOME/src/Go";
 export GOBIN="$GOPATH/bin";
-export PATH="$PATH:$GOPATH/bin:$PYPATH";
+export PATH=$PATH:$GOPATH/bin:$PYPATH;
+export PATH=/usr/texbin:$PATH
 
 # 256 color terminal
 export TERM=xterm-256color;
