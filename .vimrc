@@ -52,7 +52,6 @@ map vn :vnew<CR>
 map ;. <C-w>>
 map ;, <C-w><
 
-nnoremap \t :TagbarToggle<CR> 
 nnoremap \e :NERDTreeToggle<CR>
 nnoremap \b :CtrlPBuffer<CR>
 nnoremap \p :Preview<CR>
@@ -152,6 +151,9 @@ set guioptions-=L
 " if has('gui_running')
 "     set gfn=Source\ Code\ Pro\ Medium\ 12
 " endif
+if has('gui_running')
+    set gfn=Osaka-Mono:h18
+endif
 
 " Allow Gundo
 nnoremap <F5> :GundoToggle<CR>
