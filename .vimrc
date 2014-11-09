@@ -25,6 +25,7 @@ Plug 'mattn/emmet-vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
 Plug 'szw/vim-tags'
 Plug 'tpope/vim-sensible'
@@ -57,6 +58,7 @@ nnoremap \w :w !wc %<CR>
 nnoremap \g :Goyo<CR>
 nnoremap \u :GundoToggle<CR>
 nnoremap \d :Dash<CR>
+nnoremap \c :SyntasticCheck<CR>
 
 " Map to visible rather than literal lines
 nnoremap  <buffer> <silent>k gk
@@ -124,7 +126,7 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme solarized
+colorscheme seoul256
 set t_ut=
 
 " ---------------------------
@@ -208,3 +210,6 @@ function! s:rotate_colors()
   echo name
 endfunction
 nnoremap <F8> :call <SID>rotate_colors()<cr>
+
+let syntastic_mode_map = { "mode": "active", "active_filetypes": [], "passive_filetypes": [] }
+
