@@ -126,7 +126,6 @@ else
   let s:light_bg = get(s:, 'seoul256_background', 253)
 endif
 let s:dark_bg_2 = s:dark_bg > 233 ? s:dark_bg - 2 : 16
-let s:dark_bg_2 = s:dark_bg > 233 ? s:dark_bg - 2 : 0
 let s:light_bg_1 = min([s:light_bg + 1, 256])
 let s:light_bg_2 = min([s:light_bg + 2, 256])
 
