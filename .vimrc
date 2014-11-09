@@ -35,13 +35,6 @@ Plug 'rizzatti/dash.vim'
 
 call plug#end()
 
-" ---------------------------------------------
-" Show line numbers, but only in current window
-" ---------------------------------------------
-" set number
-" au WinEnter * :setlocal number
-" au WinLeave * :setlocal nonumber
-
 " ---------------
 " MY KEY BINDINGS
 " ---------------
@@ -51,20 +44,29 @@ map vv <C-w>v
 map vn :vnew<CR>
 map ;. <C-w>>
 map ;, <C-w><
+map <C-w><C-h> <C-w><S-h>
+map <C-w><C-j> <C-w><S-j>
+map <C-w><C-k> <C-w><S-k>
+map <C-w><C-l> <C-w><S-l>
 
+" Bindings for various useful plugins
 nnoremap \e :NERDTreeToggle<CR>
 nnoremap \b :CtrlPBuffer<CR>
 nnoremap \p :Preview<CR>
+nnoremap \w :w !wc %<CR>
+nnoremap \g :Goyo<CR>
+nnoremap \u :GundoToggle<CR>
+nnoremap \d :Dash<CR>
 
 " Map to visible rather than literal lines
-nnoremap  <buffer><silent>k gk
-vnoremap  <buffer><silent>k gk
-nnoremap  <buffer><silent>j gj
-vnoremap  <buffer><silent>j gj
-nnoremap  <buffer><silent>0 g0
-vnoremap  <buffer><silent>0 g0
-nnoremap  <buffer><silent>$ g$
-vnoremap  <buffer><silent>$ g$
+nnoremap  <buffer> <silent>k gk
+vnoremap  <buffer> <silent>k gk
+nnoremap  <buffer> <silent>j gj
+vnoremap  <buffer> <silent>j gj
+nnoremap  <buffer> <silent>0 g0
+vnoremap  <buffer> <silent>0 g0
+nnoremap  <buffer> <silent>$ g$
+vnoremap  <buffer> <silent>$ g$
 
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
@@ -90,9 +92,9 @@ set bs=indent,eol,start
 " --------------------------
 " Various coding preferences
 " --------------------------
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=8
+set softtabstop=8
+set shiftwidth=8
 set expandtab
 set wildmenu
 set lazyredraw
@@ -122,7 +124,7 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme seoul256
+colorscheme solarized
 set t_ut=
 
 " ---------------------------
@@ -133,10 +135,20 @@ set t_ut=
 let g:ctrlp_working_path_mode = 0
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+        let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+              \ --ignore .git
+              \ --ignore .svn
+              \ --ignore .hg
+              \ --ignore .DS_Store
+              \ --ignore .cabal
+              \ --ignore "**/*.pyc"
+              \ --ignore .cargo
+              \ --ignore .cache
+              \ --ignore .dotfiles
+              \ -g ""'
     let g:ctrlp_use_caching = 0
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 endif
-"
 " ----------------------------------------
 " Highlight a character in the 81st column
 " ----------------------------------------
@@ -155,9 +167,7 @@ if has('gui_running')
     set gfn=Osaka-Mono:h18
 endif
 
-" Allow Gundo
-nnoremap <F5> :GundoToggle<CR>
-
+" Allow markdown preview
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 let g:PreviewCSSPath='http://www.chrisdavison.org/assets/md_preview.css'
 let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
@@ -166,10 +176,10 @@ let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
 let g:goyo_width=100
 let g:goyo_margin_top=1
 let g:goyo_margin_bottom=1
-nnoremap \g :Goyo<CR>
 autocmd User GoyoEnter Limelight
 autocmd User GoyoLeave Limelight!
 
+" Don't allow code folding
 set nofoldenable
 
 " Associate .rs filetype with rust syntax
@@ -177,3 +187,24 @@ au BufRead,BufNewFile *.rs set syntax=rust
 
 " Disable folding for markdown
 let g:vim_markdown_folding_disabled=1
+
+" ----------------------------------------------------------------------------
+" <F8> | Color scheme selector
+" ----------------------------------------------------------------------------
+function! s:rotate_colors()
+  if !exists('s:colors_list')
+    let s:colors_list =
+    \ sort(map(
+    \   filter(split(globpath(&rtp, "colors/*.vim"), "\n"), 'v:val !~ "^/usr/"'),
+    \   "substitute(fnamemodify(v:val, ':t'), '\\..\\{-}$', '', '')"))
+  endif
+  if !exists('s:colors_index')
+    let s:colors_index = index(s:colors_list, g:colors_name)
+  endif
+  let s:colors_index = (s:colors_index + 1) % len(s:colors_list)
+  let name = s:colors_list[s:colors_index]
+  execute 'colorscheme' name
+  redraw
+  echo name
+endfunction
+nnoremap <F8> :call <SID>rotate_colors()<cr>
