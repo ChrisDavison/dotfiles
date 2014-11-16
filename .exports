@@ -11,7 +11,7 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
 
 # Environment variables/path
 # export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
-export SCRIPTS="$HOME/src/scripts/";
+export SCRIPTS="$HOME/src/scripts";
 export GOROOT="/usr/local/go";
 export GOPATH="$HOME/src/Go";
 export GOBIN="$GOPATH/bin";

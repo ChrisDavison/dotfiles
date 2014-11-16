@@ -10,6 +10,7 @@ set number
 set iskeyword=a-z,A-Z,_,.,39
 set rtp+=~/.fzf
 
+
 call plug#begin('~/.vim/plugged')
 
 Plug 'Blackrush/vim-gocode'
@@ -20,15 +21,16 @@ Plug 'fatih/vim-go'
 Plug 'greyblake/vim-preview'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-Plug 'kien/ctrlp.vim'
 Plug 'mattn/emmet-vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
+Plug 'kien/ctrlp.vim'
 Plug 'sjl/gundo.vim'
 Plug 'szw/vim-tags'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
@@ -42,7 +44,7 @@ call plug#end()
 map ;; <esc>
 map <space> /
 map vv <C-w>v
-map vn :vnew<CR>
+map vn <C-w>n
 map ;. <C-w>>
 map ;, <C-w><
 map <C-w><C-h> <C-w><S-h>
@@ -61,14 +63,14 @@ nnoremap \d :Dash<CR>
 nnoremap \c :SyntasticCheck<CR>
 
 " Map to visible rather than literal lines
-nnoremap  <buffer> <silent>k gk
-vnoremap  <buffer> <silent>k gk
-nnoremap  <buffer> <silent>j gj
-vnoremap  <buffer> <silent>j gj
-nnoremap  <buffer> <silent>0 g0
-vnoremap  <buffer> <silent>0 g0
-nnoremap  <buffer> <silent>$ g$
-vnoremap  <buffer> <silent>$ g$
+nnoremap  <buffer> <silent> k gk
+vnoremap  <buffer> <silent> k gk
+nnoremap  <buffer> <silent> j gj
+vnoremap  <buffer> <silent> j gj
+nnoremap  <buffer> <silent> 0 g0
+vnoremap  <buffer> <silent> 0 g0
+nnoremap  <buffer> <silent> $ g$
+vnoremap  <buffer> <silent> $ g$
 
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
@@ -136,20 +138,13 @@ set t_ut=
 " Ag used instead of Grep as it's faster and doesn't need caching.
 let g:ctrlp_working_path_mode = 0
 if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor
-        let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-              \ --ignore .git
-              \ --ignore .svn
-              \ --ignore .hg
-              \ --ignore .DS_Store
-              \ --ignore .cabal
-              \ --ignore "**/*.pyc"
-              \ --ignore .cargo
-              \ --ignore .cache
-              \ --ignore .dotfiles
-              \ -g ""'
-    let g:ctrlp_use_caching = 0
-    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+        let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g 
+                \ --ignore .git 
+                \ --ignore .cargo 
+                \ --ignore .cabal
+                \ --ignore .cache  ""'
+        let g:ctrlp_use_caching = 0
+        let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 endif
 " ----------------------------------------
 " Highlight a character in the 81st column

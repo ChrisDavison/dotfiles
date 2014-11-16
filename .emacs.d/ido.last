@@ -1,0 +1,55 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/davison/src/hs/" . "99prob/")
+ ("/Users/davison/src/" . "hs/")
+ ("/Users/davison/Downloads/" . "config/")
+ ("/Users/davison/" . "src/")
+ ("/Users/davison/.emacs.d/" . "config/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/davison/.emacs.d/config/"
+ "/Users/davison/.emacs.d/lisp/"
+ "/Users/davison/.emacs.d/"
+ "/Users/davison/Downloads/config/"
+ "/Users/davison/Downloads/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "config.el"
+ "init-locales.el"
+ "custom.el"
+ "init-themes.el"
+ "keybindings.el"
+ "DSP Techniques for Compton Cameras - Thesis.pdf"
+ "init.el"
+ "init-haskell.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/davison/.emacs.d/" (21608 53662 0 0) "var/" "site-lisp/" "recentf" "README.md" "lisp/" "LICENSE" "init.el" "ido.last" "history" "eshell/" "elpa/" "custom.el" "config/" "auto-save-list/" "ac-comphist.dat" ".smex-items" ".session" ".gitignore" ".git/" ".emacs.desktop.lock" ".emacs.desktop" ".agignore" "../" "./")
+
+ ("/Users/davison/.emacs.d/lisp/" (21608 53500 0 0) "init-xterm.el" "init-windows.el" "init-vc.el" "init-utils.el" "init-uniquify.el" "init-themes.el" "init-textile.el" "init-sql.el" "init-spelling.el" "init-slime.el" "init-site-lisp.el" "init-sessions.el" "init-ruby-mode.el" "init-recentf.el" "init-rails.el" "init-python-mode.el" "init-proxies.el" "init-php.el" "init-paredit.el" "init-osx-keys.el" "init-org.el" "init-nxml.el" "init-mmm.el" "init-misc.el" "init-markdown.el" "init-locales.el" "init-lisp.el" "init-ledger.el" "init-javascript.el" "init-isearch.el" "init-ido.el" "init-ibuffer.el" "init-html.el" "init-hippie-expand.el" "init-haskell.el" "init-haml.el" "init-gui-frames.el" "init-grep.el" "init-github.el" "init-git.el" "init-frame-hooks.el" "init-fonts.el" "init-flyspell.el" "init-flycheck.el" "init-exec-path.el" "init-erlang.el" "init-elpa.el" "init-editing-utils.el" "init-dired.el" "init-dash.el" "init-darcs.el" "init-csv.el" "init-css.el" "init-crontab.el" "init-compile.el" "init-compat.el" "init-common-lisp.el" "init-clojure.el" "init-clojure-cider.el" "init-benchmarking.el" "init-auto-complete.el" ".dir-locals.el" "#init-haskell.el#" "../" "./")
+
+ ("/Users/davison/.emacs.d/config/" (21608 53365 0 0) "keybindings.el" "config.el" "../" "./")
+
+ ("/Users/davison/src/hs/99prob/" (21606 6517 0 0) "Logic.hs" "Lists.hs" "Arithmetic.hs" "../" "./")
+
+ ("/Users/davison/src/hs/" (21592 43656 0 0) "scratch.hs" "euler/" "calving.hs" "99prob/" "../" "./")
+
+ ("/Users/davison/src/" (21598 17753 0 0) "scripts/" "rust/" "README.md" "python/" "hs/" "Go/" "c/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/davison/" (21608 50544 0 0) "src/" "Public/" "Pictures/" "Music/" "Movies/" "Library/" "Envs/" "engd/" "Dropbox/" "Downloads/" "Documents/" "Desktop/" "Applications/" ".zshrc~" ".zshrc-e" ".zshrc" ".zsh_history" ".zsh-update" ".zcompdump-Christopher’s MacBook Pro-5.0.5" ".zcompdump-Christopher’s MacBook Pro (2)-5.0.5" ".vt_locations" ".vimrc~" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".templates/" ".subversion/" ".ssh/" ".saves/" ".rnd" ".python_history" ".pip/" ".oh-my-zsh/" ".npm/" ".matplotlib/" ".matlab/" ".local/" ".julia_history" ".irssi/" ".ipython/" ".inputrc~" ".inputrc" ".inkscape-etc/" ".htoprc" ".gnuplot_history" ".gitconfig" ".ghci" ".ghc/" ".gem/" ".flexlmborrow" ".exports~" ".exports" ".emacs_backups/" ".emacs.d/" ".DS_Store" ".dropbox/" ".dotfiles/" ".cups/" ".config/" ".CFUserTextEncoding" ".cargo/" ".cache/" ".cabal/" ".bashrc" ".bash_history" ".aliases~" ".aliases" "../" "./")
+
+ ("/Users/davison/Downloads/config/" (21608 50232 0 0) "keybindings.el" "../" "./")
+
+ ("/Users/davison/Downloads/" (21608 50116 0 0) "web_clipper_FF-Nov5.xpi" "Waveguides labsheet v3-TDD.docx" "Waveguides labsheet v3-TDD-2.docx" "thesis_tom-vettenburg.pdf" "thesis_gonzalo-muyo.pdf" "Sensing and Measurement with Light Tutorial.pdf" "RCD-24.pdf" "projectlibre-1.5.9.dmg" "init.el" "ImageJ/" "firefox-35.0a2.en-US.mac.dmg" "example.m" "Emacs-24.4-universal.dmg" "DSP Techniques for Compton Cameras - Thesis.pdf" "config/" ".localized" ".DS_Store" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
