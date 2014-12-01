@@ -41,7 +41,8 @@ call plug#end()
 " ---------------
 " MY KEY BINDINGS
 " ---------------
-map ;; <esc>
+map lh <esc>
+map hl <esc>
 map <space> /
 map vv <C-w>v
 map vn <C-w>n
@@ -136,16 +137,16 @@ set t_ut=
 " ---------------------------
 
 " Ag used instead of Grep as it's faster and doesn't need caching.
-let g:ctrlp_working_path_mode = 0
-if executable('ag')
-        let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g 
-                \ --ignore .git 
-                \ --ignore .cargo 
-                \ --ignore .cabal
-                \ --ignore .cache  ""'
-        let g:ctrlp_use_caching = 0
-        let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-endif
+" let g:ctrlp_working_path_mode = -1
+" if executable('ag')
+"         let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g 
+"                 \ --ignore .git 
+"                 \ --ignore .cargo 
+"                 \ --ignore .cabal
+"                 \ --ignore .cache  ""'
+"         let g:ctrlp_use_caching = 0
+"         let g:ctrlp_match_func = { 'match': 'pymatcher#pymatch' }
+" endif
 " ----------------------------------------
 " Highlight a character in the 81st column
 " ----------------------------------------

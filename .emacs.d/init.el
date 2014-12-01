@@ -1,120 +1,83 @@
-;;; package -- Summary
+;;; package --- Sumary
 
 ;;; Commentary:
-;; This file bootstraps the configuration, which is divided into
-;; a number of other files.
+;; Bootstrap my configuration
+;; Attempting my own clean and thin emacs install
 
 ;;; Code:
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(require 'init-benchmarking) ;; Measure startup time
+;; Add our directory of configuration files to the loadpath
+(add-to-list 'load-path (expand-file-name "config" user-emacs-directory))
 
-(defconst *spell-check-support-enabled* nil) ;; Enable with t if you prefer
+;; Some useful consts
+(defconst *spell-check-support-enabled* nil) ;; Don't enable spellcheck
 (defconst *is-a-mac* (eq system-type 'darwin))
 
-;;----------------------------------------------------------------------------
-;; Bootstrap config
-;;----------------------------------------------------------------------------
-(require 'init-compat)
-(require 'init-utils)
-(require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
-(require 'init-elpa)      ;; Machinery for installing required packages
-(require 'init-exec-path) ;; Set up $PATH
-
-;;----------------------------------------------------------------------------
-;; Load configs for specific features and modes
-;;----------------------------------------------------------------------------
-(require-package 'wgrep)
-(require-package 'project-local-variables)
+;; Start loading, beginning with my utility macros
+;; Settings for the package manager
+;; And diminish, to reduce the name of the mode in the infobar
+(require 'davison-utils)
+(require 'davison-elpa)
 (require-package 'diminish)
-(require-package 'scratch)
-(require-package 'mwe-log-commands)
 
-(require 'init-frame-hooks)
-(require 'init-xterm)
-(require 'init-themes)
-(require 'init-osx-keys)
-(require 'init-gui-frames)
-(require 'init-proxies)
-(require 'init-dired)
-(require 'init-isearch)
-(require 'init-grep)
-(require 'init-uniquify)
-(require 'init-ibuffer)
-(require 'init-flycheck)
+;; Appearance
+(require 'davison-appearance) ;Modify appearance/theme
 
-(require 'init-recentf)
-(require 'init-ido)
-(require 'init-hippie-expand)
-(require 'init-auto-complete)
-(require 'init-windows)
-(require 'init-sessions)
-(require 'init-fonts)
-(require 'init-mmm)
+;; Usability
+(require 'davison-osx-keys) ;Make some keys work on OSX
+(require 'davison-dired) ;Built in neotree kinda thing
+(require 'davison-isearch) ;Improve Emacs' search
+(require 'davison-grep)
+(require 'davison-ibuffer) ;Improve interactive buffer
+(require 'davison-ido)
+(require 'davison-windows) ;Managing windows/splits
+(require 'davison-sessions) ;Session handling
+(require 'davison-fonts) ;Font handling / resizing
+(require 'davison-multiplemajor)
+(require 'davison-editing) ;Various modifications to ease general editing
+(require 'davison-org)
+(require 'davison-keychord)
+(require 'davison-vim)
 
-(require 'init-editing-utils)
+;; Languages
+;; This section will load any packages and modify settings based on
+;; the programming languages I use.  There isn't too much modification here.
+;; Emacs provides a fair amount of support by default
+(require 'davison-markdown)
+(require 'davison-csv)
+(require 'davison-css)
+(require 'davison-haskell)
+(require 'davison-javascript)
 
-(require 'init-vc)
-(require 'init-darcs)
-(require 'init-git)
-(require 'init-github)
+;; Python
+;; C / C++
+;; Go
+;; Rust
+;; Elisp
+;; Lisp
+;; Org  (? usability)
+;; Version Control
 
-(require 'init-compile)
-(require 'init-markdown)
-(require 'init-csv)
-(require 'init-javascript)
-(require 'init-org)
-(require 'init-nxml)
-(require 'init-html)
-(require 'init-css)
-(require 'init-python-mode)
-(require 'init-haskell)
-(require 'init-sql)
 
-(require 'init-paredit)
-(require 'init-lisp)
-(require 'init-slime)
-(when (>= emacs-major-version 24)
-  (require 'init-clojure-cider))
-(require 'init-common-lisp)
-
-(when *spell-check-support-enabled*
-  (require 'init-spelling))
-
-(require 'init-misc)
-
+;; Require random packages
 (require-package 'gnuplot)
 (require-package 'htmlize)
-(require-package 'dsvn)
-(when *is-a-mac*
-  (require-package 'osx-location))
 (require-package 'regex-tool)
 
-;;----------------------------------------------------------------------------
-;; Variables configured via the interactive 'customize' interface
-;;----------------------------------------------------------------------------
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
-;;----------------------------------------------------------------------------
-;; Locales (setting them earlier in this file doesn't work in X)
-;;----------------------------------------------------------------------------
-(require 'init-locales)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (message "init completed in %.2fms"
-                     (sanityinc/time-subtract-millis after-init-time before-init-time))))
-
-
-;; Load in my config
-(require 'chris-config)
 
 (provide 'init)
 
-;; Local Variables:
-;; coding: utf-8
-;; no-byte-compile: t
-
-;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("573e46dadf8c2623256a164831cfe9e42d5c700baed1f8ecd1de0675072e23c2" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

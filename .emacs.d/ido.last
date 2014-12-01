@@ -2,53 +2,160 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/Users/davison/.dotfiles/emacs-old-from-github/" . "lisp/")
+ ("/Users/davison/.dotfiles/" . "emacs-old-from-github/")
+ ("/Users/davison/engd/classes/dsp/ecg/" . "matlab/")
+ ("/Users/davison/src/rust/concurrency/" . "src/")
+ ("/Users/davison/src/rust/" . "concurrency/")
+ ("/Users/davison/engd/writing/" . "team-meeting/")
+ ("/Users/davison/engd/classes/dsp/assignment1/" . "matlab/")
+ ("/Users/davison/engd/classes/dsp/" . "ecg/")
+ ("/Users/davison/.emacs.d/elpa/" . "key-chord-20140929.2246/")
+ ("/Users/davison/engd/classes/" . "problem-soln/")
+ ("/Users/davison/engd/" . "classes/")
+ ("/Users/" . "davison/")
  ("/Users/davison/src/hs/" . "99prob/")
- ("/Users/davison/src/" . "hs/")
- ("/Users/davison/Downloads/" . "config/")
- ("/Users/davison/" . "src/")
+ ("/Users/davison/src/" . "rust/")
+ ("/Users/davison/Downloads/" . "test-nw/")
+ ("/Users/davison/" . ".emacs.d/")
  ("/Users/davison/.emacs.d/" . "config/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
- "/Users/davison/.emacs.d/config/"
- "/Users/davison/.emacs.d/lisp/"
  "/Users/davison/.emacs.d/"
+ "/Users/davison/.emacs.d/config/"
+ "/Users/davison/.dotfiles/emacs-old-from-github/lisp/"
+ "/Users/davison/.emacs.d/chris-config/"
+ "/Users/davison/.emacs.d/lisp/"
+ "/Users/davison/engd/classes/problem-soln/"
+ "/Users/davison/engd/classes/dsp/ecg/"
+ "/Users/davison/engd/classes/dsp/ecg/matlab/"
+ "/Users/davison/engd/classes/THz/"
+ "/Users/davison/.templates/"
+ "/Users/davison/src/hs/"
+ "/Users/davison/engd/classes/Microscope/"
+ "/Users/davison/src/python/"
+ "/Users/davison/src/rust/concurrency/src/"
+ "/Users/davison/engd/writing/team-meeting/"
+ "/Users/davison/engd/writing/literature/"
+ "/Users/davison/engd/classes/radiation/"
+ "/Users/davison/engd/classes/dsp/assignment1/matlab/"
+ "/Users/davison/.emacs.d/elpa/key-chord-20140929.2246/"
  "/Users/davison/Downloads/config/"
  "/Users/davison/Downloads/"
 )
 
 ;; ----- ido-work-file-list -----
 (
- "config.el"
- "init-locales.el"
- "custom.el"
- "init-themes.el"
- "keybindings.el"
- "DSP Techniques for Compton Cameras - Thesis.pdf"
  "init.el"
- "init-haskell.el"
+ "davison-sessions.el"
+ "davison-appearance.el"
+ "davison-osx-keys.el"
+ "davison-utils.el"
+ "init-utils.el"
+ "davison-markdown.el"
+ "init-markdown.el"
+ "davison-vim.el"
+ "davison-keychord.el"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/davison/.emacs.d/" (21608 53662 0 0) "var/" "site-lisp/" "recentf" "README.md" "lisp/" "LICENSE" "init.el" "ido.last" "history" "eshell/" "elpa/" "custom.el" "config/" "auto-save-list/" "ac-comphist.dat" ".smex-items" ".session" ".gitignore" ".git/" ".emacs.desktop.lock" ".emacs.desktop" ".agignore" "../" "./")
+ ("/Users/davison/" (21628 26396 0 0) "src/" "Public/" "Pictures/" "org/" "Music/" "Movies/" "Library/" "java.log.1059" "Envs/" "engd/" "Dropbox/" "Downloads/" "Documents/" "Desktop/" "Applications/" ".zshrc~" ".zshrc-e" ".zshrc" ".zsh_history" ".zsh-update" ".zcompdump-Christopher’s MacBook Pro-5.0.5" ".zcompdump-Christopher’s MacBook Pro (2)-5.0.5" ".Xauthority" ".vt_locations" ".vimrc~" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".templates/" ".subversion/" ".ssh/" ".saves/" ".rnd" ".python_history" ".pip/" ".oh-my-zsh/" ".octave_hist" ".npm/" ".matplotlib/" ".matlab/" ".local/" ".julia_history" ".ispell_english" ".irssi/" ".ipython/" ".inputrc~" ".inputrc" ".inkscape-etc/" ".htoprc" ".gnuplot_history" ".gnome2/" ".gitconfig" ".ghci" ".ghc/" ".gem/" ".fontconfig/" ".flexlmborrow" ".exports~" ".exports" ".emacs_backups/" ".emacs.d/" ".DS_Store" ".dropbox/" ".dotfiles/" ".cups/" ".config/" ".CFUserTextEncoding" ".cargo/" ".cache/" ".cabal/" ".bashrc" ".bash_history" ".aliases~" ".aliases" "../" "./")
 
- ("/Users/davison/.emacs.d/lisp/" (21608 53500 0 0) "init-xterm.el" "init-windows.el" "init-vc.el" "init-utils.el" "init-uniquify.el" "init-themes.el" "init-textile.el" "init-sql.el" "init-spelling.el" "init-slime.el" "init-site-lisp.el" "init-sessions.el" "init-ruby-mode.el" "init-recentf.el" "init-rails.el" "init-python-mode.el" "init-proxies.el" "init-php.el" "init-paredit.el" "init-osx-keys.el" "init-org.el" "init-nxml.el" "init-mmm.el" "init-misc.el" "init-markdown.el" "init-locales.el" "init-lisp.el" "init-ledger.el" "init-javascript.el" "init-isearch.el" "init-ido.el" "init-ibuffer.el" "init-html.el" "init-hippie-expand.el" "init-haskell.el" "init-haml.el" "init-gui-frames.el" "init-grep.el" "init-github.el" "init-git.el" "init-frame-hooks.el" "init-fonts.el" "init-flyspell.el" "init-flycheck.el" "init-exec-path.el" "init-erlang.el" "init-elpa.el" "init-editing-utils.el" "init-dired.el" "init-dash.el" "init-darcs.el" "init-csv.el" "init-css.el" "init-crontab.el" "init-compile.el" "init-compat.el" "init-common-lisp.el" "init-clojure.el" "init-clojure-cider.el" "init-benchmarking.el" "init-auto-complete.el" ".dir-locals.el" "#init-haskell.el#" "../" "./")
+ ("/Users/davison/.emacs.d/config/" (21628 26526 0 0) "davison-windows.el" "davison-vim.el" "davison-utils.el~" "davison-utils.el" "davison-sessions.el" "davison-osx-keys.el~" "davison-osx-keys.el" "davison-org.el" "davison-multiplemajor.el" "davison-markdown.el" "davison-keychord.el" "davison-javascript.el" "davison-isearch.el~" "davison-isearch.el" "davison-ido.el" "davison-ibuffer.el" "davison-haskell.el" "davison-grep.el" "davison-fonts.el" "davison-elpa.el~" "davison-elpa.el" "davison-editing.el" "davison-dired.el~" "davison-dired.el" "davison-csv.el" "davison-css.el" "davison-appearance.el~" "davison-appearance.el" "../" "./")
 
- ("/Users/davison/.emacs.d/config/" (21608 53365 0 0) "keybindings.el" "config.el" "../" "./")
+ ("/Users/davison/.emacs.d/" (21628 26366 0 0) "recentf" "init.el" "ido.last" "history" "elpa/" "config/" "auto-save-list/" ".smex-items" ".session" ".gitignore" ".git/" ".emacs.desktop" ".agignore" "../" "./")
 
- ("/Users/davison/src/hs/99prob/" (21606 6517 0 0) "Logic.hs" "Lists.hs" "Arithmetic.hs" "../" "./")
+ ("/Users/davison/.dotfiles/emacs-old-from-github/lisp/" (21628 25565 0 0) "init-xterm.el" "init-windows.el" "init-vc.el" "init-utils.el" "init-uniquify.el" "init-themes.el" "init-textile.el" "init-sql.el" "init-spelling.el" "init-slime.el" "init-site-lisp.el" "init-sessions.el" "init-ruby-mode.el" "init-recentf.el" "init-rails.el" "init-python-mode.el" "init-proxies.el" "init-php.el" "init-paredit.el" "init-osx-keys.el" "init-org.el" "init-nxml.el" "init-mmm.el" "init-misc.el" "init-markdown.el" "init-locales.el" "init-lisp.el" "init-ledger.el" "init-javascript.el" "init-isearch.el" "init-ido.el" "init-ibuffer.el" "init-html.el" "init-hippie-expand.el" "init-haskell.el" "init-haml.el" "init-gui-frames.el" "init-grep.el" "init-github.el" "init-git.el" "init-frame-hooks.el" "init-fonts.el" "init-flyspell.el" "init-flycheck.el" "init-exec-path.el" "init-erlang.el" "init-elpa.el" "init-editing-utils.el" "init-dired.el" "init-dash.el" "init-darcs.el" "init-csv.el" "init-css.el" "init-crontab.el" "init-compile.el" "init-compat.el" "init-common-lisp.el" "init-clojure.el" "init-clojure-cider.el" "init-benchmarking.el" "init-auto-complete.el" "chris-config.el" ".dir-locals.el" "#init-windows.el#" "#init-utils.el#" "#init-haskell.el#" "#init-gui-frames.el#" "#init-editing-utils.el#" "#chris-config.el#" "../" "./")
 
- ("/Users/davison/src/hs/" (21592 43656 0 0) "scratch.hs" "euler/" "calving.hs" "99prob/" "../" "./")
+ ("/Users/davison/.emacs.d/elpa/" (21628 25573 0 0) "whitespace-cleanup-mode-20140820.128/" "unfill-20131103.213/" "undo-tree-20140509.522/" "switch-window-20140919.734/" "smex-20141027.245/" "multiple-cursors-20141026.503/" "mmm-mode-20141105.457/" "markdown-mode-20140914.1012/" "key-chord-20140929.2246/" "idomenu-20141123.1320/" "ido-ubiquitous-20141118.1234/" "ibuffer-vc-20141013.742/" "goto-chg-20131228.1459/" "fullframe-20140619.305/" "evil-surround-20140616.1127/" "evil-20141119.205/" "dired-sort-20090209.438/" "dired+-20141025.2126/" "diminish-20091203.1012/" "csv-nav-20130407.1820/" "csv-mode-1.2/" "archives/" "anzu-20141129.2221/" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/csv-nav-20130407.1820/" (21628 25573 0 0) "csv-nav.elc" "csv-nav.el" "csv-nav-pkg.elc" "csv-nav-pkg.el" "csv-nav-autoloads.el" "../" "./")
+
+ ("/Users/davison/.dotfiles/emacs-old-from-github/" (21628 24048 0 0) "var/" "site-lisp/" "recentf~" "recentf" "README.md" "lisp/" "LICENSE" "init.el" "ido.last~" "ido.last" "history" "eshell/" "elpa/" "custom.el" "chris-config/" "auto-save-list/" "ac-comphist.dat" ".smex-items" ".session" ".gitignore" ".git/" ".emacs.desktop" ".agignore" "#recentf#" "../" "./")
+
+ ("/Users/davison/.dotfiles/" (21628 24047 0 0) "solarized/" "emacs-old-from-github/" "chris-config/" ".zshrc" ".vimrc" ".vim/" ".tmux.conf" ".git/" ".functions" ".exports" ".emacs.d/" ".DS_Store" ".bashrc" ".aliases" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/evil-20141119.205/" (21628 25487 0 0) "version.info" "macros.info" "fdl-1.3.info" "evil.info" "evil.elc" "evil.el" "evil-vars.elc" "evil-vars.el" "evil-types.elc" "evil-types.el" "evil-states.elc" "evil-states.el" "evil-search.elc" "evil-search.el" "evil-repeat.elc" "evil-repeat.el" "evil-pkg.el" "evil-maps.elc" "evil-maps.el" "evil-macros.elc" "evil-macros.el" "evil-integration.elc" "evil-integration.el" "evil-ex.elc" "evil-ex.el" "evil-digraphs.elc" "evil-digraphs.el" "evil-core.elc" "evil-core.el" "evil-common.elc" "evil-common.el" "evil-commands.elc" "evil-commands.el" "evil-command-window.elc" "evil-command-window.el" "evil-autoloads.el" "dir" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/key-chord-20140929.2246/" (21628 25445 0 0) "key-chord.elc" "key-chord.el" "key-chord-pkg.elc" "key-chord-pkg.el" "key-chord-autoloads.el" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/multiple-cursors-20141026.503/" (21628 25410 0 0) "rectangular-region-mode.elc" "rectangular-region-mode.el" "multiple-cursors.elc" "multiple-cursors.el" "multiple-cursors-pkg.el" "multiple-cursors-core.elc" "multiple-cursors-core.el" "multiple-cursors-autoloads.el" "mc-separate-operations.elc" "mc-separate-operations.el" "mc-mark-pop.elc" "mc-mark-pop.el" "mc-mark-more.elc" "mc-mark-more.el" "mc-hide-unmatched-lines-mode.elc" "mc-hide-unmatched-lines-mode.el" "mc-edit-lines.elc" "mc-edit-lines.el" "mc-cycle-cursors.elc" "mc-cycle-cursors.el" "../" "./")
+
+ ("/Users/davison/.emacs.d/chris-config/" (21628 23920 0 0) "init.el" "davison-windows.el" "davison-vim.el" "davison-sessions.el" "davison-osx-keys.el" "davison-org.el" "davison-multiplemajor.el" "davison-keychord.el" "davison-javascript.el" "davison-isearch.el" "davison-ido.el" "davison-ibuffer.el" "davison-haskell.el" "davison-grep.el" "davison-fonts.el" "davison-editing.el" "davison-dired.el" "davison-csv.el" "davison-css.el" "davison-appearance.el" "#davison-sessions.el#" "#davison-markdown.el#" "../" "./")
+
+ ("/Users/davison/Downloads/" (21624 46638 0 0) "XQuartz-2.7.7.dmg" "test-nw/" "system/" "shen-ruby-shen-ruby-current/" "node-webkit-v0.11.2-osx-x64/" "hello-webkit/" "hannahclaudio.scad" "cltl_src.tar" "cltl_src/" "cltl_ps.tar" "cltl_ps/" "chrisdavison_ecg.pdf" "cdavison_cpw.pdf" "2x2rubiks.pdf" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/davison/src/rust/concurrency/src/" (21626 23589 0 0) "main.rs" ".emacs.desktop" "../" "./")
+
+ ("/Users/davison/engd/classes/problem-soln/" (21623 44447 0 0) "ideas.md" "../" "./")
+
+ ("/Users/davison/.emacs.d/lisp/" (21628 23310 0 0) "init-xterm.el" "init-windows.el" "init-vc.el" "init-utils.el" "init-uniquify.el" "init-themes.el" "init-textile.el" "init-sql.el" "init-spelling.el" "init-slime.el" "init-site-lisp.el" "init-sessions.el" "init-ruby-mode.el" "init-recentf.el" "init-rails.el" "init-python-mode.el" "init-proxies.el" "init-php.el" "init-paredit.el" "init-osx-keys.el" "init-org.el" "init-nxml.el" "init-mmm.el" "init-misc.el" "init-markdown.el" "init-locales.el" "init-lisp.el" "init-ledger.el" "init-javascript.el" "init-isearch.el" "init-ido.el" "init-ibuffer.el" "init-html.el" "init-hippie-expand.el" "init-haskell.el" "init-haml.el" "init-gui-frames.el" "init-grep.el" "init-github.el" "init-git.el" "init-frame-hooks.el" "init-fonts.el" "init-flyspell.el" "init-flycheck.el" "init-exec-path.el" "init-erlang.el" "init-elpa.el" "init-editing-utils.el" "init-dired.el" "init-dash.el" "init-darcs.el" "init-csv.el" "init-css.el" "init-crontab.el" "init-compile.el" "init-compat.el" "init-common-lisp.el" "init-clojure.el" "init-clojure-cider.el" "init-benchmarking.el" "init-auto-complete.el" "chris-config.el" ".dir-locals.el" "#init-windows.el#" "#init-haskell.el#" "#init-gui-frames.el#" "#init-editing-utils.el#" "#chris-config.el#" "../" "./")
+
+ ("/Users/davison/engd/classes/dsp/ecg/matlab/" (21627 43605 0 0) "z_ermes-peak.m" "scale.m" "numerical_filter.m" "lowpass.m" "ideal_filter.m" "filter_comparison.m" "ecg_peak.m" "display_ecg.m" "data_and_globals.m" "apply.m" "analytical_filter.m" "../" "./")
+
+ ("/Users/davison/engd/classes/" (21623 13117 0 0) "THz/" "Sensing and Measurement with Light Tutorial.pdf" "rapid-prototype/" "radiation/" "problem-soln/" "Microscope/" "learning-labview.ppt" "fundamentals-timetable.pdf" "dsp/" "CDT measurements.zip" ".DS_Store" "../" "./")
+
+ ("/Users/davison/.dotfiles/.emacs.d/" (21623 13072 0 0) "var/" "site-lisp/" "recentf~" "recentf" "README.md" "lisp/" "LICENSE" "init.el" "ido.last~" "ido.last" "history" "eshell/" "elpa/" "custom.el" "config/" "auto-save-list/" "ac-comphist.dat" ".smex-items" ".session" ".gitignore" ".git/" ".emacs.desktop.lock" ".emacs.desktop" ".agignore" "#recentf#" "../" "./")
+
+ ("/Users/davison/.dotfiles/.emacs.d/lisp/" (21623 12997 0 0) "init-xterm.el" "init-windows.el" "init-vc.el" "init-utils.el" "init-uniquify.el" "init-themes.el" "init-textile.el" "init-sql.el" "init-spelling.el" "init-slime.el" "init-site-lisp.el" "init-sessions.el" "init-ruby-mode.el" "init-recentf.el" "init-rails.el" "init-python-mode.el" "init-proxies.el" "init-php.el" "init-paredit.el" "init-osx-keys.el" "init-org.el" "init-nxml.el" "init-mmm.el" "init-misc.el" "init-markdown.el" "init-locales.el" "init-lisp.el" "init-ledger.el" "init-javascript.el" "init-isearch.el" "init-ido.el" "init-ibuffer.el" "init-html.el" "init-hippie-expand.el" "init-haskell.el" "init-haml.el" "init-gui-frames.el" "init-grep.el" "init-github.el" "init-git.el" "init-frame-hooks.el" "init-fonts.el" "init-flyspell.el" "init-flycheck.el" "init-exec-path.el" "init-erlang.el" "init-elpa.el" "init-editing-utils.el" "init-dired.el" "init-dash.el" "init-darcs.el" "init-csv.el" "init-css.el" "init-crontab.el" "init-compile.el" "init-compat.el" "init-common-lisp.el" "init-clojure.el" "init-clojure-cider.el" "init-benchmarking.el" "init-auto-complete.el" "chris-config.el" ".dir-locals.el" "#init-haskell.el#" "../" "./")
+
+ ("/Users/davison/engd/classes/dsp/ecg/" (21622 1603 0 0) "plots/" "matlab/" "Makefile" "ecg_peak.tex" "ecg_peak.aux" "ecg_filter.tex" "ecg_filter.aux" "ecg.toc" "ecg.tex" "ecg.pdf" "ecg.out" "ecg.log" "ecg.aux" "data/" "conclusion.tex" "conclusion.aux" "appendix.tex" "appendix.aux" ".ipynb_checkpoints/" ".DS_Store" "../" "./")
+
+ ("/Users/davison/engd/classes/THz/" (21620 63052 0 0) "waveguides.tex" "waveguides.pdf" "waveguides.out" "waveguides.log" "waveguides.aux" "Waveguides-Labsheet.docx" "script.m" "prv_waveguides.fmt" "plots/" "model_vs_meas_v00.m" "Makefile" "linearstage.hs" "example_modelling.jpg" "ewa/" "data/" "cpw.m" "actual_data_all_waveguides_subplot_s12.eps" "actual_data_all_waveguides_subplot.eps" "Actual_Data-from-steven.m" ".DS_Store" "#cpw.m#" "../" "./")
+
+ ("/Users/davison/.templates/" (21620 61931 0 0) "template.tex" "template.rs" "template.py" "template.go" "template.cpp" "template.c" "template.awk" ".templates" "../" "./")
+
+ ("/Users/davison/src/hs/" (21619 43218 0 0) "todo.txt" "tmp.hs" "scratch.hs" "euler/" "calving.hs" "books" "99prob/" "../" "./")
+
+ ("/Users/davison/engd/classes/Microscope/" (21619 17197 0 0) "Script for Microscope Build.pdf" "RCD-24.pdf" "microscopy.pdf" "MATLAB summary.docx" "LUXEON Rebel (White).pdf" "LUXEON Rebel (Colour).pdf" "linearstage_stl.stl" "linearstage.hs" "linear-stage.scad" "lens_holder_stl.stl" "lens_holder.scad" "LED Driver (LDU08-48).pdf" "ISO_12233-2000.pdf" "CMOS noise_2.pdf" "CMOS noise.pdf" ".DS_Store" "#linear-stage.scad#" "../" "./")
+
+ ("/Users/davison/engd/classes/radiation/" (21615 13632 0 0) "scattering2.png" "scattering.png" "radiation.ipynb" "prv_compton.log" "na22.Chn" "Makefile" "first.Chn" "data.md" "compton.tex" "compton.pdf" "compton.out" "compton.log" "compton.blg" "compton.bbl" "compton.aux" "co60.Chn" "Book1.xlsx" "biblio.bib" "am241.Chn" "a1145.Chn" "_region_.prv/" "1270unk.Chn" ".ipynb_checkpoints/" "#compton.tex#" "../" "./")
+
+ ("/Users/davison/engd/writing/literature/" (21615 13490 0 0) "thesis.toc" "thesis.tex" "thesis.pdf" "thesis.out" "thesis.nlo" "thesis.log" "thesis.lof" "thesis.brf" "thesis.blg" "thesis.bbl" "thesis.aux" "strath-logo2.png" "strath-logo.png" "Makefile" "Latex/" "conclusion/" "99_backmatter/" "3_oestrus/" "2_activity_monitoring/" "1_introduction/" "0_frontmatter/" ".DS_Store" "../" "./")
+
+ ("/Users/davison/src/c/" (21596 694 0 0) "tex2png.cpp" "test.dat" "sungjae.cpp" "sungjae-version.cpp" "euler/" "cprog/" "chead.c" "a.out" "../" "./")
+
+ ("/Users/davison/src/c/cprog/" (21617 54406 0 0) "CMakeLists.txt" "chap2.c" "chap1.c" "../" "./")
+
+ ("/Users/davison/src/python/" (21598 47156 0 0) "weasels.py" "defaults.py" "cowdetective_tailraises.py" "cowdetective_flipz.py" ".gitignore" "../" "./")
+
+ ("/Users/davison/src/rust/concurrency/" (21569 24148 0 0) "target/" "src/" "Cargo.toml" "Cargo.lock" ".gitignore" "../" "./")
+
+ ("/Users/davison/src/rust/" (21589 7613 0 0) "hello_world/" "guessing/" "fft/" "concurrency/" "../" "./")
+
+ ("/Users/davison/src/rust/fft/" (21589 7613 0 0) "src/" "Cargo.toml" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/davison/src/rust/fft/src/" (21615 26674 0 0) "main.rs" "#main.rs#" "../" "./")
+
+ ("/Users/davison/engd/writing/" (21615 26631 0 0) "wip_detections-and-means.ods" "Untitled0.ipynb" "team-meeting/" "tags" "readme.md" "presentation.md" "PhDtemplateLATEX.zip" "literature/" "lit-review2.tar.gzip" "Journal-of-Physics-Latex-Template.zip" "hourly_wide.png" "hourly.png" "group_meeting.pdf" "group_meeting.md" "detection-hour.ods" "cumulative_wide.png" "cumulative.png" "cows_and_durations-seconds.xls" "cows_10hours.xls" "cowpattern.jpg" "cowhead.jpg" "cow_dataset_comments.xls" "cdavison_literature-review.pdf" "calving abstract.odt" "calving abstract.docx" "10hours.pdf" "10_hours_wide.png" ".DS_Store" ".#calving abstract.odt:mimetype" "../" "./")
+
+ ("/Users/davison/engd/writing/team-meeting/" (21615 5897 0 0) "plots/" "hourly_wide.png" "hourly.png" "group_meeting.pdf" "group_meeting.md" "cumulative_wide.png" "cumulative.png" "cowpattern.jpg" "cowhead.jpg" "10hours.pdf" "10_hours_wide.png" ".DS_Store" "../" "./")
+
+ ("/Users/davison/engd/" (21613 56577 0 0) "writing/" "README.md" "reading/" "logbook/" "data-transitions/" "data-calving/" "code-transitions/" "code-tools/" "code-calving/" "classes/" ".gitignore~" ".gitignore" ".git/" ".DS_Store" "../" "./")
+
+ ("/Users/davison/engd/classes/dsp/assignment1/matlab/" (21604 45783 0 0) "shifted.m" "scaled.m" "pic-to-sound.wav" "phone.m" "original.m" "ofdm.m" "morn-nam-out.wav" "morn-nam-out-shifted.wav" "creeper-out.png" "cat.wav" "../" "./")
+
+ ("/Users/davison/engd/classes/dsp/assignment1/" (21584 62044 0 0) "Z-ASSIGNMENT.pdf" "texput.log" "resources/" "plots/" "mcode.sty" "matlab/" "Makefile" "cdavison-2172465D-dsp-assignment.pdf" "8-appendix.tex" "7-conclusion.tex" "6-phone.tex" "5-ofdm.tex" "4-shift.tex" "3-loudness.tex" "2-orig.tex" "1-main.toc" "1-main.tex" "1-main.out" "1-main.log" "1-main.aux" ".DS_Store" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/matlab-mode-20141108.14/" (21611 8051 0 0) "tlc.elc" "tlc.el" "semanticdb-matlab.elc" "semanticdb-matlab.el" "semantic-matlab.elc" "semantic-matlab.el" "mlint.elc" "mlint.el" "matlab.elc" "matlab.el" "matlab-publish.elc" "matlab-publish.el" "matlab-mode-pkg.el" "matlab-mode-autoloads.el" "matlab-load.el" "linemark.elc" "linemark.el" "company-matlab-shell.elc" "company-matlab-shell.el" "cedet-matlab.elc" "cedet-matlab.el" "../" "./")
+
+ ("/Users/davison/Downloads/config/" (21608 50546 0 0) "keybindings.el" "../" "./")
+
+ ("/Users/davison/engd/classes/dsp/" (21593 924 0 0) "lab1/" "ecg/" "assignment1/" ".DS_Store" "../" "./")
+
+ ("/Users/davison/.emacs.d/elpa/dired-details+-20131226.1832/" (21609 8140 0 0) "dired-details+.elc" "dired-details+.el" "dired-details+-pkg.elc" "dired-details+-pkg.el" "dired-details+-autoloads.el" "../" "./")
+
+ ("/Users/davison/src/hs/99prob/" (21608 53122 0 0) "Logic.hs" "Lists.hs" "Arithmetic.hs" "#Arithmetic.hs#" "../" "./")
+
+ ("/Users/" (21569 9674 0 0) "Shared/" "davison/" ".localized" "../" "./")
+
+ ("/Users/davison/Dropbox/" (21604 52373 0 0) "Z/" "statistical-methods-for-change-detection.pdf" "Statistical-change-detection-for-multidimensional-data.pdf" "python-cheat-sheet-v1.pdf" "Public/" "Mathematical-symbols.pdf" "Korean/" "Icon
+" "HLearn-A-MachineLearning-Library-for-Haskell.pdf" "guitar/" "eBooks/" "DSP Handout.pdf" "detection-of-abrupt-changes_theory-and-applications.pdf" "damn-interesting-all.pdf" "damn-interesting-all.epub" "Camera Uploads/" ".DS_Store" ".dropbox.cache/" ".dropbox" "../" "./")
 
  ("/Users/davison/src/" (21598 17753 0 0) "scripts/" "rust/" "README.md" "python/" "hs/" "Go/" "c/" ".gitignore" ".git/" "../" "./")
-
- ("/Users/davison/" (21608 50544 0 0) "src/" "Public/" "Pictures/" "Music/" "Movies/" "Library/" "Envs/" "engd/" "Dropbox/" "Downloads/" "Documents/" "Desktop/" "Applications/" ".zshrc~" ".zshrc-e" ".zshrc" ".zsh_history" ".zsh-update" ".zcompdump-Christopher’s MacBook Pro-5.0.5" ".zcompdump-Christopher’s MacBook Pro (2)-5.0.5" ".vt_locations" ".vimrc~" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".templates/" ".subversion/" ".ssh/" ".saves/" ".rnd" ".python_history" ".pip/" ".oh-my-zsh/" ".npm/" ".matplotlib/" ".matlab/" ".local/" ".julia_history" ".irssi/" ".ipython/" ".inputrc~" ".inputrc" ".inkscape-etc/" ".htoprc" ".gnuplot_history" ".gitconfig" ".ghci" ".ghc/" ".gem/" ".flexlmborrow" ".exports~" ".exports" ".emacs_backups/" ".emacs.d/" ".DS_Store" ".dropbox/" ".dotfiles/" ".cups/" ".config/" ".CFUserTextEncoding" ".cargo/" ".cache/" ".cabal/" ".bashrc" ".bash_history" ".aliases~" ".aliases" "../" "./")
-
- ("/Users/davison/Downloads/config/" (21608 50232 0 0) "keybindings.el" "../" "./")
-
- ("/Users/davison/Downloads/" (21608 50116 0 0) "web_clipper_FF-Nov5.xpi" "Waveguides labsheet v3-TDD.docx" "Waveguides labsheet v3-TDD-2.docx" "thesis_tom-vettenburg.pdf" "thesis_gonzalo-muyo.pdf" "Sensing and Measurement with Light Tutorial.pdf" "RCD-24.pdf" "projectlibre-1.5.9.dmg" "init.el" "ImageJ/" "firefox-35.0a2.en-US.mac.dmg" "example.m" "Emacs-24.4-universal.dmg" "DSP Techniques for Compton Cameras - Thesis.pdf" "config/" ".localized" ".DS_Store" "../" "./")
 )
 
 ;; ----- ido-unc-hosts-cache -----
