@@ -31,30 +31,6 @@
 ;; Show matching parens
 (show-paren-mode 1)
 
-;; Multiple cursors
-;; Not really used this yet, but found it in another's config
-(require-package 'multiple-cursors)
-
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-+") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-;; From active region to multiple cursors
-(global-set-key (kbd "C-c c r") 'set-rectangular-region-anchor)
-(global-set-key (kbd "C-c c c") 'mc/edit-lines)
-(global-set-key (kbd "C-c c e") 'mc/edit-ends-of-lines)
-(global-set-key (kbd "C-c c a") 'mc/edit-beginnings-of-lines)
-
-;; Kill backwards to indentation
-(defun kill-back-to-indentation ()
-  "Kill from point back to the first non-whitespace character on the line."
-  (interactive)
-  (let ((prev-pos (point)))
-    (back-to-indentation)
-    (kill-region (point) prev-pos)))
-
-(global-set-key (kbd "C-M-<backspace>") 'kill-back-to-indentation)
-
+(global-set-key (kbd "M-s") 'ace-jump-mode)
 
 (provide 'davison-editing)

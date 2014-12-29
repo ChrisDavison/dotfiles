@@ -17,8 +17,9 @@ export GOPATH="$HOME/src/Go";
 export GOBIN="$GOPATH/bin";
 export TEXPATH="/usr/texbin"; 
 export HASKPATH="$HOME/Library/Haskell/bin"; # CABAL binary path
+export RACKETPATH="/Applications/Racket\ v6.1.1/bin"
 
-export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH;
+export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH:$RACKETPATH;
 
 # 256 color terminal
 export TERM=xterm-256color;
