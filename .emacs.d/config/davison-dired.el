@@ -23,5 +23,6 @@
 (setq global-ato-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
+(global-set-key (kbd "C-x C-n") 'neotree-toggle)
 
 (provide 'davison-dired)

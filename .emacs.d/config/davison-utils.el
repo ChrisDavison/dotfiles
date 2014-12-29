@@ -32,4 +32,6 @@
   (dolist (pattern patterns)
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
 (provide 'davison-utils)

@@ -38,16 +38,24 @@
 (require 'davison-org)
 (require 'davison-keychord)
 (require 'davison-vim)
+(require 'davison-autocomplete)
 
 ;; Languages
 ;; This section will load any packages and modify settings based on
 ;; the programming languages I use.  There isn't too much modification here.
 ;; Emacs provides a fair amount of support by default
+(require 'davison-flycheck)
 (require 'davison-markdown)
 (require 'davison-csv)
 (require 'davison-css)
 (require 'davison-haskell)
 (require 'davison-javascript)
+(require 'davison-lisp)
+(require 'davison-matlab)
+(require 'davison-go)
+(require 'davison-rust)
+(require 'davison-racket)
+
 
 ;; Python
 ;; C / C++
@@ -56,14 +64,11 @@
 ;; Elisp
 ;; Lisp
 ;; Org  (? usability)
-;; Version Control
-
 
 ;; Require random packages
 (require-package 'gnuplot)
 (require-package 'htmlize)
 (require-package 'regex-tool)
-
 
 (provide 'init)
 
@@ -72,12 +77,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes (quote (base16-monokai)))
  '(custom-safe-themes
    (quote
-    ("573e46dadf8c2623256a164831cfe9e42d5c700baed1f8ecd1de0675072e23c2" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+    ("41b6698b5f9ab241ad6c30aea8c9f53d539e23ad4e3963abff4b57c0f8bf6730" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "51bea7765ddaee2aac2983fac8099ec7d62dff47b708aa3595ad29899e9e9e44" default)))
+ '(racket-program "/usr/local/bin/racket")
+ '(raco-program "/usr/local/bin/raco"))
+

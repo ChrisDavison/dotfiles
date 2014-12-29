@@ -2,10 +2,10 @@
 (require-package 'solarized-theme)
 (require-package 'flatland-theme)
 (require-package 'molokai-theme)
-(require-package 'color-theme-sanityinc-tomorrow)
+;;(require-package 'color-theme-sanityinc-tomorrow)
 
 ;; Load my theme of choice
-(load-theme 'sanityinc-tomorrow-eighties)
+(load-theme 'solarized-dark t)
 
 ;; Font height
 (set-face-attribute 'default nil :height 120)
@@ -65,7 +65,6 @@
 
 ;; Show line and column num in the mode bar
 (line-number-mode 1)
-(linum-mode t)
 (column-number-mode 1)
 
 ;; Show parenthesis matching
