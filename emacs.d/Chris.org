@@ -160,9 +160,11 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
-(when (member "Monaco" (font-family-list))
-  (set-face-attribute 'default nil :font "Monaco" :height 130))
+(when (member "Osaka" (font-family-list))
+  (set-face-attribute 'default nil :font "Osaka" :height 150))
 #+END_SRC
+
+#+RESULTS:
 
 *** Size etc
 #+BEGIN_SRC emacs-lisp
@@ -290,8 +292,9 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 #+BEGIN_SRC emacs-lisp
 (setq tab-stop-list (number-sequence 4 200 4))
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
+(setq-default tab-width 4)
 #+END_SRC
+
 ** Show line and column number in status bar
 #+BEGIN_SRC emacs-lisp
 (line-number-mode 1)
@@ -310,8 +313,8 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 ** Word Wrapping and Line Truncation
 Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
 #+BEGIN_SRC emacs-lisp
-  (toggle-truncate-lines nil)
-  (toggle-word-wrap t)
+  (setq truncate-lines nil)
+  (setq word-wrap t)
 #+END_SRC
 
 * Config: Parentheses
