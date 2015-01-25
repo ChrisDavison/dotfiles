@@ -1,0 +1,1157 @@
+#+TITLE: Chris Davison's Emacs configuration
+#+OPTIONS: toc:4 h:4
+
+* About this file
+<<babel-init>>
+
+THIS NEEDS WORK:  In individual sections, split the code and add more explanation.
+
+Inspired by Sacha Chua, I decided to move from a multi-file approach (which can be a bit of an issue when testing new things, to find the error in the file) to a single file approach, with the hope of tightening it all up and streamlining.
+
+This can be saved directly in =~/.emacs.d= and loaded via =(org-babel-load-file "/path/to/file")=, and then use the benefit of sharing a single file, or a single section, as well as giving a single source by jumping to section headers.
+
+To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what used to be the =~/.emacs= file):
+
+#+begin_src emacs-lisp  :tangle no
+    ;; This sets up the load path so that we can override it
+    (package-initialize nil)
+
+    ;; Load the rest of the packages
+    (package-initialize t)
+    (setq package-enable-at-startup nil)
+
+    ;; Finally, load my literate config
+    (org-babel-load-file "~/.emacs.d/Chris.org")
+#+end_src
+
+A tip is to generally always only copy individual sections, into a seperate buffer (i.e. =*scratch*= or another elisp buffer), evaluate that buffer (=M-x eval-buffer=) to see if you like the changes without actually merging it.
+
+Useful: [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]]
+
+You may see an unusual (non eLisp) construct in =(require-package 'something...)=, which is basically a function that will check if a package is installed, and if not install it.  Can't remember where this was from, but it's a useful construct for keeping things simple.
+
+If you're viewing the Org inside emacs, you can open source blocks (ones beginning in begin_src) in a seperate buffer by moivng your point inside them and typing C-c ' (=ord-edit-special=).  This opens the block in an elisp buffer, so you can use =M-x eval-buffer= to load the changes.
+
+* Personal information
+
+#+begin_src emacs-lisp
+(setq user-full-name "Chris Davison"
+    user-mail-address "c.jr.davison@gmail.com")
+#+end_src
+* Useful Consts
+Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
+#+BEGIN_SRC emacs-lisp
+(defconst *spell-check-support-enabled* nil)
+(defconst *is-a-mac* (eq system-type 'darwin))
+#+END_SRC
+* Config: Package
+Refresh the package list, ensuring newest package versions.  You may not like this as it can give a slight delay when opening emacs, but I tend to keep the window open in a seperate workspace, so for me this is an infrequent issue.
+#+BEGIN_SRC emacs-lisp
+(package-refresh-contents)
+#+END_SRC
+
+** Eval after load
+#+BEGIN_SRC emacs-lisp
+(if (fboundp 'with-eval-after-load)
+  (defalias 'after-load 'with-eval-after-load)
+  (defmacro after-load (feature &rest body)
+    "After FEATURE is loaded, evaluate BODY."
+    (declare (indent defun))
+    `(eval-after-load ,feature
+                      '(progn ,@body))))
+#+END_SRC
+
+** File deletion utilities
+Delete the current file.  Basically a big of sugar around =delete-file= to take the current buffer.
+#+BEGIN_SRC emacs-lisp
+(defun delete-this-file ()
+  "Delete the current file, and kill the buffer."
+  (interactive)
+  (or (buffer-file-name) (error "No file is currently being edited"))
+  (when (yes-or-no-p (format "Really delete '%s'?"
+                             (file-name-nondirectory buffer-file-name)))
+    (delete-file (buffer-file-name))
+    (kill-this-buffer)))
+#+END_SRC
+
+** Easier add-to-list
+Give regex patterns to add-auto-mode, so you don't need to call add-to-list multiple times (it'll do it for you).
+#+BEGIN_SRC emacs-lisp
+(defun add-auto-mode (mode &rest patterns)
+  "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
+  (dolist (pattern patterns)
+    (add-to-list 'auto-mode-alist (cons pattern mode))))
+#+END_SRC
+
+** Package Sources
+     Add org and gnu by default
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+#+END_SRC
+
+But use melpa for most packages
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+#+END_SRC
+
+** Maybe enable signatures (GPG)
+If gpg cannot be found, signature check will fail.  Conditionally enable according to whether GPG is available.
+#+BEGIN_SRC emacs-lisp
+(defun sanityinc/package-maybe-enable-signatures ()
+  (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
+
+(sanityinc/package-maybe-enable-signatures)
+(after-load 'init-exec-path
+  (sanityinc/package-maybe-enable-signatures))
+#+END_SRC
+
+** On-demand package installation
+#+BEGIN_SRC emacs-lisp
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (if (package-installed-p package min-version)
+      t
+    (if (or (assoc package package-archive-contents) no-refresh)
+        (package-install package)
+      (progn
+        (package-refresh-contents)
+        (require-package package min-version t)))))
+
+(defun maybe-require-package (package &optional min-version no-refresh)
+  "Try to install PACKAGE, and return non-nil if successful.
+In the event of failure, return nil and print a warning message.
+Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
+available package lists will not be re-downloaded in order to
+locate PACKAGE."
+  (condition-case err
+      (require-package package min-version no-refresh)
+    (error
+     (message "Couldn't install package `%s': %S" package err)
+     nil)))
+#+END_SRC
+
+** And then initialize...
+#+BEGIN_SRC emacs-lisp
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(require-package 'fullframe)
+(fullframe list-packages quit-window)
+#+END_SRC
+
+** Common Lisp libs
+Useful to have access to power of common lisp within emacs.
+#+BEGIN_SRC emacs-lisp
+(require-package 'cl-lib)
+(require 'cl-lib)
+#+END_SRC
+* Config: Appearance
+Having multiple minor modes can leave the status bar unreadable.  For this, use diminish, which will 'diminish' the minor mode to either show nothing or a chosen acronym.
+#+BEGIN_SRC emacs-lisp
+(require-package 'diminish)
+#+END_SRC
+
+** FONT stuff
+*** Default  (if available)
+#+BEGIN_SRC emacs-lisp
+(when (member "Monaco" (font-family-list))
+  (set-face-attribute 'default nil :font "Monaco" :height 130))
+#+END_SRC
+
+*** Size etc
+#+BEGIN_SRC emacs-lisp
+  (defcustom sanityinc/force-default-font-for-symbols nil
+    "When non-nil, force Emacs to use your default font for symbols."
+    :type 'boolean)
+
+  (defun sanityinc/maybe-use-default-font-for-symbols ()
+    "Force Emacs to render symbols using the default font, if so configured."
+    (when sanityinc/force-default-font-for-symbols
+      (set-fontset-font "fontset-default" 'symbol (face-attribute 'default :family))))
+
+  (add-hook 'after-init-hook 'sanityinc/maybe-use-default-font-for-symbols)
+
+  (require 'cl)
+
+  (defun sanityinc/font-name-replace-size (font-name new-size)
+    (let ((parts (split-string font-name "-")))
+      (setcar (nthcdr 7 parts) (format "%d" new-size))
+      (mapconcat 'identity parts "-")))
+
+  (defun sanityinc/increment-default-font-height (delta)
+    "Adjust the default font height by DELTA on every frame.
+  Emacs will keep the pixel size of the frame approximately the
+  same.  DELTA should be a multiple of 10, to match the units used
+  by the :height face attribute."
+    (let* ((new-height (+ (face-attribute 'default :height) delta))
+           (new-point-height (/ new-height 10)))
+      (dolist (f (frame-list))
+        (with-selected-frame f
+          ;; Latest 'set-frame-font supports a "frames" arg, but
+          ;; we cater to Emacs 23 by looping instead.
+          (set-frame-font (sanityinc/font-name-replace-size
+                           (face-font 'default)
+                           new-point-height)
+                          t)))
+      (set-face-attribute 'default nil :height new-height)
+      (message "Default font size is now %d" new-point-height)))
+
+  (defun sanityinc/increase-default-font-height ()
+    (interactive)
+    (sanityinc/increment-default-font-height 10))
+
+  (defun sanityinc/decrease-default-font-height ()
+    (interactive)
+    (sanityinc/increment-default-font-height -10))
+
+  (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
+  (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
+#+END_SRC
+** THEME stuff
+*** Add some
+Just a list of some themes that I find pleasant.
+#+BEGIN_SRC emacs-lisp
+(require-package 'solarized-theme)
+(require-package 'flatland-theme)
+(require-package 'molokai-theme)
+(require-package 'noctilux-theme)
+#+END_SRC
+*** Toggle Light-Dark
+Call these from =M-x=, either light or dark.
+#+BEGIN_SRC emacs-lisp
+(defun light()
+  "Activate a light color theme."
+  (interactive)
+  (load-theme 'solarized-light))
+
+(defun dark()
+  "Activate a dark color theme."
+  (interactive)
+  (load-theme 'solarized-dark))
+#+END_SRC
+
+*** CURRENT THEME
+Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'noctilux t)
+#+END_SRC
+
+** GUI stuff
+*** Maybe suspend frame
+This is useful if running a mac, so that C-z wont hide it.  Considered 'appearance' as I want to see windows.
+#+BEGIN_SRC emacs-lisp
+(defun maybe-suspend-frame ()
+  (interactive)
+  (unless (and *is-a-mac* window-system)
+    (suspend-frame)))
+
+(global-set-key (kbd "C-z") 'maybe-suspend-frame)
+#+END_SRC
+*** Suppress features
+#+BEGIN_SRC emacs-lisp
+  (setq use-file-dialog nil)
+  (setq use-dialog-box nil)
+  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-echo-area-message t)
+#+END_SRC
+
+Hide tool bar,  scroll bar and borders
+#+BEGIN_SRC emacs-lisp
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode)
+  (set-scroll-bar-mode nil))
+
+(let ((no-border '(internal-border-width . 0)))
+  (add-to-list 'default-frame-alist no-border)
+  (add-to-list 'initial-frame-alist no-border))
+#+END_SRC
+*** Highlight current line and no blinking cursor
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+(blink-cursor-mode 0)
+#+END_SRC
+** Alias for yes-or-no
+This is again a quality of life thing, to allow you to hit yes or no by using y or n.
+#+BEGIN_SRC emacs-lisp
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+** Faster keystroke echoing
+#+BEGIN_SRC emacs-lisp
+(setq echo-keystrokes 0.1)
+#+END_SRC
+** Tabs to spaces, and tab-related things
+#+BEGIN_SRC emacs-lisp
+(setq tab-stop-list (number-sequence 4 200 4))
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+#+END_SRC
+** Show line and column number in status bar
+#+BEGIN_SRC emacs-lisp
+(line-number-mode 1)
+(column-number-mode 1)
+#+END_SRC
+** Stop scrolling jumping multiple lines
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-step           1
+        scroll-conservatively 10000)
+#+END_SRC
+** Scratch Buffer - Initial Message
+#+BEGIN_SRC emacs-lisp
+  (setq-default initial-scratch-message
+                (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
+#+END_SRC
+** Word Wrapping and Line Truncation
+Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
+#+BEGIN_SRC emacs-lisp
+  (toggle-truncate-lines nil)
+  (toggle-word-wrap t)
+#+END_SRC
+
+* Config: Parentheses
+** Show matching parens
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode t)
+#+END_SRC
+
+** Paredit
+Useful for manipulating parentheses
+#+BEGIN_SRC emacs-lisp
+  (require-package 'paredit)
+#+END_SRC
+
+** Rainbow Delimiters
+Really useful in languages that have lots of nesting (javascript, lisp).  Will give each pair of parentheses a different colour, for easier matching.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'rainbow-mode)
+  (require-package 'rainbow-delimiters)
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+END_SRC
+
+* Config: VIM
+Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'evil)
+  (evil-mode 1)
+
+  (require-package 'evil-surround)
+  (global-evil-surround-mode)
+#+END_SRC
+
+Use Control-HJKL to move between splits (VI style)
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+  (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-normal-state-map (kbd "SPC") 'isearch-forward)
+#+END_SRC
+
+** Key-chord
+Adding key-chord here, as it's mainly for vim-type things
+#+BEGIN_SRC emacs-lisp
+  (require-package 'key-chord)
+  (key-chord-mode 1)
+  (key-chord-define-global "jk" 'evil-normal-state)
+  (key-chord-define-global "gc" 'comment-or-uncomment-region)
+#+END_SRC
+* Config: History, Backup, Session
+** Backups
+This is something useful to change immediately, stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
+
+#+BEGIN_SRC emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+END_SRC
+
+Disk space is cheap. Save lots.
+
+#+begin_src emacs-lisp
+(setq delete-old-versions -1)
+(setq version-control t)
+(setq vc-make-backup-files t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+end_src
+
+** History
+
+From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
+#+begin_src emacs-lisp
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+#+end_src
+
+** Undo tree  - visualize your undos and branches
+
+People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
+#
+This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
+
+#+begin_src emacs-lisp
+  (require-package 'undo-tree)
+  (diminish 'undo-tree-mode)
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-diff t)
+#+end_src
+
+** Save session
+#+BEGIN_SRC emacs-lisp
+  (setq desktop-path (list user-emacs-directory)
+        desktop-auto-save-timeout 600)
+  (desktop-save-mode 1)
+#+END_SRC
+* Config: SEARCH
+** Project/File - Grep (and Ag)
+If ag is available, use that instead.  Faster.  Better for coding.
+#+BEGIN_SRC emacs-lisp
+  (setq-default grep-highlight-matches t
+                grep-scroll-output t)
+
+  (when *is-a-mac*
+    (setq-default locate-command "mdfind"))
+
+  (when (executable-find "ag")
+    (require-package 'ag)
+    (require-package 'wgrep-ag)
+    (setq-default ag-highlight-search t)
+    (global-set-key (kbd "M-?") 'ag-project))
+#+END_SRC
+** Within buffer - Improve Emacs' default
+Improve, if possible, using maybe-require-package.
+#+BEGIN_SRC emacs-lisp
+  (when (maybe-require-package 'anzu)
+    (global-anzu-mode t)
+    (diminish 'anzu-mode)
+    (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+    (global-set-key [remap query-replace] 'anzu-query-replace))
+
+  ;; DEL during isearch should edit the search string, not jump back to the previous result
+  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+#+END_SRC
+* Config: NAVIGATION
+** ACE MODE
+*** Ace Jump Mode (jump to a specific letter that starts a word)
+#+BEGIN_SRC emacs-lisp
+  (require-package 'ace-jump-mode)
+  (global-set-key (kbd "M-s") 'ace-jump-mode)
+#+END_SRC
+*** Ace isearch
+Hybrind of isearch and ace-jump
+#+BEGIN_SRC emacs-lisp
+  (require-package 'ace-isearch)
+  (global-ace-isearch-mode 1)
+#+END_SRC
+
+** Smartscan
+From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+
+This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
+
+Bound to =M-n= and =M-b= by default, I think.
+#+begin_src emacs-lisp
+  (require-package 'smartscan)
+  (global-smartscan-mode t)
+#+end_src
+* Config: Utility
+** Help - guide-key
+
+It's hard to remember keyboard shortcuts. The =guide-key= package pops up help after a short delay.
+
+#+begin_src emacs-lisp
+  (require-package 'guide-key)
+  (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+  (guide-key-mode 1)
+#+end_src
+
+** UTF-8
+
+From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+#+end_src
+** Mac OSX Keys
+Mac needs a little bit of hand holding...
+#+BEGIN_SRC emacs-lisp
+  (when *is-a-mac*
+    (setq mac-command-modifier 'meta)
+    (setq mac-option-modifier 'none)
+    (setq default-input-method "MacOSX")
+    ;; Make mouse wheel / trackpad scrolling less jerky
+    (setq mouse-wheel-scroll-amount '(1
+                                      ((shift) . 5)
+                                      ((control))))
+    (dolist (multiple '("" "double-" "triple-"))
+      (dolist (direction '("right" "left"))
+        (global-set-key (kbd (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+    (global-set-key (kbd "M-`") 'ns-next-frame)
+    (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
+    (global-set-key (kbd "M-˙") 'ns-do-hide-others)
+    (after-load 'nxml-mode
+      (define-key nxml-mode-map (kbd "M-h") nil))
+    (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
+    (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
+)
+#+END_SRC
+** Clean up spaces
+#+begin_src emacs-lisp
+  (global-set-key (kbd "M-SPC") 'cycle-spacing)
+#+end_src
+** Ibuffer - Interactive buffer management
+Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
+#+BEGIN_SRC emacs-lisp
+  (require-package 'fullframe)
+  (after-load 'ibuffer
+   (fullframe ibuffer ibuffer-quit))
+
+  (require-package 'ibuffer-vc)
+
+  (defun ibuffer-set-up-preferred-filters ()
+    (ibuffer-vc-set-filter-groups-by-vc-root)
+    (unless (eq ibuffer-sorting-mode 'filename/process)
+      (ibuffer-do-sort-by-filename/process)))
+
+  (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
+
+
+
+  (after-load 'ibuffer
+    ;; Use human readable Size column instead of original one
+    (define-ibuffer-column size-h
+      (:name "Size" :inline t)
+      (cond
+       ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+       ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+       (t (format "%8d" (buffer-size))))))
+
+
+  ;; Explicitly require ibuffer-vc to get its column definitions, which
+  ;; can't be autoloaded
+  (after-load 'ibuffer
+    (require 'ibuffer-vc))
+
+  ;; Modify the default ibuffer-formats (toggle with `)
+  (setq ibuffer-formats
+        '((mark modified read-only vc-status-mini " "
+                (name 18 18 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                filename-and-process)
+          (mark modified read-only vc-status-mini " "
+                (name 18 18 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                (vc-status 16 16 :left)
+                " "
+                filename-and-process)))
+
+  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
+
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+#+END_SRC
+** Windows - Managing window splits
+A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'switch-window)
+  (require 'switch-window)
+  (setq switch-window-shortcut-style 'alphabet)
+  (global-set-key (kbd "C-x o") 'switch-window)
+#+END_SRC
+
+When splitting windows, use the 'other'  buffer in the next window
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-func-with-other-buffer (split-function)
+    (lexical-let ((s-f split-function))
+      (lambda ()
+        (interactive)
+        (funcall s-f)
+        (set-window-buffer (next-window) (other-buffer)))))
+#+END_SRC
+
+...and key bindings to go along with this
+#+BEGIN_SRC emacs-lisp
+  (global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
+  (global-set-key "\C-x3" (split-window-func-with-other-buffer 'split-window-horizontally))
+#+END_SRC
+
+And if you want to delete everything -but- this window...
+#+BEGIN_SRC emacs-lisp
+  (defun sanityinc/toggle-delete-other-windows ()
+    "Delete other windows in frame if any, or restore previous window config."
+    (interactive)
+    (if (and winner-mode
+             (equal (selected-window) (next-window)))
+        (winner-undo)
+      (delete-other-windows)))
+
+  (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
+#+END_SRC
+** Indent after newline
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "RET") 'newline-and-indent)
+  (defun sanityinc/newline-at-end-of-line ()
+    "Move to end of line, enter a newline, and reindent."
+    (interactive)
+    (move-end-of-line 1)
+    (newline-and-indent))
+#+END_SRC
+** WRITING: Avoiding Weasel Words
+#+BEGIN_SRC emacs-lisp
+  (require-package 'artbollocks-mode)
+  (setq artbollocks-weasel-words-regex
+    (concat "\\b" (regexp-opt
+                               '("one of the"
+                                 "should"
+                                 "just"
+                                 "sort of"
+                                 "a lot"
+                                 "probably"
+                                 "maybe"
+                                 "perhaps"
+                                 "I think"
+                                 "really"
+                                 "pretty"
+                                 "nice"
+                                 "action"
+                                 "utilize"
+                                 "leverage") t) "\\b"))
+  (setq artbollocks-jargon nil)
+#+END_SRC
+** Dired
+
+From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
+
+#+begin_src emacs-lisp
+(require 'find-dired)
+(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+#+end_src
+** Recent files
+
+#+begin_src emacs-lisp
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
+#+end_src
+** Autocomplete
+Use autocomplete
+#+BEGIN_SRC emacs-lisp :results silent
+  (require-package 'auto-complete)
+
+  (global-auto-complete-mode t)
+  (setq-default ac-expand-on-auto-complete nil)
+  (setq-default ac-auto-start nil)
+#+END_SRC
+
+Make tab trigger it
+#+BEGIN_SRC emacs-lisp
+  (setq tab-always-indent 'complete)
+  (add-to-list 'completion-styles 'initials t)
+#+END_SRC
+
+Add a couple other things into autocomplete
+#+BEGIN_SRC emacs-lisp
+  (set-default 'ac-sources
+               '(ac-source-imenu
+                 ac-source-dictionary
+                 ac-source-words-in-buffer
+                 ac-source-words-in-same-mode-buffers
+                 ac-source-words-in-all-buffer))
+#+END_SRC
+
+And use it in all these modes
+#+BEGIN_SRC emacs-lisp
+  (dolist (mode '(magit-log-edit-mode
+                  log-edit-mode org-mode text-mode haml-mode
+                  git-commit-mode
+                  sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                  html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                  lisp-mode textile-mode markdown-mode tuareg-mode
+                  js3-mode css-mode less-css-mode sql-mode
+                  sql-interactive-mode
+                  inferior-emacs-lisp-mode))
+    (add-to-list 'ac-modes mode))
+#+END_SRC
+** OTHER
+Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'gnuplot)
+  (require-package 'htmlize)
+  (require-package 'regex-tool)
+#+END_SRC
+
+Github GISTs.  Lets you view your gists as well as publish both public and private gists.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'gist)
+#+END_SRC
+* Config: LANGUAGES
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (require-package 'flycheck)
+#+END_SRC
+** Markdown
+Simple.  Get markdown and add to auto-list.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'markdown-mode)
+
+  (setq auto-mode-alist
+        (cons '("\\.\\(md\\|markdown\\)\\'" . markdown-mode) auto-mode-alist))
+#+END_SRC
+** CSV
+Not done much with this yet, but generally makes CSVs a bit prettier.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'csv-mode)
+  (require-package 'csv-nav)
+
+  (add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+
+  (setq csv-separators '("," ";" "|" " "))
+#+END_SRC
+** HTML / CSS
+Emmet is glorious for quickly outlining HTML.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'emmet-mode)
+
+  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+
+  (setq emmet-move-cursor-between-quotes t) ;; default nil
+#+END_SRC
+
+Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'haml-mode)
+  (require-package 'sass-mode)
+  (require-package 'scss-mode)
+  (setq-default scss-compile-at-save t)
+
+  ;;; Colourise CSS colour literals
+  (when (maybe-require-package 'rainbow-mode)
+    (dolist (hook '(css-mode-hook html-mode-hook sass-mode-hook))
+      (add-hook hook 'rainbow-mode)))
+#+END_SRC
+
+#+RESULTS:
+
+** Haskell
+#+BEGIN_SRC emacs-lisp
+  (require-package 'flycheck-haskell)
+  (require-package 'haskell-mode)
+
+  (add-to-list 'completion-ignored-extensions ".hi")
+
+  ;; Indentation
+  (require-package 'hi2)
+  (add-hook 'haskell-mode-hook 'turn-on-hi2)
+
+  (when (fboundp 'electric-indent-mode)
+    (add-hook 'haskell-mode-hook (lambda () (electric-indent-mode -1))))
+
+  ;; Hook auto-complete into the completions provided by the inferior
+  ;; haskell process, if any.
+  (require-package 'ac-haskell-process)
+
+  (add-hook 'interactive-haskell-mode-hook 'ac-haskell-process-setup)
+  (add-hook 'haskell-interactive-mode-hook 'ac-haskell-process-setup)
+
+  (after-load 'haskell-mode
+    (define-key haskell-mode-map (kbd "C-c C-d") 'ac-haskell-process-popup-doc))
+
+  (after-load 'auto-complete
+    (add-to-list 'ac-modes 'haskell-interactive-mode)
+    (add-hook 'haskell-interactive-mode-hook 'set-auto-complete-as-completion-at-point-function))
+#+END_SRC
+
+** Lisp
+Paredit was included earlier as it's just generally useful.
+
+Give a default message when opening a scratch (elisp) buffer.
+#+BEGIN_SRC emacs-lisp
+  (setq-default initial-scratch-message
+                (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
+#+END_SRC
+
+Automatically byte-compile
+#+BEGIN_SRC emacs-lisp
+  (require-package 'auto-compile)
+  (auto-compile-on-save-mode 1)
+  (auto-compile-on-load-mode 1)
+#+END_SRC
+
+And load the .el if it's newer than the .elc
+#+BEGIN_SRC emacs-lisp
+  (setq load-prefer-newer t)
+#+END_SRC
+
+Allow code to auto-update (elisp only)
+#+BEGIN_SRC emacs-lisp
+  (require-package 'lively)
+#+END_SRC
+
+Useful settings, and the hooks to set it up
+#+BEGIN_SRC emacs-lisp
+  (defun davison/useful-lisp ()
+    (rainbow-delimiters-mode t)
+    (enable-paredit-mode)
+    (when (fboundp 'aggressive-indent-mode)
+      (aggressive-indent-mode)))
+
+  (add-hook 'lisp-mode 'davison/useful-lisp)
+  (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
+#+END_SRC
+
+** Clojure
+#+BEGIN_SRC emacs-lisp
+  (require-package 'clojure-mode)
+  (require-package 'cider)
+  (require-package 'rainbow-mode)
+  (require-package 'popup)
+  (add-hook 'clojure-mode-hook 'paredit-mode)
+
+  (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+  (setq nrepl-popup-stacktraces nil)
+  (add-to-list 'same-window-buffer-names "<em>nrepl</em>")
+#+END_SRC
+
+** Racket
+#+BEGIN_SRC emacs-lisp
+  (require-package 'racket-mode)
+  (put 'test-case 'racket-indent-function 1)
+  (add-hook 'racket-mode-hook 'paredit-mode)
+#+END_SRC
+
+Bind the required programs...
+#+BEGIN_SRC emacs-lisp
+  (setq racket-racket-program "/usr/local/bin/racket")
+  (setq racket-raco-program "/usr/local/bin/raco")
+
+  (setq racket-program "/usr/local/bin/racket")
+  (setq raco-program "/usr/local/bin/raco")
+#+END_SRC
+** Matlab
+Useful if editing Matlab code.  May edit this in future to enable running octave code directly from emacs.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'matlab-mode)
+
+  (autoload 'matlab-mode
+    "matlab"
+    "Matlab Editing Mode" t)
+  (add-to-list
+   'auto-mode-alist
+   '("\\.m$" . matlab-mode))
+  (setq matlab-indent-function t)
+#+END_SRC
+** Go
+Format code when saving
+#+BEGIN_SRC emacs-lisp
+  (require-package 'go-mode)
+  (require-package 'go-autocomplete)
+
+  (add-hook 'before-save-hook 'gofmt-before-save)
+#+END_SRC
+
+** Rust
+#+BEGIN_SRC emacs-lisp
+  (require-package 'rust-mode)
+  (require-package 'flymake-rust)
+  (require-package 'flycheck-rust)
+#+END_SRC
+
+* Config: IDO
+#+BEGIN_SRC emacs-lisp
+  (require 'ido)
+  (ido-mode t)
+  (ido-everywhere t)
+  (setq ido-enable-flex-matching t)
+  (setq ido-use-filename-at-point nil)
+  (setq ido-auto-merge-work-directories-length 0)
+  (setq ido-use-virtual-buffers t)
+
+  (when (maybe-require-package 'ido-ubiquitous)
+    (ido-ubiquitous-mode t))
+
+  ;; Use smex to handle M-x
+  (when (maybe-require-package 'smex)
+    ;; Change path for ~/.smex-items
+    (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
+    (global-set-key [remap execute-extended-command] 'smex))
+
+  (require-package 'idomenu)
+
+  ;; Allow the same buffer to be open in different frames
+  (setq ido-default-buffer-method 'selected-window)
+#+END_SRC
+
+* Config: ORG-MODE
+** My stuff...not too much
+#+BEGIN_SRC emacs-lisp :results silent
+  (require 'org)
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (setq org-log-done t)
+#+END_SRC
+
+** Taking notes
+Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory "~/Dropbox/org")
+  (setq org-default-notes-file "~/Dropbox/org/notes.org")
+#+END_SRC
+
+This makes it easier to add links from outside.
+
+#+begin_src emacs-lisp
+(defun sacha/yank-more ()
+  (interactive)
+  (insert "[[")
+  (yank)
+  (insert "][more]]"))
+(global-set-key (kbd "<f6>") 'sacha/yank-more)
+#+end_src
+
+** Editing Source Code
+   Need to try this...from SC "I don't want to get distracted by the same code in the other window, so I want org src to use the current window."
+#+begin_src emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+end_src
+
+** Publishing
+Timestamps and section numbers make my published files look more
+complicated than they are. Let's turn them off by default.
+
+#+begin_src emacs-lisp
+(setq org-export-with-section-numbers nil)
+(setq org-html-include-timestamps nil)
+#+end_src
+
+** Refiling
+=org-refile= lets you organize notes by typing in the headline to file them under.
+
+#+begin_src emacs-lisp
+  (setq org-reverse-note-order t)
+  (setq org-refile-use-outline-path nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-use-cache nil)
+  (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+  (setq org-blank-before-new-entry nil)
+#+end_src
+** Templates
+   =org-capture= lets you create templates for jotting down info of various kinds.  Here is some structure...
+
+#+begin_src emacs-lisp :tangle no
+    (defvar sacha/org-basic-task-template "* TODO %^{Task}
+    SCHEDULED: %^t
+    :PROPERTIES:
+    :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :END:
+    %?
+    " "Basic task data")
+    (setq org-capture-templates
+          `(("t" "Tasks" entry
+             (file+headline "~/personal/organizer.org" "Tasks")
+             ,sacha/org-basic-task-template)
+            ("T" "Quick task" entry
+             (file+headline "~/personal/organizer.org" "Tasks")
+             "* TODO %^{Task}"
+             :immediate-finish t)
+            ("e" "Emacs idea" entry
+             (file+headline "~/code/dev/emacs-notes/tasks.org" "Emacs")
+             "* TODO %^{Task}"
+             :immediate-finish t)
+            ("b" "Business task" entry
+             (file+headline "~/personal/business.org" "Tasks")
+             ,sacha/org-basic-task-template)
+            ("p" "People task" entry
+             (file+headline "~/personal/people.org" "Tasks")
+             ,sacha/org-basic-task-template)
+            ("j" "Journal entry" plain
+             (file+datetree "~/personal/journal.org")
+             "%K - %a\n%i\n%?\n"
+             :unnarrowed t)
+            ("J" "Journal entry with date" plain
+             (file+datetree+prompt "~/personal/journal.org")
+             "%K - %a\n%i\n%?\n"
+             :unnarrowed t)
+            ("db" "Done - Business" entry
+             (file+headline "~/personal/business.org" "Tasks")
+             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
+            ("dp" "Done - People" entry
+             (file+headline "~/personal/people.org" "Tasks")
+             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
+            ("dt" "Done - Task" entry
+             (file+headline "~/personal/organizer.org" "Tasks")
+             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
+            ("q" "Quick note" item
+             (file+headline "~/personal/organizer.org" "Quick notes"))
+            ("l" "Ledger entries")
+            ("lm" "MBNA" plain
+             (file "~/personal/ledger")
+             "%(org-read-date) %^{Payee}
+      Liabilities:MBNA
+      Expenses:%^{Account}  $%^{Amount}
+    " :immediate-finish t)
+            ("ln" "No Frills" plain
+             (file "~/personal/ledger")
+             "%(let ((org-read-date-prefer-future nil)) (org-read-date)) * No Frills
+      Liabilities:MBNA
+      Assets:Wayne:Groceries  $%^{Amount}
+    " :immediate-finish t)
+            ("lc" "Cash" plain
+             (file "~/personal/ledger")
+             "%(org-read-date) * %^{Payee}
+      Expenses:Cash
+      Expenses:%^{Account}  %^{Amount}
+    ")
+            ("b" "Book" entry
+             (file+datetree "~/personal/books.org" "Inbox")
+             "* %^{Title}  %^g
+    %i
+    ,*Author(s):* %^{Author} \\\\
+    ,*ISBN:* %^{ISBN}
+
+    %?
+
+    ,*Review on:* %^t \\
+    %a
+    %U"
+             :clock-in :clock-resume)
+             ("c" "Contact" entry (file "~/personal/contacts.org")
+              "* %(org-contacts-template-name)
+    :PROPERTIES:
+    :EMAIL: %(org-contacts-template-email)
+    :END:")
+             ("n" "Daily note" table-line (file+olp "~/personal/organizer.org" "Daily notes")
+              "| %u | %^{Note} |"
+              :immediate-finish t)
+             ("r" "Notes" entry
+              (file+datetree "~/personal/organizer.org")
+              "* %?\n\n%i\n"
+              )))
+    (bind-key "C-M-r" 'org-capture)
+#+end_src
+** Keyboard shortcuts POTENTIAL
+
+#+begin_src emacs-lisp :tangle no
+    (bind-key "C-c r" 'org-capture)
+    (bind-key "C-c a" 'org-agenda)
+    (bind-key "C-c l" 'org-store-link)
+    (bind-key "C-c L" 'org-insert-link-global)
+    (bind-key "C-c O" 'org-open-at-point-global)
+    (bind-key "<f9> <f9>" 'org-agenda-list)
+    (bind-key "<f9> <f8>" (lambda () (interactive) (org-capture nil "r")))
+    (bind-key "C-TAB" 'org-cycle org-mode-map)
+    (bind-key "C-c v" 'org-show-todo-tree org-mode-map)
+    (bind-key "C-c C-r" 'org-refile org-mode-map)
+    (bind-key "C-c R" 'org-reveal org-mode-map)
+#+end_src
+
+=append-next-kill= is more useful to me than =org-table-copy-region=.
+
+#+begin_src emacs-lisp :tangle no
+  (eval-after-load 'org
+    '(bind-key "C-M-w" 'append-next-kill org-mode-map))
+#+end_src
+
+I don't use the diary, but I do use the clock a lot.
+
+#+begin_src emacs-lisp :tangle no
+  (eval-after-load 'org-agenda
+    '(bind-key "i" 'org-agenda-clock-in org-agenda-mode-map))
+#+end_src
+
+* Config: Snippets
+General install
+#+BEGIN_SRC emacs-lisp :results silent
+  (require-package 'yasnippet)
+  (setq yas-key-syntaxes '("w_" "w_." "^ "))
+  (setq yas-installed-snippets-dir "~/elisp/yasnippet-snippets")
+  (setq yas-expand-only-for-last-commands '(self-insert-command))
+  (yas-global-mode 1)
+  (add-to-list 'yas-prompt-functions 'shk-yas/helm-prompt)
+#+END_SRC
+
+Use helm to select a snippet
+From http://emacswiki.org/emacs/Yasnippet
+#+begin_src emacs-lisp
+  (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+    "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+    (interactive)
+    (setq display-fn (or display-fn 'identity))
+    (if (require 'helm-config)
+        (let (tmpsource cands result rmap)
+          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+          (setq tmpsource
+                (list
+                 (cons 'name prompt)
+                 (cons 'candidates cands)
+                 '(action . (("Expand" . (lambda (selection) selection))))
+                 ))
+          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+          (if (null result)
+              (signal 'quit "user quit!")
+            (cdr (assoc result rmap))))
+      nil))
+#+end_src
+* Config: HELM
+** General helm setup
+#+BEGIN_SRC emacs-lisp
+  (require-package 'helm)
+  (require 'helm-config)
+  (setq helm-candidate-number-limit 100)
+  (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+              helm-input-idle-delay 0.01  ; this actually updates things
+                                            ; reeeelatively quickly.
+              helm-quick-update t
+              helm-M-x-requires-pattern nil
+              helm-ff-skip-boring-files t)
+  (helm-mode)
+#+END_SRC
+
+** Key bindings
+#+BEGIN_SRC emacs-lisp :results silent
+  (global-set-key (kbd "C-c h") 'helm-mini)
+  (global-set-key (kbd "C-c a") 'helm-apropos)
+  (global-set-key (kbd "C-c o") 'helm-occur)
+
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (ido-mode -1)
+#+END_SRC
+   
+** Describe bindings
+#+BEGIN_SRC emacs-lisp :results silent
+  (require-package 'helm-descbinds)
+  (global-set-key (kbd "C-c b") 'helm-descbinds)
+  (global-set-key (kbd "C-c w") 'helm-descbinds)
+#+END_SRC
+* Config: Git / Magit
+  Git is lovely.  Let's use it within emacs.
+#+BEGIN_SRC emacs-lisp
+  (require-package 'magit)
+#+END_SRC
