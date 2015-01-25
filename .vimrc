@@ -10,7 +10,6 @@ set number
 set iskeyword=a-z,A-Z,_,.,39
 set rtp+=~/.fzf
 
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'Blackrush/vim-gocode'
@@ -34,24 +33,24 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-speeddating'
 Plug 'rizzatti/dash.vim'
+Plug 'wlangstroth/vim-racket'
+Plug 'jceb/vim-orgmode'
+Plug 'vim-scripts/paredit.vim'
 
 call plug#end()
-
 " ---------------
 " MY KEY BINDINGS
 " ---------------
-map lh <esc>
-map hl <esc>
 map <space> /
 map vv <C-w>v
 map vn <C-w>n
-map ;. <C-w>>
-map ;, <C-w><
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
+imap ;; <Esc>
 
 " Bindings for various useful plugins
 nnoremap \e :NERDTreeToggle<CR>
@@ -129,7 +128,7 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme seoul256
+colorscheme solarized
 set t_ut=
 
 " ---------------------------
