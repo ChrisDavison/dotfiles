@@ -160,8 +160,8 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
-(when (member "Osaka" (font-family-list))
-  (set-face-attribute 'default nil :font "Osaka" :height 150))
+(when (member "Inconsolata" (font-family-list))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 150))
 #+END_SRC
 
 #+RESULTS:
@@ -314,7 +314,7 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
 #+BEGIN_SRC emacs-lisp
   (setq truncate-lines nil)
-  (setq word-wrap t)
+  (setq-default word-wrap t)
 #+END_SRC
 
 * Config: Parentheses
@@ -340,6 +340,7 @@ Really useful in languages that have lots of nesting (javascript, lisp).  Will g
 * Config: VIM
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.
 
+** Evil (VI) mode, as well as Vim surround
 #+BEGIN_SRC emacs-lisp
   (require-package 'evil)
   (evil-mode 1)
@@ -348,7 +349,7 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   (global-evil-surround-mode)
 #+END_SRC
 
-Use Control-HJKL to move between splits (VI style)
+** Use Control-HJKL to move between splits (VI style)
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
@@ -367,7 +368,7 @@ Adding key-chord here, as it's mainly for vim-type things
 #+END_SRC
 * Config: History, Backup, Session
 ** Backups
-This is something useful to change immediately, stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
+This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
 
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
@@ -433,6 +434,10 @@ If ag is available, use that instead.  Faster.  Better for coding.
     (setq-default ag-highlight-search t)
     (global-set-key (kbd "M-?") 'ag-project))
 #+END_SRC
+
+#+RESULTS:
+: ag-project
+
 ** Within buffer - Improve Emacs' default
 Improve, if possible, using maybe-require-package.
 #+BEGIN_SRC emacs-lisp
@@ -470,7 +475,7 @@ Bound to =M-n= and =M-b= by default, I think.
   (require-package 'smartscan)
   (global-smartscan-mode t)
 #+end_src
-* Config: Utility
+* Config: UTILITY
 ** Help - guide-key
 
 It's hard to remember keyboard shortcuts. The =guide-key= package pops up help after a short delay.
@@ -496,6 +501,10 @@ Mac needs a little bit of hand holding...
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier 'none)
     (setq default-input-method "MacOSX")
+#+END_SRC
+
+Make the mouse wheel/trackpad less jerky
+#+BEGIN_SRC emacs-lisp
     ;; Make mouse wheel / trackpad scrolling less jerky
     (setq mouse-wheel-scroll-amount '(1
                                       ((shift) . 5)
@@ -503,6 +512,10 @@ Mac needs a little bit of hand holding...
     (dolist (multiple '("" "double-" "triple-"))
       (dolist (direction '("right" "left"))
         (global-set-key (kbd (concat "<" multiple "wheel-" direction ">")) 'ignore)))
+#+END_SRC
+
+And give emacs some of the expected OS X keybinds
+#+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "M-`") 'ns-next-frame)
     (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
     (global-set-key (kbd "M-˙") 'ns-do-hide-others)
@@ -514,8 +527,9 @@ Mac needs a little bit of hand holding...
 #+END_SRC
 ** Clean up spaces
 #+begin_src emacs-lisp
-  (global-set-key (kbd "M-SPC") 'cycle-spacing)
+  (global-set-key (kbd "C-SPC") 'cycle-spacing)
 #+end_src
+
 ** Ibuffer - Interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
 #+BEGIN_SRC emacs-lisp
@@ -648,6 +662,7 @@ And if you want to delete everything -but- this window...
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
+Generally improve dired appearance
 #+begin_src emacs-lisp
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
@@ -661,7 +676,7 @@ From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-di
 (recentf-mode)
 #+end_src
 ** Autocomplete
-Use autocomplete
+*** Use autocomplete
 #+BEGIN_SRC emacs-lisp :results silent
   (require-package 'auto-complete)
 
@@ -676,7 +691,8 @@ Make tab trigger it
   (add-to-list 'completion-styles 'initials t)
 #+END_SRC
 
-Add a couple other things into autocomplete
+*** More sources for autocomplete
+    Use dictionary, imenu etc for autocompletion
 #+BEGIN_SRC emacs-lisp
   (set-default 'ac-sources
                '(ac-source-imenu
@@ -686,7 +702,7 @@ Add a couple other things into autocomplete
                  ac-source-words-in-all-buffer))
 #+END_SRC
 
-And use it in all these modes
+*** Modes for autocompletion
 #+BEGIN_SRC emacs-lisp
   (dolist (mode '(magit-log-edit-mode
                   log-edit-mode org-mode text-mode haml-mode
@@ -699,7 +715,7 @@ And use it in all these modes
                   inferior-emacs-lisp-mode))
     (add-to-list 'ac-modes mode))
 #+END_SRC
-** OTHER
+** OTHER                                                              :drill:
 Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
 
 #+BEGIN_SRC emacs-lisp
@@ -800,7 +816,7 @@ Give a default message when opening a scratch (elisp) buffer.
                 (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
 #+END_SRC
 
-Automatically byte-compile
+*** Automatically byte-compile
 #+BEGIN_SRC emacs-lisp
   (require-package 'auto-compile)
   (auto-compile-on-save-mode 1)
@@ -812,12 +828,12 @@ And load the .el if it's newer than the .elc
   (setq load-prefer-newer t)
 #+END_SRC
 
-Allow code to auto-update (elisp only)
+*** Allow code to auto-update (elisp only)
 #+BEGIN_SRC emacs-lisp
   (require-package 'lively)
 #+END_SRC
 
-Useful settings, and the hooks to set it up
+*** Hook some useful settings into lisp modes
 #+BEGIN_SRC emacs-lisp
   (defun davison/useful-lisp ()
     (rainbow-delimiters-mode t)
@@ -939,7 +955,7 @@ This makes it easier to add links from outside.
 #+end_src
 
 ** Editing Source Code
-   Need to try this...from SC "I don't want to get distracted by the same code in the other window, so I want org src to use the current window."
+   When using C-c ', don't change to another window. 
 #+begin_src emacs-lisp
   (setq org-src-window-setup 'current-window)
 #+end_src
@@ -954,7 +970,7 @@ complicated than they are. Let's turn them off by default.
 #+end_src
 
 ** Refiling
-=org-refile= lets you organize notes by typing in the headline to file them under.
+   =org-refile= lets you organize notes by typing in the headline to file them under.
 
 #+begin_src emacs-lisp
   (setq org-reverse-note-order t)
@@ -1058,7 +1074,7 @@ complicated than they are. Let's turn them off by default.
               )))
     (bind-key "C-M-r" 'org-capture)
 #+end_src
-** Keyboard shortcuts POTENTIAL
+** Keyboard shortcuts POTENTIAL                                    :not_used:
 
 #+begin_src emacs-lisp :tangle no
     (bind-key "C-c r" 'org-capture)
@@ -1073,21 +1089,6 @@ complicated than they are. Let's turn them off by default.
     (bind-key "C-c C-r" 'org-refile org-mode-map)
     (bind-key "C-c R" 'org-reveal org-mode-map)
 #+end_src
-
-=append-next-kill= is more useful to me than =org-table-copy-region=.
-
-#+begin_src emacs-lisp :tangle no
-  (eval-after-load 'org
-    '(bind-key "C-M-w" 'append-next-kill org-mode-map))
-#+end_src
-
-I don't use the diary, but I do use the clock a lot.
-
-#+begin_src emacs-lisp :tangle no
-  (eval-after-load 'org-agenda
-    '(bind-key "i" 'org-agenda-clock-in org-agenda-mode-map))
-#+end_src
-
 * Config: Snippets
 General install
 #+BEGIN_SRC emacs-lisp :results silent
