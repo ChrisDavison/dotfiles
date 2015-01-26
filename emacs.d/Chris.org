@@ -33,17 +33,18 @@ You may see an unusual (non eLisp) construct in =(require-package 'something...)
 If you're viewing the Org inside emacs, you can open source blocks (ones beginning in begin_src) in a seperate buffer by moivng your point inside them and typing C-c ' (=ord-edit-special=).  This opens the block in an elisp buffer, so you can use =M-x eval-buffer= to load the changes.
 
 * Personal information
-
 #+begin_src emacs-lisp
 (setq user-full-name "Chris Davison"
     user-mail-address "c.jr.davison@gmail.com")
 #+end_src
+
 * Useful Consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
 #+BEGIN_SRC emacs-lisp
 (defconst *spell-check-support-enabled* nil)
 (defconst *is-a-mac* (eq system-type 'darwin))
 #+END_SRC
+
 * Config: Package
 Refresh the package list, ensuring newest package versions.  You may not like this as it can give a slight delay when opening emacs, but I tend to keep the window open in a seperate workspace, so for me this is an infrequent issue.
 #+BEGIN_SRC emacs-lisp
@@ -151,6 +152,7 @@ Useful to have access to power of common lisp within emacs.
 (require-package 'cl-lib)
 (require 'cl-lib)
 #+END_SRC
+
 * Config: Appearance
 Having multiple minor modes can leave the status bar unreadable.  For this, use diminish, which will 'diminish' the minor mode to either show nothing or a chosen acronym.
 #+BEGIN_SRC emacs-lisp
@@ -215,6 +217,7 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
   (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
   (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
 #+END_SRC
+
 ** THEME stuff
 *** Add some
 Just a list of some themes that I find pleasant.
@@ -224,6 +227,7 @@ Just a list of some themes that I find pleasant.
 (require-package 'molokai-theme)
 (require-package 'noctilux-theme)
 #+END_SRC
+
 *** Toggle Light-Dark
 Call these from =M-x=, either light or dark.
 #+BEGIN_SRC emacs-lisp
@@ -255,6 +259,7 @@ This is useful if running a mac, so that C-z wont hide it.  Considered 'appearan
 
 (global-set-key (kbd "C-z") 'maybe-suspend-frame)
 #+END_SRC
+
 *** Suppress features
 #+BEGIN_SRC emacs-lisp
   (setq use-file-dialog nil)
@@ -274,20 +279,24 @@ Hide tool bar,  scroll bar and borders
   (add-to-list 'default-frame-alist no-border)
   (add-to-list 'initial-frame-alist no-border))
 #+END_SRC
+
 *** Highlight current line and no blinking cursor
 #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 #+END_SRC
+
 ** Alias for yes-or-no
 This is again a quality of life thing, to allow you to hit yes or no by using y or n.
 #+BEGIN_SRC emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
 ** Faster keystroke echoing
 #+BEGIN_SRC emacs-lisp
 (setq echo-keystrokes 0.1)
 #+END_SRC
+
 ** Tabs to spaces, and tab-related things
 #+BEGIN_SRC emacs-lisp
 (setq tab-stop-list (number-sequence 4 200 4))
@@ -300,16 +309,19 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 (line-number-mode 1)
 (column-number-mode 1)
 #+END_SRC
+
 ** Stop scrolling jumping multiple lines
 #+BEGIN_SRC emacs-lisp
   (setq scroll-step           1
         scroll-conservatively 10000)
 #+END_SRC
+
 ** Scratch Buffer - Initial Message
 #+BEGIN_SRC emacs-lisp
   (setq-default initial-scratch-message
                 (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
 #+END_SRC
+
 ** Word Wrapping and Line Truncation
 Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
 #+BEGIN_SRC emacs-lisp
@@ -366,6 +378,7 @@ Adding key-chord here, as it's mainly for vim-type things
   (key-chord-define-global "jk" 'evil-normal-state)
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
 #+END_SRC
+
 * Config: History, Backup, Session
 ** Backups
 This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
@@ -418,6 +431,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
         desktop-auto-save-timeout 600)
   (desktop-save-mode 1)
 #+END_SRC
+
 * Config: SEARCH
 ** Project/File - Grep (and Ag)
 If ag is available, use that instead.  Faster.  Better for coding.
@@ -458,6 +472,7 @@ Improve, if possible, using maybe-require-package.
   (require-package 'ace-jump-mode)
   (global-set-key (kbd "M-s") 'ace-jump-mode)
 #+END_SRC
+
 *** Ace isearch
 Hybrind of isearch and ace-jump
 #+BEGIN_SRC emacs-lisp
@@ -475,6 +490,7 @@ Bound to =M-n= and =M-b= by default, I think.
   (require-package 'smartscan)
   (global-smartscan-mode t)
 #+end_src
+
 * Config: UTILITY
 ** Help - guide-key
 
@@ -494,6 +510,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
+
 ** Mac OSX Keys
 Mac needs a little bit of hand holding...
 #+BEGIN_SRC emacs-lisp
@@ -589,6 +606,7 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 #+END_SRC
+
 ** Windows - Managing window splits
 A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
 
@@ -636,7 +654,17 @@ And if you want to delete everything -but- this window...
     (move-end-of-line 1)
     (newline-and-indent))
 #+END_SRC
-** WRITING: Avoiding Weasel Words
+
+** WRITING
+*** Writeroom
+Writeroom, for distraction free editing
+#+BEGIN_SRC emacs-lisp :results silent
+  (require-package 'writeroom-mode)
+  (setq writeroom-restore-window-config t)
+  (global-set-key (kbd "C-c w") 'writeroom-mode)
+#+END_SRC
+
+*** Avoiding Weasel Words
 #+BEGIN_SRC emacs-lisp
   (require-package 'artbollocks-mode)
   (setq artbollocks-weasel-words-regex
@@ -658,15 +686,38 @@ And if you want to delete everything -but- this window...
                                  "leverage") t) "\\b"))
   (setq artbollocks-jargon nil)
 #+END_SRC
+
 ** Dired
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
 Generally improve dired appearance
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 (require 'find-dired)
+(require-package 'dired+)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+#+END_SRC
+
+Hide files beginning with .[NOT A DOT]
+#+BEGIN_SRC emacs-lisp :results silent
+  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
+#+END_SRC
+
+Some key bindings:
+U for moving UP a directory
+Unmap C-h and C-k so that I can move between windows (VI bindigns)
+#+begin_src emacs-lisp :results silent
+(add-hook 'dired-mode-hook
+          (lambda () (local-set-key (kbd "U") 'dired-up-directory))
+          (lambda () (local-unset-key (kbd "C-h")))
+          (lambda () (local-unset-key (kbd "C-k"))))
+#+END_SRC
+
+Make dired use the same buffer when switching directories.
+#+BEGIN_SRC emacs-lisp :results silent
+(diredp-toggle-find-file-reuse-dir 1)
 #+end_src
+
 ** Recent files
 
 #+begin_src emacs-lisp
@@ -675,6 +726,7 @@ Generally improve dired appearance
       recentf-max-menu-items 15)
 (recentf-mode)
 #+end_src
+
 ** Autocomplete
 *** Use autocomplete
 #+BEGIN_SRC emacs-lisp :results silent
@@ -715,6 +767,7 @@ Make tab trigger it
                   inferior-emacs-lisp-mode))
     (add-to-list 'ac-modes mode))
 #+END_SRC
+
 ** OTHER                                                              :drill:
 Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
 
@@ -728,11 +781,13 @@ Github GISTs.  Lets you view your gists as well as publish both public and priva
 #+BEGIN_SRC emacs-lisp
   (require-package 'gist)
 #+END_SRC
+
 * Config: LANGUAGES
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
 #+END_SRC
+
 ** Markdown
 Simple.  Get markdown and add to auto-list.
 #+BEGIN_SRC emacs-lisp
@@ -741,6 +796,7 @@ Simple.  Get markdown and add to auto-list.
   (setq auto-mode-alist
         (cons '("\\.\\(md\\|markdown\\)\\'" . markdown-mode) auto-mode-alist))
 #+END_SRC
+
 ** CSV
 Not done much with this yet, but generally makes CSVs a bit prettier.
 
@@ -752,6 +808,7 @@ Not done much with this yet, but generally makes CSVs a bit prettier.
 
   (setq csv-separators '("," ";" "|" " "))
 #+END_SRC
+
 ** HTML / CSS
 Emmet is glorious for quickly outlining HTML.
 #+BEGIN_SRC emacs-lisp
@@ -873,6 +930,7 @@ Bind the required programs...
   (setq racket-program "/usr/local/bin/racket")
   (setq raco-program "/usr/local/bin/raco")
 #+END_SRC
+
 ** Matlab
 Useful if editing Matlab code.  May edit this in future to enable running octave code directly from emacs.
 #+BEGIN_SRC emacs-lisp
@@ -886,6 +944,7 @@ Useful if editing Matlab code.  May edit this in future to enable running octave
    '("\\.m$" . matlab-mode))
   (setq matlab-indent-function t)
 #+END_SRC
+
 ** Go
 Format code when saving
 #+BEGIN_SRC emacs-lisp
@@ -1074,6 +1133,7 @@ complicated than they are. Let's turn them off by default.
               )))
     (bind-key "C-M-r" 'org-capture)
 #+end_src
+
 ** Keyboard shortcuts POTENTIAL                                    :not_used:
 
 #+begin_src emacs-lisp :tangle no
@@ -1089,6 +1149,7 @@ complicated than they are. Let's turn them off by default.
     (bind-key "C-c C-r" 'org-refile org-mode-map)
     (bind-key "C-c R" 'org-reveal org-mode-map)
 #+end_src
+
 * Config: Snippets
 General install
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1123,6 +1184,7 @@ From http://emacswiki.org/emacs/Yasnippet
             (cdr (assoc result rmap))))
       nil))
 #+end_src
+
 * Config: HELM
 ** General helm setup
 #+BEGIN_SRC emacs-lisp
@@ -1152,10 +1214,11 @@ From http://emacswiki.org/emacs/Yasnippet
 #+BEGIN_SRC emacs-lisp :results silent
   (require-package 'helm-descbinds)
   (global-set-key (kbd "C-c b") 'helm-descbinds)
-  (global-set-key (kbd "C-c w") 'helm-descbinds)
 #+END_SRC
+
 * Config: Git / Magit
   Git is lovely.  Let's use it within emacs.
 #+BEGIN_SRC emacs-lisp
   (require-package 'magit)
 #+END_SRC
+
