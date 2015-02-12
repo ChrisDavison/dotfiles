@@ -47,7 +47,7 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 
 * Config: Package
 Refresh the package list, ensuring newest package versions.  You may not like this as it can give a slight delay when opening emacs, but I tend to keep the window open in a seperate workspace, so for me this is an infrequent issue.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (package-refresh-contents)
 #+END_SRC
 
@@ -246,8 +246,11 @@ Call these from =M-x=, either light or dark.
 *** CURRENT THEME
 Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'solarized-light t)
+  (load-theme 'solarized-dark t)
 #+END_SRC
+
+#+RESULTS:
+: t
 
 ** GUI stuff
 *** Maybe suspend frame
@@ -963,7 +966,7 @@ Format code when saving
 #+END_SRC
 
 * Config: IDO
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (require 'ido)
   (ido-mode t)
   (ido-everywhere t)
@@ -1163,9 +1166,8 @@ Links to common files
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
 
-* Config: Git / Magit
+* Config: GIT
   Git is lovely.  Let's use it within emacs.
 #+BEGIN_SRC emacs-lisp
   (require-package 'magit)
 #+END_SRC
-
