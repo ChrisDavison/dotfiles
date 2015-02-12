@@ -963,7 +963,7 @@ Format code when saving
 #+END_SRC
 
 * Config: IDO
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'ido)
   (ido-mode t)
   (ido-everywhere t)
@@ -1131,41 +1131,6 @@ Links to common files
   (set-register ?m (cons 'file "~/Dropbox/org/numenera.org"))
   (set-register ?s (cons 'file "~/Dropbox/org/scrolls.org"))
 #+END_SRC
-
-* Config: SNIPPETS
-General install
-#+BEGIN_SRC emacs-lisp :results silent
-  (require-package 'yasnippet)
-  (setq yas-key-syntaxes '("" "w_." "^ "))
-  (setq yas-installed-snippets-dir "~/elisp/yasnippet-snippets")
-  (setq yas-expand-only-for-last-commands '(self-insert-command))
-  (yas-global-mode 1)
-  (add-to-list 'yas-prompt-functions 'shk-yas/helm-prompt)
-#+END_SRC
-
-Use helm to select a snippet
-From http://emacswiki.org/emacs/Yasnippet
-#+begin_src emacs-lisp
-  (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
-    "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
-    (interactive)
-    (setq display-fn (or display-fn 'identity))
-    (if (require 'helm-config)
-        (let (tmpsource cands result rmap)
-          (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
-          (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
-          (setq tmpsource
-                (list
-                 (cons 'name prompt)
-                 (cons 'candidates cands)
-                 '(action . (("Expand" . (lambda (selection) selection))))
-                 ))
-          (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
-          (if (null result)
-              (signal 'quit "user quit!")
-            (cdr (assoc result rmap))))
-      nil))
-#+end_src
 
 * Config: HELM
 ** General helm setup
