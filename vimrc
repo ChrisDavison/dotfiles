@@ -34,10 +34,13 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-leiningen'
 Plug 'rizzatti/dash.vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'jceb/vim-orgmode'
 Plug 'vim-scripts/paredit.vim'
+Plug 'guns/vim-clojure-static'
 
 call plug#end()
 " ---------------
@@ -131,21 +134,6 @@ set bg=dark
 colorscheme solarized
 set t_ut=
 
-" ---------------------------
-" CtrlP plugin settings/setup
-" ---------------------------
-
-" Ag used instead of Grep as it's faster and doesn't need caching.
-" let g:ctrlp_working_path_mode = -1
-" if executable('ag')
-"         let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g 
-"                 \ --ignore .git 
-"                 \ --ignore .cargo 
-"                 \ --ignore .cabal
-"                 \ --ignore .cache  ""'
-"         let g:ctrlp_use_caching = 0
-"         let g:ctrlp_match_func = { 'match': 'pymatcher#pymatch' }
-" endif
 " ----------------------------------------
 " Highlight a character in the 81st column
 " ----------------------------------------
