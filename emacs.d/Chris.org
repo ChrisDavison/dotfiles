@@ -1,4 +1,4 @@
-#+TITLE: Chris Davison's Emacs configuration
++TITLE: Chris Davison's Emacs configuration
 #+OPTIONS: toc:4 h:4
 
 * About this file
@@ -34,15 +34,15 @@ If you're viewing the Org inside emacs, you can open source blocks (ones beginni
 
 * Personal information
 #+begin_src emacs-lisp
-(setq user-full-name "Chris Davison"
-    user-mail-address "c.jr.davison@gmail.com")
+  (setq user-full-name "Chris Davison"
+      user-mail-address "c.jr.davison@gmail.com")
 #+end_src
 
 * Useful Consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
 #+BEGIN_SRC emacs-lisp
-(defconst *spell-check-support-enabled* nil)
-(defconst *is-a-mac* (eq system-type 'darwin))
+  (defconst *spell-check-support-enabled* nil)
+  (defconst *is-a-mac* (eq system-type 'darwin))
 #+END_SRC
 
 * Config: Package
@@ -162,8 +162,8 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
-(when (member "Inconsolata" (font-family-list))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 150))
+(when (member "Andale Mono" (font-family-list))
+  (set-face-attribute 'default nil :font "Andale Mono" :height 130))
 #+END_SRC
 
 #+RESULTS:
@@ -222,10 +222,11 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 *** Add some
 Just a list of some themes that I find pleasant.
 #+BEGIN_SRC emacs-lisp
-(require-package 'solarized-theme)
-(require-package 'flatland-theme)
-(require-package 'molokai-theme)
-(require-package 'noctilux-theme)
+  (require-package 'solarized-theme)
+  (require-package 'flatland-theme)
+  (require-package 'molokai-theme)
+  (require-package 'noctilux-theme)
+  (require-package 'cyberpunk-theme)
 #+END_SRC
 
 *** Toggle Light-Dark
@@ -245,7 +246,7 @@ Call these from =M-x=, either light or dark.
 *** CURRENT THEME
 Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'noctilux t)
+  (load-theme 'solarized-light t)
 #+END_SRC
 
 ** GUI stuff
@@ -325,7 +326,7 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 ** Word Wrapping and Line Truncation
 Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
 #+BEGIN_SRC emacs-lisp
-  (setq truncate-lines nil)
+  (setq-default truncate-lines nil)
   (setq-default word-wrap t)
 #+END_SRC
 
@@ -655,69 +656,6 @@ And if you want to delete everything -but- this window...
     (newline-and-indent))
 #+END_SRC
 
-** WRITING
-*** Writeroom
-Writeroom, for distraction free editing
-#+BEGIN_SRC emacs-lisp :results silent
-  (require-package 'writeroom-mode)
-  (setq writeroom-restore-window-config t)
-  (global-set-key (kbd "C-c w") 'writeroom-mode)
-#+END_SRC
-
-*** Avoiding Weasel Words
-#+BEGIN_SRC emacs-lisp
-  (require-package 'artbollocks-mode)
-  (setq artbollocks-weasel-words-regex
-    (concat "\\b" (regexp-opt
-                               '("one of the"
-                                 "should"
-                                 "just"
-                                 "sort of"
-                                 "a lot"
-                                 "probably"
-                                 "maybe"
-                                 "perhaps"
-                                 "I think"
-                                 "really"
-                                 "pretty"
-                                 "nice"
-                                 "action"
-                                 "utilize"
-                                 "leverage") t) "\\b"))
-  (setq artbollocks-jargon nil)
-#+END_SRC
-
-** Dired
-
-From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
-
-Generally improve dired appearance
-#+begin_src emacs-lisp :results silent
-(require 'find-dired)
-(require-package 'dired+)
-(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
-#+END_SRC
-
-Hide files beginning with .[NOT A DOT]
-#+BEGIN_SRC emacs-lisp :results silent
-  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
-#+END_SRC
-
-Some key bindings:
-U for moving UP a directory
-Unmap C-h and C-k so that I can move between windows (VI bindigns)
-#+begin_src emacs-lisp :results silent
-(add-hook 'dired-mode-hook
-          (lambda () (local-set-key (kbd "U") 'dired-up-directory))
-          (lambda () (local-unset-key (kbd "C-h")))
-          (lambda () (local-unset-key (kbd "C-k"))))
-#+END_SRC
-
-Make dired use the same buffer when switching directories.
-#+BEGIN_SRC emacs-lisp :results silent
-(diredp-toggle-find-file-reuse-dir 1)
-#+end_src
-
 ** Recent files
 
 #+begin_src emacs-lisp
@@ -780,6 +718,69 @@ Here is basically just some interesting packages that I may choose to use or con
 Github GISTs.  Lets you view your gists as well as publish both public and private gists.
 #+BEGIN_SRC emacs-lisp
   (require-package 'gist)
+#+END_SRC
+
+* Config: DIRED
+
+From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
+
+Generally improve dired appearance
+#+begin_src emacs-lisp :results silent
+(require 'find-dired)
+(require-package 'dired+)
+(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+#+END_SRC
+
+Hide files beginning with .[NOT A DOT]
+#+BEGIN_SRC emacs-lisp :results silent
+  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
+#+END_SRC
+
+Some key bindings:
+U for moving UP a directory
+Unmap C-h and C-k so that I can move between windows (VI bindigns)
+#+begin_src emacs-lisp :results silent
+(add-hook 'dired-mode-hook
+          (lambda () (local-set-key (kbd "U") 'dired-up-directory))
+          (lambda () (local-unset-key (kbd "C-h")))
+          (lambda () (local-unset-key (kbd "C-k"))))
+#+END_SRC
+
+Make dired use the same buffer when switching directories.
+#+BEGIN_SRC emacs-lisp :results silent
+(diredp-toggle-find-file-reuse-dir 1)
+#+end_src
+
+* Config: WRITING
+** Writeroom
+Writeroom, for distraction free editing
+#+BEGIN_SRC emacs-lisp :results silent
+  (require-package 'writeroom-mode)
+  (setq writeroom-restore-window-config t)
+  (global-set-key (kbd "C-c w") 'writeroom-mode)
+#+END_SRC
+
+** Avoiding Weasel Words
+#+BEGIN_SRC emacs-lisp
+  (require-package 'artbollocks-mode)
+  (setq artbollocks-weasel-words-regex
+    (concat "\\b" (regexp-opt
+                               '("one of the"
+                                 "should"
+                                 "just"
+                                 "sort of"
+                                 "a lot"
+                                 "probably"
+                                 "maybe"
+                                 "perhaps"
+                                 "I think"
+                                 "really"
+                                 "pretty"
+                                 "nice"
+                                 "action"
+                                 "utilize"
+                                 "leverage") t) "\\b"))
+  (setq artbollocks-jargon nil)
 #+END_SRC
 
 * Config: LANGUAGES
@@ -913,8 +914,8 @@ And load the .el if it's newer than the .elc
   (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
   (setq nrepl-popup-stacktraces nil)
   (add-to-list 'same-window-buffer-names "<em>nrepl</em>")
+  (setq cider-show-error-buffer nil)
 #+END_SRC
-
 ** Racket
 #+BEGIN_SRC emacs-lisp
   (require-package 'racket-mode)
@@ -987,14 +988,6 @@ Format code when saving
 #+END_SRC
 
 * Config: ORG-MODE
-** My stuff...not too much
-#+BEGIN_SRC emacs-lisp :results silent
-  (require 'org)
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (setq org-log-done t)
-#+END_SRC
-
 ** Taking notes
 Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
 #+BEGIN_SRC emacs-lisp
@@ -1017,8 +1010,9 @@ This makes it easier to add links from outside.
    When using C-c ', don't change to another window. 
 #+begin_src emacs-lisp
   (setq org-src-window-setup 'current-window)
+  (setq org-src-fontify-natively t)
 #+end_src
-
+  
 ** Publishing
 Timestamps and section numbers make my published files look more
 complicated than they are. Let's turn them off by default.
@@ -1030,7 +1024,6 @@ complicated than they are. Let's turn them off by default.
 
 ** Refiling
    =org-refile= lets you organize notes by typing in the headline to file them under.
-
 #+begin_src emacs-lisp
   (setq org-reverse-note-order t)
   (setq org-refile-use-outline-path nil)
@@ -1039,10 +1032,12 @@ complicated than they are. Let's turn them off by default.
   (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
   (setq org-blank-before-new-entry nil)
 #+end_src
+
 ** Templates
    =org-capture= lets you create templates for jotting down info of various kinds.  Here is some structure...
 
-#+begin_src emacs-lisp :tangle no
+Function for setting up templates
+#+begin_src emacs-lisp
     (defvar sacha/org-basic-task-template "* TODO %^{Task}
     SCHEDULED: %^t
     :PROPERTIES:
@@ -1050,111 +1045,98 @@ complicated than they are. Let's turn them off by default.
     :END:
     %?
     " "Basic task data")
+#+END_SRC
+   
+
+And the actual templates
+#+BEGIN_SRC emacs-lisp
     (setq org-capture-templates
           `(("t" "Tasks" entry
-             (file+headline "~/personal/organizer.org" "Tasks")
+             (file+headline "~/Dropbox/org/notes.org" "Tasks")
              ,sacha/org-basic-task-template)
             ("T" "Quick task" entry
-             (file+headline "~/personal/organizer.org" "Tasks")
+             (file+headline "~/Dropbox/org/notes.org" "Tasks")
              "* TODO %^{Task}"
              :immediate-finish t)
-            ("e" "Emacs idea" entry
-             (file+headline "~/code/dev/emacs-notes/tasks.org" "Emacs")
-             "* TODO %^{Task}"
-             :immediate-finish t)
-            ("b" "Business task" entry
-             (file+headline "~/personal/business.org" "Tasks")
-             ,sacha/org-basic-task-template)
-            ("p" "People task" entry
-             (file+headline "~/personal/people.org" "Tasks")
-             ,sacha/org-basic-task-template)
-            ("j" "Journal entry" plain
-             (file+datetree "~/personal/journal.org")
-             "%K - %a\n%i\n%?\n"
-             :unnarrowed t)
-            ("J" "Journal entry with date" plain
-             (file+datetree+prompt "~/personal/journal.org")
-             "%K - %a\n%i\n%?\n"
-             :unnarrowed t)
-            ("db" "Done - Business" entry
-             (file+headline "~/personal/business.org" "Tasks")
-             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
-            ("dp" "Done - People" entry
-             (file+headline "~/personal/people.org" "Tasks")
-             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
-            ("dt" "Done - Task" entry
-             (file+headline "~/personal/organizer.org" "Tasks")
-             "* DONE %^{Task}\nSCHEDULED: %^t\n%?")
             ("q" "Quick note" item
-             (file+headline "~/personal/organizer.org" "Quick notes"))
-            ("l" "Ledger entries")
-            ("lm" "MBNA" plain
-             (file "~/personal/ledger")
-             "%(org-read-date) %^{Payee}
-      Liabilities:MBNA
-      Expenses:%^{Account}  $%^{Amount}
-    " :immediate-finish t)
-            ("ln" "No Frills" plain
-             (file "~/personal/ledger")
-             "%(let ((org-read-date-prefer-future nil)) (org-read-date)) * No Frills
-      Liabilities:MBNA
-      Assets:Wayne:Groceries  $%^{Amount}
-    " :immediate-finish t)
-            ("lc" "Cash" plain
-             (file "~/personal/ledger")
-             "%(org-read-date) * %^{Payee}
-      Expenses:Cash
-      Expenses:%^{Account}  %^{Amount}
-    ")
-            ("b" "Book" entry
-             (file+datetree "~/personal/books.org" "Inbox")
-             "* %^{Title}  %^g
-    %i
-    ,*Author(s):* %^{Author} \\\\
-    ,*ISBN:* %^{ISBN}
-
-    %?
-
-    ,*Review on:* %^t \\
-    %a
-    %U"
-             :clock-in :clock-resume)
-             ("c" "Contact" entry (file "~/personal/contacts.org")
+             (file+headline "~/Dropbox/org/notes.org" "Quick notes"))
+             ("c" "Contact" entry (file "~/Dropbox/org/contacts.org")
               "* %(org-contacts-template-name)
     :PROPERTIES:
     :EMAIL: %(org-contacts-template-email)
     :END:")
-             ("n" "Daily note" table-line (file+olp "~/personal/organizer.org" "Daily notes")
+             ("n" "Daily note" table-line (file+olp "~/Dropbox/org/notes.org" "Daily notes")
               "| %u | %^{Note} |"
               :immediate-finish t)
              ("r" "Notes" entry
-              (file+datetree "~/personal/organizer.org")
+              (file+datetree "~/Dropbox/org/notes.org")
               "* %?\n\n%i\n"
               )))
-    (bind-key "C-M-r" 'org-capture)
 #+end_src
 
-** Keyboard shortcuts POTENTIAL                                    :not_used:
+#+RESULTS:
+| t | Tasks      | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}\nSCHEDULED: %^t\n:PROPERTIES:\n:Effort: %^{effort                            | 1:00              | 0:05     | 0:15 |              0:30 | 2:00 | 4:00}\n:END:\n%?\n |
+| T | Quick task | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}                                                                              | :immediate-finish | t        |      |                   |      |                    |
+| q | Quick note | item       | (file+headline ~/Dropbox/org/notes.org Quick notes) |                                                                                              |                   |          |      |                   |      |                    |
+| c | Contact    | entry      | (file ~/Dropbox/org/contacts.org)                   | * %(org-contacts-template-name)\n:PROPERTIES:\n:EMAIL: %(org-contacts-template-email)\n:END: |                   |          |      |                   |      |                    |
+| n | Daily note | table-line | (file+olp ~/Dropbox/org/notes.org Daily notes)      |                                                                                              | %u                | %^{Note} |      | :immediate-finish |    t |                    |
+| r | Notes      | entry      | (file+datetree ~/Dropbox/org/notes.org)             | * %?\n\n%i\n                                                                                 |                   |          |      |                   |      |                    |
 
-#+begin_src emacs-lisp :tangle no
-    (bind-key "C-c r" 'org-capture)
-    (bind-key "C-c a" 'org-agenda)
-    (bind-key "C-c l" 'org-store-link)
-    (bind-key "C-c L" 'org-insert-link-global)
-    (bind-key "C-c O" 'org-open-at-point-global)
-    (bind-key "<f9> <f9>" 'org-agenda-list)
-    (bind-key "<f9> <f8>" (lambda () (interactive) (org-capture nil "r")))
-    (bind-key "C-TAB" 'org-cycle org-mode-map)
-    (bind-key "C-c v" 'org-show-todo-tree org-mode-map)
-    (bind-key "C-c C-r" 'org-refile org-mode-map)
-    (bind-key "C-c R" 'org-reveal org-mode-map)
+** Agenda
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files
+        (delq nil
+              (mapcar (lambda (x) (and (file-exists-p x) x))
+                      '("~/Dropbox/org/"))))
+#+END_SRC
+
+** Update Checkboxes on Save
+  
+#+BEGIN_SRC emacs-lisp :results silent
+  (defun checkbox-before-save ()
+    (org-update-checkbox-count t))
+
+  (add-hook 'org-mode-hook 
+            (lambda () 
+               (add-hook 'before-save-hook 'checkbox-before-save nil 'make-it-local)))
+#+END_SRC 
+
+** Todo keywords
+
+#+BEGIN_SRC emacs-lisp :results silent
+  (setq org-todo-keywords
+           '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)"))) 
+#+END_SRC
+
+** Keyboard shortcuts
+
+#+begin_src emacs-lisp
+    (global-set-key (kbd "<f1>") 'org-capture)
+    (global-set-key (kbd "<f2>") 'org-agenda)
+    (global-set-key (kbd "<f3>") 'org-agenda-list)
+    (global-set-key (kbd "<f4>") 'org-timeline)
 #+end_src
 
-* Config: Snippets
+   
+Links to common files
+#+BEGIN_SRC emacs-lisp :results silent
+  (global-set-key (kbd "C-x j") 'jump-to-register)
+  (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
+  (set-register ?u (cons 'file "~/Dropbox/org/uni.org"))
+  (set-register ?n (cons 'file "~/Dropbox/org/notes.org"))
+  (set-register ?r (cons 'file "~/Dropbox/org/reading.org"))
+  (set-register ?w (cons 'file "~/Dropbox/org/wh40k.org"))
+  (set-register ?d (cons 'file "~/Dropbox/org/dungeon-world.org"))
+  (set-register ?j (cons 'file "~/Dropbox/org/clojure.org"))
+  (set-register ?m (cons 'file "~/Dropbox/org/numenera.org"))
+  (set-register ?s (cons 'file "~/Dropbox/org/scrolls.org"))
+#+END_SRC
+
+* Config: SNIPPETS
 General install
 #+BEGIN_SRC emacs-lisp :results silent
   (require-package 'yasnippet)
-  (setq yas-key-syntaxes '("w_" "w_." "^ "))
+  (setq yas-key-syntaxes '("" "w_." "^ "))
   (setq yas-installed-snippets-dir "~/elisp/yasnippet-snippets")
   (setq yas-expand-only-for-last-commands '(self-insert-command))
   (yas-global-mode 1)
