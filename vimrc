@@ -12,35 +12,35 @@ set rtp+=~/.fzf
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'bling/vim-airline'
 Plug 'Blackrush/vim-gocode'
-Plug 'Lokaltog/powerline'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
 Plug 'greyblake/vim-preview'
+Plug 'guns/vim-clojure-static'
+Plug 'jceb/vim-orgmode'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+Plug 'kien/ctrlp.vim'
 Plug 'mattn/emmet-vim'
 Plug 'plasticboy/vim-markdown'
+Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
-Plug 'kien/ctrlp.vim'
 Plug 'sjl/gundo.vim'
 Plug 'szw/vim-tags'
-Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-leiningen'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-speeddating'
-Plug 'tpope/vim-fireplace'
-Plug 'tpope/vim-leiningen'
-Plug 'rizzatti/dash.vim'
-Plug 'wlangstroth/vim-racket'
-Plug 'jceb/vim-orgmode'
 Plug 'vim-scripts/paredit.vim'
-Plug 'guns/vim-clojure-static'
+Plug 'wlangstroth/vim-racket'
 
 call plug#end()
 " ---------------
@@ -130,7 +130,7 @@ set directory=~/.vim/tmp,.
 " ----------------
 " My colour scheme
 " ----------------
-set bg=dark
+set bg=light
 colorscheme solarized
 set t_ut=
 
@@ -145,11 +145,8 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-" if has('gui_running')
-"     set gfn=Source\ Code\ Pro\ Medium\ 12
-" endif
 if has('gui_running')
-    set gfn=Osaka-Mono:h18
+    set gfn="Inconsolata:h15"
 endif
 
 " Allow markdown preview
@@ -196,3 +193,4 @@ nnoremap <F8> :call <SID>rotate_colors()<cr>
 
 let syntastic_mode_map = { "mode": "active", "active_filetypes": [], "passive_filetypes": [] }
 
+let g:airline_powerline_fonts = 1
