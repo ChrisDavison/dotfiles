@@ -1,5 +1,6 @@
 +TITLE: Chris Davison's Emacs configuration
 #+OPTIONS: toc:4 h:4
+#+PROPERTY: header-args  
 
 * About this file
 <<babel-init>>
@@ -162,8 +163,8 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
-(when (member "Andale Mono" (font-family-list))
-  (set-face-attribute 'default nil :font "Andale Mono" :height 130))
+(when (member "Inconsolata" (font-family-list))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 140))
 #+END_SRC
 
 #+RESULTS:
@@ -220,9 +221,13 @@ Having multiple minor modes can leave the status bar unreadable.  For this, use 
 
 ** THEME stuff
 *** Add some
-Just a list of some themes that I find pleasant.
+I always end up going back to solarized, so this is the only one I'm activating at the moment.
 #+BEGIN_SRC emacs-lisp
   (require-package 'solarized-theme)
+#+END_SRC
+
+I'll leave other ones, but won't actually download them.
+#+BEGIN_SRC emacs-lisp :tangle no
   (require-package 'flatland-theme)
   (require-package 'molokai-theme)
   (require-package 'noctilux-theme)
@@ -246,7 +251,7 @@ Call these from =M-x=, either light or dark.
 *** CURRENT THEME
 Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'solarized-dark t)
+  (load-theme 'solarized-light t)
 #+END_SRC
 
 #+RESULTS:
@@ -382,6 +387,8 @@ Adding key-chord here, as it's mainly for vim-type things
   (key-chord-define-global "jk" 'evil-normal-state)
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
 #+END_SRC
+
+#+RESULTS:
 
 * Config: History, Backup, Session
 ** Backups
@@ -670,7 +677,7 @@ And if you want to delete everything -but- this window...
 
 ** Autocomplete
 *** Use autocomplete
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (require-package 'auto-complete)
 
   (global-auto-complete-mode t)
@@ -709,6 +716,13 @@ Make tab trigger it
     (add-to-list 'ac-modes mode))
 #+END_SRC
 
+** Fill-column
+#+BEGIN_SRC emacs-lisp 
+  (require-package 'fill-column-indicator)
+  (define-globalized-minor-mode
+    global-fci-mode fci-mode (lambda () (fci-mode 1)))
+  (global-fci-mode t)
+#+END_SRC
 ** OTHER                                                              :drill:
 Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
 
@@ -728,21 +742,21 @@ Github GISTs.  Lets you view your gists as well as publish both public and priva
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
 Generally improve dired appearance
-#+begin_src emacs-lisp :results silent
+#+begin_src emacs-lisp 
 (require 'find-dired)
 (require-package 'dired+)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 #+END_SRC
 
 Hide files beginning with .[NOT A DOT]
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
 #+END_SRC
 
 Some key bindings:
 U for moving UP a directory
 Unmap C-h and C-k so that I can move between windows (VI bindigns)
-#+begin_src emacs-lisp :results silent
+#+begin_src emacs-lisp 
 (add-hook 'dired-mode-hook
           (lambda () (local-set-key (kbd "U") 'dired-up-directory))
           (lambda () (local-unset-key (kbd "C-h")))
@@ -750,14 +764,14 @@ Unmap C-h and C-k so that I can move between windows (VI bindigns)
 #+END_SRC
 
 Make dired use the same buffer when switching directories.
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
 (diredp-toggle-find-file-reuse-dir 1)
 #+end_src
 
 * Config: WRITING
 ** Writeroom
 Writeroom, for distraction free editing
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (require-package 'writeroom-mode)
   (setq writeroom-restore-window-config t)
   (global-set-key (kbd "C-c w") 'writeroom-mode)
@@ -786,6 +800,12 @@ Writeroom, for distraction free editing
   (setq artbollocks-jargon nil)
 #+END_SRC
 
+** Truncating lines
+
+#+BEGIN_SRC emacs-lisp 
+  (set-default 'truncate-lines t)
+  (setq truncate-partial-width-windows nil)
+#+END_SRC
 * Config: LANGUAGES
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
@@ -840,32 +860,49 @@ Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
 #+RESULTS:
 
 ** Haskell
+General inclusion of haskell
 #+BEGIN_SRC emacs-lisp
-  (require-package 'flycheck-haskell)
-  (require-package 'haskell-mode)
+    (require-package 'flycheck-haskell)
+    (require-package 'haskell-mode)
 
-  (add-to-list 'completion-ignored-extensions ".hi")
+    (add-to-list 'completion-ignored-extensions ".hi")
 
-  ;; Indentation
-  (require-package 'hi2)
-  (add-hook 'haskell-mode-hook 'turn-on-hi2)
+    ;; Indentation
+    (require-package 'hi2)
+    (add-hook 'haskell-mode-hook
+              'turn-on-hi2)
+#+END_SRC
 
-  (when (fboundp 'electric-indent-mode)
-    (add-hook 'haskell-mode-hook (lambda () (electric-indent-mode -1))))
+Fix indentation for haskell
+#+BEGIN_SRC emacs-lisp
+    (when (fboundp 'electric-indent-mode)
+      (add-hook 'haskell-mode-hook
+                (lambda () (electric-indent-mode -1))))
+#+END_SRC
+
+...and autocomplete for Haskell
+#+BEGIN_SRC emacs-lisp
 
   ;; Hook auto-complete into the completions provided by the inferior
   ;; haskell process, if any.
   (require-package 'ac-haskell-process)
 
-  (add-hook 'interactive-haskell-mode-hook 'ac-haskell-process-setup)
-  (add-hook 'haskell-interactive-mode-hook 'ac-haskell-process-setup)
+  (add-hook 'interactive-haskell-mode-hook
+            'ac-haskell-process-setup)
+  (add-hook 'haskell-interactive-mode-hook
+            'ac-haskell-process-setup)
 
   (after-load 'haskell-mode
-    (define-key haskell-mode-map (kbd "C-c C-d") 'ac-haskell-process-popup-doc))
+    (define-key haskell-mode-map (kbd "C-c C-d")
+      'ac-haskell-process-popup-doc))
+
+  (after-load 'haskell-mode
+    'inf-haskell-mode)
 
   (after-load 'auto-complete
     (add-to-list 'ac-modes 'haskell-interactive-mode)
-    (add-hook 'haskell-interactive-mode-hook 'set-auto-complete-as-completion-at-point-function))
+    (add-hook 'haskell-interactive-mode-hook
+              'set-auto-complete-as-completion-at-point-function))
 #+END_SRC
 
 ** Lisp
@@ -955,7 +992,7 @@ Format code when saving
   (require-package 'go-mode)
   (require-package 'go-autocomplete)
 
-  (add-hook 'before-save-hook 'gofmt-before-save)
+  (add-hook 'before-save-hook #'gofmt-before-save)
 #+END_SRC
 
 ** Rust
@@ -965,6 +1002,20 @@ Format code when saving
   (require-package 'flycheck-rust)
 #+END_SRC
 
+** Python
+Use python3 by default
+#+BEGIN_SRC emacs-lisp 
+  (require-package 'virtualenvwrapper)
+  (venv-initialize-interactive-shells) ;; if you want interactive shell support
+  (venv-initialize-eshell) ;; if you want eshell support
+  (setq venv-location "/Users/davison/Envs/")
+#+END_SRC
+
+Automatically run on numeric environment when using python
+#+BEGIN_SRC emacs-lisp 
+  (add-hook 'python-mode-hook (lambda ()
+                                  (venv-workon "numeric")))
+#+END_SRC
 * Config: IDO
 #+BEGIN_SRC emacs-lisp
   (require 'ido)
@@ -1095,7 +1146,7 @@ And the actual templates
 
 ** Update Checkboxes on Save
   
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (defun checkbox-before-save ()
     (org-update-checkbox-count t))
 
@@ -1106,7 +1157,7 @@ And the actual templates
 
 ** Todo keywords
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (setq org-todo-keywords
            '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)"))) 
 #+END_SRC
@@ -1122,7 +1173,7 @@ And the actual templates
 
    
 Links to common files
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-x j") 'jump-to-register)
   (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
   (set-register ?u (cons 'file "~/Dropbox/org/uni.org"))
@@ -1151,7 +1202,7 @@ Links to common files
 #+END_SRC
 
 ** Key bindings
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-c h") 'helm-mini)
   (global-set-key (kbd "C-c a") 'helm-apropos)
   (global-set-key (kbd "C-c o") 'helm-occur)
@@ -1161,7 +1212,7 @@ Links to common files
 #+END_SRC
    
 ** Describe bindings
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
   (require-package 'helm-descbinds)
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
@@ -1171,3 +1222,28 @@ Links to common files
 #+BEGIN_SRC emacs-lisp
   (require-package 'magit)
 #+END_SRC
+  
+* Config: GNUPLOT
+#+BEGIN_SRC emacs-lisp :results no
+  ;; load the file
+  (require-package 'gnuplot)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; specify the gnuplot executable (if other than /usr/bin/gnuplot)
+  (setq gnuplot-program "/usr/local/bin/gnuplot")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; automatically open files ending with .gp or .gnuplot in gnuplot mode
+  (setq auto-mode-alist
+          (cons '("\\.\\(gp\\|gnuplot\\)$" . gnuplot-mode) auto-mode-alist))
+#+END_SRC
+
+* Config: Font-locking
+Replace any occurrence of 'lambda' with the actual symbol.
+#+BEGIN_SRC emacs-lisp 
+  (global-prettify-symbols-mode +1)
+#+END_SRC
+
+
