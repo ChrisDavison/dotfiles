@@ -1,6 +1,6 @@
-+TITLE: Chris Davison's Emacs configuration
-#+OPTIONS: toc:4 h:4
-#+PROPERTY: header-args  
+#+TITLE: Chris Davison's Emacs configuration
+#+OPTIONS: toc:4 h:4 results:nil
+#+PROPERTY: header-args  :results silent
 
 * About this file
 <<babel-init>>
@@ -155,10 +155,6 @@ Useful to have access to power of common lisp within emacs.
 #+END_SRC
 
 * Config: Appearance
-Having multiple minor modes can leave the status bar unreadable.  For this, use diminish, which will 'diminish' the minor mode to either show nothing or a chosen acronym.
-#+BEGIN_SRC emacs-lisp
-(require-package 'diminish)
-#+END_SRC
 
 ** FONT stuff
 *** Default  (if available)
@@ -249,9 +245,10 @@ Call these from =M-x=, either light or dark.
 #+END_SRC
 
 *** CURRENT THEME
+#+NAME: Current Theme
 Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
-#+BEGIN_SRC emacs-lisp
-  (load-theme 'solarized-light t)
+#+BEGIN_SRC emacs-lisp 
+  (load-theme 'molokai t)
 #+END_SRC
 
 #+RESULTS:
@@ -329,13 +326,6 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 #+BEGIN_SRC emacs-lisp
   (setq-default initial-scratch-message
                 (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
-#+END_SRC
-
-** Word Wrapping and Line Truncation
-Don't allow code to spread across the end of the page, and break on word boundaries rather than just continuing till the page is filled.
-#+BEGIN_SRC emacs-lisp
-  (setq-default truncate-lines nil)
-  (setq-default word-wrap t)
 #+END_SRC
 
 * Config: Parentheses
@@ -737,7 +727,7 @@ Github GISTs.  Lets you view your gists as well as publish both public and priva
   (require-package 'gist)
 #+END_SRC
 
-* Config: DIRED
+* Config: DIRED / NAV
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
@@ -767,6 +757,15 @@ Make dired use the same buffer when switching directories.
 #+BEGIN_SRC emacs-lisp 
 (diredp-toggle-find-file-reuse-dir 1)
 #+end_src
+
+Also trying out Nav-mode...which gives a more VIM-like browser (easier than dired)
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'nav)
+
+   ;; Optional: set up a quick key to toggle nav
+  (global-set-key [f9] 'nav-toggle)
+#+END_SRC
 
 * Config: WRITING
 ** Writeroom
@@ -800,12 +799,6 @@ Writeroom, for distraction free editing
   (setq artbollocks-jargon nil)
 #+END_SRC
 
-** Truncating lines
-
-#+BEGIN_SRC emacs-lisp 
-  (set-default 'truncate-lines t)
-  (setq truncate-partial-width-windows nil)
-#+END_SRC
 * Config: LANGUAGES
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
@@ -1016,6 +1009,16 @@ Automatically run on numeric environment when using python
   (add-hook 'python-mode-hook (lambda ()
                                   (venv-workon "numeric")))
 #+END_SRC
+** C / C++
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'c-mode-common-hook
+    (lambda()
+      (local-set-key (kbd "C-c <right>") 'hs-show-block)
+      (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+      (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+      (local-set-key (kbd "C-c <down>")  'hs-show-all)
+      (hs-minor-mode t)))
+#+END_SRC
 * Config: IDO
 #+BEGIN_SRC emacs-lisp
   (require 'ido)
@@ -1184,6 +1187,7 @@ Links to common files
   (set-register ?j (cons 'file "~/Dropbox/org/clojure.org"))
   (set-register ?m (cons 'file "~/Dropbox/org/numenera.org"))
   (set-register ?s (cons 'file "~/Dropbox/org/scrolls.org"))
+  (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
 * Config: HELM
