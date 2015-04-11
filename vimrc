@@ -12,13 +12,11 @@ set rtp+=~/.fzf
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'bling/vim-airline'
 Plug 'Blackrush/vim-gocode'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
 Plug 'greyblake/vim-preview'
-Plug 'guns/vim-clojure-static'
 Plug 'jceb/vim-orgmode'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
@@ -34,7 +32,6 @@ Plug 'szw/vim-tags'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-leiningen'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
@@ -53,7 +50,6 @@ map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
-imap ;; <Esc>
 
 " Bindings for various useful plugins
 nnoremap \e :NERDTreeToggle<CR>
@@ -130,8 +126,8 @@ set directory=~/.vim/tmp,.
 " ----------------
 " My colour scheme
 " ----------------
-set bg=light
-colorscheme solarized
+set bg=dark
+colorscheme sorcerer
 set t_ut=
 
 " ----------------------------------------
@@ -146,7 +142,7 @@ set guioptions-=r
 set guioptions-=L
 
 if has('gui_running')
-    set gfn="Inconsolata:h15"
+    set gfn="DejaVu Sans Mono for Powerline:h18"
 endif
 
 " Allow markdown preview
