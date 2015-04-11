@@ -12,36 +12,15 @@ alias ..='cd ..'
 alias ...="cd ../.."
 alias ....="cd ../../.."
 
-alias defa="~/src/py-defaults/defaults.py ~/.templates"
-
-alias psmem='ps auxf | sort -nr -k 4'
-alias psmem10='ps auxf | sort -nr -k 4 | head -10'
- 
-alias pscpu='ps auxf | sort -nr -k 3'
-alias pscpu10='ps auxf | sort -nr -k 3 | head -10'
- 
-## Get server cpu info ##
-alias cpuinfo='lscpu'
-
-alias pdfopen='qpdfview --unique --instance a'
-alias ser='sudo apt-cache search'
-alias ins='sudo apt-get install'
-
-# CD aliases
+# Directory CD aliases
 alias d="cd ~/Dropbox"
 alias dl="cd ~/Downloads"
-alias src='cd ~/src'
+alias src='cd ~/prog'
 alias engd='cd ~/engd'
-
-# Sleep and lock (for within i3)
-alias slplock='sudo pm-suspend && i3lock -c 000000'
 
 # Copy SSH public key
 alias cbssh="cbf ~/.ssh/id_rsa.pub"  
-# Copy current working directory
-alias cbwd="pwd | cb"  
-# Copy most recent command in bash history
-alias cbhs="cat $HISTFILE | tail -n 1 | cb"  
 
+# Switch to python numeric environment
 alias pyenv="source ~/Envs/numeric/bin/activate"
 
