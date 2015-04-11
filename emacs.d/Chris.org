@@ -154,13 +154,17 @@ Useful to have access to power of common lisp within emacs.
 (require 'cl-lib)
 #+END_SRC
 
-* Config: Appearance
+** Diminish Minor Modes
+#+BEGIN_SRC emacs-lisp
+(require-package 'diminish)
+#+END_SRC
 
+* Config: Appearance
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
 (when (member "Inconsolata" (font-family-list))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 140))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 150))
 #+END_SRC
 
 #+RESULTS:
@@ -222,14 +226,6 @@ I always end up going back to solarized, so this is the only one I'm activating 
   (require-package 'solarized-theme)
 #+END_SRC
 
-I'll leave other ones, but won't actually download them.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (require-package 'flatland-theme)
-  (require-package 'molokai-theme)
-  (require-package 'noctilux-theme)
-  (require-package 'cyberpunk-theme)
-#+END_SRC
-
 *** Toggle Light-Dark
 Call these from =M-x=, either light or dark.
 #+BEGIN_SRC emacs-lisp
@@ -248,7 +244,7 @@ Call these from =M-x=, either light or dark.
 #+NAME: Current Theme
 Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
 #+BEGIN_SRC emacs-lisp 
-  (load-theme 'molokai t)
+  (load-theme 'solarized-light t)
 #+END_SRC
 
 #+RESULTS:
@@ -706,13 +702,6 @@ Make tab trigger it
     (add-to-list 'ac-modes mode))
 #+END_SRC
 
-** Fill-column
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'fill-column-indicator)
-  (define-globalized-minor-mode
-    global-fci-mode fci-mode (lambda () (fci-mode 1)))
-  (global-fci-mode t)
-#+END_SRC
 ** OTHER                                                              :drill:
 Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
 
