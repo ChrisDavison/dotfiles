@@ -1,5 +1,4 @@
 #+TITLE: Chris Davison's Emacs configuration
-#+OPTIONS: toc:4 h:4 results:nil
 #+PROPERTY: header-args  :results silent
 
 * About this file
@@ -38,7 +37,7 @@ If you're viewing the Org inside emacs, you can open source blocks (ones beginni
   (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com")
 #+end_src
-
+  
 * Useful Consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
 #+BEGIN_SRC emacs-lisp
@@ -51,6 +50,7 @@ Refresh the package list, ensuring newest package versions.  You may not like th
 #+BEGIN_SRC emacs-lisp :tangle no
 (package-refresh-contents)
 #+END_SRC
+
 
 ** Eval after load
 #+BEGIN_SRC emacs-lisp
