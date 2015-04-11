@@ -788,7 +788,18 @@ Writeroom, for distraction free editing
   (setq artbollocks-jargon nil)
 #+END_SRC
 
-* Config: LANGUAGES
+** Word wrapping and truncation
+Couldn't get this working directly...so functionalise it
+#+BEGIN_SRC emacs-lisp
+(defun trunc-wrap()
+  "Turn on truncation and word wrapping"
+  (interactive)
+  (toggle-truncate-lines)
+  (toggle-word-wrap))
+
+  (key-chord-define-global "tw" 'trunc-wrap)
+#+END_SRC
+* Config: PROG LANGUAGES
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
