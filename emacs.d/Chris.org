@@ -985,7 +985,7 @@ Format code when saving
   (require-package 'go-mode)
   (require-package 'go-autocomplete)
 
-  (add-hook 'before-save-hook #'gofmt-before-save)
+  (add-hook 'before-save-hook 'gofmt-before-save)
 #+END_SRC
 
 ** Rust
@@ -1208,6 +1208,7 @@ Links to common files
 ** Key bindings
 #+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-c h") 'helm-mini)
+  (global-set-key (kbd "C-p") 'helm-mini)
   (global-set-key (kbd "C-c a") 'helm-apropos)
   (global-set-key (kbd "C-c o") 'helm-occur)
 
