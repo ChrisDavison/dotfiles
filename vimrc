@@ -21,6 +21,7 @@ Plug 'jceb/vim-orgmode'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'kien/ctrlp.vim'
+Plug 'lervag/vimtex'
 Plug 'mattn/emmet-vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'rizzatti/dash.vim'
@@ -28,12 +29,9 @@ Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
-Plug 'szw/vim-tags'
+
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fireplace'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-scripts/paredit.vim'
@@ -44,6 +42,7 @@ call plug#end()
 " MY KEY BINDINGS
 " ---------------
 map <space> /
+imap ii <esc>
 map vv <C-w>v
 map vn <C-w>n
 map <C-w><C-h> <C-w><S-h>
@@ -75,12 +74,6 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
-
-" ---------------------
-" Execute code using F9
-" ---------------------
-autocmd FileType go nnoremap <F9> :!go run %<CR>
-autocmd FileType python nnoremap <F9> :!python3 %<CR>
 
 " --------------
 " Search options
@@ -127,7 +120,7 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme sorcerer
+colorscheme solarized
 set t_ut=
 
 " ----------------------------------------
