@@ -320,25 +320,20 @@ This is again a quality of life thing, to allow you to hit yes or no by using y 
 
 ** Scratch Buffer - Initial Message
 #+BEGIN_SRC emacs-lisp
-  (setq-default initial-scratch-message
-                (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
+  (setq-default initial-scratch-message ";; Scratch pad\n\n")
+#+END_SRC
+
+** Font-locking
+Replace any occurrence of 'lambda' with the actual symbol.
+#+BEGIN_SRC emacs-lisp 
+  (global-prettify-symbols-mode +1)
 #+END_SRC
 
 * Config: Parentheses
-** Show matching parens
+Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
-(show-paren-mode t)
-#+END_SRC
-
-** Paredit
-Useful for manipulating parentheses
-#+BEGIN_SRC emacs-lisp
+  (show-paren-mode t)
   (require-package 'paredit)
-#+END_SRC
-
-** Rainbow Delimiters
-Really useful in languages that have lots of nesting (javascript, lisp).  Will give each pair of parentheses a different colour, for easier matching.
-#+BEGIN_SRC emacs-lisp
   (require-package 'rainbow-mode)
   (require-package 'rainbow-delimiters)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -449,8 +444,7 @@ If ag is available, use that instead.  Faster.  Better for coding.
 #+RESULTS:
 : ag-project
 
-** Within buffer - Improve Emacs' default
-Improve, if possible, using maybe-require-package.
+** Show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
   (when (maybe-require-package 'anzu)
     (global-anzu-mode t)
@@ -463,15 +457,8 @@ Improve, if possible, using maybe-require-package.
 
 #+END_SRC
 * Config: NAVIGATION
-** ACE MODE
-*** Ace Jump Mode (jump to a specific letter that starts a word)
-#+BEGIN_SRC emacs-lisp
-  (require-package 'ace-jump-mode)
-  (global-set-key (kbd "M-s") 'ace-jump-mode)
-#+END_SRC
-
-*** Ace isearch
-Hybrind of isearch and ace-jump
+** Ace Mode iSearch
+Hybrind of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
 #+BEGIN_SRC emacs-lisp
   (require-package 'ace-isearch)
   (global-ace-isearch-mode 1)
@@ -539,11 +526,6 @@ And give emacs some of the expected OS X keybinds
     (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
 #+END_SRC
-** Clean up spaces
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-SPC") 'cycle-spacing)
-#+end_src
-
 ** Ibuffer - Interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
 #+BEGIN_SRC emacs-lisp
@@ -661,100 +643,26 @@ And if you want to delete everything -but- this window...
 (recentf-mode)
 #+end_src
 
-** Autocomplete
-*** Use autocomplete
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'auto-complete)
-
-  (global-auto-complete-mode t)
-  (setq-default ac-expand-on-auto-complete nil)
-  (setq-default ac-auto-start nil)
-#+END_SRC
-
-Make tab trigger it
-#+BEGIN_SRC emacs-lisp
-  (setq tab-always-indent 'complete)
-  (add-to-list 'completion-styles 'initials t)
-#+END_SRC
-
-*** More sources for autocomplete
-    Use dictionary, imenu etc for autocompletion
-#+BEGIN_SRC emacs-lisp
-  (set-default 'ac-sources
-               '(ac-source-imenu
-                 ac-source-dictionary
-                 ac-source-words-in-buffer
-                 ac-source-words-in-same-mode-buffers
-                 ac-source-words-in-all-buffer))
-#+END_SRC
-
-*** Modes for autocompletion
-#+BEGIN_SRC emacs-lisp
-  (dolist (mode '(magit-log-edit-mode
-                  log-edit-mode org-mode text-mode haml-mode
-                  git-commit-mode
-                  sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                  html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                  lisp-mode textile-mode markdown-mode tuareg-mode
-                  js3-mode css-mode less-css-mode sql-mode
-                  sql-interactive-mode
-                  inferior-emacs-lisp-mode))
-    (add-to-list 'ac-modes mode))
-#+END_SRC
-
-** OTHER                                                              :drill:
-Here is basically just some interesting packages that I may choose to use or configure further in the future, but haven't really gotten there yet.
-
-#+BEGIN_SRC emacs-lisp
-  (require-package 'gnuplot)
-  (require-package 'htmlize)
-  (require-package 'regex-tool)
-#+END_SRC
-
-Github GISTs.  Lets you view your gists as well as publish both public and private gists.
-#+BEGIN_SRC emacs-lisp
-  (require-package 'gist)
-#+END_SRC
-
 * Config: DIRED / NAV
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
-Generally improve dired appearance
+** Generally improve dired appearance
 #+begin_src emacs-lisp 
 (require 'find-dired)
 (require-package 'dired+)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 #+END_SRC
 
-Hide files beginning with .[NOT A DOT]
+** Hide files beginning with .[NOT A DOT]
 #+BEGIN_SRC emacs-lisp 
   (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
 #+END_SRC
 
-Some key bindings:
-U for moving UP a directory
-Unmap C-h and C-k so that I can move between windows (VI bindigns)
-#+begin_src emacs-lisp 
-(add-hook 'dired-mode-hook
-          (lambda () (local-set-key (kbd "U") 'dired-up-directory))
-          (lambda () (local-unset-key (kbd "C-h")))
-          (lambda () (local-unset-key (kbd "C-k"))))
-#+END_SRC
-
-Make dired use the same buffer when switching directories.
+** Make dired use the same buffer when switching directories.
 #+BEGIN_SRC emacs-lisp 
 (diredp-toggle-find-file-reuse-dir 1)
 #+end_src
-
-Also trying out Nav-mode...which gives a more VIM-like browser (easier than dired)
-
-#+BEGIN_SRC emacs-lisp
-  (require-package 'nav)
-
-   ;; Optional: set up a quick key to toggle nav
-  (global-set-key [f9] 'nav-toggle)
-#+END_SRC
 
 * Config: WRITING
 ** Writeroom
@@ -763,29 +671,6 @@ Writeroom, for distraction free editing
   (require-package 'writeroom-mode)
   (setq writeroom-restore-window-config t)
   (global-set-key (kbd "C-c w") 'writeroom-mode)
-#+END_SRC
-
-** Avoiding Weasel Words
-#+BEGIN_SRC emacs-lisp
-  (require-package 'artbollocks-mode)
-  (setq artbollocks-weasel-words-regex
-    (concat "\\b" (regexp-opt
-                               '("one of the"
-                                 "should"
-                                 "just"
-                                 "sort of"
-                                 "a lot"
-                                 "probably"
-                                 "maybe"
-                                 "perhaps"
-                                 "I think"
-                                 "really"
-                                 "pretty"
-                                 "nice"
-                                 "action"
-                                 "utilize"
-                                 "leverage") t) "\\b"))
-  (setq artbollocks-jargon nil)
 #+END_SRC
 
 ** Word wrapping and truncation
@@ -1195,7 +1080,7 @@ Links to common files
 #+BEGIN_SRC emacs-lisp
   (require-package 'helm)
   (require 'helm-config)
-  (setq helm-candidate-number-limit 100)
+  (setq helm-candidate-number-limit 10)
   (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
               helm-input-idle-delay 0.01  ; this actually updates things
                                             ; reeeelatively quickly.
@@ -1221,34 +1106,3 @@ Links to common files
   (require-package 'helm-descbinds)
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
-
-* Config: GIT
-  Git is lovely.  Let's use it within emacs.
-#+BEGIN_SRC emacs-lisp
-  (require-package 'magit)
-#+END_SRC
-  
-* Config: GNUPLOT
-#+BEGIN_SRC emacs-lisp :results no
-  ;; load the file
-  (require-package 'gnuplot)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;; specify the gnuplot executable (if other than /usr/bin/gnuplot)
-  (setq gnuplot-program "/usr/local/bin/gnuplot")
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;; automatically open files ending with .gp or .gnuplot in gnuplot mode
-  (setq auto-mode-alist
-          (cons '("\\.\\(gp\\|gnuplot\\)$" . gnuplot-mode) auto-mode-alist))
-#+END_SRC
-
-* Config: Font-locking
-Replace any occurrence of 'lambda' with the actual symbol.
-#+BEGIN_SRC emacs-lisp 
-  (global-prettify-symbols-mode +1)
-#+END_SRC
-
-
