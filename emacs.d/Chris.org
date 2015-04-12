@@ -821,19 +821,6 @@ And load the .el if it's newer than the .elc
   (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
 #+END_SRC
 
-** Clojure
-#+BEGIN_SRC emacs-lisp
-  (require-package 'clojure-mode)
-  (require-package 'cider)
-  (require-package 'rainbow-mode)
-  (require-package 'popup)
-  (add-hook 'clojure-mode-hook 'paredit-mode)
-
-  (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-  (setq nrepl-popup-stacktraces nil)
-  (add-to-list 'same-window-buffer-names "<em>nrepl</em>")
-  (setq cider-show-error-buffer nil)
-#+END_SRC
 ** Racket
 #+BEGIN_SRC emacs-lisp
   (require-package 'racket-mode)
