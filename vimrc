@@ -134,7 +134,7 @@ set directory=~/.vim/tmp,.
 " My colour scheme
 " ----------------
 set bg=dark
-colorscheme molokai
+colorscheme seoul256
 set t_ut=
 " Highlight a character in the 81st column
 " ----------------------------------------
