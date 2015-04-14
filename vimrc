@@ -85,6 +85,11 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
+" Bindings to specific files
+nnoremap  \gc :tabe $MYVIMRC<CR>
+nnoremap  \gr :tabe ~/Dropbox/org/rust.org<CR>
+nnoremap  \gu :tabe ~/Dropbox/org/uni.org<CR>
+nnoremap  \gn :tabe ~/Dropbox/org/notes.org<CR>
 " Search options
 " --------------
 set incsearch
