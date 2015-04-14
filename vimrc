@@ -1,3 +1,11 @@
+" Suggested headlines for configuration organisation
+
+"" Appearance
+"" Writing
+"" Languages
+"" Movement / window management
+"" Filetype/syntax management
+"" Utility
 " General setup
 " -------------
 set nocompatible
