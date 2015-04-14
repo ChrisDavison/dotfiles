@@ -175,3 +175,12 @@ function! s:rotate_colors()
   echo name
 endfunction
 nnoremap <F8> :call <SID>rotate_colors()<cr>
+" Easy alignment mode
+" -------------------
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+" Rainbow parentheses
+autocmd VimEnter * RainbowParentheses
+
