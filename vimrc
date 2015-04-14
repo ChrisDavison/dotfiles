@@ -141,19 +141,23 @@ set t_ut=
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
 " Allow markdown preview
+" ----------------------
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 let g:PreviewCSSPath='http://www.chrisdavison.org/assets/md_preview.css'
 let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
 " Goyo (distractionfree) and Limelight (ENHANCED distractionfree)
+" ---------------------------------------------------------------
 let g:goyo_width=100
 let g:goyo_margin_top=1
 let g:goyo_margin_bottom=1
 autocmd User GoyoEnter Limelight
 autocmd User GoyoLeave Limelight!
 " Code folding..yes or no?
+" ------------------------
 set foldenable
 "set nofoldenable
 " Associate filetypes
+" -------------------
 autocmd BufRead,BufNewFile *.rs set syntax=rust
 autocmd BufRead,BufNewFile *.md set filetype=markdown
 " <F8> | Color scheme rotator
