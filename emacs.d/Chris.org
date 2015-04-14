@@ -1062,39 +1062,6 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
-** PDF Export
-My custom simple font class, with some macros as well.
-#+BEGIN_SRC emacs-lisp
-   (add-to-list 'org-latex-classes
-    '("davisonnn"
-  "\\documentclass[12pt,a4paper]{article}
-  \\usepackage[T1]{fontenc}
-  \\usepackage{mathpazo}
-  \\usepackage[top=1in, bottom=1.5in, left=1in, right=1.5in]{geometry}
-  \\usepackage{cite}
-  \\usepackage{color}
-  \\usepackage{graphicx} 
-  \\usepackage{hyperref} 
-  \\newcommand{\\annotate}[2]
-              {\\marginpar{{\\color{red}\\textbf{\#1}}}
-              {\\color{red}\\emph{\#2}}}
-  \\newcommand{\\divider}
-              {\\begin{center}\\line(1,0){250}\\end{center}}
-  \\newcommand{\\inputfigure}[2]{
-              \\begin{figure}[htbp]
-              \\centering
-              \\includegraphics[width=1\\textwidth]{#1}
-              \\caption[#2]\\textbf{#2}
-              \\label{#1}\\end{figure}}
-  \\title{}
-        [NO-DEFAULT-PACKAGES]
-        [NO-PACKAGES]"
-       ("\\section{%s}" . "\\section*{%s}")
-       ("\\subsection{%s}" . "\\subsection*{%s}")
-       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-#+END_SRC
 * Config: HELM
 ** General helm setup
 #+BEGIN_SRC emacs-lisp
