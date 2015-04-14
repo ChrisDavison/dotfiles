@@ -3,6 +3,8 @@
 set nocompatible
 syntax on
 filetype plugin indent on
+set encoding=utf-8
+set showcmd
 set wrap lbr
 set omnifunc=syntaxcomplete#Complete
 set number
@@ -18,8 +20,10 @@ Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
 Plug 'greyblake/vim-preview'
 Plug 'jceb/vim-orgmode'
+Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'mattn/emmet-vim'
@@ -33,12 +37,18 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-scriptease'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-scripts/paredit.vim'
 Plug 'wting/rust.vim'
 Plug 'wlangstroth/vim-racket'
 
 call plug#end()
+" Increase/decrease font size
+command! -bar -nargs=0 Bigger  :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)+1','')
+command! -bar -nargs=0 Smaller :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)-1','')
+noremap \fd        :Smaller<CR>
+noremap \fu        :Bigger<CR>
 " MY KEY BINDINGS
 map <space> /
 imap ii <esc>
