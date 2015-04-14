@@ -105,12 +105,12 @@ set hlsearch
 set ignorecase
 set smartcase
 set magic
-set bs=indent,eol,start
+set backspace=indent,eol,start
 " Various coding preferences
 " --------------------------
-set tabstop=8
-set softtabstop=8
-set shiftwidth=8
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 set expandtab
 set wildmenu
 set lazyredraw
