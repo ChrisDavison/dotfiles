@@ -5,8 +5,9 @@
 " ----------------
 " My colour scheme
 " ----------------
+set encoding=utf-8
 set bg=dark
-colorscheme molokai
+colorscheme seoul256
 
 " Disable menu bollocks
 set guioptions-=m
@@ -14,4 +15,4 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-set guifont=Source\ Code\ Pro\ ExtraLight:h13
+set guifont=Sauce\ Code\ Powerline:h13
