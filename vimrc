@@ -91,9 +91,6 @@ command! -bar -nargs=0 Smaller :let &guifont = substitute(&guifont,'\d\+$','\=su
 noremap \fd        :Smaller<CR>
 noremap \fu        :Bigger<CR>
 
-" ----- Rainbow parentheses
-autocmd VimEnter * RainbowParentheses
-
 " ----- Allow code folding
 set foldenable
 set foldmethod=marker
