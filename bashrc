@@ -8,6 +8,11 @@ case $- in
       *) return;;
 esac
 
+export GOROOT="/usr/local/go";
+export GOPATH="$HOME/prog/Go";
+export GOBIN="$GOPATH/bin";
+export PATH=$PATH:$GOPATH/bin
+
 shopt -s histappend
 shopt -s checkwinsize
 shopt -s nocaseglob;
