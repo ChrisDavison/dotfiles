@@ -214,6 +214,10 @@ nnoremap  \gn :tabe ~/Dropbox/org/notes.org<CR>
 " -----Toggle whitespace visibility with ,s
 nmap <Leader>s :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
+
+" ----- Get rid of some 'stupidity' 
+noremap K <nop>
+nnoremap Q <nop>
 "}}}
 " CtrlP config {{{
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
