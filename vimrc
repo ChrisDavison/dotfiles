@@ -255,6 +255,20 @@ nmap ga <Plug>(EasyAlign)
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 " }}}
+" Refresh tex folds on save {{{
+autocmd BufWritePre *.tex :VimtexRefreshFolds
+" }}}
+" Return to last edit position when opening files  {{{
+autocmd BufReadPost *
+     \ if line("'\"") > 0 && line("'\"") <= line("$") |
+     \   exe "normal! g`\"" |
+     \ endif
+" Remember info about open buffers on close
+set viminfo^=%
+" }}}
+" OTHER plugin configs {{{
+let NERDTreeMinimalUI=1
+"}}}
 " Wildmenu config {{{
 set wildmode=list:longest
 set wildmenu                
