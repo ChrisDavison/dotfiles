@@ -255,3 +255,18 @@ nmap ga <Plug>(EasyAlign)
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 " }}}
+" Wildmenu config {{{
+set wildmode=list:longest
+set wildmenu                
+" Ignore some stuff
+set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
+set wildignore+=*vim/backups*
+set wildignore+=*sass-cache*
+set wildignore+=*DS_Store*
+set wildignore+=vendor/rails/**
+set wildignore+=vendor/cache/**
+set wildignore+=*.gem
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
+"}}}
