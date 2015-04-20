@@ -218,6 +218,12 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 " ----- Get rid of some 'stupidity' 
 noremap K <nop>
 nnoremap Q <nop>
+
+" ----- Easier search/replace
+" Basically, put you between the brackets of s//g,
+" type your search, then /, then your replacement
+nmap S :%s//g<LEFT><LEFT>
+vmap S :s//g<LEFT><LEFT>
 "}}}
 " CtrlP config {{{
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
