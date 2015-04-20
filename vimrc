@@ -127,12 +127,14 @@ autocmd User GoyoLeave Limelight!
 "}}}
 " Filetype/syntax management{{{
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType python set foldmethod=syntax
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
+let g:tex_flavor = "latex"
 "}}}
 " Custom fold text {{{
 fu! CustomFoldText()
