@@ -164,6 +164,8 @@ fu! CustomFoldText()
 " ----- Easier escape and search
 map <space> /
 imap ii <esc>
+nnoremap ; :
+nnoremap : :
 
 " ----- Split management
 map vv <C-w>v
@@ -191,6 +193,7 @@ vnoremap  <buffer> <silent> $ g$
 
 " ----- For various useful plugins
 nnoremap \e :NERDTreeToggle<CR>
+nnoremap \t :TagbarToggle<CR>
 nnoremap \b :CtrlPBuffer<CR>
 nnoremap \p :Preview<CR>
 nnoremap \w :w !wc %<CR>
@@ -198,6 +201,9 @@ nnoremap \g :Goyo<CR>
 nnoremap \u :GundoToggle<CR>
 nnoremap \d :Dash<CR>
 nnoremap \c :SyntasticCheck<CR>
+nnoremap \bd :Bclose<CR>
+nnoremap \cd :cd %:p:h<cr>:pwd<cr>
+
 
 " ----- Jump to specific files
 nnoremap  \gc :tabe $MYVIMRC<CR>
