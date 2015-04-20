@@ -24,6 +24,8 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set wildmenu
+set autoread
+set clipboard=unnamed
 set lazyredraw
 set laststatus=2
 set nrformats=
