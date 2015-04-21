@@ -252,9 +252,6 @@ vmap <Enter> <Plug>(EasyAlign)
 " ----- Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 "}}}
-" Org agenda {{{
-let g:org_agenda_files=['~/Dropbox/org/notes.org', '~/Dropbox/org/uni.org']
-" }}}
 " Vim Jump-to-File {{{
 " DOESN'T WORK---AT ALL
 " let g:jumpFiles = ['~/.emacs.d/Chris.org']
