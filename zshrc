@@ -3,7 +3,7 @@ ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="clean"
+ZSH_THEME="cloud2"
 
 for file in ~/.dotfiles/{aliases,exports,functions}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file";
