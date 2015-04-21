@@ -48,7 +48,6 @@ Plug 'fatih/vim-go'
 Plug 'greyblake/vim-preview'
 Plug 'guns/vim-sexp'
 Plug 'itchyny/lightline.vim'
-Plug 'jceb/vim-orgmode'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
@@ -208,9 +207,9 @@ nnoremap \cd :cd %:p:h<cr>:pwd<cr>
 
 " ----- Jump to specific files
 nnoremap  \gc :tabe $MYVIMRC<CR>
-nnoremap  \gr :tabe ~/Dropbox/docs/rust.org<CR>
-nnoremap  \gu :tabe ~/Dropbox/docs/uni.org<CR>
-nnoremap  \gn :tabe ~/Dropbox/docs/notes.org<CR>
+nnoremap  \gr :tabe ~/Dropbox/docs/rust.tex<CR>
+nnoremap  \gu :tabe ~/Dropbox/docs/uni.tex<CR>
+nnoremap  \gn :tabe ~/Dropbox/docs/notes.tex<CR>
 
 " -----Toggle whitespace visibility with ,s
 nmap <Leader>s :set list!<CR>
