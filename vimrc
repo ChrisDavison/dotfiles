@@ -199,6 +199,7 @@ nnoremap \p :Preview<CR>
 nnoremap \w :w !wc %<CR>
 nnoremap \g :Goyo<CR>
 nnoremap \u :GundoToggle<CR>
+nnoremap \v :VimtexTocToggle<CR>
 nnoremap \d :Dash<CR>
 nnoremap \c :SyntasticCheck<CR>
 nnoremap \bd :Bclose<CR>
@@ -207,9 +208,9 @@ nnoremap \cd :cd %:p:h<cr>:pwd<cr>
 
 " ----- Jump to specific files
 nnoremap  \gc :tabe $MYVIMRC<CR>
-nnoremap  \gr :tabe ~/Dropbox/org/rust.org<CR>
-nnoremap  \gu :tabe ~/Dropbox/org/uni.org<CR>
-nnoremap  \gn :tabe ~/Dropbox/org/notes.org<CR>
+nnoremap  \gr :tabe ~/Dropbox/docs/rust.org<CR>
+nnoremap  \gu :tabe ~/Dropbox/docs/uni.org<CR>
+nnoremap  \gn :tabe ~/Dropbox/docs/notes.org<CR>
 
 " -----Toggle whitespace visibility with ,s
 nmap <Leader>s :set list!<CR>
@@ -222,8 +223,8 @@ nnoremap Q <nop>
 " ----- Easier search/replace
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
-nmap S :%s//g<LEFT><LEFT>
-vmap S :s//g<LEFT><LEFT>
+nmap S :%s///g<LEFT><LEFT>
+vmap S :s///g<LEFT><LEFT>
 "}}}
 " CtrlP config {{{
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
