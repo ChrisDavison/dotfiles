@@ -85,7 +85,7 @@ call plug#end()
 " Appearance {{{
 " ----- Colourscheme
 set bg=dark
-colorscheme seoul256
+colorscheme 256-grayvim
 set t_ut=
 
 " ----- Increase/decrease font size
