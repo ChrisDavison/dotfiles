@@ -46,3 +46,17 @@ alias glog='git log --oneline --decorate --color --graph'
 alias gap='git add -p'
 alias ga='git add'
 alias gp='git push'
+
+function catless {
+    height=$(tput lines)
+    fileheight=$(wc -l $1 | awk '{print $1}')
+    if [[ $height -gt $fileheight ]]
+    then
+        cat $1
+    else
+        less $1
+    fi
+}
+
+alias cl='catless'
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
