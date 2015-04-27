@@ -298,7 +298,30 @@ set wildignore+=*.png,*.jpg,*.gif
 "}}}
 " Syntastic {{{
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_mode_map = {
+        \ "mode": "active",
+        \ "active_filetypes": ["ruby", "php"],
+        \ "passive_filetypes": ["latex"] }
+" }}}
+" Vimtex {{{
+let g:vimtex_quickfix_ignore_all_warnings=1
+let g:vimtex_latexmk_continuous=0
+let g:vimtex_quickfix_mode=0
+" }}}
+" Visual-mode indent {{{
+vnoremap < <gv
+vnoremap > >gv
+" }}}
+" {{{
+" Default peekaboo window
+let g:peekaboo_window = 'vertical botright 40new'
+
+" Delay opening of peekaboo window (in ms. default: 0)
+let g:peekaboo_delay = 750
+
+" Compact display; do not display the names of the register groups
+let g:peekaboo_compact = 0
 " }}}
