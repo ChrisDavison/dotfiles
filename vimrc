@@ -265,8 +265,7 @@ nmap ga <Plug>(EasyAlign)
 " endfunction
 " }}}
 " Relative line numbers {{{
-autocmd InsertEnter * :set number
-autocmd InsertLeave * :set relativenumber
+au BufReadPost * set relativenumber
 " }}}
 " Refresh tex folds on save {{{
 autocmd BufWritePre *.tex :VimtexRefreshFolds
