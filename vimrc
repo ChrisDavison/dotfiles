@@ -185,15 +185,7 @@ nnoremap \u :GundoToggle<CR>
 nnoremap \v :VimtexTocToggle<CR>
 nnoremap \d :Dash<CR>
 nnoremap \c :SyntasticCheck<CR>
-nnoremap \bd :Bclose<CR>
-nnoremap \cd :cd %:p:h<cr>:pwd<cr>
 
-
-" ----- Jump to specific files {{{2
-nnoremap  \gc :tabe $MYVIMRC<CR>
-nnoremap  \gr :tabe ~/Dropbox/docs/rust.tex<CR>
-nnoremap  \gu :tabe ~/Dropbox/docs/uni.tex<CR>
-nnoremap  \gn :tabe ~/Dropbox/docs/notes.tex<CR>
 
 " ----- Toggle whitespace visibility with ,s {{{2
 nmap <Leader>s :set list!<CR>
