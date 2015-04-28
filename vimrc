@@ -222,7 +222,7 @@ endfunction
 noremap zt :call ToggleFold()<CR>
 
 " ----- Custom fold text {{{2
-fu! CustomFoldText()
+function! CustomFoldText()
      "get first non-blank line
      let fs = v:foldstart
      while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
@@ -240,7 +240,7 @@ fu! CustomFoldText()
      let lineCount = line("$")
      let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
- endf
+ endfunction
  set foldnestmax=1
  set foldtext=CustomFoldText()
 
