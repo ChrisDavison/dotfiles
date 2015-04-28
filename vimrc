@@ -117,7 +117,7 @@ call plug#end()
 " Appearance ----- {{{1
 " ----- Colourscheme {{{2
 set bg=dark
-colorscheme 256-grayvim
+colorscheme apprentice
 set t_ut=
 
 " ----- Increase/decrease font size {{{2
