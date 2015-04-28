@@ -60,3 +60,6 @@ function catless {
 
 alias cl='catless'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+url="https://static.rust-lang.org/rustup.sh"
+alias rustnightly='curl -s $url | sudo sh'
