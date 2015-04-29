@@ -85,6 +85,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-peekaboo'
+Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
@@ -283,6 +284,8 @@ let g:syntastic_mode_map = {
         \ "active_filetypes": ["ruby", "php"],
         \ "passive_filetypes": ["latex"] }
 
+" ----- Check for external file edit {{{2
+au WinEnter * checktime
 " Languages ----- {{{1
 " ----- Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
@@ -313,3 +316,6 @@ let g:tex_flavor = "latex"
 
 
 "}}}
+" ----- C++ {{{2
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
