@@ -75,3 +75,15 @@ myfind() {
 # And even simpler, for files and directories
 ff() { myfind "f" "$1"; }
 fd() { myfind "d" "$1"; }
+
+# Extract filename from find list
+fn() {
+    [ ! -z ${FFOUND[$1-1]} ] && echo ${FFOUND_PWD}/${FFOUND[$1-1]};
+}
+
+# Open file from find list in vim, or change to the directory
+v() { vim $(fn "$1");  }
+c() { cd $(dirname $(fn "$1")); }
+
+# Re-list previous finds
+lf() { echo ${FFOUND[*]} | tr -s ' ' '\n' | cat -n; }
