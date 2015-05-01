@@ -178,16 +178,15 @@ vnoremap > >gv
 
 
 " ----- For various useful plugins {{{2
-nnoremap \e :NERDTreeToggle<CR>
-nnoremap \t :TagbarToggle<CR>
-nnoremap \b :CtrlPBuffer<CR>
-nnoremap \p :Preview<CR>
-nnoremap \w :w !wc %<CR>
-nnoremap \g :Goyo<CR>
-nnoremap \u :GundoToggle<CR>
-nnoremap \v :VimtexTocToggle<CR>
-nnoremap \d :Dash<CR>
-nnoremap \c :SyntasticCheck<CR>
+nnoremap <leader>e :NERDTreeToggle<CR>
+nnoremap <leader>t :TagbarToggle<CR>
+"nnoremap <leader>b :CtrlPBuffer<CR>
+nnoremap <leader>w :w !wc %<CR>
+nnoremap <leader>g :Goyo<CR>
+nnoremap <leader>u :GundoToggle<CR>
+nnoremap <leader>v :VimtexTocToggle<CR>
+nnoremap <leader>d :Dash<CR>
+nnoremap <leader>c :SyntasticCheck<CR>
 
 
 " ----- Toggle whitespace visibility with ,s {{{2
