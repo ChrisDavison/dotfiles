@@ -65,3 +65,13 @@ alias cl='catless'
 # Easier updating of Rust to nightly, until 1.0 is released
 url="https://static.rust-lang.org/rustup.sh"
 alias rustnightly='curl -s $url | sudo sh'
+
+# Make find easier to use
+myfind() {
+    find ./ -name "*$2*" -type "$1" | tee ${TMPDIR}/my_ffound | cat -n
+    FFOUND_PWD=${PWD}
+    FFOUND=($(cat ${TMPDIR}/my_ffound))
+}
+# And even simpler, for files and directories
+ff() { myfind "f" "$1"; }
+fd() { myfind "d" "$1"; }
