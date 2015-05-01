@@ -209,7 +209,12 @@ cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
-
+" ----- Unite.vim {{{2
+" nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
+nnoremap <leader>f :<C-u>Unite -buffer-name=files   -start-insert file_rec/async<cr>
+nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank    history/yank<cr>
+nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer  buffer<cr>
+nnoremap <leader>a :Unite grep:.<cr>
 
 " Utility ----- {{{1
 " ----- Custom fold bind {{{2
@@ -287,6 +292,19 @@ let g:syntastic_mode_map = {
 
 " ----- Check for external file edit {{{2
 au WinEnter * checktime
+" ----- Unite {{{2
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+endfunction
 " Languages ----- {{{1
 " ----- Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
