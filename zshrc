@@ -62,5 +62,6 @@ catless() {
 alias cl='catless'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Easier updating of Rust to nightly, until 1.0 is released
 url="https://static.rust-lang.org/rustup.sh"
 alias rustnightly='curl -s $url | sudo sh'
