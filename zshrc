@@ -47,7 +47,8 @@ alias gap='git add -p'
 alias ga='git add'
 alias gp='git push'
 
-function catless {
+
+catless() {
     height=$(tput lines)
     fileheight=$(wc -l $1 | awk '{print $1}')
     if [[ $height -gt $fileheight ]]
