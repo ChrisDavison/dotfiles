@@ -120,7 +120,8 @@ call plug#end()
 " Appearance ----- {{{1
 " ----- Colourscheme {{{2
 set bg=dark
-colorscheme dracula
+let g:hybrid_use_Xresources = 1
+colorscheme smyck
 set t_ut=
 
 " ----- Increase/decrease font size {{{2
@@ -289,6 +290,8 @@ let g:syntastic_mode_map = {
         \ "mode": "active",
         \ "active_filetypes": ["ruby", "php"],
         \ "passive_filetypes": ["latex"] }
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
+
 
 " ----- Check for external file edit {{{2
 au WinEnter * checktime
