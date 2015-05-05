@@ -74,6 +74,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'Blackrush/vim-gocode'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim'
 Plug 'ap/vim-css-color'
 Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
@@ -91,14 +93,13 @@ Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'neilagabriel/vim-geeknote'
 Plug 'nelstrom/vim-markdown-folding'
+Plug 'nvie/vim-flake8'
 Plug 'reedes/vim-wordy'
 Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -121,7 +122,7 @@ call plug#end()
 " ----- Colourscheme {{{2
 set bg=dark
 let g:hybrid_use_Xresources = 1
-colorscheme smyck
+colorscheme base16-monokai
 set t_ut=
 
 " ----- Increase/decrease font size {{{2
@@ -325,7 +326,7 @@ autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
-autocmd FileType python set foldmethod=syntax
+autocmd FileType python set foldmethod=indent
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
 let g:tex_flavor = "latex"
