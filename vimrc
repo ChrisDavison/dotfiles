@@ -177,12 +177,9 @@ vnoremap > >gv
 " ----- For various useful plugins {{{2
 nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
-"nnoremap <leader>b :CtrlPBuffer<CR>
 nnoremap <leader>w :w !wc %<CR>
 nnoremap <leader>g :Goyo<CR>
-nnoremap <leader>u :GundoToggle<CR>
 nnoremap <leader>v :VimtexTocToggle<CR>
-nnoremap <leader>d :Dash<CR>
 nnoremap <leader>c :SyntasticCheck<CR>
 
 
@@ -207,11 +204,11 @@ cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 " ----- Unite.vim {{{2
-" nnoremap <leader>t :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
-nnoremap <leader>f :<C-u>Unite -buffer-name=files   -start-insert file_rec/async<cr>
-nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank    history/yank<cr>
-nnoremap <leader>b :<C-u>Unite -no-split -buffer-name=buffer  buffer<cr>
-nnoremap <leader>a :Unite grep:.<cr>
+nnoremap <leader>f :<C-u>UniteWithProjectDir -start-insert -winheight=7 file_rec/async<cr>
+nnoremap <leader>y :<C-u>Unite -buffer-name=yank -winheight=15 history/yank<cr>
+nnoremap <leader>b :<C-u>Unite -buffer-name=buffer -quick-match -winheight=7 buffer<cr>
+nnoremap <leader>a :<C-u>Unite grep:.<cr>
+nnoremap <leader>o :<C-u>Unite -buffer-name=outline -auto-resize outline<CR>
 
 " Utility ----- {{{1
 " ----- Custom fold bind {{{2
