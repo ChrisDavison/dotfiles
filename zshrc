@@ -64,7 +64,7 @@ alias cl='catless'
 
 # Easier updating of Rust to nightly, until 1.0 is released
 url="https://static.rust-lang.org/rustup.sh"
-alias rustnightly='curl -s $url | sudo sh'
+alias rustnightly='curl -s $url | sh'
 
 # Make find easier to use
 myfind() {
