@@ -122,6 +122,13 @@ noremap \fu        :Bigger<CR>
 " ----- Relative line numbers {{{2
 au BufReadPost * set relativenumber
 "}}}
+" ----- Nerdtree {{{2
+let NERDTreeMinimalUI=1
+let NERDTreeChDirMode=2
+let NERDTreeRespectWildIgnore=1
+let NERDTreeQuitOnOpen=1
+let NERDTreeWinSize=35
+let NERDTreeDirArrows=1
 " Writing ----- {{{1
 " ----- Goyo {{{2
 let g:goyo_width=100
