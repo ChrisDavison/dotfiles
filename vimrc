@@ -257,13 +257,6 @@ let g:lightline = {
       \ 'subseparator': { 'left': '>', 'right': '<' }
       \ }
 
-" ----- CtrlP config {{{2
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-let g:ctrlp_working_path_mode = ''
-
-" ----- Minimal NERDtree {{{2
-let NERDTreeMinimalUI=1
-
 " ----- Peekaboo {{{2
 " Default peekaboo window
 let g:peekaboo_window = 'vertical botright 40new'
@@ -285,22 +278,22 @@ let g:syntastic_mode_map = {
         \ "passive_filetypes": ["latex"] }
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 
-
-" ----- Check for external file edit {{{2
-au WinEnter * checktime
 " ----- Unite {{{2
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '\..*/' )
+
+call unite#custom#source('file_rec,file_rec/async', 'ignore_globs',
+            \ split(&wildignore,','))
 
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
-  " Play nice with supertab
-  let b:SuperTabDisabled=1
   " Enable navigation with control-j and control-k in insert mode
   imap <buffer> <C-j>   <Plug>(unite_select_next_line)
   imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 endfunction
+
 " Languages ----- {{{1
 " ----- Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
@@ -318,7 +311,6 @@ autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
-autocmd FileType python set foldmethod=indent
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
 let g:tex_flavor = "latex"
