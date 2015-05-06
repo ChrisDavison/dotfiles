@@ -67,40 +67,30 @@ set foldenable
 set foldmethod=marker
 
 
-" Plugins ----- {{{1
-" ---- Using Junegunn's `plugged' {{{2
+" Plugins (JuneGunn) ----- {{{1
 call plug#begin('~/.vim/plugged')
 
-Plug 'Blackrush/vim-gocode'
-Plug 'Lokaltog/vim-easymotion'
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Shougo/unite-outline'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'ap/vim-css-color'
+Plug 'dahu/vim-fanfingtastic'
 Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
-Plug 'greyblake/vim-preview'
 Plug 'guns/vim-sexp'
-Plug 'itchyny/lightline.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-peekaboo'
-Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
-Plug 'neilagabriel/vim-geeknote'
-Plug 'nelstrom/vim-markdown-folding'
 Plug 'nvie/vim-flake8'
-Plug 'reedes/vim-wordy'
-Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
-Plug 'sjl/gundo.vim'
-Plug 'tmhedberg/SimpylFold'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -112,8 +102,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
-Plug 'xolox/vim-colorscheme-switcher'
-Plug 'xolox/vim-misc'
 
 call plug#end()
 
