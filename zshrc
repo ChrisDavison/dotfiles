@@ -83,7 +83,7 @@ fn() {
 
 # Open file from find list in vim, or change to the directory
 v() { vim $(fn "$1");  }
-c() { cd $(dirname $(fn "$1")); }
+ch() { cd $(dirname $(fn "$1")); }
 
 # Re-list previous finds
 lf() { echo ${FFOUND[*]} | tr -s ' ' '\n' | cat -n; }
