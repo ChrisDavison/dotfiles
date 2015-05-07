@@ -7,7 +7,7 @@
 " find and change whatever you need.
 
 " Initial ----- {{{1
-" ----- Good defaults {{{2
+" |====  Good defaults {{{2
 set nocompatible
 syntax on
 filetype plugin indent on
@@ -19,7 +19,7 @@ set omnifunc=syntaxcomplete#Complete
 set number
 set iskeyword=a-z,A-Z,_,.,39
 
-" ----- Search options {{{2
+" |====  Search options {{{2
 set incsearch
 set hlsearch
 set ignorecase
@@ -27,7 +27,7 @@ set smartcase
 set magic
 set backspace=indent,eol,start
 
-" ----- Various coding preferences {{{2
+" |====  Various coding preferences {{{2
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -42,15 +42,15 @@ set title
 set sidescrolloff=15
 set sidescroll=1
 
-" ----- Put all temp files in one place {{{2
+" |====  Put all temp files in one place {{{2
 set backup
 set backupdir=~/.vim/backup,.
 set directory=~/.vim/tmp,.
 
-" ----- Wildmenu config {{{2
+" |====  Wildmenu config {{{2
 set wildmode=list:longest
 set wildmenu                
-" ----- Wildmenu ignores {{{2
+" |====  Wildmenu ignores {{{2
 set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
@@ -62,7 +62,7 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
-" ----- Allow code folding {{{2
+" |====  Allow code folding {{{2
 set foldenable
 set foldmethod=marker
 
@@ -107,30 +107,15 @@ call plug#end()
 
 
 " Appearance ----- {{{1
-" ----- Colourscheme {{{2
+" |====  Colourscheme
 set bg=dark
-let g:hybrid_use_Xresources = 1
 colorscheme base16-monokai
 set t_ut=
 
-" ----- Increase/decrease font size {{{2
-command! -bar -nargs=0 Bigger  :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)+1','')
-command! -bar -nargs=0 Smaller :let &guifont = substitute(&guifont,'\d\+$','\=submatch(0)-1','')
-noremap \fd        :Smaller<CR>
-noremap \fu        :Bigger<CR>
-
-" ----- Relative line numbers {{{2
+" |====  Relative line numbers
 au BufReadPost * set relativenumber
-"}}}
-" ----- Nerdtree {{{2
-let NERDTreeMinimalUI=1
-let NERDTreeChDirMode=2
-let NERDTreeRespectWildIgnore=1
-let NERDTreeQuitOnOpen=1
-let NERDTreeWinSize=35
-let NERDTreeDirArrows=1
 " Writing ----- {{{1
-" ----- Goyo {{{2
+" |====  Goyo
 let g:goyo_width=100
 let g:goyo_margin_top=1
 let g:goyo_margin_bottom=1
@@ -139,13 +124,13 @@ autocmd User GoyoLeave Limelight!
 
 
 " Bindings ----- {{{1
-" ----- Easier escape and search {{{2
+" |====  Easier escape and search {{{2
 map <space> /
 imap ii <esc>
 nnoremap ; :
 nnoremap : :
 
-" ----- Split management {{{2
+" |====  Split management {{{2
 map vv <C-w>v
 map vn <C-w>n
 map <C-w><C-h> <C-w><S-h>
@@ -153,13 +138,13 @@ map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
 
-" ----- Use Ctrl-HJKL to switch windows {{{2
+" |====  Use Ctrl-HJKL to switch windows {{{2
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" ----- Map to visible rather than literal lines {{{2
+" |====  Map to visible rather than literal lines {{{2
 nnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
 nnoremap  <buffer> <silent> j gj
@@ -169,12 +154,11 @@ vnoremap  <buffer> <silent> 0 g0
 nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
-" ----- Visual mode indent {{{2
+" |====  Visual mode indent {{{2
 vnoremap < <gv
 vnoremap > >gv
 
-
-" ----- For various useful plugins {{{2
+" |====  For various useful plugins {{{2
 nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
 nnoremap <leader>w :w !wc %<CR>
@@ -182,28 +166,24 @@ nnoremap <leader>g :Goyo<CR>
 nnoremap <leader>v :VimtexTocToggle<CR>
 nnoremap <leader>c :SyntasticCheck<CR>
 
-
-" ----- Toggle whitespace visibility with ,s {{{2
+" |====  Toggle whitespace visibility with ,s {{{2
 nmap <Leader>s :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
-" ----- Get rid of some 'stupidity'  {{{2
-noremap K <nop>
-nnoremap Q <nop>
 
-" ----- Easier search/replace {{{2
+" |====  Easier search/replace {{{2
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
 nmap S :%s///g<LEFT><LEFT>
 vmap S :s///g<LEFT><LEFT>
 
-" ----- Common mistypes and abbreviations {{{2
+" |====  Common mistypes and abbreviations {{{2
 cnoreabbrev E e
 cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
-" ----- Unite.vim {{{2
+" |====  Unite.vim {{{2
 nnoremap <leader>f :<C-u>UniteWithProjectDir -start-insert -winheight=7 file_rec/async<cr>
 nnoremap <leader>y :<C-u>Unite -buffer-name=yank -winheight=15 history/yank<cr>
 nnoremap <leader>b :<C-u>Unite -buffer-name=buffer -quick-match -winheight=7 buffer<cr>
@@ -211,7 +191,7 @@ nnoremap <leader>a :<C-u>Unite grep:.<cr>
 nnoremap <leader>o :<C-u>Unite -buffer-name=outline -auto-resize outline<CR>
 
 " Utility ----- {{{1
-" ----- Custom fold bind {{{2
+" |====  Custom fold bind {{{2
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -222,7 +202,7 @@ endfunction
 
 noremap zt :call ToggleFold()<CR>
 
-" ----- Custom fold text {{{2
+" |====  Custom fold text {{{2
 function! CustomFoldText()
      "get first non-blank line
      let fs = v:foldstart
@@ -239,35 +219,24 @@ function! CustomFoldText()
      let foldSizeStr = " [" . foldSize . " lines] "
      let foldLevelStr = repeat("|--", v:foldlevel)
      let lineCount = line("$")
-     let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr))
+     let expansionString = repeat("⋅", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
  endfunction
  set foldnestmax=1
  set foldtext=CustomFoldText()
 
 
-" ----- Lightline / Light statusbar {{{2
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {'left':[[ 'mode' ], [ 'fugitive' ]]},
-      \ 'component': {
-      \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-      \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '>', 'right': '<' }
-      \ }
-
-" ----- Peekaboo {{{2
+" |====  Peekaboo {{{2
 " Default peekaboo window
 let g:peekaboo_window = 'vertical botright 40new'
 
 " Delay opening of peekaboo window (in ms. default: 0)
-let g:peekaboo_delay = 750
+let g:peekaboo_delay = 500
 
 " Compact display; do not display the names of the register groups
 let g:peekaboo_compact = 0
 
-" ----- Syntastic {{{2
+" |====  Syntastic {{{2
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
@@ -278,11 +247,10 @@ let g:syntastic_mode_map = {
         \ "passive_filetypes": ["latex"] }
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 
-" ----- Unite {{{2
+" |====  Unite {{{2
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '\..*/' )
-
 call unite#custom#source('file_rec,file_rec/async', 'ignore_globs',
             \ split(&wildignore,','))
 
@@ -294,18 +262,27 @@ function! s:unite_settings()
   imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 endfunction
 
+
+" |====  Nerdtree {{{2
+let NERDTreeMinimalUI=1
+let NERDTreeChDirMode=2
+let NERDTreeRespectWildIgnore=1
+let NERDTreeQuitOnOpen=1
+let NERDTreeWinSize=35
+let NERDTreeDirArrows=1
 " Languages ----- {{{1
-" ----- Latex / Vimtex {{{2
+" |====  Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 autocmd BufWritePre *.tex :VimtexRefreshFolds
+let g:tex_flavor = "latex"
 
-" ----- Markdown {{{2
+" |====  Markdown {{{2
 let g:PreviewCSSPath='http://www.chrisdavison.org/assets/md_preview.css'
 let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
 
-" ----- Filetype management {{{2
+" |====  Filetype management {{{2
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
@@ -313,16 +290,7 @@ autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
-let g:tex_flavor = "latex"
-
-
-
-
-
-
-
-
 "}}}
-" ----- C++ {{{2
+" |====  C++ {{{2
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
