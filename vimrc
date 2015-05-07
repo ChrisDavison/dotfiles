@@ -70,10 +70,6 @@ set foldmethod=marker
 " Plugins (JuneGunn) ----- {{{1
 call plug#begin('~/.vim/plugged')
 
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'Shougo/unite-outline'
-Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim'
 Plug 'ap/vim-css-color'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'ervandew/supertab'
@@ -86,11 +82,15 @@ Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-peekaboo'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
+Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'mattn/emmet-vim'
 Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
+Plug 'Shougo/unite-outline'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -183,10 +183,12 @@ cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
+
 " |====  Unite.vim {{{2
 nnoremap <leader>f :<C-u>UniteWithProjectDir -start-insert -winheight=7 file_rec/async<cr>
 nnoremap <leader>y :<C-u>Unite -buffer-name=yank -winheight=15 history/yank<cr>
 nnoremap <leader>b :<C-u>Unite -buffer-name=buffer -quick-match -winheight=7 buffer<cr>
+nnoremap gb :ls<CR>:buffer<Space>
 nnoremap <leader>a :<C-u>Unite grep:.<cr>
 nnoremap <leader>o :<C-u>Unite -buffer-name=outline -auto-resize outline<CR>
 
