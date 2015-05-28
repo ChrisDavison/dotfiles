@@ -109,7 +109,7 @@ call plug#end()
 " Appearance ----- {{{1
 " |====  Colourscheme
 set bg=dark
-colorscheme base16-monokai
+colorscheme dracula
 set t_ut=
 
 " |====  Relative line numbers
