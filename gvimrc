@@ -6,8 +6,8 @@
 " My colour scheme
 " ----------------
 set encoding=utf-8
-set bg=dark
-colorscheme seoul256
+set bg=light
+colorscheme github
 
 " Disable menu bollocks
 set guioptions-=m
