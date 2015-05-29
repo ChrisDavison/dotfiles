@@ -72,16 +72,14 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'ap/vim-css-color'
 Plug 'dahu/vim-fanfingtastic'
-Plug 'ervandew/supertab'
 Plug 'fatih/vim-go'
 Plug 'guns/vim-sexp'
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
+" Plug 'junegunn/goyo.vim'
+" Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-peekaboo'
 Plug 'lervag/vimtex'
-Plug 'majutsushi/tagbar'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'mattn/emmet-vim'
 Plug 'nvie/vim-flake8'
@@ -99,7 +97,6 @@ Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 
@@ -109,7 +106,7 @@ call plug#end()
 " Appearance ----- {{{1
 " |====  Colourscheme
 set bg=dark
-colorscheme dracula
+colorscheme github
 set t_ut=
 
 " |====  Relative line numbers
@@ -146,6 +143,7 @@ nnoremap <C-L> <C-W><C-L>
 
 " |====  Map to visible rather than literal lines {{{2
 nnoremap  <buffer> <silent> k gk
+vnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
 nnoremap  <buffer> <silent> j gj
 vnoremap  <buffer> <silent> j gj
@@ -192,6 +190,12 @@ nnoremap gb :ls<CR>:buffer<Space>
 nnoremap <leader>a :<C-u>Unite grep:.<cr>
 nnoremap <leader>o :<C-u>Unite -buffer-name=outline -auto-resize outline<CR>
 
+" |==== EasyAlign {{{2
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 " Utility ----- {{{1
 " |====  Custom fold bind {{{2
 function! ToggleFold()
@@ -259,7 +263,6 @@ call unite#custom#source('file_rec,file_rec/async', 'ignore_globs',
 " Custom mappings for the unite buffer
 autocmd FileType unite call s:unite_settings()
 function! s:unite_settings()
-  " Enable navigation with control-j and control-k in insert mode
   imap <buffer> <C-j>   <Plug>(unite_select_next_line)
   imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 endfunction
@@ -288,6 +291,7 @@ let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
+autocmd FileType python set foldmethod=indent
 autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
