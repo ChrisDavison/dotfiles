@@ -74,8 +74,6 @@ Plug 'ap/vim-css-color'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'fatih/vim-go'
 Plug 'guns/vim-sexp'
-" Plug 'junegunn/goyo.vim'
-" Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/vim-peekaboo'
@@ -111,15 +109,6 @@ set t_ut=
 
 " |====  Relative line numbers
 au BufReadPost * set relativenumber
-" Writing ----- {{{1
-" |====  Goyo
-let g:goyo_width=100
-let g:goyo_margin_top=1
-let g:goyo_margin_bottom=1
-autocmd User GoyoEnter Limelight
-autocmd User GoyoLeave Limelight! 
-
-
 " Bindings ----- {{{1
 " |====  Easier escape and search {{{2
 map <space> /
