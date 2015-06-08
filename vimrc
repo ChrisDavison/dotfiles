@@ -80,17 +80,14 @@ Plug 'dahu/vim-fanfingtastic'
 Plug 'fatih/vim-go'
 Plug 'guns/vim-sexp'
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/vim-peekaboo'
 Plug 'lervag/vimtex'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'mattn/emmet-vim'
-Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'nvie/vim-flake8'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
-Plug 'Shougo/unite-outline'
-Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -107,35 +104,43 @@ call plug#end()
 
 
 " Appearance ----- {{{1
-" |====  Colourscheme
-set bg=dark
+set bg=light
 colorscheme github
 set t_ut=
 
-" |====  Relative line numbers
 au BufReadPost * set relativenumber
+
 " Bindings ----- {{{1
-" |====  Easier escape and search {{{2
-map <space> /
-imap ii <esc>
+" |==== GENERAL {{{2
+" Colon used a lot more often
 nnoremap ; :
 nnoremap : :
 
-" |====  Split management {{{2
-map vv <C-w>v
-map vn <C-w>n
+" EX mode is a pain
+map q: :q
+
+" View and switch to buffer
+nnoremap gb :ls<CR>:buffer<Space>
+
+" Indent/De-dent visual selection
+vnoremap < <gv
+vnoremap > >gv
+
+
+" |==== Split/Window management {{{2
+" Move windows
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
 
-" |====  Use Ctrl-HJKL to switch windows {{{2
+" Move BETWEEN windows
 nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" |====  Map to visible rather than literal lines {{{2
+" |==== Move by VISUAL lines {{{2
 nnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
@@ -146,50 +151,39 @@ vnoremap  <buffer> <silent> 0 g0
 nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
-" |====  Visual mode indent {{{2
-vnoremap < <gv
-vnoremap > >gv
-
-" |====  For various useful plugins {{{2
+" |==== For various useful plugins {{{2
 nnoremap <leader>e :NERDTreeToggle<CR>
-nnoremap <leader>t :TagbarToggle<CR>
-nnoremap <leader>w :w !wc %<CR>
-nnoremap <leader>g :Goyo<CR>
+nnoremap <leader>w :w<CR>
 nnoremap <leader>v :VimtexTocToggle<CR>
 nnoremap <leader>c :SyntasticCheck<CR>
 
-" |====  Toggle whitespace visibility with ,s {{{2
+" |==== Toggle whitespace visibility with ,s {{{2
 nmap <Leader>s :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 
-" |====  Easier search/replace {{{2
+" |==== Easier search/replace {{{2
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
 nmap S :%s///g<LEFT><LEFT>
 vmap S :s///g<LEFT><LEFT>
 
-" |====  Common mistypes and abbreviations {{{2
+" |==== Common mistypes and abbreviations {{{2
 cnoreabbrev E e
 cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 
-" |====  Unite.vim {{{2
-nnoremap <leader>f :<C-u>UniteWithProjectDir -start-insert -winheight=7 file_rec/async<cr>
-nnoremap <leader>y :<C-u>Unite -buffer-name=yank -winheight=15 history/yank<cr>
-nnoremap <leader>b :<C-u>Unite -buffer-name=buffer -quick-match -winheight=7 buffer<cr>
-nnoremap gb :ls<CR>:buffer<Space>
-nnoremap <leader>a :<C-u>Unite grep:.<cr>
-nnoremap <leader>o :<C-u>Unite -buffer-name=outline -auto-resize outline<CR>
 
-" |==== EasyAlign {{{2
-" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
-vmap <Enter> <Plug>(EasyAlign)
+" |==== Pasting {{{2
+" Paste and move to end
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
 
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+" Select what was pasted
+noremap gV `[v`]
 " Utility ----- {{{1
 " |====  Custom fold bind {{{2
 function! ToggleFold()
@@ -226,42 +220,6 @@ function! CustomFoldText()
  set foldtext=CustomFoldText()
 
 
-" |====  Peekaboo {{{2
-" Default peekaboo window
-let g:peekaboo_window = 'vertical botright 40new'
-
-" Delay opening of peekaboo window (in ms. default: 0)
-let g:peekaboo_delay = 500
-
-" Compact display; do not display the names of the register groups
-let g:peekaboo_compact = 0
-
-" |====  Syntastic {{{2
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_mode_map = {
-        \ "mode": "active",
-        \ "active_filetypes": ["ruby", "php"],
-        \ "passive_filetypes": ["latex"] }
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-
-" |====  Unite {{{2
-let g:unite_source_history_yank_enable = 1
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#custom#source('file_rec,file_rec/async', 'ignore_pattern', '\..*/' )
-call unite#custom#source('file_rec,file_rec/async', 'ignore_globs',
-            \ split(&wildignore,','))
-
-" Custom mappings for the unite buffer
-autocmd FileType unite call s:unite_settings()
-function! s:unite_settings()
-  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-endfunction
-
-
 " |====  Nerdtree {{{2
 let NERDTreeMinimalUI=1
 let NERDTreeChDirMode=2
@@ -269,19 +227,20 @@ let NERDTreeRespectWildIgnore=1
 let NERDTreeQuitOnOpen=1
 let NERDTreeWinSize=35
 let NERDTreeDirArrows=1
+
 " Languages ----- {{{1
 " |====  Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
-autocmd BufWritePre *.tex :VimtexRefreshFolds
 let g:tex_flavor = "latex"
+autocmd BufWritePre *.tex :VimtexRefreshFolds
 
-" |====  Markdown {{{2
-let g:PreviewCSSPath='http://www.chrisdavison.org/assets/md_preview.css'
-let g:PreviewBrowsers='google-chrome,google-chrome-stable,safari,firefox'
+" |====  C++ {{{2
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
-" |====  Filetype management {{{2
+" Filetype management {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
@@ -290,7 +249,7 @@ autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
-"}}}
-" |====  C++ {{{2
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+
+let g:pymode_python = 'python3'
+
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
