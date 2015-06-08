@@ -6,6 +6,10 @@
 " then this should fold in a relatively well explained manner, allowing you to
 " find and change whatever you need.
 
+" Set leader as space.  It's big, it's in the middle, and it's easy from the
+" home row
+let mapleader="\<Space>"
+
 " Initial ----- {{{1
 " |====  Good defaults {{{2
 set nocompatible
@@ -50,7 +54,7 @@ set directory=~/.vim/tmp,.
 " |====  Wildmenu config {{{2
 set wildmode=list:longest
 set wildmenu                
-" |====  Wildmenu ignores {{{2
+
 set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
@@ -67,7 +71,8 @@ set foldenable
 set foldmethod=marker
 
 
-" Plugins (JuneGunn) ----- {{{1
+" Plugins ----- {{{1
+" Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
 
 Plug 'ap/vim-css-color'
