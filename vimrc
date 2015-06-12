@@ -185,7 +185,7 @@ nnoremap <silent> p p`]
 " Select what was pasted
 noremap gV `[v`]
 " Utility ----- {{{1
-" |====  Custom fold bind {{{2
+" |====  Custom fold {{{2
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -196,7 +196,7 @@ endfunction
 
 noremap zt :call ToggleFold()<CR>
 
-" |====  Custom fold text {{{2
+
 function! CustomFoldText()
      "get first non-blank line
      let fs = v:foldstart
@@ -240,6 +240,10 @@ autocmd BufWritePre *.tex :VimtexRefreshFolds
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 
+" |==== Python {{{2
+let g:pymode_python = 'python3'
+
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 " Filetype management {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
@@ -250,6 +254,4 @@ autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
 
-let g:pymode_python = 'python3'
 
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
