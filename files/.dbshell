@@ -1,0 +1,99 @@
+c.find().forEach(function(myDoc){print(myDoc.name)})
+c.find({'name': 'test char'})
+db.chars.remove({'name': 'test char'})
+use deathwatch
+chars = db.chars
+db.chars.forEach(function (x) {print(x['name']}) )
+db.chars.forEach(function (x) {print(x['name']}) )
+db.chars.forEach(function (x) {print(x['name'])})
+db.chars.find().forEach(function (x) {print(x['name'])})
+db.chars.find()[0]['attrib']
+db.chars.find()[0]
+jobs
+use deathwatch
+c = db.chars
+c.find_one()
+c.find()
+lws
+show collections
+phenomena = db.phenomena
+p = dp.phenomena
+p = db.phenomena
+var a = {'name': 'Dark Foreboding', 'effect':'A faint breeze blows past the psyker and those near him, and everyone gets the feeling that doom is about to befall them'}
+p.insert(a)
+var b = {'name': 'Warp Echo', 'effect': 'For a few seconds, all noises cause sinister echos, regardless of the surroundings'}
+p.insert(b)
+var c = {'name':'Unholy Stench', 'effect': 'The air around the psyker becomes permeated with a bizarre and foul smell'}
+p.insert(c)
+var d = {'name':'Mind Warp', 'effect':'The psyker suffers 1 Insanity Point as his own inherent phobias, suspicions, and hatred surge to the surface of his mind in a wave of negative emotion'}
+p.insert(d)
+var e = {'name':'Hoarfrost', 'effect':'The temperature plummets for an instand and a thin coating of frost covers everything within 3d10 metres of the psyker'}
+p.insert(e)
+p
+p.find()
+var 17 = {'name':'Aura Of Taint', 'effect':'All animals within 1d100 metres of the psyker become spooked and agitated.  Characters with Psyniscience can pinpoint the psyker as the cause.'}
+var a = {'name':'Aura Of Taint', 'effect':'All animals within 1d100 metres of the psyker become spooked and agitated.  Characters with Psyniscience can pinpoint the psyker as the cause.'}
+p.insert(a)
+var a = {'name': 'Memory Worm', 'effect': 'All people within line of sight of the psyker forget something trivial'}
+p.insert(a)
+p.insert({'name': 'Spoilage', 'effect': 'Food and drink go bad within 5d10 metres of the psyker.'})
+p.insert({'name':'Haunting Breeze', 'effect':'Winds whip up around the psyker for a few seconds, blowing light objects about and guttering fires within 3d10 metres of him'})
+p.insert({'name':'Veil Of Darkness', 'effect':'For a brief moment, an area within 3d10 metres of the psyker is plunged into immediate darkness'})
+p.insert({'name':'Distorted Reflections', 'effect':'Mirrors and other reflective surfaces within 5d10 metres of the psyker distort or shatter'})
+p.find().forEach(function (x) {print(x.name)})
+p.find()
+p.find().forEach(function (x) {print(x.name)})
+p.insert({'name':'Breath Leech', 'triggers': [33, 34, 35], 'effect':'Everyone (including the psyker) becomes short of breath for 1 round and cannot make any Run or Charge actions.'})
+p.insert({'name':'Daemonic Mask', 'triggers': [36, 37, 38], 'effect':'For a fleeting moment the psyker takes on a Daemonic appearance and gains a Fear rating of 1 for the rest of the round.  He also gains 1 Corruption point'})
+p.insert({'name':'Unnatural Decay', 'triggers': [39, 40, 41], 'effect':All plant life within 3d10 metres of the psyker withers and dies'})
+p.insert({'name':'Unnatural Decay', 'triggers': [39, 40, 41], 'effect':'All plant life within 3d10 metres of the psyker withers and dies'})
+p.insert({'name':'Spectral Gale', 'triggers': [42, 43, 44], 'effect': 'Howling winds erupt around the psyker.  The psyker and anyone within 410 metres of him must make an EASY (+30) Ag or Str test to avoid being knocked to the ground.'})
+p.insert({'name':'Bloody Tears', 'triggers': [45, 46, 47], 'effect': 'Blood weeps from stone and wood within 3d10 metres of the psyker.  If there are any pictures or statues of people within this area, they appear to be crying blood.'})
+p.insert({'name':'The Earth Protests', 'triggers': [48, 49, 50], 'effect':'The ground suddenly shakes and everyone within 5d10 metres of the psyker must make a Routine (+10) Ag test or be knocked down'})
+p.insert({'name':'Psy Discharge', 'triggers':[51, 52, 53], 'effect':'Static Electricity fills the air within 5d10 metres of the psyker, causing hair to stand on end and unprotected electrics to short out.  The psyker is illuminated by eldritch light.'})
+p.insert({'name':'Warp Ghosts', 'triggers':[54, 55, 56], 'effect':'Ghostly apparitions fill the air within 3d10 metres of the psyker, flying around and howling in pain for a few brief moments.  Everyone within this area must test against Fear(1).'})
+p.insert({'name':'Falling Upwards', 'triggers':[57, 58, 59], 'effect':'Everything within 2d10 metres of the psyker rises 1d10 metres into the air as gravity briefly ceases.  After a second or two, everything crashes back to earth.  Everyone takes falling damage'})
+p.insert({'name':'Banshee Howl', 'triggers':[60, 61, 62], 'effect':'A shrill keening rings out across the immediate area, shattering glass and forcing every mortal creature able to hear it to make a CHALLENGING (+0) Toughness test or be deafened for 1d10 rounds'})
+p.insert({'name':'The Furies', 'triggers':[63, 64, 65], 'effect':'The psyker is assailed by unseen horrors.  He is slammed to the ground and suffers 1d5 Wounds in damage (Toughness protects, but armor, unless warded, does not).  The psyker must test against Fear(2)'})
+p.insert({'name':'Shadow Of The Warp', 'triggers':[66, 67, 68], 'effect':'For a split second the world changes in appearance and everyone within 1d100 metres of the psyker has a mercifully brief glimpse of the shadow of the warp.  Everyone in the area must make a DIFFICULT (-10) WP test or gain 1d5 Insanity points.'})
+p.insert({'name':'Tech Scorn', 'triggers':[69, 70, 71], 'effect':'The machine spirits reject the psyker's unnatural ways.  All unwarded tech devices within 5d10 metres of the psyker malfunction momentarily, and all ranged weapons within this area Jam.  Characters with cybernetic implants must pass a ROUTINE (+10) Toughness test or suffer 1d5 damage'})
+p.insert({'name':'Tech Scorn', 'triggers':[69, 70, 71], 'effect':'The machine spirits reject your unnatural ways.  All unwarded tech devices within 5d10 metres of the psyker malfunction momentarily, and all ranged weapons within this area Jam.  Characters with cybernetic implants must pass a ROUTINE (+10) Toughness test or suffer 1d5 damage'})
+p.insert({'name':'Warp Madness', 'triggers':[72, 73, 74], 'effect':'A violent ripple of tainted discord causes all creatures within 2d10 metres of the psyker to become Frenzied for 1 round.  Affected creatures gain 1d5 Corruption points unless they can pass a DIFFICULT (-10) WP test.'})
+p.insert({'name':'Perils of the Warp', 'triggers':[75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100], 'effect':'The Warp opens in a maelstrom of energy.  Immediately make a roll on the Perils of the Warp table'})
+show collections
+p = db.perils
+p.find().forEach(function(x){ print(x.name) })
+ls
+var fix = p.find({'name':'Destruction'})
+fix
+fix.triggers = 100
+fix.triggers = [100]
+fix
+var fix = p.find({'name':'Destruction'})
+var fixxed = {'name':fix.name, 'triggers':[100], 'effects':fix.effects}
+db.perils.update({'name':'Destruction'}, fixxed)
+db.perils.find({'name':'Destruction'})
+db.perils.find()
+fix.triggers = [100]
+var fix = p.find({'name':'Destruction'})
+fix
+p.find()
+use deathwatch
+ls
+c = db.characters
+c.find()
+c.Find()
+show collections
+c = db.chars
+c.find()
+c.find()show collection
+show collections
+db.system.indexes.find()
+db.testData.find()
+db.testData.drop()
+show collections
+db.chars.find()
+db.chars.find()db.weapons.find()
+show collections
+db.weapons.Find()
+db.weapons.find()
