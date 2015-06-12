@@ -1,0 +1,25 @@
+# Exports for bash/zsh
+
+export EDITOR="vim";
+
+# Terminal history handling
+export HISTCONTROL=ignoreboth:erasedups;
+export HISTSIZE=32768;
+export HISTFILESIZE=$HISTSIZE;
+export HISTFILESIZE=2000;
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
+
+# Environment variables/path
+# export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
+export SCRIPTS="$HOME/src/scripts";
+export GOROOT="/usr/local/go";
+export GOPATH="$HOME/prog/Go";
+export GOBIN="$GOPATH/bin";
+export TEXPATH="/usr/texbin"; 
+export HASKPATH="$HOME/Library/Haskell/bin"; # CABAL binary path
+export RACKETPATH="/Applications/Racket\ v6.1.1/bin"
+
+export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH:$RACKETPATH;
+
+# 256 color terminal
+export TERM=xterm-256color;
