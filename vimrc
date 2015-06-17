@@ -105,7 +105,7 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=light
-colorscheme github
+colorscheme Monokai
 set t_ut=
 
 au BufReadPost * set relativenumber
