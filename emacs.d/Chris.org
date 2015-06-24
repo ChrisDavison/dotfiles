@@ -38,19 +38,61 @@ If you're viewing the Org inside emacs, you can open source blocks (ones beginni
       user-mail-address "c.jr.davison@gmail.com")
 #+end_src
   
-* Useful Consts
+* Initialisation
+** Consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
 #+BEGIN_SRC emacs-lisp
   (defconst *spell-check-support-enabled* nil)
   (defconst *is-a-mac* (eq system-type 'darwin))
 #+END_SRC
 
-* Config: Package
-Refresh the package list, ensuring newest package versions.  You may not like this as it can give a slight delay when opening emacs, but I tend to keep the window open in a seperate workspace, so for me this is an infrequent issue.
-#+BEGIN_SRC emacs-lisp :tangle no
-(package-refresh-contents)
+** Package Management
+Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
+#+BEGIN_SRC emacs-lisp
+  (package-refresh-contents)
 #+END_SRC
 
+On-demand package loading
+#+BEGIN_SRC emacs-lisp
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (if (package-installed-p package min-version)
+      t
+    (if (or (assoc package package-archive-contents) no-refresh)
+        (package-install package)
+      (progn
+        (package-refresh-contents)
+        (require-package package min-version t)))))
+
+(defun maybe-require-package (package &optional min-version no-refresh)
+  "Try to install PACKAGE, and return non-nil if successful.
+In the event of failure, return nil and print a warning message.
+Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
+available package lists will not be re-downloaded in order to
+locate PACKAGE."
+  (condition-case err
+      (require-package package min-version no-refresh)
+    (error
+     (message "Couldn't install package `%s': %S" package err)
+     nil)))
+#+END_SRC
+
+** Package Sources
+     Add org and gnu by default
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+#+END_SRC
+
+But use melpa for most packages
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+#+END_SRC
 
 ** Eval after load
 #+BEGIN_SRC emacs-lisp
@@ -85,59 +127,6 @@ Give regex patterns to add-auto-mode, so you don't need to call add-to-list mult
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
 
-** Package Sources
-     Add org and gnu by default
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-#+END_SRC
-
-But use melpa for most packages
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-#+END_SRC
-
-** Maybe enable signatures (GPG)
-If gpg cannot be found, signature check will fail.  Conditionally enable according to whether GPG is available.
-#+BEGIN_SRC emacs-lisp
-(defun sanityinc/package-maybe-enable-signatures ()
-  (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
-
-(sanityinc/package-maybe-enable-signatures)
-(after-load 'init-exec-path
-  (sanityinc/package-maybe-enable-signatures))
-#+END_SRC
-
-** On-demand package installation
-#+BEGIN_SRC emacs-lisp
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-If NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (if (package-installed-p package min-version)
-      t
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
-        (package-refresh-contents)
-        (require-package package min-version t)))))
-
-(defun maybe-require-package (package &optional min-version no-refresh)
-  "Try to install PACKAGE, and return non-nil if successful.
-In the event of failure, return nil and print a warning message.
-Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
-available package lists will not be re-downloaded in order to
-locate PACKAGE."
-  (condition-case err
-      (require-package package min-version no-refresh)
-    (error
-     (message "Couldn't install package `%s': %S" package err)
-     nil)))
-#+END_SRC
-
 ** And then initialize...
 #+BEGIN_SRC emacs-lisp
 (setq package-enable-at-startup nil)
@@ -159,7 +148,12 @@ Useful to have access to power of common lisp within emacs.
 (require-package 'diminish)
 #+END_SRC
 
-* Config: Appearance
+** aksjdaksd
+
+#+BEGIN_SRC emacs-lisp
+(require-package 'linum+)
+#+END_SRC
+* Appearance
 ** FONT stuff
 *** Default  (if available)
 #+BEGIN_SRC emacs-lisp
@@ -282,10 +276,11 @@ Hide tool bar,  scroll bar and borders
   (add-to-list 'initial-frame-alist no-border))
 #+END_SRC
 
-*** Highlight current line and no blinking cursor
+*** QUOTE Highlight current line and no blinking cursor
 #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
+(setq linum-format "%d ")
 #+END_SRC
 
 ** Alias for yes-or-no
@@ -329,7 +324,7 @@ Replace any occurrence of 'lambda' with the actual symbol.
   (global-prettify-symbols-mode +1)
 #+END_SRC
 
-* Config: Parentheses
+* Parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode t)
@@ -339,10 +334,9 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+END_SRC
 
-* Config: VIM
+* VIM
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.
 
-** Evil (VI) mode, as well as Vim surround
 #+BEGIN_SRC emacs-lisp
   (require-package 'evil)
   (evil-mode 1)
@@ -351,7 +345,6 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   (global-evil-surround-mode)
 #+END_SRC
 
-** Use Control-HJKL to move between splits (VI style)
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
@@ -360,7 +353,6 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   (define-key evil-normal-state-map (kbd "SPC") 'isearch-forward)
 #+END_SRC
 
-** Key-chord
 Adding key-chord here, as it's mainly for vim-type things
 #+BEGIN_SRC emacs-lisp
   (require-package 'key-chord)
@@ -371,7 +363,7 @@ Adding key-chord here, as it's mainly for vim-type things
 
 #+RESULTS:
 
-* Config: History, Backup, Session
+* History, Backup, Session
 ** Backups
 This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
 
@@ -424,7 +416,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   (desktop-save-mode 1)
 #+END_SRC
 
-* Config: SEARCH
+* SEARCH
 ** Project/File - Grep (and Ag)
 If ag is available, use that instead.  Faster.  Better for coding.
 #+BEGIN_SRC emacs-lisp
@@ -456,15 +448,14 @@ If ag is available, use that instead.  Faster.  Better for coding.
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 #+END_SRC
-* Config: NAVIGATION
-** Ace Mode iSearch
+* Ace Mode iSearch
 Hybrind of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
 #+BEGIN_SRC emacs-lisp
   (require-package 'ace-isearch)
   (global-ace-isearch-mode 1)
 #+END_SRC
 
-** Smartscan
+* Smartscan
 From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
 
 This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
@@ -475,7 +466,7 @@ Bound to =M-n= and =M-b= by default, I think.
   (global-smartscan-mode t)
 #+end_src
 
-* Config: UTILITY
+* UTILITY
 ** Help - guide-key
 
 It's hard to remember keyboard shortcuts. The =guide-key= package pops up help after a short delay.
@@ -643,7 +634,7 @@ And if you want to delete everything -but- this window...
 (recentf-mode)
 #+end_src
 
-* Config: DIRED / NAV
+* DIRED / NAV
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
@@ -664,7 +655,7 @@ From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-di
 (diredp-toggle-find-file-reuse-dir 1)
 #+end_src
 
-* Config: WRITING
+* WRITING
 ** Writeroom
 Writeroom, for distraction free editing
 #+BEGIN_SRC emacs-lisp 
@@ -684,7 +675,7 @@ Couldn't get this working directly...so functionalise it
 
   (key-chord-define-global "tw" 'trunc-wrap)
 #+END_SRC
-* Config: PROG LANGUAGES
+* PROG LANGUAGES
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
@@ -891,7 +882,7 @@ Automatically run on numeric environment when using python
       (local-set-key (kbd "C-c <down>")  'hs-show-all)
       (hs-minor-mode t)))
 #+END_SRC
-* Config: IDO
+* IDO
 #+BEGIN_SRC emacs-lisp
   (require 'ido)
   (ido-mode t)
@@ -916,7 +907,7 @@ Automatically run on numeric environment when using python
   (setq ido-default-buffer-method 'selected-window)
 #+END_SRC
 
-* Config: ORG-MODE
+* ORG-MODE
 ** Taking notes
 Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
 #+BEGIN_SRC emacs-lisp
@@ -1062,7 +1053,7 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
-* Config: HELM
+* HELM
 ** General helm setup
 #+BEGIN_SRC emacs-lisp
   (require-package 'helm)
