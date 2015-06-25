@@ -24,3 +24,4 @@ alias cbssh="cbf ~/.ssh/id_rsa.pub"
 # Switch to python numeric environment
 alias pyenv="source ~/Envs/numeric/bin/activate"
 
+alias pynb="echo \"Running iPython Notebook in the background\" && pyenv && (cd ~/engd/pynotebook && ipython notebook --no-browser) &"
