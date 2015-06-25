@@ -151,8 +151,9 @@ Useful to have access to power of common lisp within emacs.
 * appearance
 ** font stuff
 #+BEGIN_SRC emacs-lisp
-(when (member "Inconsolata" (font-family-list))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 170))
+(when (member "DejaVu Sans Mono" (font-family-list))
+  (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 150))
+(setq line-spacing 0.2)
 #+END_SRC
 
 ** colour theme 
@@ -441,6 +442,7 @@ And give emacs some of the expected OS X keybinds
       (define-key nxml-mode-map (kbd "M-h") nil))
     (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
     (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
+    (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
 #+END_SRC
 ** ibuffer - interactive buffer management
@@ -933,6 +935,8 @@ Links to common files
   (global-set-key (kbd "C-p") 'helm-mini)
   (global-set-key (kbd "C-c a") 'helm-apropos)
   (global-set-key (kbd "C-c o") 'helm-occur)
+  (global-set-key (kbd "C-c s") 'helm-swoop)
+  (global-set-key (kbd "C-c i") 'helm-imenu)
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (ido-mode -1)
@@ -944,3 +948,4 @@ Links to common files
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
    
+
