@@ -1,7 +1,7 @@
 #+TITLE: Chris Davison's Emacs configuration
 #+PROPERTY: header-args  :results silent
 
-* About this file
+* about this file
 <<babel-init>>
 
 THIS NEEDS WORK:  In individual sections, split the code and add more explanation.
@@ -32,21 +32,21 @@ You may see an unusual (non eLisp) construct in =(require-package 'something...)
 
 If you're viewing the Org inside emacs, you can open source blocks (ones beginning in begin_src) in a seperate buffer by moivng your point inside them and typing C-c ' (=ord-edit-special=).  This opens the block in an elisp buffer, so you can use =M-x eval-buffer= to load the changes.
 
-* Personal information
+* personal information
 #+begin_src emacs-lisp
   (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com")
 #+end_src
   
-* Initialisation
-** Consts
+* initialisation
+** consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
 #+BEGIN_SRC emacs-lisp
   (defconst *spell-check-support-enabled* nil)
   (defconst *is-a-mac* (eq system-type 'darwin))
 #+END_SRC
 
-** Package Management
+** package management
 Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
 #+BEGIN_SRC emacs-lisp
   (package-refresh-contents)
@@ -79,7 +79,7 @@ locate PACKAGE."
      nil)))
 #+END_SRC
 
-** Package Sources
+** package sources
      Add org and gnu by default
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
@@ -94,7 +94,7 @@ But use melpa for most packages
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 #+END_SRC
 
-** Eval after load
+** eval after load
 #+BEGIN_SRC emacs-lisp
 (if (fboundp 'with-eval-after-load)
   (defalias 'after-load 'with-eval-after-load)
@@ -105,7 +105,7 @@ But use melpa for most packages
                       '(progn ,@body))))
 #+END_SRC
 
-** File deletion utilities
+** file deletion utilities
 Delete the current file.  Basically a big of sugar around =delete-file= to take the current buffer.
 #+BEGIN_SRC emacs-lisp
 (defun delete-this-file ()
@@ -118,7 +118,7 @@ Delete the current file.  Basically a big of sugar around =delete-file= to take 
     (kill-this-buffer)))
 #+END_SRC
 
-** Easier add-to-list
+** easier add-to-list
 Give regex patterns to add-auto-mode, so you don't need to call add-to-list multiple times (it'll do it for you).
 #+BEGIN_SRC emacs-lisp
 (defun add-auto-mode (mode &rest patterns)
@@ -127,7 +127,7 @@ Give regex patterns to add-auto-mode, so you don't need to call add-to-list mult
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
 
-** And then initialize...
+** and then initialize...
 #+BEGIN_SRC emacs-lisp
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -136,116 +136,43 @@ Give regex patterns to add-auto-mode, so you don't need to call add-to-list mult
 (fullframe list-packages quit-window)
 #+END_SRC
 
-** Common Lisp libs
+** common lisp libs
 Useful to have access to power of common lisp within emacs.
 #+BEGIN_SRC emacs-lisp
 (require-package 'cl-lib)
 (require 'cl-lib)
 #+END_SRC
 
-** Diminish Minor Modes
+** diminish minor modes
 #+BEGIN_SRC emacs-lisp
 (require-package 'diminish)
 #+END_SRC
 
-** aksjdaksd
-
-#+BEGIN_SRC emacs-lisp
-(require-package 'linum+)
-#+END_SRC
-* Appearance
-** FONT stuff
-*** Default  (if available)
+* appearance
+** font stuff
 #+BEGIN_SRC emacs-lisp
 (when (member "Inconsolata" (font-family-list))
-  (set-face-attribute 'default nil :font "Inconsolata" :height 150))
+  (set-face-attribute 'default nil :font "Inconsolata" :height 170))
 #+END_SRC
 
-#+RESULTS:
-
-*** Size etc
-#+BEGIN_SRC emacs-lisp
-  (defcustom sanityinc/force-default-font-for-symbols nil
-    "When non-nil, force Emacs to use your default font for symbols."
-    :type 'boolean)
-
-  (defun sanityinc/maybe-use-default-font-for-symbols ()
-    "Force Emacs to render symbols using the default font, if so configured."
-    (when sanityinc/force-default-font-for-symbols
-      (set-fontset-font "fontset-default" 'symbol (face-attribute 'default :family))))
-
-  (add-hook 'after-init-hook 'sanityinc/maybe-use-default-font-for-symbols)
-
-  (require 'cl)
-
-  (defun sanityinc/font-name-replace-size (font-name new-size)
-    (let ((parts (split-string font-name "-")))
-      (setcar (nthcdr 7 parts) (format "%d" new-size))
-      (mapconcat 'identity parts "-")))
-
-  (defun sanityinc/increment-default-font-height (delta)
-    "Adjust the default font height by DELTA on every frame.
-  Emacs will keep the pixel size of the frame approximately the
-  same.  DELTA should be a multiple of 10, to match the units used
-  by the :height face attribute."
-    (let* ((new-height (+ (face-attribute 'default :height) delta))
-           (new-point-height (/ new-height 10)))
-      (dolist (f (frame-list))
-        (with-selected-frame f
-          ;; Latest 'set-frame-font supports a "frames" arg, but
-          ;; we cater to Emacs 23 by looping instead.
-          (set-frame-font (sanityinc/font-name-replace-size
-                           (face-font 'default)
-                           new-point-height)
-                          t)))
-      (set-face-attribute 'default nil :height new-height)
-      (message "Default font size is now %d" new-point-height)))
-
-  (defun sanityinc/increase-default-font-height ()
-    (interactive)
-    (sanityinc/increment-default-font-height 10))
-
-  (defun sanityinc/decrease-default-font-height ()
-    (interactive)
-    (sanityinc/increment-default-font-height -10))
-
-  (global-set-key (kbd "C-M-=") 'sanityinc/increase-default-font-height)
-  (global-set-key (kbd "C-M--") 'sanityinc/decrease-default-font-height)
-#+END_SRC
-
-** THEME stuff
-*** Add some
-I always end up going back to solarized, so this is the only one I'm activating at the moment.
+** colour theme 
+I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.
+Also added functions to quickly jump between light and dark themes.
 #+BEGIN_SRC emacs-lisp
   (require-package 'solarized-theme)
+  (load-theme 'zenburn t)
+
+  (defun light()
+    "Activate a light color theme."
+    (interactive)
+    (load-theme 'solarized-light))
+
+  (defun dark()
+    "Activate a dark color theme."
+    (interactive)
+    (load-theme 'solarized-dark))
 #+END_SRC
-
-*** Toggle Light-Dark
-Call these from =M-x=, either light or dark.
-#+BEGIN_SRC emacs-lisp
-(defun light()
-  "Activate a light color theme."
-  (interactive)
-  (load-theme 'solarized-light))
-
-(defun dark()
-  "Activate a dark color theme."
-  (interactive)
-  (load-theme 'solarized-dark))
-#+END_SRC
-
-*** CURRENT THEME
-#+NAME: Current Theme
-Moved to setting current theme last as I was having some issues.  Presuming it's due to setting font face stuff.
-#+BEGIN_SRC emacs-lisp 
-  (load-theme 'solarized-light t)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** GUI stuff
-*** Maybe suspend frame
+** *maybe* suspend frame
 This is useful if running a mac, so that C-z wont hide it.  Considered 'appearance' as I want to see windows.
 #+BEGIN_SRC emacs-lisp
 (defun maybe-suspend-frame ()
@@ -256,7 +183,7 @@ This is useful if running a mac, so that C-z wont hide it.  Considered 'appearan
 (global-set-key (kbd "C-z") 'maybe-suspend-frame)
 #+END_SRC
 
-*** Suppress features
+** suppress gui features
 #+BEGIN_SRC emacs-lisp
   (setq use-file-dialog nil)
   (setq use-dialog-box nil)
@@ -276,55 +203,55 @@ Hide tool bar,  scroll bar and borders
   (add-to-list 'initial-frame-alist no-border))
 #+END_SRC
 
-*** QUOTE Highlight current line and no blinking cursor
+** highlight current line and no blinking cursor
 #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 (setq linum-format "%d ")
 #+END_SRC
 
-** Alias for yes-or-no
+** alias for yes-or-no
 This is again a quality of life thing, to allow you to hit yes or no by using y or n.
 #+BEGIN_SRC emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Faster keystroke echoing
+** faster keystroke echoing
 #+BEGIN_SRC emacs-lisp
 (setq echo-keystrokes 0.1)
 #+END_SRC
 
-** Tabs to spaces, and tab-related things
+** tabs to spaces, and tab-related things
 #+BEGIN_SRC emacs-lisp
 (setq tab-stop-list (number-sequence 4 200 4))
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 #+END_SRC
 
-** Show line and column number in status bar
+** show line and column number in status bar
 #+BEGIN_SRC emacs-lisp
 (line-number-mode 1)
 (column-number-mode 1)
 #+END_SRC
 
-** Stop scrolling jumping multiple lines
+** stop scrolling jumping multiple lines
 #+BEGIN_SRC emacs-lisp
   (setq scroll-step           1
         scroll-conservatively 10000)
 #+END_SRC
 
-** Scratch Buffer - Initial Message
+** scratch buffer - initial message
 #+BEGIN_SRC emacs-lisp
   (setq-default initial-scratch-message ";; Scratch pad\n\n")
 #+END_SRC
 
-** Font-locking
+** font-locking
 Replace any occurrence of 'lambda' with the actual symbol.
 #+BEGIN_SRC emacs-lisp 
   (global-prettify-symbols-mode +1)
 #+END_SRC
 
-* Parentheses
+* parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode t)
@@ -334,7 +261,7 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+END_SRC
 
-* VIM
+* vim
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.
 
 #+BEGIN_SRC emacs-lisp
@@ -351,6 +278,7 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
   (define-key evil-normal-state-map (kbd "SPC") 'isearch-forward)
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
 #+END_SRC
 
 Adding key-chord here, as it's mainly for vim-type things
@@ -363,8 +291,7 @@ Adding key-chord here, as it's mainly for vim-type things
 
 #+RESULTS:
 
-* History, Backup, Session
-** Backups
+* backups
 This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
 
 #+BEGIN_SRC emacs-lisp
@@ -380,7 +307,7 @@ Disk space is cheap. Save lots.
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
 #+end_src
 
-** History
+* history
 
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 #+begin_src emacs-lisp
@@ -395,7 +322,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
         regexp-search-ring))
 #+end_src
 
-** Undo tree  - visualize your undos and branches
+* undo tree  - visualize your undos and branches
 
 People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
 #
@@ -409,15 +336,14 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   (setq undo-tree-visualizer-diff t)
 #+end_src
 
-** Save session
+* save session
 #+BEGIN_SRC emacs-lisp
   (setq desktop-path (list user-emacs-directory)
         desktop-auto-save-timeout 600)
   (desktop-save-mode 1)
 #+END_SRC
 
-* SEARCH
-** Project/File - Grep (and Ag)
+* project/file search - grep (and ag)
 If ag is available, use that instead.  Faster.  Better for coding.
 #+BEGIN_SRC emacs-lisp
   (setq-default grep-highlight-matches t
@@ -436,7 +362,7 @@ If ag is available, use that instead.  Faster.  Better for coding.
 #+RESULTS:
 : ag-project
 
-** Show current/total matches when searching
+* show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
   (when (maybe-require-package 'anzu)
     (global-anzu-mode t)
@@ -448,14 +374,14 @@ If ag is available, use that instead.  Faster.  Better for coding.
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 #+END_SRC
-* Ace Mode iSearch
+* ace mode isearch
 Hybrind of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
 #+BEGIN_SRC emacs-lisp
   (require-package 'ace-isearch)
   (global-ace-isearch-mode 1)
 #+END_SRC
 
-* Smartscan
+* smartscan
 From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
 
 This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
@@ -466,8 +392,8 @@ Bound to =M-n= and =M-b= by default, I think.
   (global-smartscan-mode t)
 #+end_src
 
-* UTILITY
-** Help - guide-key
+* utility
+** help - guide-key
 
 It's hard to remember keyboard shortcuts. The =guide-key= package pops up help after a short delay.
 
@@ -477,7 +403,7 @@ It's hard to remember keyboard shortcuts. The =guide-key= package pops up help a
   (guide-key-mode 1)
 #+end_src
 
-** UTF-8
+** utf-8
 
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 #+begin_src emacs-lisp
@@ -486,7 +412,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
 
-** Mac OSX Keys
+** mac osx keys
 Mac needs a little bit of hand holding...
 #+BEGIN_SRC emacs-lisp
   (when *is-a-mac*
@@ -517,7 +443,7 @@ And give emacs some of the expected OS X keybinds
     (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
 #+END_SRC
-** Ibuffer - Interactive buffer management
+** ibuffer - interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
 #+BEGIN_SRC emacs-lisp
   (require-package 'fullframe)
@@ -577,7 +503,7 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
 
 #+END_SRC
 
-** Windows - Managing window splits
+** windows - managing window splits
 A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
 
 #+BEGIN_SRC emacs-lisp
@@ -615,7 +541,7 @@ And if you want to delete everything -but- this window...
 
   (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
 #+END_SRC
-** Indent after newline
+** indent after newline
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "RET") 'newline-and-indent)
   (defun sanityinc/newline-at-end-of-line ()
@@ -625,7 +551,7 @@ And if you want to delete everything -but- this window...
     (newline-and-indent))
 #+END_SRC
 
-** Recent files
+** recent files
 
 #+begin_src emacs-lisp
 (require 'recentf)
@@ -634,37 +560,28 @@ And if you want to delete everything -but- this window...
 (recentf-mode)
 #+end_src
 
-* DIRED / NAV
+* dired / nav
 
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
-** Generally improve dired appearance
+** generally improve dired appearance
 #+begin_src emacs-lisp 
 (require 'find-dired)
 (require-package 'dired+)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 #+END_SRC
 
-** Hide files beginning with .[NOT A DOT]
+** hide files beginning with .[not a dot]
 #+BEGIN_SRC emacs-lisp 
   (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
 #+END_SRC
 
-** Make dired use the same buffer when switching directories.
+** make dired use the same buffer when switching directories.
 #+BEGIN_SRC emacs-lisp 
 (diredp-toggle-find-file-reuse-dir 1)
 #+end_src
 
-* WRITING
-** Writeroom
-Writeroom, for distraction free editing
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'writeroom-mode)
-  (setq writeroom-restore-window-config t)
-  (global-set-key (kbd "C-c w") 'writeroom-mode)
-#+END_SRC
-
-** Word wrapping and truncation
+* word wrapping and truncation
 Couldn't get this working directly...so functionalise it
 #+BEGIN_SRC emacs-lisp
 (defun trunc-wrap()
@@ -675,13 +592,13 @@ Couldn't get this working directly...so functionalise it
 
   (key-chord-define-global "tw" 'trunc-wrap)
 #+END_SRC
-* PROG LANGUAGES
-** Flycheck
+* prog languages
+** flycheck
 #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
 #+END_SRC
 
-** Markdown
+** markdown
 Simple.  Get markdown and add to auto-list.
 #+BEGIN_SRC emacs-lisp
   (require-package 'markdown-mode)
@@ -690,7 +607,7 @@ Simple.  Get markdown and add to auto-list.
         (cons '("\\.\\(md\\|markdown\\)\\'" . markdown-mode) auto-mode-alist))
 #+END_SRC
 
-** CSV
+** csv
 Not done much with this yet, but generally makes CSVs a bit prettier.
 
 #+BEGIN_SRC emacs-lisp
@@ -702,7 +619,7 @@ Not done much with this yet, but generally makes CSVs a bit prettier.
   (setq csv-separators '("," ";" "|" " "))
 #+END_SRC
 
-** HTML / CSS
+** html / css
 Emmet is glorious for quickly outlining HTML.
 #+BEGIN_SRC emacs-lisp
   (require-package 'emmet-mode)
@@ -728,53 +645,7 @@ Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
 
 #+RESULTS:
 
-** Haskell
-General inclusion of haskell
-#+BEGIN_SRC emacs-lisp
-    (require-package 'flycheck-haskell)
-    (require-package 'haskell-mode)
-
-    (add-to-list 'completion-ignored-extensions ".hi")
-
-    ;; Indentation
-    (require-package 'hi2)
-    (add-hook 'haskell-mode-hook
-              'turn-on-hi2)
-#+END_SRC
-
-Fix indentation for haskell
-#+BEGIN_SRC emacs-lisp
-    (when (fboundp 'electric-indent-mode)
-      (add-hook 'haskell-mode-hook
-                (lambda () (electric-indent-mode -1))))
-#+END_SRC
-
-...and autocomplete for Haskell
-#+BEGIN_SRC emacs-lisp
-
-  ;; Hook auto-complete into the completions provided by the inferior
-  ;; haskell process, if any.
-  (require-package 'ac-haskell-process)
-
-  (add-hook 'interactive-haskell-mode-hook
-            'ac-haskell-process-setup)
-  (add-hook 'haskell-interactive-mode-hook
-            'ac-haskell-process-setup)
-
-  (after-load 'haskell-mode
-    (define-key haskell-mode-map (kbd "C-c C-d")
-      'ac-haskell-process-popup-doc))
-
-  (after-load 'haskell-mode
-    'inf-haskell-mode)
-
-  (after-load 'auto-complete
-    (add-to-list 'ac-modes 'haskell-interactive-mode)
-    (add-hook 'haskell-interactive-mode-hook
-              'set-auto-complete-as-completion-at-point-function))
-#+END_SRC
-
-** Lisp
+** lisp
 Paredit was included earlier as it's just generally useful.
 
 Give a default message when opening a scratch (elisp) buffer.
@@ -783,25 +654,25 @@ Give a default message when opening a scratch (elisp) buffer.
                 (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
 #+END_SRC
 
-*** Automatically byte-compile
-#+BEGIN_SRC emacs-lisp
+Automatically byte-compile
+#+begin_src emacs-lisp
   (require-package 'auto-compile)
   (auto-compile-on-save-mode 1)
   (auto-compile-on-load-mode 1)
-#+END_SRC
+#+end_src
 
-And load the .el if it's newer than the .elc
-#+BEGIN_SRC emacs-lisp
+and load the .el if it's newer than the .elc
+#+begin_src emacs-lisp
   (setq load-prefer-newer t)
-#+END_SRC
+#+end_src
 
-*** Allow code to auto-update (elisp only)
-#+BEGIN_SRC emacs-lisp
+Allow code to auto-update (elisp only)
+#+begin_src emacs-lisp
   (require-package 'lively)
-#+END_SRC
+#+end_src
 
-*** Hook some useful settings into lisp modes
-#+BEGIN_SRC emacs-lisp
+Hook some useful settings into lisp modes
+#+begin_src emacs-lisp
   (defun davison/useful-lisp ()
     (rainbow-delimiters-mode t)
     (enable-paredit-mode)
@@ -810,9 +681,9 @@ And load the .el if it's newer than the .elc
 
   (add-hook 'lisp-mode 'davison/useful-lisp)
   (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
-#+END_SRC
+#+end_src
 
-** Racket
+** racket
 #+BEGIN_SRC emacs-lisp
   (require-package 'racket-mode)
   (put 'test-case 'racket-indent-function 1)
@@ -828,21 +699,7 @@ Bind the required programs...
   (setq raco-program "/usr/local/bin/raco")
 #+END_SRC
 
-** Matlab
-Useful if editing Matlab code.  May edit this in future to enable running octave code directly from emacs.
-#+BEGIN_SRC emacs-lisp
-  (require-package 'matlab-mode)
-
-  (autoload 'matlab-mode
-    "matlab"
-    "Matlab Editing Mode" t)
-  (add-to-list
-   'auto-mode-alist
-   '("\\.m$" . matlab-mode))
-  (setq matlab-indent-function t)
-#+END_SRC
-
-** Go
+** go
 Format code when saving
 #+BEGIN_SRC emacs-lisp
   (require-package 'go-mode)
@@ -851,20 +708,22 @@ Format code when saving
   (add-hook 'before-save-hook 'gofmt-before-save)
 #+END_SRC
 
-** Rust
+** rust
 #+BEGIN_SRC emacs-lisp
   (require-package 'rust-mode)
   (require-package 'flymake-rust)
   (require-package 'flycheck-rust)
 #+END_SRC
 
-** Python
-Use python3 by default
+** QUOTE python
+Use python3 by default, and install EmacsIPythonNotebook (ein)
 #+BEGIN_SRC emacs-lisp 
   (require-package 'virtualenvwrapper)
   (venv-initialize-interactive-shells) ;; if you want interactive shell support
   (venv-initialize-eshell) ;; if you want eshell support
   (setq venv-location "/Users/davison/Envs/")
+
+  (require-package 'ein)
 #+END_SRC
 
 Automatically run on numeric environment when using python
@@ -872,7 +731,7 @@ Automatically run on numeric environment when using python
   (add-hook 'python-mode-hook (lambda ()
                                   (venv-workon "numeric")))
 #+END_SRC
-** C / C++
+** c / c++
 #+BEGIN_SRC emacs-lisp
   (add-hook 'c-mode-common-hook
     (lambda()
@@ -882,7 +741,7 @@ Automatically run on numeric environment when using python
       (local-set-key (kbd "C-c <down>")  'hs-show-all)
       (hs-minor-mode t)))
 #+END_SRC
-* IDO
+* ido
 #+BEGIN_SRC emacs-lisp
   (require 'ido)
   (ido-mode t)
@@ -907,8 +766,8 @@ Automatically run on numeric environment when using python
   (setq ido-default-buffer-method 'selected-window)
 #+END_SRC
 
-* ORG-MODE
-** Taking notes
+* org-mode
+** taking notes
 Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
 #+BEGIN_SRC emacs-lisp
   (setq org-directory "~/Dropbox/org")
@@ -926,14 +785,14 @@ This makes it easier to add links from outside.
 (global-set-key (kbd "<f6>") 'sacha/yank-more)
 #+end_src
 
-** Editing Source Code
+** editing source code
    When using C-c ', don't change to another window. 
 #+begin_src emacs-lisp
   (setq org-src-window-setup 'current-window)
   (setq org-src-fontify-natively t)
 #+end_src
   
-** Publishing
+** publishing
 Timestamps and section numbers make my published files look more
 complicated than they are. Let's turn them off by default.
 
@@ -942,7 +801,7 @@ complicated than they are. Let's turn them off by default.
 (setq org-html-include-timestamps nil)
 #+end_src
 
-** Refiling
+** refiling
    =org-refile= lets you organize notes by typing in the headline to file them under.
 #+begin_src emacs-lisp
   (setq org-reverse-note-order t)
@@ -953,7 +812,7 @@ complicated than they are. Let's turn them off by default.
   (setq org-blank-before-new-entry nil)
 #+end_src
 
-** Templates
+** templates
    =org-capture= lets you create templates for jotting down info of various kinds.  Here is some structure...
 
 Function for setting up templates
@@ -1002,7 +861,7 @@ And the actual templates
 | n | Daily note | table-line | (file+olp ~/Dropbox/org/notes.org Daily notes)      |                                                                                              | %u                | %^{Note} |      | :immediate-finish |    t |                    |
 | r | Notes      | entry      | (file+datetree ~/Dropbox/org/notes.org)             | * %?\n\n%i\n                                                                                 |                   |          |      |                   |      |                    |
 
-** Agenda
+** agenda
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files
         (delq nil
@@ -1010,7 +869,7 @@ And the actual templates
                       '("~/Dropbox/org/"))))
 #+END_SRC
 
-** Update Checkboxes on Save
+** update checkboxes on save
   
 #+BEGIN_SRC emacs-lisp 
   (defun checkbox-before-save ()
@@ -1021,14 +880,14 @@ And the actual templates
                (add-hook 'before-save-hook 'checkbox-before-save nil 'make-it-local)))
 #+END_SRC 
 
-** Todo keywords
+** todo keywords
 
 #+BEGIN_SRC emacs-lisp 
   (setq org-todo-keywords
            '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)"))) 
 #+END_SRC
 
-** Keyboard shortcuts
+** keyboard shortcuts
 
 #+begin_src emacs-lisp
     (global-set-key (kbd "<f1>") 'org-capture)
@@ -1053,8 +912,8 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
-* HELM
-** General helm setup
+* helm
+** general helm setup
 #+BEGIN_SRC emacs-lisp
   (require-package 'helm)
   (require 'helm-config)
@@ -1068,7 +927,7 @@ Links to common files
   (helm-mode)
 #+END_SRC
 
-** Key bindings
+** key bindings
 #+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-c h") 'helm-mini)
   (global-set-key (kbd "C-p") 'helm-mini)
@@ -1079,8 +938,9 @@ Links to common files
   (ido-mode -1)
 #+END_SRC
    
-** Describe bindings
+** describe bindings
 #+BEGIN_SRC emacs-lisp 
   (require-package 'helm-descbinds)
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
+   
