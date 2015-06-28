@@ -1,16 +1,19 @@
-#+TITLE: Chris Davison's Emacs configuration
+#+TITLE: My Emacs configuration
+#+AUTHOR: Chris Davison
+#+OPTIONS: toc:nil
 #+PROPERTY: header-args  :results silent
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/2.5.0/
+#+REVEAL_THEME: moon 
+# solarized
 
 * about this file
+** intro
 <<babel-init>>
+Inspired by [[http://pages.sachachua.com/.emacs.d/Sacha.html#unnumbered-3][Sacha Chua's Config]], I decided to move from a multi-file approach, to use org mode's power to really easily manage the complexity.
 
-THIS NEEDS WORK:  In individual sections, split the code and add more explanation.
+I can selectively export functionality by choosing to *tangle* the source code or not.
 
-Inspired by Sacha Chua, I decided to move from a multi-file approach (which can be a bit of an issue when testing new things, to find the error in the file) to a single file approach, with the hope of tightening it all up and streamlining.
-
-This can be saved directly in =~/.emacs.d= and loaded via =(org-babel-load-file "/path/to/file")=, and then use the benefit of sharing a single file, or a single section, as well as giving a single source by jumping to section headers.
-
-To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what used to be the =~/.emacs= file):
+By adding the following into your emacs =init.el=, you can then move all your config into a documented org file.
 
 #+begin_src emacs-lisp  :tangle no
     ;; This sets up the load path so that we can override it
@@ -24,20 +27,18 @@ To be precise, this is what's in the first part of my =~/.emacs.d/init.el= (what
     (org-babel-load-file "~/.emacs.d/Chris.org")
 #+end_src
 
-A tip is to generally always only copy individual sections, into a seperate buffer (i.e. =*scratch*= or another elisp buffer), evaluate that buffer (=M-x eval-buffer=) to see if you like the changes without actually merging it.
+** tip
+It is recommended not to just blindly copy paste.  Instead, move a section of interest into a seperate buffer and evaluate to see if you like the changes, without actually merging it into your config and potentially screwing things up.
 
 Useful: [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]]
 
-You may see an unusual (non eLisp) construct in =(require-package 'something...)=, which is basically a function that will check if a package is installed, and if not install it.  Can't remember where this was from, but it's a useful construct for keeping things simple.
+Also: =(require-package 'something...)= is a macro that I acquired from somewhere.  Can't remember where.
 
-If you're viewing the Org inside emacs, you can open source blocks (ones beginning in begin_src) in a seperate buffer by moivng your point inside them and typing C-c ' (=ord-edit-special=).  This opens the block in an elisp buffer, so you can use =M-x eval-buffer= to load the changes.
-
-* personal information
-#+begin_src emacs-lisp
+* personal info
+#+BEGIN_SRC emacs-lisp
   (setq user-full-name "Chris Davison"
-      user-mail-address "c.jr.davison@gmail.com")
-#+end_src
-  
+        user-mail-address "c.jr.davison@gmail.com")
+#+END_SRC
 * initialisation
 ** consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
@@ -48,7 +49,7 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 
 ** package management
 Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (package-refresh-contents)
 #+END_SRC
 
@@ -80,18 +81,11 @@ locate PACKAGE."
 #+END_SRC
 
 ** package sources
-     Add org and gnu by default
+Add org and use melpa for most packages.
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-#+END_SRC
-
-But use melpa for most packages
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 #+END_SRC
 
 ** eval after load
@@ -150,18 +144,20 @@ Useful to have access to power of common lisp within emacs.
 
 * appearance
 ** font stuff
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (when (member "DejaVu Sans Mono" (font-family-list))
   (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 150))
 (setq line-spacing 0.2)
-#+END_SRC
-
+   #+END_SRC
+   
 ** colour theme 
-I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.
-Also added functions to quickly jump between light and dark themes.
-#+BEGIN_SRC emacs-lisp
+   I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.
+   Also added functions to quickly jump between light and dark themes.
+   #+BEGIN_SRC emacs-lisp
   (require-package 'solarized-theme)
-  (load-theme 'zenburn t)
+  (require-package 'zenburn-theme)
+  (require-package 'molokai-theme)
+  (load-theme 'molokai t)
 
   (defun light()
     "Activate a light color theme."
@@ -172,28 +168,29 @@ Also added functions to quickly jump between light and dark themes.
     "Activate a dark color theme."
     (interactive)
     (load-theme 'solarized-dark))
-#+END_SRC
+   #+END_SRC
+   
 ** *maybe* suspend frame
-This is useful if running a mac, so that C-z wont hide it.  Considered 'appearance' as I want to see windows.
-#+BEGIN_SRC emacs-lisp
+   This is useful if running a mac, so that C-z wont hide it.  Considered 'appearance' as I want to see windows.
+   #+BEGIN_SRC emacs-lisp
 (defun maybe-suspend-frame ()
   (interactive)
   (unless (and *is-a-mac* window-system)
     (suspend-frame)))
 
 (global-set-key (kbd "C-z") 'maybe-suspend-frame)
-#+END_SRC
-
+   #+END_SRC
+   
 ** suppress gui features
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq use-file-dialog nil)
   (setq use-dialog-box nil)
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-echo-area-message t)
-#+END_SRC
-
-Hide tool bar,  scroll bar and borders
-#+BEGIN_SRC emacs-lisp
+   #+END_SRC
+   
+   Hide tool bar,  scroll bar and borders
+   #+BEGIN_SRC emacs-lisp
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'set-scroll-bar-mode)
@@ -202,56 +199,56 @@ Hide tool bar,  scroll bar and borders
 (let ((no-border '(internal-border-width . 0)))
   (add-to-list 'default-frame-alist no-border)
   (add-to-list 'initial-frame-alist no-border))
-#+END_SRC
-
+   #+END_SRC
+   
 ** highlight current line and no blinking cursor
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 (setq linum-format "%d ")
-#+END_SRC
-
+   #+END_SRC
+   
 ** alias for yes-or-no
-This is again a quality of life thing, to allow you to hit yes or no by using y or n.
-#+BEGIN_SRC emacs-lisp
+   This is again a quality of life thing, to allow you to hit yes or no by using y or n.
+   #+BEGIN_SRC emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
+   #+END_SRC
+   
 ** faster keystroke echoing
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq echo-keystrokes 0.1)
-#+END_SRC
-
+   #+END_SRC
+   
 ** tabs to spaces, and tab-related things
-#+BEGIN_SRC emacs-lisp
-(setq tab-stop-list (number-sequence 4 200 4))
+   #+BEGIN_SRC emacs-lisp
+(setq tab-stop-list (number-sequence 2 200 2))
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-#+END_SRC
-
+(setq-default tab-width 2)
+   #+END_SRC
+   
 ** show line and column number in status bar
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (line-number-mode 1)
 (column-number-mode 1)
-#+END_SRC
-
+   #+END_SRC
+   
 ** stop scrolling jumping multiple lines
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq scroll-step           1
         scroll-conservatively 10000)
-#+END_SRC
-
+   #+END_SRC
+   
 ** scratch buffer - initial message
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq-default initial-scratch-message ";; Scratch pad\n\n")
-#+END_SRC
-
+   #+END_SRC
+   
 ** font-locking
-Replace any occurrence of 'lambda' with the actual symbol.
-#+BEGIN_SRC emacs-lisp 
+   Replace any occurrence of 'lambda' with the actual symbol.
+   #+BEGIN_SRC emacs-lisp 
   (global-prettify-symbols-mode +1)
-#+END_SRC
-
+   #+END_SRC
+   
 * parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
@@ -263,34 +260,26 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
 #+END_SRC
 
 * vim
-Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.
+Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
 #+BEGIN_SRC emacs-lisp
   (require-package 'evil)
-  (evil-mode 1)
-
+  (require-package 'key-chord)
   (require-package 'evil-surround)
-  (global-evil-surround-mode)
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+  (evil-mode 1)
+  (global-evil-surround-mode)
+  (key-chord-mode 1)
+
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
   (define-key evil-normal-state-map (kbd "SPC") 'isearch-forward)
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
-#+END_SRC
-
-Adding key-chord here, as it's mainly for vim-type things
-#+BEGIN_SRC emacs-lisp
-  (require-package 'key-chord)
-  (key-chord-mode 1)
   (key-chord-define-global "jk" 'evil-normal-state)
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
 #+END_SRC
-
-#+RESULTS:
 
 * backups
 This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
@@ -323,6 +312,15 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
         regexp-search-ring))
 #+end_src
 
+** recent files
+
+#+begin_src emacs-lisp
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
+#+end_src
+
 * undo tree  - visualize your undos and branches
 
 People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
@@ -344,26 +342,8 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   (desktop-save-mode 1)
 #+END_SRC
 
-* project/file search - grep (and ag)
-If ag is available, use that instead.  Faster.  Better for coding.
-#+BEGIN_SRC emacs-lisp
-  (setq-default grep-highlight-matches t
-                grep-scroll-output t)
-
-  (when *is-a-mac*
-    (setq-default locate-command "mdfind"))
-
-  (when (executable-find "ag")
-    (require-package 'ag)
-    (require-package 'wgrep-ag)
-    (setq-default ag-highlight-search t)
-    (global-set-key (kbd "M-?") 'ag-project))
-#+END_SRC
-
-#+RESULTS:
-: ag-project
-
-* show current/total matches when searching
+* searching
+** show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
   (when (maybe-require-package 'anzu)
     (global-anzu-mode t)
@@ -375,18 +355,17 @@ If ag is available, use that instead.  Faster.  Better for coding.
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 #+END_SRC
-* ace mode isearch
-Hybrind of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
+
+** ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
+Hybrid of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
 #+BEGIN_SRC emacs-lisp
   (require-package 'ace-isearch)
   (global-ace-isearch-mode 1)
 #+END_SRC
 
-* smartscan
+** smartscan (Vim *)
 From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
-
 This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
-
 Bound to =M-n= and =M-b= by default, I think.
 #+begin_src emacs-lisp
   (require-package 'smartscan)
@@ -444,6 +423,55 @@ And give emacs some of the expected OS X keybinds
     (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
+#+END_SRC
+** indent after newline
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "RET") 'newline-and-indent)
+  (defun sanityinc/newline-at-end-of-line ()
+    "Move to end of line, enter a newline, and reindent."
+    (interactive)
+    (move-end-of-line 1)
+    (newline-and-indent))
+#+END_SRC
+
+* dired / nav
+** windows - managing window splits
+A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'switch-window)
+  (require 'switch-window)
+  (setq switch-window-shortcut-style 'alphabet)
+  (global-set-key (kbd "C-x o") 'switch-window)
+#+END_SRC
+
+When splitting windows, use the 'other'  buffer in the next window
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-func-with-other-buffer (split-function)
+    (lexical-let ((s-f split-function))
+      (lambda ()
+        (interactive)
+        (funcall s-f)
+        (set-window-buffer (next-window) (other-buffer)))))
+#+END_SRC
+
+...and key bindings to go along with this
+#+BEGIN_SRC emacs-lisp
+  (global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
+  (global-set-key "\C-x3" (split-window-func-with-other-buffer 'split-window-horizontally))
+#+END_SRC
+
+And if you want to delete everything -but- this window...
+#+BEGIN_SRC emacs-lisp
+  (defun sanityinc/toggle-delete-other-windows ()
+    "Delete other windows in frame if any, or restore previous window config."
+    (interactive)
+    (if (and winner-mode
+             (equal (selected-window) (next-window)))
+        (winner-undo)
+      (delete-other-windows)))
+
+  (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
 #+END_SRC
 ** ibuffer - interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
@@ -505,68 +533,8 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
 
 #+END_SRC
 
-** windows - managing window splits
-A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
-
-#+BEGIN_SRC emacs-lisp
-  (require-package 'switch-window)
-  (require 'switch-window)
-  (setq switch-window-shortcut-style 'alphabet)
-  (global-set-key (kbd "C-x o") 'switch-window)
-#+END_SRC
-
-When splitting windows, use the 'other'  buffer in the next window
-#+BEGIN_SRC emacs-lisp
-  (defun split-window-func-with-other-buffer (split-function)
-    (lexical-let ((s-f split-function))
-      (lambda ()
-        (interactive)
-        (funcall s-f)
-        (set-window-buffer (next-window) (other-buffer)))))
-#+END_SRC
-
-...and key bindings to go along with this
-#+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
-  (global-set-key "\C-x3" (split-window-func-with-other-buffer 'split-window-horizontally))
-#+END_SRC
-
-And if you want to delete everything -but- this window...
-#+BEGIN_SRC emacs-lisp
-  (defun sanityinc/toggle-delete-other-windows ()
-    "Delete other windows in frame if any, or restore previous window config."
-    (interactive)
-    (if (and winner-mode
-             (equal (selected-window) (next-window)))
-        (winner-undo)
-      (delete-other-windows)))
-
-  (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
-#+END_SRC
-** indent after newline
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "RET") 'newline-and-indent)
-  (defun sanityinc/newline-at-end-of-line ()
-    "Move to end of line, enter a newline, and reindent."
-    (interactive)
-    (move-end-of-line 1)
-    (newline-and-indent))
-#+END_SRC
-
-** recent files
-
-#+begin_src emacs-lisp
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
-#+end_src
-
-* dired / nav
-
-From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
-
 ** generally improve dired appearance
+From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 #+begin_src emacs-lisp 
 (require 'find-dired)
 (require-package 'dired+)
@@ -645,8 +613,6 @@ Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
       (add-hook hook 'rainbow-mode)))
 #+END_SRC
 
-#+RESULTS:
-
 ** lisp
 Paredit was included earlier as it's just generally useful.
 
@@ -717,7 +683,7 @@ Format code when saving
   (require-package 'flycheck-rust)
 #+END_SRC
 
-** QUOTE python
+** python
 Use python3 by default, and install EmacsIPythonNotebook (ein)
 #+BEGIN_SRC emacs-lisp 
   (require-package 'virtualenvwrapper)
@@ -766,6 +732,7 @@ Automatically run on numeric environment when using python
 
   ;; Allow the same buffer to be open in different frames
   (setq ido-default-buffer-method 'selected-window)
+  (ido-mode -1)
 #+END_SRC
 
 * org-mode
@@ -855,14 +822,6 @@ And the actual templates
               )))
 #+end_src
 
-#+RESULTS:
-| t | Tasks      | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}\nSCHEDULED: %^t\n:PROPERTIES:\n:Effort: %^{effort                            | 1:00              | 0:05     | 0:15 |              0:30 | 2:00 | 4:00}\n:END:\n%?\n |
-| T | Quick task | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}                                                                              | :immediate-finish | t        |      |                   |      |                    |
-| q | Quick note | item       | (file+headline ~/Dropbox/org/notes.org Quick notes) |                                                                                              |                   |          |      |                   |      |                    |
-| c | Contact    | entry      | (file ~/Dropbox/org/contacts.org)                   | * %(org-contacts-template-name)\n:PROPERTIES:\n:EMAIL: %(org-contacts-template-email)\n:END: |                   |          |      |                   |      |                    |
-| n | Daily note | table-line | (file+olp ~/Dropbox/org/notes.org Daily notes)      |                                                                                              | %u                | %^{Note} |      | :immediate-finish |    t |                    |
-| r | Notes      | entry      | (file+datetree ~/Dropbox/org/notes.org)             | * %?\n\n%i\n                                                                                 |                   |          |      |                   |      |                    |
-
 ** agenda
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files
@@ -914,38 +873,107 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
+** org reveal
+#+BEGIN_SRC emacs-lisp
+  (require-package 'ox-reveal)
+  (require-package 'htmlize)
+#+END_SRC
 * helm
-** general helm setup
+general helm setup
 #+BEGIN_SRC emacs-lisp
   (require-package 'helm)
+  (require-package 'helm-descbinds)
   (require 'helm-config)
-  (setq helm-candidate-number-limit 10)
-  (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-              helm-input-idle-delay 0.01  ; this actually updates things
-                                            ; reeeelatively quickly.
-              helm-quick-update t
-              helm-M-x-requires-pattern nil
-              helm-ff-skip-boring-files t)
-  (helm-mode)
+
+  (setq helm-candidate-number-limit 100
+        helm-idle-delay 0.0
+        helm-input-idle-delay 0.01
+        helm-quick-update t
+        helm-M-x-requires-pattern nil
+        helm-ff-skip-boring-files t
+        helm-recentf-fuzzy-match t
+        helm-buffers-fuzzy-matching t
+        helm-locate-fuzzy-match t
+        helm-imenu-fuzzy-match t
+        helm-M-x-fuzzy-match t
+        helm-semantic-fuzzy-match t
+        helm-apropos-fuzzy-match t
+        helm-split-window-in-side-p t)
+
+  (helm-mode 1)
+  (helm-autoresize-mode 1)
 #+END_SRC
 
-** key bindings
+key bindings
 #+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-c h") 'helm-mini)
-  (global-set-key (kbd "C-p") 'helm-mini)
   (global-set-key (kbd "C-c a") 'helm-apropos)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c s") 'helm-swoop)
   (global-set-key (kbd "C-c i") 'helm-imenu)
+  (global-set-key (kbd "C-c b") 'helm-descbinds)
+  (global-set-key (kbd "C-c r") 'helm-regexp)
+
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (ido-mode -1)
+  (global-set-key (kbd "M-x") 'helm-M-x)
 #+END_SRC
-   
-** describe bindings
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'helm-descbinds)
-  (global-set-key (kbd "C-c b") 'helm-descbinds)
+* aggressive indentation
+#+BEGIN_SRC emacs-lisp
+(require-package 'aggressive-indent)
+(global-aggressive-indent-mode)
 #+END_SRC
-   
+* latex
+** general config
+#+BEGIN_SRC emacs-lisp
+  (require-package 'auctex)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query nil)
 
+  (setq ispell-program-name "aspell") ; could be ispell as well, depending on your preferences
+  (setq ispell-dictionary "english") ; this can obviously be set to any language your spell-checking program supports
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+  (defun turn-on-outline-minor-mode ()
+  (outline-minor-mode 1))
+
+  (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+  (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
+#+END_SRC
+
+
+** manage citations
+#+BEGIN_SRC 
+  (require 'tex-site)
+  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  (add-hook 'latex-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+  (setq LaTeX-eqnarray-label "eq"
+        LaTeX-equation-label "eq"
+        LaTeX-figure-label "fig"
+        LaTeX-table-label "tab"
+        LaTeX-myChapter-label "chap"
+        TeX-auto-save t
+        TeX-newline-function 'reindent-then-newline-and-indent
+        TeX-parse-self t
+        TeX-style-path
+        '("style/" "auto/"
+          "/usr/share/emacs21/site-lisp/auctex/style/"
+          "/var/lib/auctex/emacs21/"
+          "/usr/local/share/emacs/site-lisp/auctex/style/")
+        LaTeX-section-hook
+        '(LaTeX-section-heading
+          LaTeX-section-title
+          LaTeX-section-toc
+          LaTeX-section-section
+          LaTeX-section-label))
+#+END_SRC
