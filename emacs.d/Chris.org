@@ -38,6 +38,7 @@ Also: =(require-package 'something...)= is a macro that I acquired from somewher
   (setq user-full-name "Chris Davison"
         user-mail-address "c.jr.davison@gmail.com")
 #+END_SRC
+
 * initialisation
 ** consts
 Basically give a useful const to check if running OSX.  This may be useful for your config, to override platform-specific behaviour (or perhaps implement some more specificity).
@@ -47,7 +48,7 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 #+END_SRC
 
 ** package management
-Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
+   Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
 #+BEGIN_SRC emacs-lisp :tangle no
   (package-refresh-contents)
 #+END_SRC
@@ -83,8 +84,8 @@ locate PACKAGE."
 Add org and use melpa for most packages.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  ;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 #+END_SRC
 
 ** eval after load
@@ -142,11 +143,13 @@ Useful to have access to power of common lisp within emacs.
 #+END_SRC
 
 * appearance
+
+  <2015-07-18 Sat>
 ** font stuff
    #+BEGIN_SRC emacs-lisp
 (when (member "DejaVu Sans Mono" (font-family-list))
   (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 150))
-(setq line-spacing 0.2)
+(setq line-spacing 0.1)
    #+END_SRC
    
 ** colour theme 
@@ -156,7 +159,7 @@ Useful to have access to power of common lisp within emacs.
   (require-package 'solarized-theme)
   (require-package 'zenburn-theme)
   (require-package 'molokai-theme)
-  (load-theme 'molokai t)
+  (load-theme 'solarized-dark t)
 
   (defun light()
     "Activate a light color theme."
@@ -485,6 +488,7 @@ And if you want to delete everything -but- this window...
 
   (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
 #+END_SRC
+
 ** ibuffer - interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
 #+BEGIN_SRC emacs-lisp
@@ -574,6 +578,7 @@ Couldn't get this working directly...so functionalise it
 
   (key-chord-define-global "tw" 'trunc-wrap)
 #+END_SRC
+
 * prog languages
 ** flycheck
    #+BEGIN_SRC emacs-lisp
@@ -758,7 +763,7 @@ Use python3 by default, and install EmacsIPythonNotebook (ein)
    #+END_SRC
    
 * ido
-Disabling for now, as I think Helm could be a better all-round replacement, although IDO may be a good fallback for when Helm is not available.
+Re-enabling, as I found some issues with fuzzy finding.  But could Helm be a better all-round replacement for Ido?
 #+BEGIN_SRC emacs-lisp :tangle no
   (require 'ido)
   (ido-mode t)
@@ -917,6 +922,7 @@ Links to common files
   (require-package 'ox-reveal)
   (require-package 'htmlize)
 #+END_SRC
+
 * helm
 general helm setup
 #+BEGIN_SRC emacs-lisp
@@ -964,6 +970,7 @@ key bindings
 (require-package 'aggressive-indent)
 (global-aggressive-indent-mode)
 #+END_SRC
+
 * latex
 ** general config
 #+BEGIN_SRC emacs-lisp
@@ -985,7 +992,6 @@ key bindings
   (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
   (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
 #+END_SRC
-
 
 ** manage citations
 #+BEGIN_SRC 
@@ -1017,3 +1023,4 @@ key bindings
           LaTeX-section-section
           LaTeX-section-label))
 #+END_SRC
+
