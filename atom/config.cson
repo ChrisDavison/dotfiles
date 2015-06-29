@@ -1,0 +1,23 @@
+"*":
+  "exception-reporting":
+    userId: "9fbbea60-2131-e989-d7ff-c9d1193aea72"
+  welcome:
+    showOnStartup: false
+  core:
+    themes: [
+      "one-light-ui"
+      "one-light-syntax"
+    ]
+  editor:
+    invisibles:
+      cr: "h"
+    fontFamily: "DejaVu Sans Mono"
+    tabLength: 4
+    softWrap: true
+  "autocomplete-plus": {}
+  "vim-mode": {}
+  "tree-view": {}
+  "markdown-preview-katex": {}
+  Hydrogen: {}
+  "symbols-tree-view":
+    scrollAnimation: false
