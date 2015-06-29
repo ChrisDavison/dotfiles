@@ -96,6 +96,7 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
+Plug 'jceb/vim-orgmode'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wlangstroth/vim-racket'
@@ -106,7 +107,7 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=light
-colorscheme Monokai
+colorscheme Github
 set t_ut=
 
 au BufReadPost * set relativenumber
@@ -156,7 +157,7 @@ vnoremap  <buffer> <silent> $ g$
 nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>v :VimtexTocToggle<CR>
-nnoremap <leader>c :SyntasticCheck<CR>
+"nnoremap <leader>c :SyntasticCheck<CR>
 
 " |==== Toggle whitespace visibility with ,s {{{2
 nmap <Leader>s :set list!<CR>
