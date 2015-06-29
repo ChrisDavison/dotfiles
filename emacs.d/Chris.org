@@ -1,10 +1,9 @@
 #+TITLE: Chris Davison's Emacs configuration
 #+PROPERTY: header-args  :results silent
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/2.5.0/
 
 * about this file
 <<babel-init>>
-
-THIS NEEDS WORK:  In individual sections, split the code and add more explanation.
 
 Inspired by Sacha Chua, I decided to move from a multi-file approach (which can be a bit of an issue when testing new things, to find the error in the file) to a single file approach, with the hope of tightening it all up and streamlining.
 
@@ -161,7 +160,9 @@ I always end up going back to solarized, but have been using 'github' within VIM
 Also added functions to quickly jump between light and dark themes.
 #+BEGIN_SRC emacs-lisp
   (require-package 'solarized-theme)
-  (load-theme 'zenburn t)
+  (require-package 'zenburn-theme)
+  (require-package 'molokai-theme)
+  (load-theme 'molokai t)
 
   (defun light()
     "Activate a light color theme."
@@ -290,28 +291,17 @@ Adding key-chord here, as it's mainly for vim-type things
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
 #+END_SRC
 
-#+RESULTS:
-
-* backups
-This is something useful to change immediately; stopping backups in the directory of the file being modified.  These are files ending in =~=, and can quickly clutter everything up.
-
-#+BEGIN_SRC emacs-lisp
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-#+END_SRC
-
-Disk space is cheap. Save lots.
+* history, backups and session
+Disk space is plentiful.  Keep backups and history.  Also, move the backups to the appropriate dir, so the backup files =.*~= don't clutter.
 
 #+begin_src emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq delete-old-versions -1)
 (setq version-control t)
 (setq vc-make-backup-files t)
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
-#+end_src
 
-* history
 
-From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-#+begin_src emacs-lisp
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
 (setq history-length t)
@@ -321,12 +311,24 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
       '(kill-ring
         search-ring
         regexp-search-ring))
+
+;; Counting 'recent files' as part of history
+(require 'recentf)
+(setq recentf-max-saved-items 200
+      recentf-max-menu-items 15)
+(recentf-mode)
+
+;; Always save the desktop, the current workspace config
+  (setq desktop-path (list user-emacs-directory)
+        desktop-auto-save-timeout 600)
+  (desktop-save-mode 1)
+
 #+end_src
 
-* undo tree  - visualize your undos and branches
+* undo tree
 
 People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
-#
+
 This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
 #+begin_src emacs-lisp
@@ -337,14 +339,29 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   (setq undo-tree-visualizer-diff t)
 #+end_src
 
-* save session
-#+BEGIN_SRC emacs-lisp
-  (setq desktop-path (list user-emacs-directory)
-        desktop-auto-save-timeout 600)
-  (desktop-save-mode 1)
+* search && navigation
+** dired / nav
+
+From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
+
+Generally improve dired appearance
+#+begin_src emacs-lisp 
+(require 'find-dired)
+(require-package 'dired+)
+(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 #+END_SRC
 
-* project/file search - grep (and ag)
+Hide files beginning with .[not a dot]
+#+BEGIN_SRC emacs-lisp 
+  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
+#+END_SRC
+
+Make dired use the same buffer when switching directories.
+#+BEGIN_SRC emacs-lisp 
+(diredp-toggle-find-file-reuse-dir 1)
+#+end_src
+
+** project/file search - grep (and ag)
 If ag is available, use that instead.  Faster.  Better for coding.
 #+BEGIN_SRC emacs-lisp
   (setq-default grep-highlight-matches t
@@ -360,10 +377,7 @@ If ag is available, use that instead.  Faster.  Better for coding.
     (global-set-key (kbd "M-?") 'ag-project))
 #+END_SRC
 
-#+RESULTS:
-: ag-project
-
-* show current/total matches when searching
+** show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
   (when (maybe-require-package 'anzu)
     (global-anzu-mode t)
@@ -375,14 +389,14 @@ If ag is available, use that instead.  Faster.  Better for coding.
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
 #+END_SRC
-* ace mode isearch
+** ace mode isearch
 Hybrind of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
 #+BEGIN_SRC emacs-lisp
   (require-package 'ace-isearch)
   (global-ace-isearch-mode 1)
 #+END_SRC
 
-* smartscan
+** smartscan
 From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
 
 This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
@@ -553,87 +567,46 @@ And if you want to delete everything -but- this window...
     (newline-and-indent))
 #+END_SRC
 
-** recent files
-
-#+begin_src emacs-lisp
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
-#+end_src
-
-* dired / nav
-
-From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
-
-** generally improve dired appearance
-#+begin_src emacs-lisp 
-(require 'find-dired)
-(require-package 'dired+)
-(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
-#+END_SRC
-
-** hide files beginning with .[not a dot]
-#+BEGIN_SRC emacs-lisp 
-  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
-#+END_SRC
-
-** make dired use the same buffer when switching directories.
-#+BEGIN_SRC emacs-lisp 
-(diredp-toggle-find-file-reuse-dir 1)
-#+end_src
-
-* word wrapping and truncation
-Couldn't get this working directly...so functionalise it
-#+BEGIN_SRC emacs-lisp
-(defun trunc-wrap()
-  "Turn on truncation and word wrapping"
-  (interactive)
-  (toggle-truncate-lines)
-  (toggle-word-wrap))
-
-  (key-chord-define-global "tw" 'trunc-wrap)
-#+END_SRC
 * prog languages
 ** flycheck
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
-#+END_SRC
-
+   #+END_SRC
+   
 ** markdown
-Simple.  Get markdown and add to auto-list.
-#+BEGIN_SRC emacs-lisp
+   Simple.  Get markdown and add to auto-list.
+   #+BEGIN_SRC emacs-lisp
   (require-package 'markdown-mode)
 
   (setq auto-mode-alist
         (cons '("\\.\\(md\\|markdown\\)\\'" . markdown-mode) auto-mode-alist))
-#+END_SRC
-
+   #+END_SRC
+   
 ** csv
-Not done much with this yet, but generally makes CSVs a bit prettier.
-
-#+BEGIN_SRC emacs-lisp
+   Not done much with this yet, but generally makes CSVs a bit prettier.
+   
+   #+BEGIN_SRC emacs-lisp
   (require-package 'csv-mode)
   (require-package 'csv-nav)
 
   (add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
 
   (setq csv-separators '("," ";" "|" " "))
-#+END_SRC
-
+   #+END_SRC
+   
 ** html / css
-Emmet is glorious for quickly outlining HTML.
-#+BEGIN_SRC emacs-lisp
+   Emmet is glorious for quickly outlining HTML.
+   #+BEGIN_SRC emacs-lisp
   (require-package 'emmet-mode)
 
   (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
   (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
 
   (setq emmet-move-cursor-between-quotes t) ;; default nil
-#+END_SRC
-
-Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
-#+BEGIN_SRC emacs-lisp
+   #+END_SRC
+   
+   Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
+   #+BEGIN_SRC emacs-lisp
   (require-package 'haml-mode)
   (require-package 'sass-mode)
   (require-package 'scss-mode)
@@ -643,38 +616,36 @@ Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
   (when (maybe-require-package 'rainbow-mode)
     (dolist (hook '(css-mode-hook html-mode-hook sass-mode-hook))
       (add-hook hook 'rainbow-mode)))
-#+END_SRC
-
-#+RESULTS:
-
+   #+END_SRC
+   
 ** lisp
-Paredit was included earlier as it's just generally useful.
-
-Give a default message when opening a scratch (elisp) buffer.
-#+BEGIN_SRC emacs-lisp
+   Paredit was included earlier as it's just generally useful.
+   
+   Give a default message when opening a scratch (elisp) buffer.
+   #+BEGIN_SRC emacs-lisp
   (setq-default initial-scratch-message
                 (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
-#+END_SRC
-
-Automatically byte-compile
-#+begin_src emacs-lisp
+   #+END_SRC
+   
+   Automatically byte-compile
+   #+begin_src emacs-lisp
   (require-package 'auto-compile)
   (auto-compile-on-save-mode 1)
   (auto-compile-on-load-mode 1)
-#+end_src
-
-and load the .el if it's newer than the .elc
-#+begin_src emacs-lisp
+   #+end_src
+   
+   and load the .el if it's newer than the .elc
+   #+begin_src emacs-lisp
   (setq load-prefer-newer t)
-#+end_src
-
-Allow code to auto-update (elisp only)
-#+begin_src emacs-lisp
+   #+end_src
+   
+   Allow code to auto-update (elisp only)
+   #+begin_src emacs-lisp
   (require-package 'lively)
-#+end_src
-
-Hook some useful settings into lisp modes
-#+begin_src emacs-lisp
+   #+end_src
+   
+   Hook some useful settings into lisp modes
+   #+begin_src emacs-lisp
   (defun davison/useful-lisp ()
     (rainbow-delimiters-mode t)
     (enable-paredit-mode)
@@ -683,58 +654,58 @@ Hook some useful settings into lisp modes
 
   (add-hook 'lisp-mode 'davison/useful-lisp)
   (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
-#+end_src
-
+   #+end_src
+   
 ** racket
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (require-package 'racket-mode)
   (put 'test-case 'racket-indent-function 1)
   (add-hook 'racket-mode-hook 'paredit-mode)
-#+END_SRC
-
-Bind the required programs...
-#+BEGIN_SRC emacs-lisp
+   #+END_SRC
+   
+   Bind the required programs...
+   #+BEGIN_SRC emacs-lisp
   (setq racket-racket-program "/usr/local/bin/racket")
   (setq racket-raco-program "/usr/local/bin/raco")
 
   (setq racket-program "/usr/local/bin/racket")
   (setq raco-program "/usr/local/bin/raco")
-#+END_SRC
-
+   #+END_SRC
+   
 ** go
-Format code when saving
-#+BEGIN_SRC emacs-lisp
+   Format code when saving
+   #+BEGIN_SRC emacs-lisp
   (require-package 'go-mode)
   (require-package 'go-autocomplete)
 
   (add-hook 'before-save-hook 'gofmt-before-save)
-#+END_SRC
-
+   #+END_SRC
+   
 ** rust
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (require-package 'rust-mode)
   (require-package 'flymake-rust)
   (require-package 'flycheck-rust)
-#+END_SRC
-
-** QUOTE python
-Use python3 by default, and install EmacsIPythonNotebook (ein)
-#+BEGIN_SRC emacs-lisp 
+   #+END_SRC
+   
+** python
+   Use python3 by default, and install EmacsIPythonNotebook (ein)
+   #+BEGIN_SRC emacs-lisp 
   (require-package 'virtualenvwrapper)
   (venv-initialize-interactive-shells) ;; if you want interactive shell support
   (venv-initialize-eshell) ;; if you want eshell support
   (setq venv-location "/Users/davison/Envs/")
 
   (require-package 'ein)
-#+END_SRC
-
-Automatically run on numeric environment when using python
-#+BEGIN_SRC emacs-lisp 
+   #+END_SRC
+   
+   Automatically run on numeric environment when using python
+   #+BEGIN_SRC emacs-lisp 
   (add-hook 'python-mode-hook (lambda ()
                                   (venv-workon "numeric")))
-#+END_SRC
+   #+END_SRC
 ** c / c++
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (add-hook 'c-mode-common-hook
     (lambda()
       (local-set-key (kbd "C-c <right>") 'hs-show-block)
@@ -742,12 +713,51 @@ Automatically run on numeric environment when using python
       (local-set-key (kbd "C-c <up>")    'hs-hide-all)
       (local-set-key (kbd "C-c <down>")  'hs-show-all)
       (hs-minor-mode t)))
-#+END_SRC
+   #+END_SRC
+** latex/auctex
+   #+BEGIN_SRC emacs-lisp
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+   #+END_SRC
+   
+   #+BEGIN_SRC emacs-lisp
+     (require-package 'auctex)
+
+     (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+     (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+     (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+     (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+     (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+     ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+     (setq LaTeX-eqnarray-label "eq"
+           LaTeX-equation-label "eq"
+           LaTeX-figure-label "fig"
+           LaTeX-table-label "tab"
+           LaTeX-myChapter-label "chap"
+           TeX-auto-save t
+           TeX-newline-function 'reindent-then-newline-and-indent
+           TeX-parse-self t
+           TeX-style-path '("style/" "auto/"
+                            "/usr/share/emacs21/site-lisp/auctex/style/"
+                            "/var/lib/auctex/emacs21/"
+                            "/usr/local/share/emacs/site-lisp/auctex/style/")
+           LaTeX-section-hook '(LaTeX-section-heading
+                                LaTeX-section-title
+                                LaTeX-section-toc
+                                LaTeX-section-section
+                                LaTeX-section-label))
+   #+END_SRC
+   
 * ido
-#+BEGIN_SRC emacs-lisp
+Disabling for now, as I think Helm could be a better all-round replacement, although IDO may be a good fallback for when Helm is not available.
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'ido)
   (ido-mode t)
   (ido-everywhere t)
+
   (setq ido-enable-flex-matching t)
   (setq ido-use-filename-at-point nil)
   (setq ido-auto-merge-work-directories-length 0)
@@ -772,12 +782,17 @@ Automatically run on numeric environment when using python
 ** taking notes
 Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
 #+BEGIN_SRC emacs-lisp
-  (setq org-directory "~/Dropbox/org")
-  (setq org-default-notes-file "~/Dropbox/org/notes.org")
+  (require-package 'org)
+  (require-package 'ox-reveal)
+  (require-package 'org-bullets)
+
+  (setq org-directory "~/Dropbox/docs")
+  (setq org-default-notes-file "~/Dropbox/docs/notes.org")
+  
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
 
 This makes it easier to add links from outside.
-
 #+begin_src emacs-lisp
 (defun sacha/yank-more ()
   (interactive)
@@ -795,11 +810,10 @@ This makes it easier to add links from outside.
 #+end_src
   
 ** publishing
-Timestamps and section numbers make my published files look more
-complicated than they are. Let's turn them off by default.
+Timestamps and section numbers make my published files look more complicated than they are. Let's turn them off by default.
 
 #+begin_src emacs-lisp
-(setq org-export-with-section-numbers nil)
+(setq org-export-with-section-numbers t)
 (setq org-html-include-timestamps nil)
 #+end_src
 
@@ -814,61 +828,37 @@ complicated than they are. Let's turn them off by default.
   (setq org-blank-before-new-entry nil)
 #+end_src
 
-** templates
-   =org-capture= lets you create templates for jotting down info of various kinds.  Here is some structure...
+** capture - templates
+   =org-capture= lets you create templates for jotting down info of various kinds.
 
-Function for setting up templates
-#+begin_src emacs-lisp
-    (defvar sacha/org-basic-task-template "* TODO %^{Task}
-    SCHEDULED: %^t
-    :PROPERTIES:
-    :Effort: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-    :END:
-    %?
-    " "Basic task data")
-#+END_SRC
-   
-
-And the actual templates
 #+BEGIN_SRC emacs-lisp
     (setq org-capture-templates
-          `(("t" "Tasks" entry
-             (file+headline "~/Dropbox/org/notes.org" "Tasks")
-             ,sacha/org-basic-task-template)
-            ("T" "Quick task" entry
-             (file+headline "~/Dropbox/org/notes.org" "Tasks")
-             "* TODO %^{Task}"
-             :immediate-finish t)
-            ("q" "Quick note" item
-             (file+headline "~/Dropbox/org/notes.org" "Quick notes"))
-             ("c" "Contact" entry (file "~/Dropbox/org/contacts.org")
-              "* %(org-contacts-template-name)
-    :PROPERTIES:
-    :EMAIL: %(org-contacts-template-email)
-    :END:")
-             ("n" "Daily note" table-line (file+olp "~/Dropbox/org/notes.org" "Daily notes")
-              "| %u | %^{Note} |"
-              :immediate-finish t)
-             ("r" "Notes" entry
-              (file+datetree "~/Dropbox/org/notes.org")
-              "* %?\n\n%i\n"
-              )))
+          '(("i" "ideas" entry
+             (file+headline "~/Dropbox/docs/notes.org" "Ideas")
+             "** %^{Idea} \n%?"
+             :immediate-finish)
+
+            ("q" "quotes" entry
+             (file+headline "~/Dropbox/docs/notes.org" "Quotes")
+             "** %^{WHO? WHERE?}\n%^{QUOTE}"
+             :immediate-finish)
+
+            ("t" "todo" entry
+             (file+headline "~/Dropbox/docs/notes.org" "Tasks")
+             "** TODO %^{Task}\n%^{WHEN?}t\n%^{DETAILS}"
+             :immediate-finish)
+
+            ("e" "engd" entry
+             (file+headline "~/Dropbox/docs/notes.org" "EngD")
+             "** %^{WHAT}\n%?"
+             :immediate-finish)))
 #+end_src
-
-#+RESULTS:
-| t | Tasks      | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}\nSCHEDULED: %^t\n:PROPERTIES:\n:Effort: %^{effort                            | 1:00              | 0:05     | 0:15 |              0:30 | 2:00 | 4:00}\n:END:\n%?\n |
-| T | Quick task | entry      | (file+headline ~/Dropbox/org/notes.org Tasks)       | * TODO %^{Task}                                                                              | :immediate-finish | t        |      |                   |      |                    |
-| q | Quick note | item       | (file+headline ~/Dropbox/org/notes.org Quick notes) |                                                                                              |                   |          |      |                   |      |                    |
-| c | Contact    | entry      | (file ~/Dropbox/org/contacts.org)                   | * %(org-contacts-template-name)\n:PROPERTIES:\n:EMAIL: %(org-contacts-template-email)\n:END: |                   |          |      |                   |      |                    |
-| n | Daily note | table-line | (file+olp ~/Dropbox/org/notes.org Daily notes)      |                                                                                              | %u                | %^{Note} |      | :immediate-finish |    t |                    |
-| r | Notes      | entry      | (file+datetree ~/Dropbox/org/notes.org)             | * %?\n\n%i\n                                                                                 |                   |          |      |                   |      |                    |
-
 ** agenda
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files
         (delq nil
               (mapcar (lambda (x) (and (file-exists-p x) x))
-                      '("~/Dropbox/org/"))))
+                      '("~/Dropbox/docs/"))))
 #+END_SRC
 
 ** update checkboxes on save
@@ -900,7 +890,7 @@ And the actual templates
 
    
 Links to common files
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle no
   (global-set-key (kbd "C-x j") 'jump-to-register)
   (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
   (set-register ?u (cons 'file "~/Dropbox/org/uni.org"))
@@ -914,38 +904,42 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
+** reveal
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-reveal)
+#+END_SRC
 * helm
 ** general helm setup
 #+BEGIN_SRC emacs-lisp
   (require-package 'helm)
   (require 'helm-config)
-  (setq helm-candidate-number-limit 10)
-  (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-              helm-input-idle-delay 0.01  ; this actually updates things
-                                            ; reeeelatively quickly.
-              helm-quick-update t
-              helm-M-x-requires-pattern nil
-              helm-ff-skip-boring-files t)
-  (helm-mode)
+  (require-package 'helm-descbinds)
+
+  (setq helm-candidate-number-limit 100)
+  (setq helm-idle-delay 0.0
+        helm-input-idle-delay 0.01
+        helm-quick-update t
+        helm-M-x-requires-pattern nil
+        helm-ff-skip-boring-files t
+        helm-buffers-fuzzy-matching t
+        helm-recetf-fuzzy-match t
+        helm-M-x-fuzzy-match t
+        helm-imenu-fuzzy-match t
+        helm-apropos-fuzzy-match t)
+
+  (helm-mode 1)
+  (helm-autoresize-mode 1)
 #+END_SRC
 
 ** key bindings
 #+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-c h") 'helm-mini)
-  (global-set-key (kbd "C-p") 'helm-mini)
   (global-set-key (kbd "C-c a") 'helm-apropos)
   (global-set-key (kbd "C-c o") 'helm-occur)
   (global-set-key (kbd "C-c s") 'helm-swoop)
   (global-set-key (kbd "C-c i") 'helm-imenu)
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (ido-mode -1)
-#+END_SRC
-   
-** describe bindings
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'helm-descbinds)
+  (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-c b") 'helm-descbinds)
 #+END_SRC
-   
-
