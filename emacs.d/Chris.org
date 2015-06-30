@@ -7,31 +7,23 @@
 # solarized
 
 * about this file
-** intro
 Inspired by [[http://pages.sachachua.com/.emacs.d/Sacha.html#unnumbered-3][Sacha Chua's Config]], I decided to move from a multi-file approach, to use org mode's power to really easily manage the complexity.
 
 I can selectively export functionality by choosing to *tangle* the source code or not.
 
 By adding the following into your emacs =init.el=, you can then move all your config into a documented org file.
 
-#+begin_src emacs-lisp  :tangle no
-    ;; This sets up the load path so that we can override it
-    (package-initialize nil)
+#+BEGIN_SRC emacs-lisp  :tangle no
+  ;; This sets up the load path so that we can override it
+  (package-initialize nil)
 
-    ;; Load the rest of the packages
-    (package-initialize t)
-    (setq package-enable-at-startup nil)
+  ;; Load the rest of the packages
+  (package-initialize t)
+  (setq package-enable-at-startup nil)
 
-    ;; Finally, load my literate config
-    (org-babel-load-file "~/.emacs.d/Chris.org")
+  ;; Finally, load my literate config
+  (org-babel-load-file "~/.emacs.d/Chris.org")
 #+end_src
-
-** tip
-It is recommended not to just blindly copy paste.  Instead, move a section of interest into a seperate buffer and evaluate to see if you like the changes, without actually merging it into your config and potentially screwing things up.
-
-Useful: [[https://www.gnu.org/software/emacs/manual/html_mono/eintr.html][An Introduction to Programming in Emacs Lisp]]
-
-Also: =(require-package 'something...)= is a macro that I acquired from somewhere.  Can't remember where.
 
 * personal info
 #+BEGIN_SRC emacs-lisp
@@ -143,13 +135,11 @@ Useful to have access to power of common lisp within emacs.
 #+END_SRC
 
 * appearance
-
-  <2015-07-18 Sat>
 ** font stuff
    #+BEGIN_SRC emacs-lisp
 (when (member "DejaVu Sans Mono" (font-family-list))
-  (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 150))
-(setq line-spacing 0.1)
+  (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 140))
+(setq line-spacing 0.2)
    #+END_SRC
    
 ** colour theme 
@@ -208,6 +198,8 @@ Useful to have access to power of common lisp within emacs.
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 (setq linum-format "%d ")
+;;(require-package 'linum-relative)
+;;(require 'linum-relative)
    #+END_SRC
    
 ** alias for yes-or-no
@@ -353,8 +345,11 @@ Generally improve dired appearance
 #+END_SRC
 
 Hide files beginning with .[not a dot]
-#+BEGIN_SRC emacs-lisp 
-  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
+#+BEGIN_SRC emacs-lisp
+  (setq dired-omit-mode t)
+  (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.\\|^__.*$")
+  ;;(add-to-list 'dired-omit-extension ".example")
+  ;;(add-to-list 'dired-omit-extension ".pdf")
 #+END_SRC
 
 * searching
