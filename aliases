@@ -23,5 +23,26 @@ alias cbssh="cbf ~/.ssh/id_rsa.pub"
 
 # Switch to python numeric environment
 alias pyenv="source ~/Envs/numeric/bin/activate"
-
 alias pynb="echo \"Running iPython Notebook in the background\" && pyenv && (cd ~/engd/pynotebook && ipython notebook --no-browser) &"
+
+
+# Nice git aliases
+alias g='git'
+alias gst='git status'
+alias grst='gr status'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gc='git commit -v'
+alias gc!='git commit -v --amend'
+alias gco='git checkout'
+alias gcom='git checkout master'
+alias gb='git branch'
+alias gba='git branch -a'
+alias glg='git log --stat --max-count=10'
+alias glog='git log --oneline --decorate --color --graph'
+alias gap='git add -p'
+alias ga='git add'
+alias gp='git push'
+
+
+alias cl='catless'
