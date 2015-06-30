@@ -37,5 +37,52 @@ cb() {
 # Aliases / functions leveraging the cb() function
 # ------------------------------------------------
 # Copy contents of a file
-function cbf() { cat "$1" | cb; }  
+cbf() { cat "$1" | cb; }  
 
+# Make find easier to use
+myfind() {
+    find ./ -name "*$2*" -type "$1" | tee ${TMPDIR}/my_ffound | cat -n
+    FFOUND_PWD=${PWD}
+    FFOUND=($(cat ${TMPDIR}/my_ffound))
+}
+# And even simpler, for files and directories
+ff() { myfind "f" "$1"; }
+fd() { myfind "d" "$1"; }
+
+# Extract filename from find list
+fn() {
+    [ ! -z ${FFOUND[$1-1]} ] && echo ${FFOUND_PWD}/${FFOUND[$1-1]};
+}
+
+# Open file from find list in vim, or change to the directory
+v() { vim $(fn "$1");  }
+ch() { cd $(dirname $(fn "$1")); }
+
+# Re-list previous finds
+lf() { echo ${FFOUND[*]} | tr -s ' ' '\n' | cat -n; }
+
+# Easily jump back to Vim with CtrlZ
+fancy-ctrl-z () {
+    if [[ $#BUFFER -eq 0 ]]; then
+        BUFFER="fg"
+        zle accept-line
+    else
+        zle push-input
+        zle clear-screen
+    fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+
+
+# Use cat or less, depending on linecount
+catless() {
+    height=$(tput lines)
+    fileheight=$(wc -l $1 | awk '{print $1}')
+    if [[ $height -gt $fileheight ]]
+    then
+        cat $1
+    else
+        less $1
+    fi
+}
