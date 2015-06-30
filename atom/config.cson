@@ -21,3 +21,5 @@
   Hydrogen: {}
   "symbols-tree-view":
     scrollAnimation: false
+  "language-babel":
+    createTranspiledCode: true
