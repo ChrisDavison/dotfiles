@@ -1,5 +1,6 @@
 #+TITLE: My Emacs configuration
 #+AUTHOR: Chris Davison
+#+EMAIL: c.jr.davison@gmail.com
 #+OPTIONS: toc:nil
 #+PROPERTY: header-args  :results silent
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/2.5.0/
@@ -21,15 +22,18 @@ By adding the following into your emacs =init.el=, you can then move all your co
   (package-initialize t)
   (setq package-enable-at-startup nil)
 
+  ;; Try the 'use package' macro, from jwiegley on github
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+
+  ;; From here on, the org config will use the use-package macro for installing and configuring packages
+
   ;; Finally, load my literate config
   (org-babel-load-file "~/.emacs.d/Chris.org")
 #+end_src
-
-* personal info
-#+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Chris Davison"
-        user-mail-address "c.jr.davison@gmail.com")
-#+END_SRC
 
 * initialisation
 ** consts
@@ -40,44 +44,12 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 #+END_SRC
 
 ** package management
-   Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (package-refresh-contents)
-#+END_SRC
-
-On-demand package loading
-#+BEGIN_SRC emacs-lisp
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-If NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (if (package-installed-p package min-version)
-      t
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
-        (package-refresh-contents)
-        (require-package package min-version t)))))
-
-(defun maybe-require-package (package &optional min-version no-refresh)
-  "Try to install PACKAGE, and return non-nil if successful.
-In the event of failure, return nil and print a warning message.
-Optionally require MIN-VERSION.  If NO-REFRESH is non-nil, the
-available package lists will not be re-downloaded in order to
-locate PACKAGE."
-  (condition-case err
-      (require-package package min-version no-refresh)
-    (error
-     (message "Couldn't install package `%s': %S" package err)
-     nil)))
-#+END_SRC
-
-** package sources
+Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
 Add org and use melpa for most packages.
 #+BEGIN_SRC emacs-lisp
+  (package-refresh-contents)
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-  ;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 #+END_SRC
 
 ** eval after load
@@ -105,33 +77,35 @@ Delete the current file.  Basically a big of sugar around =delete-file= to take 
 #+END_SRC
 
 ** easier add-to-list
-Give regex patterns to add-auto-mode, so you don't need to call add-to-list multiple times (it'll do it for you).
-#+BEGIN_SRC emacs-lisp
+   Give regex patterns to add-auto-mode, so you don't need to call add-to-list multiple times (it'll do it for you).
+   #+BEGIN_SRC emacs-lisp
 (defun add-auto-mode (mode &rest patterns)
   "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
   (dolist (pattern patterns)
     (add-to-list 'auto-mode-alist (cons pattern mode))))
-#+END_SRC
-
+   #+END_SRC
+   
 ** and then initialize...
 #+BEGIN_SRC emacs-lisp
 (setq package-enable-at-startup nil)
 (package-initialize)
 
-(require-package 'fullframe)
-(fullframe list-packages quit-window)
+(use-package fullframe
+  :ensure t
+  :config (fullframe list-packages quit-window))
 #+END_SRC
 
 ** common lisp libs
 Useful to have access to power of common lisp within emacs.
 #+BEGIN_SRC emacs-lisp
-(require-package 'cl-lib)
-(require 'cl-lib)
+(use-package cl-lib
+  :ensure t
+  :config (require 'cl-lib))
 #+END_SRC
 
 ** diminish minor modes
 #+BEGIN_SRC emacs-lisp
-(require-package 'diminish)
+(use-package diminish)
 #+END_SRC
 
 * appearance
@@ -143,23 +117,23 @@ Useful to have access to power of common lisp within emacs.
    #+END_SRC
    
 ** colour theme 
-   I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.
-   Also added functions to quickly jump between light and dark themes.
+   I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.  Also added functions to quickly jump between light and dark themes.
    #+BEGIN_SRC emacs-lisp
-  (require-package 'solarized-theme)
-  (require-package 'zenburn-theme)
-  (require-package 'molokai-theme)
-  (load-theme 'solarized-dark t)
+     (use-package solarized-theme)
+     (use-package zenburn-theme)
+     (use-package molokai-theme)
 
-  (defun light()
-    "Activate a light color theme."
-    (interactive)
-    (load-theme 'solarized-light))
+     (defun light()
+       "Activate a light color theme."
+       (interactive)
+       (load-theme 'solarized-light))
 
-  (defun dark()
-    "Activate a dark color theme."
-    (interactive)
-    (load-theme 'solarized-dark))
+     (defun dark()
+       "Activate a dark color theme."
+       (interactive)
+       (load-theme 'solarized-dark))
+
+     (load-theme 'solarized-dark t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -198,8 +172,6 @@ Useful to have access to power of common lisp within emacs.
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 (setq linum-format "%d ")
-;;(require-package 'linum-relative)
-;;(require 'linum-relative)
    #+END_SRC
    
 ** alias for yes-or-no
@@ -246,31 +218,38 @@ Useful to have access to power of common lisp within emacs.
 * parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
-  (show-paren-mode t)
-  (require-package 'paredit)
-  (require-package 'rainbow-mode)
-  (require-package 'rainbow-delimiters)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  ;;(show-paren-mode t)
+  (use-package paredit
+    :init (show-paren-mode t))
+
+  (use-package rainbow-delimiters
+    :ensure paredit
+    :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
 
 * vim
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
 #+BEGIN_SRC emacs-lisp
-  (require-package 'evil)
-  (require-package 'key-chord)
-  (require-package 'evil-surround)
+  (use-package evil
+    :ensure t
+    :config (evil-mode 1))
 
-  (evil-mode 1)
-  (global-evil-surround-mode)
-  (key-chord-mode 1)
+  (use-package evil-surround
+    :ensure t
+    :config (global-evil-surround-mode))
+
+  (use-package key-chord
+    :ensure t
+    :config (key-chord-mode 1))
 
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
-  (define-key evil-normal-state-map (kbd "SPC") 'isearch-forward)
+
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+
   (key-chord-define-global "jk" 'evil-normal-state)
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
 #+END_SRC
@@ -279,34 +258,34 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
 Disk space is plentiful.  Keep backups and history.  Also, move the backups to the appropriate dir, so the backup files =.*~= don't clutter.
 
 #+begin_src emacs-lisp
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-(setq delete-old-versions -1)
-(setq version-control t)
-(setq vc-make-backup-files t)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
 
 
-(setq savehist-file "~/.emacs.d/savehist")
-(savehist-mode 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
+  (setq savehist-file "~/.emacs.d/savehist")
+  (savehist-mode 1)
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
 
-;; Counting 'recent files' as part of history
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
+  ;; Counting 'recent files' as part of history
+  (use-package recentf
+    :config (recentf-mode))
+  (setq recentf-max-saved-items 200)
+  (setq recentf-max-menu-items 15)
+  (recentf-mode)
 
-;; Always save the desktop, the current workspace config
+  ;; Always save the desktop, the current workspace config
   (setq desktop-path (list user-emacs-directory)
         desktop-auto-save-timeout 600)
   (desktop-save-mode 1)
-
 #+end_src
 
 ** recent files
@@ -325,61 +304,55 @@ People often struggle with the Emacs undo model, where there's really no concept
 This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
 #+begin_src emacs-lisp
-  (require-package 'undo-tree)
-  (diminish 'undo-tree-mode)
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t)
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :config (lambda () 
+              (global-undo-tree-mode)
+              (setq undo-tree-visualizer-timestamps t
+                    undo-tree-visualizer-diff t)))
 #+end_src
 
 * search && navigation
-** dired / nav
-
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
 Generally improve dired appearance
 #+begin_src emacs-lisp 
-(require 'find-dired)
-(require-package 'dired+)
-(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+  (use-package find-dired)
+  (use-package dired+
+    :config (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
+
 #+END_SRC
 
 Hide files beginning with .[not a dot]
 #+BEGIN_SRC emacs-lisp
   (setq dired-omit-mode t)
   (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.\\|^__.*$")
-  ;;(add-to-list 'dired-omit-extension ".example")
-  ;;(add-to-list 'dired-omit-extension ".pdf")
 #+END_SRC
 
 * searching
-** show current/total matches when searching
+show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
-  (when (maybe-require-package 'anzu)
-    (global-anzu-mode t)
-    (diminish 'anzu-mode)
-    (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-    (global-set-key [remap query-replace] 'anzu-query-replace))
+  (use-package anzu
+    :diminish anzu-mode
+    :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
+           ([remap query-replace] . anzu-query-replace))
+    :config (global-anzu-mode t))
 
   ;; DEL during isearch should edit the search string, not jump back to the previous result
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
-#+END_SRC
+  ;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
+  ;; Hybrid of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
+  (use-package ace-isearch
+    :ensure t
+    :config (global-ace-isearch-mode 1))
 
-** ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
-Hybrid of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
-#+BEGIN_SRC emacs-lisp
-  (require-package 'ace-isearch)
-  (global-ace-isearch-mode 1)
-#+END_SRC
-
-** smartscan (Vim *)
-From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
-This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
-Bound to =M-n= and =M-b= by default, I think.
-#+begin_src emacs-lisp
-  (require-package 'smartscan)
-  (global-smartscan-mode t)
+  ;; smartscan (Vim *)
+  ;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
+  ;; This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
+  ;; Bound to =M-n= and =M-b= by default, I think.
+  (use-package smartscan
+    :config (global-smartscan-mode t))
 #+end_src
 
 * utility
@@ -388,9 +361,9 @@ Bound to =M-n= and =M-b= by default, I think.
 It's hard to remember keyboard shortcuts. The =guide-key= package pops up help after a short delay.
 
 #+begin_src emacs-lisp
-  (require-package 'guide-key)
-  (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-  (guide-key-mode 1)
+  (use-package guide-key
+    :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+    :config (guide-key-mode 1))
 #+end_src
 
 ** utf-8
@@ -449,49 +422,19 @@ And give emacs some of the expected OS X keybinds
 A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
 
 #+BEGIN_SRC emacs-lisp
-  (require-package 'switch-window)
-  (require 'switch-window)
-  (setq switch-window-shortcut-style 'alphabet)
-  (global-set-key (kbd "C-x o") 'switch-window)
-#+END_SRC
-
-When splitting windows, use the 'other'  buffer in the next window
-#+BEGIN_SRC emacs-lisp
-  (defun split-window-func-with-other-buffer (split-function)
-    (lexical-let ((s-f split-function))
-      (lambda ()
-        (interactive)
-        (funcall s-f)
-        (set-window-buffer (next-window) (other-buffer)))))
-#+END_SRC
-
-...and key bindings to go along with this
-#+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-x2" (split-window-func-with-other-buffer 'split-window-vertically))
-  (global-set-key "\C-x3" (split-window-func-with-other-buffer 'split-window-horizontally))
-#+END_SRC
-
-And if you want to delete everything -but- this window...
-#+BEGIN_SRC emacs-lisp
-  (defun sanityinc/toggle-delete-other-windows ()
-    "Delete other windows in frame if any, or restore previous window config."
-    (interactive)
-    (if (and winner-mode
-             (equal (selected-window) (next-window)))
-        (winner-undo)
-      (delete-other-windows)))
-
-  (global-set-key "\C-x1" 'sanityinc/toggle-delete-other-windows)
+  (use-package switch-window
+    :config (setq switch-window-shortcut-style 'alphabet)
+    :bind ("C-x o" . switch-window))
 #+END_SRC
 
 ** ibuffer - interactive buffer management
 Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
 #+BEGIN_SRC emacs-lisp
-  (require-package 'fullframe)
-  (after-load 'ibuffer
-   (fullframe ibuffer ibuffer-quit))
+  (use-package fullframe)
+  (after-load 'buffer
+    (fullframe ibuffer ibuffer-quit))
 
-  (require-package 'ibuffer-vc)
+  (use-package buffer-vc)
 
   (defun ibuffer-set-up-preferred-filters ()
     (ibuffer-vc-set-filter-groups-by-vc-root)
@@ -499,8 +442,6 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
       (ibuffer-do-sort-by-filename/process)))
 
   (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
-
-
 
   (after-load 'ibuffer
     ;; Use human readable Size column instead of original one
@@ -520,22 +461,15 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
   ;; Modify the default ibuffer-formats (toggle with `)
   (setq ibuffer-formats
         '((mark modified read-only vc-status-mini " "
-                (name 18 18 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 16 16 :left :elide)
-                " "
+                (name 18 18 :left :elide) " "
+                (size-h 9 -1 :right) " "
+                (mode 16 16 :left :elide) " "
                 filename-and-process)
           (mark modified read-only vc-status-mini " "
-                (name 18 18 :left :elide)
-                " "
-                (size-h 9 -1 :right)
-                " "
-                (mode 16 16 :left :elide)
-                " "
-                (vc-status 16 16 :left)
-                " "
+                (name 18 18 :left :elide) " "
+                (size-h 9 -1 :right) " "
+                (mode 16 16 :left :elide) " "
+                (vc-status 16 16 :left) " "
                 filename-and-process)))
 
   (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
@@ -546,20 +480,15 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
 
 ** generally improve dired appearance
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
+
+Omit certain files, and re-use the dired buffer.
 #+begin_src emacs-lisp 
-(require 'find-dired)
-(require-package 'dired+)
-(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
-#+END_SRC
-
-** hide files beginning with .[not a dot]
-#+BEGIN_SRC emacs-lisp 
-  (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$")
-#+END_SRC
-
-** make dired use the same buffer when switching directories.
-#+BEGIN_SRC emacs-lisp 
-(diredp-toggle-find-file-reuse-dir 1)
+  (use-package find-dired
+    :ensure dired+
+    :config (lambda ()
+              (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+              (setq dired-omit-files "^\\.[^.]\\|\\.pdf$\\|\\.tex$") 
+              (diredp-toggle-find-file-reuse-dir 1)))
 #+end_src
 
 * word wrapping and truncation
@@ -575,55 +504,68 @@ Couldn't get this working directly...so functionalise it
 #+END_SRC
 
 * prog languages
-** flycheck
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'flycheck)
+** quick configs
+  Re-writing this to only use use-package, as it clears it up fairly well
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck)
+
+  ;; not sure if add-auto-mode works like the setq...so leaving for now
+  (use-package markdown-mode
+    :config (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'"))
+
+  (use-package csv-mode
+    :ensure csv-nav
+    :config (lambda ()  
+              (add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
+              (setq csv-separators '("," ";" "|" " "))))
+
+  ;; Emmet is fantastic for quickly outlining HTML
+  (use-package emmet-mode
+    :config (lambda ()
+              (add-hook 'sgml-mode-hook 'emmet-mode)
+              (add-hook 'css-mode-hook 'emmet-mode)
+              (setq emmet-move-cursor-between-quotes t)))
+
+  (use-package haml-mode)
+  (use-package sass-mode)
+  (use-package scss-mode
+    :config (setq-default scss-compile-at-save t))
+
+  ;; Colourize CSS literals
+  (use-package rainbow-mode
+    :config (lambda ()
+              (add-hook 'css-mode-hook 'rainbow-mode)
+              (add-hook 'html-mode-hook 'rainbow-mode)
+              (add-hook 'sass-mode-hook 'rainbow-mode)))
+
+  ;; Racket
+  (use-package racket-mode
+    :config (lambda () 
+              (add-hook 'racket-mode-hook 'paredit-mode)
+              (setq racket-racket-program "/usr/local/bin/racket")
+              (setq racket-raco-program "/usr/local/bin/raco") 
+              (setq racket-program "/usr/local/bin/racket")
+              (setq raco-program "/usr/local/bin/raco")))
+
+  ;; Go
+  (use-package go-mode
+    :config (add-hook 'before-save-hook 'gofmt-before-save))
+
+  ;; Rust
+  (use-package rust-mode)
+  (use-package flymake-rust)
+  (use-package flycheck-rust)
+
+  ;; Python
+  (use-package virtualenvwrapper
+    :config (lambda ()
+              (venv-initialize-interactive-shells) 
+              (venv-initialize-eshell)
+              (setq venv-location "/Users/davison/Envs/")
+              (add-hook 'python-mode-hook (lambda () (venv-workon "numeric")))))
+
+  (use-package ein)
    #+END_SRC
-   
-** markdown
-   Simple.  Get markdown and add to auto-list.
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'markdown-mode)
-
-  (setq auto-mode-alist
-        (cons '("\\.\\(md\\|markdown\\)\\'" . markdown-mode) auto-mode-alist))
-   #+END_SRC
-   
-** csv
-   Not done much with this yet, but generally makes CSVs a bit prettier.
-   
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'csv-mode)
-  (require-package 'csv-nav)
-
-  (add-auto-mode 'csv-mode "\\.[Cc][Ss][Vv]\\'")
-
-  (setq csv-separators '("," ";" "|" " "))
-   #+END_SRC
-   
-** html / css
-   Emmet is glorious for quickly outlining HTML.
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'emmet-mode)
-
-  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-
-  (setq emmet-move-cursor-between-quotes t) ;; default nil
-   #+END_SRC
-   
-   Don't know if prog-mode-hook covers HTML etc, so doing this for now.  Lazy.
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'haml-mode)
-  (require-package 'sass-mode)
-  (require-package 'scss-mode)
-  (setq-default scss-compile-at-save t)
-
-  ;;; Colourise CSS colour literals
-  (when (maybe-require-package 'rainbow-mode)
-    (dolist (hook '(css-mode-hook html-mode-hook sass-mode-hook))
-      (add-hook hook 'rainbow-mode)))
-#+END_SRC
 ** lisp
    Paredit was included earlier as it's just generally useful.
    
@@ -635,20 +577,13 @@ Couldn't get this working directly...so functionalise it
    
    Automatically byte-compile
    #+begin_src emacs-lisp
-  (require-package 'auto-compile)
-  (auto-compile-on-save-mode 1)
-  (auto-compile-on-load-mode 1)
-   #+end_src
-   
-   and load the .el if it's newer than the .elc
-   #+begin_src emacs-lisp
-  (setq load-prefer-newer t)
-   #+end_src
-   
-   Allow code to auto-update (elisp only)
-   #+begin_src emacs-lisp
-  (require-package 'lively)
-   #+end_src
+     (use-package auto-compile
+       :config (lambda ()
+                 (auto-compile-on-save-mode 1)
+                 (auto-compile-on-load-mode 1)
+                 (setq load-prefer-newer t)))
+
+     #+end_src
    
    Hook some useful settings into lisp modes
    #+begin_src emacs-lisp
@@ -662,141 +597,68 @@ Couldn't get this working directly...so functionalise it
   (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
    #+end_src
    
-** racket
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'racket-mode)
-  (put 'test-case 'racket-indent-function 1)
-  (add-hook 'racket-mode-hook 'paredit-mode)
-   #+END_SRC
-   
-   Bind the required programs...
-   #+BEGIN_SRC emacs-lisp
-  (setq racket-racket-program "/usr/local/bin/racket")
-  (setq racket-raco-program "/usr/local/bin/raco")
-
-  (setq racket-program "/usr/local/bin/racket")
-  (setq raco-program "/usr/local/bin/raco")
-   #+END_SRC
-   
-** go
-   Format code when saving
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'go-mode)
-  (require-package 'go-autocomplete)
-
-  (add-hook 'before-save-hook 'gofmt-before-save)
-   #+END_SRC
-   
-** rust
-   #+BEGIN_SRC emacs-lisp
-  (require-package 'rust-mode)
-  (require-package 'flymake-rust)
-  (require-package 'flycheck-rust)
-#+END_SRC
-
-** python
-Use python3 by default, and install EmacsIPythonNotebook (ein)
-#+BEGIN_SRC emacs-lisp 
-  (require-package 'virtualenvwrapper)
-  (venv-initialize-interactive-shells) ;; if you want interactive shell support
-  (venv-initialize-eshell) ;; if you want eshell support
-  (setq venv-location "/Users/davison/Envs/")
-
-  (require-package 'ein)
-   #+END_SRC
-   
-   Automatically run on numeric environment when using python
-   #+BEGIN_SRC emacs-lisp 
-  (add-hook 'python-mode-hook (lambda ()
-                                  (venv-workon "numeric")))
-   #+END_SRC
-** c / c++
-   #+BEGIN_SRC emacs-lisp
-  (add-hook 'c-mode-common-hook
-    (lambda()
-      (local-set-key (kbd "C-c <right>") 'hs-show-block)
-      (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-      (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-      (local-set-key (kbd "C-c <down>")  'hs-show-all)
-      (hs-minor-mode t)))
-   #+END_SRC
-** latex/auctex
-   #+BEGIN_SRC emacs-lisp
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-   #+END_SRC
-   
-   #+BEGIN_SRC emacs-lisp
-     (require-package 'auctex)
-
-     (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-     (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-     (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-     (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
-     (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
-     ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
-     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-
-     (setq LaTeX-eqnarray-label "eq"
-           LaTeX-equation-label "eq"
-           LaTeX-figure-label "fig"
-           LaTeX-table-label "tab"
-           LaTeX-myChapter-label "chap"
-           TeX-auto-save t
-           TeX-newline-function 'reindent-then-newline-and-indent
-           TeX-parse-self t
-           TeX-style-path '("style/" "auto/"
-                            "/usr/share/emacs21/site-lisp/auctex/style/"
-                            "/var/lib/auctex/emacs21/"
-                            "/usr/local/share/emacs/site-lisp/auctex/style/")
-           LaTeX-section-hook '(LaTeX-section-heading
-                                LaTeX-section-title
-                                LaTeX-section-toc
-                                LaTeX-section-section
-                                LaTeX-section-label))
-   #+END_SRC
-   
 * ido
 Re-enabling, as I found some issues with fuzzy finding.  But could Helm be a better all-round replacement for Ido?
 #+BEGIN_SRC emacs-lisp :tangle no
-  (require 'ido)
-  (ido-mode t)
-  (ido-everywhere t)
+  (use-package ido
+    :config (lambda () 
+              (ido-mode t)
+              (ido-everywhere t)
+              (setq ido-enable-flex-matching t)
+              (setq ido-use-filename-at-point nil)
+              (setq ido-auto-merge-work-directories-length 0)
+              (setq ido-use-virtual-buffers t)))
 
-  (setq ido-enable-flex-matching t)
-  (setq ido-use-filename-at-point nil)
-  (setq ido-auto-merge-work-directories-length 0)
-  (setq ido-use-virtual-buffers t)
+  (use-package ido-menu
+    :ensure ido
+    :config (lambda ()
+              (setq ido-default-buffer-method 'selected-window)
+              (ido-mode -1)))
 
-  (when (maybe-require-package 'ido-ubiquitous)
-    (ido-ubiquitous-mode t))
+  (use-package ido-ubiquitous
+    :config (ido-ubiquitous-mode t))
 
   ;; Use smex to handle M-x
-  (when (maybe-require-package 'smex)
-    ;; Change path for ~/.smex-items
-    (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
-    (global-set-key [remap execute-extended-command] 'smex))
-
-  (require-package 'idomenu)
-
-  ;; Allow the same buffer to be open in different frames
-  (setq ido-default-buffer-method 'selected-window)
-  (ido-mode -1)
+  (use-package smex
+    :config (lambda ()
+              (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
+              (global-set-key [remap execute-extended-command] 'smex)))
 #+END_SRC
 
 * org-mode
 ** taking notes
-Use a dropbox folder as my org-mode folder, and set up a default org mode file in here...
-#+BEGIN_SRC emacs-lisp
-  (require-package 'org)
-  (require-package 'ox-reveal)
-  (require-package 'org-bullets)
+Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up some nice config for org todo and agenda stuff.
 
-  (setq org-directory "~/Dropbox/docs")
-  (setq org-default-notes-file "~/Dropbox/docs/notes.org")
-  
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+=org-refile= lets you organize notes by typing in the headline to file them under.
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :config (lambda () 
+              (setq org-directory "~/Dropbox/docs")
+              (setq org-default-notes-file "~/Dropbox/docs/notes.org")
+              (setq org-src-window-setup 'current-window) ; Don't go to a new window when C-c ' editing babel
+              (setq org-src-fontify-natively t)
+              (setq org-agenda-files (delq nil (mapcar (lambda (x) (and (file-exists-p x) x))
+                                                       '("~/Dropbox/docs/"))))
+              (setq org-todo-keywords '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)")))
+              ;; Settings for refiling
+              (setq org-reverse-note-order t)
+              (setq org-refile-use-outline-path nil)
+              (setq org-refile-allow-creating-parent-nodes 'confirm)
+              (setq org-refile-use-cache nil)
+              (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+              (setq org-blank-before-new-entry nil))
+    :bind (("<f1>" . org-capture)
+           ("<f2>" . org-agenda)
+           ("<f3>" . org-agenda-list)
+           ("<f4>" . org-timeline)))
+
+  ;; (global-set-key (kbd "<f1>") 'org-capture)
+  ;; (global-set-key (kbd "<f2>") 'org-agenda)
+  ;; (global-set-key (kbd "<f3>") 'org-agenda-list)
+  ;; (global-set-key (kbd "<f4>") 'org-timeline)
+
+  (use-package ox-reveal)
+  (use-package htmlize)
 #+END_SRC
 
 This makes it easier to add links from outside.
@@ -807,32 +669,6 @@ This makes it easier to add links from outside.
   (yank)
   (insert "][more]]"))
 (global-set-key (kbd "<f6>") 'sacha/yank-more)
-#+end_src
-
-** editing source code
-   When using C-c ', don't change to another window. 
-#+begin_src emacs-lisp
-  (setq org-src-window-setup 'current-window)
-  (setq org-src-fontify-natively t)
-#+end_src
-  
-** publishing
-Timestamps and section numbers make my published files look more complicated than they are. Let's turn them off by default.
-
-#+begin_src emacs-lisp
-(setq org-export-with-section-numbers t)
-(setq org-html-include-timestamps nil)
-#+end_src
-
-** refiling
-   =org-refile= lets you organize notes by typing in the headline to file them under.
-#+begin_src emacs-lisp
-  (setq org-reverse-note-order t)
-  (setq org-refile-use-outline-path nil)
-  (setq org-refile-allow-creating-parent-nodes 'confirm)
-  (setq org-refile-use-cache nil)
-  (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-  (setq org-blank-before-new-entry nil)
 #+end_src
 
 ** capture - templates
@@ -861,43 +697,30 @@ Timestamps and section numbers make my published files look more complicated tha
              :immediate-finish)))
 #+end_src
 
-** agenda
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files
-        (delq nil
-              (mapcar (lambda (x) (and (file-exists-p x) x))
-                      '("~/Dropbox/docs/"))))
-#+END_SRC
-
-** update checkboxes on save
-  
-#+BEGIN_SRC emacs-lisp 
-  (defun checkbox-before-save ()
-    (org-update-checkbox-count t))
-
-  (add-hook 'org-mode-hook 
-            (lambda () 
-               (add-hook 'before-save-hook 'checkbox-before-save nil 'make-it-local)))
-#+END_SRC 
-
-** todo keywords
-
-#+BEGIN_SRC emacs-lisp 
-  (setq org-todo-keywords
-           '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)"))) 
-#+END_SRC
-
 ** keyboard shortcuts
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
     (global-set-key (kbd "<f1>") 'org-capture)
     (global-set-key (kbd "<f2>") 'org-agenda)
     (global-set-key (kbd "<f3>") 'org-agenda-list)
     (global-set-key (kbd "<f4>") 'org-timeline)
 #+end_src
 
-   
-Links to common files
+** indent org babel src
+In an Org-Babel block, run my/org-cleanup to fix indentation
+#+BEGIN_SRC emacs-lisp
+  (defun my/org-cleanup ()
+    (interactive)
+    (org-edit-special)
+    (indent-buffer)
+    (org-edit-src-exit))
+
+  (defun indent-buffer ()
+    (interactive)
+    (indent-region (point-min) (point-max)))
+#+END_SRC
+
+* Jump to commonly used files (set as registers)
+Set files as registers and then comfortably jump to them 
 #+BEGIN_SRC emacs-lisp :tangle no
   (global-set-key (kbd "C-x j") 'jump-to-register)
   (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
@@ -912,36 +735,30 @@ Links to common files
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
-** org reveal
-#+BEGIN_SRC emacs-lisp
-  (require-package 'ox-reveal)
-  (require-package 'htmlize)
-#+END_SRC
-
 * helm
 general helm setup
 #+BEGIN_SRC emacs-lisp
-  (require-package 'helm)
-  (require-package 'helm-descbinds)
-  (require 'helm-config)
+  (use-package helm
+    :init (require 'helm-config)
+    :config (lambda () 
+              (setq helm-candidate-number-limit 100
+                    helm-idle-delay 0.0
+                    helm-input-idle-delay 0.01
+                    helm-quick-update t
+                    helm-M-x-requires-pattern nil
+                    helm-ff-skip-boring-files t
+                    helm-recentf-fuzzy-match t
+                    helm-buffers-fuzzy-matching t
+                    helm-locate-fuzzy-match t
+                    helm-imenu-fuzzy-match t
+                    helm-M-x-fuzzy-match t
+                    helm-semantic-fuzzy-match t
+                    helm-apropos-fuzzy-match t
+                    helm-split-window-in-side-p t)
+              (helm-mode 1)
+              (helm-autoresize-mode 1)))
 
-  (setq helm-candidate-number-limit 100
-        helm-idle-delay 0.0
-        helm-input-idle-delay 0.01
-        helm-quick-update t
-        helm-M-x-requires-pattern nil
-        helm-ff-skip-boring-files t
-        helm-recentf-fuzzy-match t
-        helm-buffers-fuzzy-matching t
-        helm-locate-fuzzy-match t
-        helm-imenu-fuzzy-match t
-        helm-M-x-fuzzy-match t
-        helm-semantic-fuzzy-match t
-        helm-apropos-fuzzy-match t
-        helm-split-window-in-side-p t)
-
-  (helm-mode 1)
-  (helm-autoresize-mode 1)
+    (use-package helm-descbinds)
 #+END_SRC
 
 key bindings
@@ -962,13 +779,12 @@ key bindings
 
 * aggressive indentation
 #+BEGIN_SRC emacs-lisp
-(require-package 'aggressive-indent)
-(global-aggressive-indent-mode)
+  (use-package aggressive-indent
+    :config (global-aggressive-indent-mode))
 #+END_SRC
-
 * latex
 ** general config
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (require-package 'auctex)
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
@@ -989,7 +805,7 @@ key bindings
 #+END_SRC
 
 ** manage citations
-#+BEGIN_SRC 
+#+BEGIN_SRC :tangle no
   (require 'tex-site)
   (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
   (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
@@ -1019,3 +835,4 @@ key bindings
           LaTeX-section-label))
 #+END_SRC
 
+   
