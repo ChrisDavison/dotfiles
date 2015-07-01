@@ -226,13 +226,12 @@ Useful to have access to power of common lisp within emacs.
 * parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
 #+BEGIN_SRC emacs-lisp
-  ;;(show-paren-mode t)
   (use-package paredit
     :ensure t
     :init (show-paren-mode t))
 
   (use-package rainbow-delimiters
-    :ensure paredit
+    :ensure t
     :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
 
@@ -240,13 +239,19 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
 #+BEGIN_SRC emacs-lisp
+  (use-package evil-surround
+    :ensure t
+    :config (global-evil-surround-mode))
+
+
+  (use-package evil-leader 
+    :ensure t 
+    :config (global-evil-leader-mode))
+
   (use-package evil
     :ensure t
     :config (evil-mode 1))
 
-  (use-package evil-surround
-    :ensure t
-    :config (global-evil-surround-mode))
 
   (use-package key-chord
     :ensure t
@@ -261,6 +266,19 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
 
   (key-chord-define-global "jk" 'evil-normal-state)
   (key-chord-define-global "gc" 'comment-or-uncomment-region)
+
+  ;; Some of these functions are only pulled in later
+  ;; But VIM is added early incase customisation breaks.
+  (evil-leader/set-key
+    "w" 'save-buffer
+    "f" 'helm-find-files
+    "h" 'helm-mini
+    "o" 'helm-occur
+    "s" 'helm-swoop
+    "i" 'helm-imenu
+    "j" 'jump-to-register
+    "k" 'kill-buffer)
+
 #+END_SRC
 
 * history, backups and session
@@ -501,11 +519,11 @@ Interactively modify buffer list (jump to another buffer, see buffer modes, see 
 * word wrapping and truncation
 Couldn't get this working directly...so functionalise it
 #+BEGIN_SRC emacs-lisp
-(defun trunc-wrap()
-  "Turn on truncation and word wrapping"
-  (interactive)
-  (toggle-truncate-lines)
-  (toggle-word-wrap))
+  (defun trunc-wrap()
+    "Turn on truncation and word wrapping"
+    (interactive)
+    (toggle-truncate-lines)
+    (toggle-word-wrap))
 
   (key-chord-define-global "tw" 'trunc-wrap)
 #+END_SRC
@@ -790,6 +808,9 @@ key bindings
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 #+END_SRC
 
 * aggressive indentation
