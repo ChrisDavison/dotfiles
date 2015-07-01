@@ -49,8 +49,13 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 ** package management
 Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
 Add org and use melpa for most packages.
-#+BEGIN_SRC emacs-lisp
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;; Tangle to update packages, or call yourself
   (package-refresh-contents)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 #+END_SRC
@@ -600,7 +605,7 @@ Couldn't get this working directly...so functionalise it
    #+end_src
    
 * ido
-Re-enabling, as I found some issues with fuzzy finding.  But could Helm be a better all-round replacement for Ido?
+Could Helm be a better all-round replacement for Ido?  Don't include IDO for now.
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package ido
     :ensure t
