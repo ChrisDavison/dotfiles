@@ -239,6 +239,10 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
 #+BEGIN_SRC emacs-lisp
+    (use-package evil
+    :ensure t
+    :config (evil-mode 1))
+
   (use-package evil-surround
     :ensure t
     :config (global-evil-surround-mode))
@@ -247,11 +251,6 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   (use-package evil-leader 
     :ensure t 
     :config (global-evil-leader-mode))
-
-  (use-package evil
-    :ensure t
-    :config (evil-mode 1))
-
 
   (use-package key-chord
     :ensure t
