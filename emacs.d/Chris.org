@@ -141,7 +141,7 @@ Useful to have access to power of common lisp within emacs.
        (interactive)
        (load-theme 'solarized-dark))
 
-     (load-theme 'solarized-dark t)
+     (load-theme 'solarized-light t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -177,9 +177,9 @@ Useful to have access to power of common lisp within emacs.
    
 ** highlight current line and no blinking cursor
    #+BEGIN_SRC emacs-lisp
-(global-hl-line-mode 1)
-(blink-cursor-mode 0)
-(setq linum-format "%d ")
+     (global-hl-line-mode 1)
+     (blink-cursor-mode 0)
+     (setq linum-format "%d ")
    #+END_SRC
    
 ** alias for yes-or-no
@@ -225,7 +225,7 @@ Useful to have access to power of common lisp within emacs.
    
 * parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package paredit
     :ensure t
     :init (show-paren-mode t))
@@ -233,6 +233,26 @@ Show matching parens.  Use paredit to make shifting parens easier, and colourise
   (use-package rainbow-delimiters
     :ensure t
     :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode 1)
+  (use-package smartparens
+    :ensure t
+    :config 
+    (require 'smartparens-config)
+    (add-hook 'prog-mode-hook #'smartparens-strict-mode))
+
+  (use-package evil-smartparens
+    :ensure t
+    :diminish evil-smartparens-mode
+:bind
+(("g >" . sp-forward-slurp-sexp)
+("g <" . sp-backward-slurp-sexp)
+("g ." . sp-forward-barf-sexp)
+    :config
+    (add-hook 'smartparens-mode #'evil-smartparens)
+    (add-hook 'smartparens-strict-mode #'evil-smartparens))
 #+END_SRC
 
 * vim
@@ -339,6 +359,12 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
     (setq undo-tree-visualizer-diff t))
 #+end_src
 
+* expand region
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+:ensure t
+:bind ("C-=" . er/expand-region))
+#+END_SRC
 * search && navigation
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
@@ -411,28 +437,24 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
 
-** mac osx keys
+** mac osx
 Mac needs a little bit of hand holding...
 #+BEGIN_SRC emacs-lisp
   (when *is-a-mac*
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier 'none)
     (setq default-input-method "MacOSX")
-#+END_SRC
+    (use-package exec-path-from-shell :ensure t)
 
-Make the mouse wheel/trackpad less jerky
-#+BEGIN_SRC emacs-lisp
-    ;; Make mouse wheel / trackpad scrolling less jerky
+    ;;Make the mouse wheel/trackpad less jerky
     (setq mouse-wheel-scroll-amount '(1
                                       ((shift) . 5)
                                       ((control))))
     (dolist (multiple '("" "double-" "triple-"))
       (dolist (direction '("right" "left"))
         (global-set-key (kbd (concat "<" multiple "wheel-" direction ">")) 'ignore)))
-#+END_SRC
 
-And give emacs some of the expected OS X keybinds
-#+BEGIN_SRC emacs-lisp
+    ;;And give emacs some of the expected OS X keybinds
     (global-set-key (kbd "M-`") 'ns-next-frame)
     (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
     (global-set-key (kbd "M-˙") 'ns-do-hide-others)
@@ -540,10 +562,11 @@ Couldn't get this working directly...so functionalise it
 ** quick configs
   Re-writing this to only use use-package, as it clears it up fairly well
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck)
+  (use-package flycheck :ensure t)
 
   ;; not sure if add-auto-mode works like the setq...so leaving for now
   (use-package markdown-mode
+    :ensure t
     :config (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'"))
 
   (use-package csv-mode
@@ -553,18 +576,23 @@ Couldn't get this working directly...so functionalise it
 
   ;; Emmet is fantastic for quickly outlining HTML
   (use-package emmet-mode
+    :ensure t
     :config 
     (add-hook 'sgml-mode-hook 'emmet-mode)
     (add-hook 'css-mode-hook 'emmet-mode)
     (setq emmet-move-cursor-between-quotes t))
 
-  (use-package haml-mode)
-  (use-package sass-mode)
+  (use-package haml-mode :ensure t)
+  (use-package sass-mode :ensure t)
   (use-package scss-mode
+    :ensure t
     :config (setq-default scss-compile-at-save t))
+
+  (use-package coffee-mode :ensure t)
 
   ;; Colourize CSS literals
   (use-package rainbow-mode
+    :ensure t
     :config 
     (add-hook 'css-mode-hook 'rainbow-mode)
     (add-hook 'html-mode-hook 'rainbow-mode)
@@ -572,6 +600,7 @@ Couldn't get this working directly...so functionalise it
 
   ;; Racket
   (use-package racket-mode
+    :ensure t
     :config 
     (add-hook 'racket-mode-hook 'paredit-mode)
     (setq racket-racket-program "/usr/local/bin/racket")
@@ -598,6 +627,23 @@ Couldn't get this working directly...so functionalise it
     (add-hook 'python-mode-hook (lambda () (venv-workon "numeric"))))
 
   (use-package ein :ensure t)
+
+  (use-package clojure-mode :ensure t)
+  (use-package clojure-mode-extra-font-locking :ensure t)
+  (use-package cider 
+    :ensure t
+    :config
+    (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+    (setq cider-repl-pop-to-buffer-on-connect t)
+    (setq cider-show-error-buffer t)
+    (setq cider-repl-result-prefix ";; => ")
+    (setq cider-interactive-eval-result-prefix ";; => ")
+    (setq cider-repl-use-clojure-font-lock t)
+    (setq cider-auto-select-error-buffer t)
+    (setq cider-lein-command "/usr/local/bin/lein")
+    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
+    (cider-repl-set-ns "user"))
+
    #+END_SRC
 ** lisp
    Paredit was included earlier as it's just generally useful.
@@ -757,21 +803,22 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
   (defun indent-buffer ()
     (interactive)
     (indent-region (point-min) (point-max)))
+
+  (global-set-key (kbd "C-x c") 'my/org-cleanup)
 #+END_SRC
 
 * Jump to commonly used files (set as registers)
 Set files as registers and then comfortably jump to them 
-#+BEGIN_SRC emacs-lisp :tangle no
-  (global-set-key (kbd "C-x j") 'jump-to-register)
+#+BEGIN_SRC emacs-lisp
+  ;;(global-set-key (kbd "C-x j") 'jump-to-register)
   (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
-  (set-register ?u (cons 'file "~/Dropbox/org/uni.org"))
-  (set-register ?n (cons 'file "~/Dropbox/org/notes.org"))
-  (set-register ?r (cons 'file "~/Dropbox/org/rust.org"))
-  (set-register ?w (cons 'file "~/Dropbox/org/wh40k.org"))
-  (set-register ?d (cons 'file "~/Dropbox/org/dungeon-world.org"))
-  (set-register ?j (cons 'file "~/Dropbox/org/clojure.org"))
-  (set-register ?m (cons 'file "~/Dropbox/org/numenera.org"))
-  (set-register ?s (cons 'file "~/Dropbox/org/scrolls.org"))
+  (set-register ?u (cons 'file "~/Dropbox/docs/uni.org"))
+  (set-register ?l (cons 'file "~/Dropbox/docs/lisps.org"))
+  (set-register ?n (cons 'file "~/Dropbox/docs/notes.org"))
+  (set-register ?r (cons 'file "~/Dropbox/docs/rust.org"))
+  (set-register ?w (cons 'file "~/Dropbox/docs/wh40k.org"))
+  (set-register ?d (cons 'file "~/Dropbox/docs/dw.org"))
+  (set-register ?m (cons 'file "~/Dropbox/docs/numenera.org"))
   (set-register ?t (cons 'file "~/.tmp.org"))
 #+END_SRC
 
@@ -816,6 +863,7 @@ key bindings
 
   (global-set-key (kbd "M-y") 'helm-show-kill-ring)
   (global-set-key (kbd "M-x") 'helm-M-x)
+
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
