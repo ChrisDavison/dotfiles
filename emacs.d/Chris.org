@@ -1,5 +1,6 @@
 #+TITLE: My Emacs configuration
 
+* export config                                                   :noexport:
 #+AUTHOR: Chris Davison
 #+EMAIL: c.jr.davison@gmail.com
 #+OPTIONS: toc:nil
