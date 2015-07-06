@@ -224,38 +224,6 @@ Useful to have access to power of common lisp within emacs.
   (global-prettify-symbols-mode +1)
    #+END_SRC
    
-* parentheses
-Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package paredit
-    :ensure t
-    :init (show-paren-mode t))
-
-  (use-package rainbow-delimiters
-    :ensure t
-    :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (show-paren-mode 1)
-  (use-package smartparens
-    :ensure t
-    :config 
-    (require 'smartparens-config)
-    (add-hook 'prog-mode-hook #'smartparens-strict-mode))
-
-  (use-package evil-smartparens
-    :ensure t
-    :diminish evil-smartparens-mode
-:bind
-(("g >" . sp-forward-slurp-sexp)
-("g <" . sp-backward-slurp-sexp)
-("g ." . sp-forward-barf-sexp)
-    :config
-    (add-hook 'smartparens-mode #'evil-smartparens)
-    (add-hook 'smartparens-strict-mode #'evil-smartparens))
-#+END_SRC
-
 * vim
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
@@ -301,7 +269,7 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
 
 #+END_SRC
 
-* history, backups and session
+* history, backups, session and undo
 Disk space is plentiful.  Keep backups and history.  Also, move the backups to the appropriate dir, so the backup files =.*~= don't clutter.
 
 #+begin_src emacs-lisp
@@ -345,7 +313,7 @@ Disk space is plentiful.  Keep backups and history.  Also, move the backups to t
 (recentf-mode)
 #+end_src
 
-* undo tree  - visualize your undos and branches
+** undo tree  - visualize your undos and branches
 
 People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
 
@@ -360,12 +328,87 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
     (setq undo-tree-visualizer-diff t))
 #+end_src
 
-* expand region
+* text editing
+** parentheses
+Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package paredit
+    :ensure t
+    :init (show-paren-mode t))
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode 1)
+  (use-package smartparens
+    :ensure t
+    :config 
+    (require 'smartparens-config)
+    (add-hook 'prog-mode-hook #'smartparens-strict-mode)
+    (key-chord-define-global ">)" 'sp-forward-slurp-sexp)
+    (key-chord-define-global ">(" 'sp-forward-barf-sexp)
+    (key-chord-define-global "<)" 'sp-backward-slurp-sexp)
+    (key-chord-define-global "<(" 'sp-backward-barf-sexp))
+
+  (use-package evil-smartparens
+    :ensure t
+    :diminish evil-smartparens-mode
+    :config
+    (add-hook 'smartparens-mode #'evil-smartparens)
+    (add-hook 'smartparens-strict-mode #'evil-smartparens))
+#+END_SRC
+
+** clean up spaces
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-SPC") 'cycle-spacing)
+#+END_SRC
+** expand region
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
 :ensure t
 :bind ("C-=" . er/expand-region))
 #+END_SRC
+** word wrapping and truncation
+Couldn't get this working directly...so functionalise it
+#+BEGIN_SRC emacs-lisp
+  (defun trunc-wrap()
+    "Turn on truncation and word wrapping"
+    (interactive)
+    (if truncate-lines 
+        (progn
+          (setq truncate-lines nil)
+          (setq word-wrap t)
+          (message "Truncation and word wrap enabled"))
+      (progn 
+        (setq truncate-lines t)
+        (setq word-wrap nil)
+        (message "Truncation and word wrap disabled"))))
+
+  (key-chord-define-global "tw" 'trunc-wrap)
+  (setq truncate-lines t)
+  (setq word-wrap t)
+#+END_SRC
+
+** aggressive indentation
+#+BEGIN_SRC emacs-lisp
+  (use-package aggressive-indent
+    :ensure t
+    :config (global-aggressive-indent-mode))
+#+END_SRC
+
+** indent after newline
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "RET") 'newline-and-indent)
+  (defun sanityinc/newline-at-end-of-line ()
+    "Move to end of line, enter a newline, and reindent."
+    (interactive)
+    (move-end-of-line 1)
+    (newline-and-indent))
+#+END_SRC
+
 * search && navigation
 From http://www.masteringemacs.org/articles/2011/03/25/working-multiple-files-dired/
 
@@ -389,9 +432,8 @@ Hide files beginning with .[not a dot]
   (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.\\|^__.*$")
 #+END_SRC
 
-* searching
-show current/total matches when searching
 #+BEGIN_SRC emacs-lisp
+  ;; Show current and total matches while searching
   (use-package anzu
     :ensure t
     :diminish anzu-mode
@@ -416,6 +458,64 @@ show current/total matches when searching
     :ensure t
     :config (global-smartscan-mode t))
 #+end_src
+
+#+BEGIN_SRC emacs-lisp
+;; Prompt with a hud when switching windows, if more than 2 windows
+  (use-package switch-window
+    :ensure t
+    :config (setq switch-window-shortcut-style 'alphabet)
+    :bind ("C-x o" . switch-window))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; Interactively modify buffer list
+  (use-package fullframe :ensure t)
+  (after-load 'buffer
+    (fullframe ibuffer ibuffer-quit))
+
+  (use-package ibuffer-vc :ensure t)
+
+  (defun ibuffer-set-up-preferred-filters ()
+    (ibuffer-vc-set-filter-groups-by-vc-root)
+    (unless (eq ibuffer-sorting-mode 'filename/process)
+      (ibuffer-do-sort-by-filename/process)))
+
+  (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
+
+  (after-load 'ibuffer
+    ;; Use human readable Size column instead of original one
+    (define-ibuffer-column size-h
+      (:name "Size" :inline t)
+      (cond
+       ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+       ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+       (t (format "%8d" (buffer-size))))))
+
+
+  ;; Explicitly require ibuffer-vc to get its column definitions, which
+  ;; can't be autoloaded
+  (after-load 'ibuffer
+    (require 'ibuffer-vc))
+
+  ;; Modify the default ibuffer-formats (toggle with `)
+  (setq ibuffer-formats
+        '((mark modified read-only vc-status-mini " "
+                (name 18 18 :left :elide) " "
+                (size-h 9 -1 :right) " "
+                (mode 16 16 :left :elide) " "
+                filename-and-process)
+          (mark modified read-only vc-status-mini " "
+                (name 18 18 :left :elide) " "
+                (size-h 9 -1 :right) " "
+                (mode 16 16 :left :elide) " "
+                (vc-status 16 16 :left) " "
+                filename-and-process)))
+
+  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
+
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+#+END_SRC
 
 * utility
 ** help - guide-key
@@ -466,99 +566,6 @@ Mac needs a little bit of hand holding...
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
 #+END_SRC
-** indent after newline
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "RET") 'newline-and-indent)
-  (defun sanityinc/newline-at-end-of-line ()
-    "Move to end of line, enter a newline, and reindent."
-    (interactive)
-    (move-end-of-line 1)
-    (newline-and-indent))
-#+END_SRC
-
-* dired / nav
-** windows - managing window splits
-A useful package to prompt with a HUD, letting you to jump to a specific buffer if you have more than 2 open.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package switch-window
-    :ensure t
-    :config (setq switch-window-shortcut-style 'alphabet)
-    :bind ("C-x o" . switch-window))
-#+END_SRC
-
-** ibuffer - interactive buffer management
-Interactively modify buffer list (jump to another buffer, see buffer modes, see full path, delete/kill buffer etc.)
-#+BEGIN_SRC emacs-lisp
-  (use-package fullframe :ensure t)
-  (after-load 'buffer
-    (fullframe ibuffer ibuffer-quit))
-
-  (use-package ibuffer-vc :ensure t)
-
-  (defun ibuffer-set-up-preferred-filters ()
-    (ibuffer-vc-set-filter-groups-by-vc-root)
-    (unless (eq ibuffer-sorting-mode 'filename/process)
-      (ibuffer-do-sort-by-filename/process)))
-
-  (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
-
-  (after-load 'ibuffer
-    ;; Use human readable Size column instead of original one
-    (define-ibuffer-column size-h
-      (:name "Size" :inline t)
-      (cond
-       ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
-       ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-       (t (format "%8d" (buffer-size))))))
-
-
-  ;; Explicitly require ibuffer-vc to get its column definitions, which
-  ;; can't be autoloaded
-  (after-load 'ibuffer
-    (require 'ibuffer-vc))
-
-  ;; Modify the default ibuffer-formats (toggle with `)
-  (setq ibuffer-formats
-        '((mark modified read-only vc-status-mini " "
-                (name 18 18 :left :elide) " "
-                (size-h 9 -1 :right) " "
-                (mode 16 16 :left :elide) " "
-                filename-and-process)
-          (mark modified read-only vc-status-mini " "
-                (name 18 18 :left :elide) " "
-                (size-h 9 -1 :right) " "
-                (mode 16 16 :left :elide) " "
-                (vc-status 16 16 :left) " "
-                filename-and-process)))
-
-  (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
-
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-#+END_SRC
-
-* word wrapping and truncation
-Couldn't get this working directly...so functionalise it
-#+BEGIN_SRC emacs-lisp
-  (defun trunc-wrap()
-    "Turn on truncation and word wrapping"
-    (interactive)
-    (if truncate-lines 
-        (progn
-          (setq truncate-lines nil)
-          (setq word-wrap nil)
-          (message "Truncation and word wrap enabled"))
-      (progn 
-        (setq truncate-lines t)
-        (setq word-wrap t)
-        (message "Truncation and word wrap disabled"))))
-
-  (key-chord-define-global "tw" 'trunc-wrap)
-  (setq truncate-lines t)
-  (setq word-wrap t)
-#+END_SRC
-
 * prog languages
 ** quick configs
   Re-writing this to only use use-package, as it clears it up fairly well
@@ -627,6 +634,9 @@ Couldn't get this working directly...so functionalise it
     (setq venv-location "/Users/davison/Envs/")
     (add-hook 'python-mode-hook (lambda () (venv-workon "numeric"))))
 
+  (use-package ob-ipython
+    :ensure t)
+
   (use-package ein :ensure t)
 
   (use-package clojure-mode :ensure t)
@@ -677,6 +687,59 @@ Couldn't get this working directly...so functionalise it
      (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
    #+end_src
    
+** latex
+#+BEGIN_SRC emacs-lisp :tangle no
+;; General config
+  (require-package 'auctex)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query nil)
+
+  (setq ispell-program-name "aspell") ; could be ispell as well, depending on your preferences
+  (setq ispell-dictionary "english") ; this can obviously be set to any language your spell-checking program supports
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+  (defun turn-on-outline-minor-mode ()
+  (outline-minor-mode 1))
+
+  (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+  (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
+#+END_SRC
+
+#+BEGIN_SRC :tangle no
+;; Manage citations
+  (require 'tex-site)
+  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  (add-hook 'latex-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+  (setq LaTeX-eqnarray-label "eq"
+        LaTeX-equation-label "eq"
+        LaTeX-figure-label "fig"
+        LaTeX-table-label "tab"
+        LaTeX-myChapter-label "chap"
+        TeX-auto-save t
+        TeX-newline-function 'reindent-then-newline-and-indent
+        TeX-parse-self t
+        TeX-style-path
+        '("style/" "auto/"
+          "/usr/share/emacs21/site-lisp/auctex/style/"
+          "/var/lib/auctex/emacs21/"
+          "/usr/local/share/emacs/site-lisp/auctex/style/")
+        LaTeX-section-hook
+        '(LaTeX-section-heading
+          LaTeX-section-title
+          LaTeX-section-toc
+          LaTeX-section-section
+          LaTeX-section-label))
+#+END_SRC
+
 * ido
 Could Helm be a better all-round replacement for Ido?  Don't include IDO for now.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -713,14 +776,24 @@ Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up
 
 =org-refile= lets you organize notes by typing in the headline to file them under.
 #+BEGIN_SRC emacs-lisp
-  (defun my/org-setup ()
+  (use-package org
+    :ensure t
+    :bind (("<f1>" . org-capture)
+           ("<f2>" . org-agenda)
+           ("<f3>" . org-agenda-list)
+           ("<f4>" . org-timeline))
+    :config
     (setq org-directory "~/Dropbox/docs")
     (setq org-default-notes-file "~/Dropbox/docs/notes.org")
-    (setq org-src-window-setup 'current-window) ; Don't go to a new window when C-c ' editing babel
+    (setq org-src-window-setup 'current-window) 
     (setq org-src-fontify-natively t)
-    (setq org-agenda-files (delq nil (mapcar (lambda (x) (and (file-exists-p x) x))
-                                             '("~/Dropbox/docs/"))))
-    (setq org-todo-keywords '((sequence "-TODO-(t)" "-WIP(w)-" "|" "-DONE(d)-" "-CANCELLED-(c)")))
+    (setq org-agenda-files
+          (delq nil (mapcar (lambda (x) (and (file-exists-p x) x))
+                            '("~/Dropbox/docs/"))))
+    (setq org-todo-keywords 
+          '((sequence "-TODO-(t)" "-WIP(w)-"
+                      "|"
+                      "-DONE(d)-" "-CANCELLED-(c)")))
     ;; Settings for refiling
     (setq org-reverse-note-order t)
     (setq org-refile-use-outline-path nil)
@@ -728,21 +801,6 @@ Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up
     (setq org-refile-use-cache nil)
     (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
     (setq org-blank-before-new-entry nil))
-
-  (use-package org
-    :ensure t
-    :bind (("<f1>" . org-capture)
-           ("<f2>" . org-agenda)
-           ("<f3>" . org-agenda-list)
-           ("<f4>" . org-timeline))
-    :config (my/org-setup))
-
-
-
-  ;; (global-set-key (kbd "<f1>") 'org-capture)
-  ;; (global-set-key (kbd "<f2>") 'org-agenda)
-  ;; (global-set-key (kbd "<f3>") 'org-agenda-list)
-  ;; (global-set-key (kbd "<f4>") 'org-timeline)
 
   (use-package ox-reveal :ensure t)
   (use-package htmlize :ensure t)
@@ -757,6 +815,27 @@ This makes it easier to add links from outside.
   (insert "][more]]"))
 (global-set-key (kbd "<f6>") 'sacha/yank-more)
 #+end_src
+
+#+BEGIN_SRC emacs-lisp :tangle no
+Paste a link into an org file document, using the currently selected text as the description
+
+Something like Sacha Chua's yank-more, but using the current region as 'more'
+
+Below is /kind of/ along the right lines, but need to make it work with either the kill ring or the clipboard, as well as removing the current region.
+#+BEGIN_SRC emacs-lisp
+  (setq save-interprogram-paste-before-kill t)
+  (defun cd/yank-with-selection-as-description ()
+    (interactive)
+    (let* ((url (car kill-ring))
+           (desc (delete-and-extract-region (region-beginning) (region-end)))
+           (desc-and-end (concat "][" desc "]]")))
+      (insert "[[")
+      (clipboard-yank)
+      (insert desc-and-end))
+    (message "Yanked with Selection"))
+
+  (global-set-key (kbd "<f7>") 'cd/yank-with-selection-as-description)
+#+END_SRC
 
 ** capture - templates
    =org-capture= lets you create templates for jotting down info of various kinds.
@@ -870,64 +949,10 @@ key bindings
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
 
-* aggressive indentation
+* helpers
 #+BEGIN_SRC emacs-lisp
-  (use-package aggressive-indent
-    :ensure t
-    :config (global-aggressive-indent-mode))
+(use-package s :ensure t)
+(use-package f :ensure t)
 #+END_SRC
-* latex
-** general config
-#+BEGIN_SRC emacs-lisp :tangle no
-  (require-package 'auctex)
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq TeX-save-query nil)
-
-  (setq ispell-program-name "aspell") ; could be ispell as well, depending on your preferences
-  (setq ispell-dictionary "english") ; this can obviously be set to any language your spell-checking program supports
-
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
-
-  (defun turn-on-outline-minor-mode ()
-  (outline-minor-mode 1))
-
-  (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
-  (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
-  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
-#+END_SRC
-
-** manage citations
-#+BEGIN_SRC :tangle no
-  (require 'tex-site)
-  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
-  (add-hook 'latex-mode-hook 'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-
-  (setq LaTeX-eqnarray-label "eq"
-        LaTeX-equation-label "eq"
-        LaTeX-figure-label "fig"
-        LaTeX-table-label "tab"
-        LaTeX-myChapter-label "chap"
-        TeX-auto-save t
-        TeX-newline-function 'reindent-then-newline-and-indent
-        TeX-parse-self t
-        TeX-style-path
-        '("style/" "auto/"
-          "/usr/share/emacs21/site-lisp/auctex/style/"
-          "/var/lib/auctex/emacs21/"
-          "/usr/local/share/emacs/site-lisp/auctex/style/")
-        LaTeX-section-hook
-        '(LaTeX-section-heading
-          LaTeX-section-title
-          LaTeX-section-toc
-          LaTeX-section-section
-          LaTeX-section-label))
-#+END_SRC
-
-   
-   
+  
+  
