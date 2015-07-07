@@ -806,6 +806,9 @@ Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up
 
   (use-package ox-reveal :ensure t)
   (use-package htmlize :ensure t)
+  (use-package org-bullets 
+    :ensure t
+    :config (org-bullets-mode 1))
 #+END_SRC
 
 This makes it easier to add links from outside.
