@@ -1,6 +1,6 @@
 #+TITLE: My Emacs configuration
 
-* export config                                                   :noexport:
+* export config :noexport:
 #+AUTHOR: Chris Davison
 #+EMAIL: c.jr.davison@gmail.com
 #+OPTIONS: toc:nil
@@ -120,8 +120,9 @@ Useful to have access to power of common lisp within emacs.
 * appearance
 ** font stuff
    #+BEGIN_SRC emacs-lisp
-(when (member "DejaVu Sans Mono" (font-family-list))
-  (set-face-attribute 'default nil :font "DejaVu Sans Mono" :height 140))
+(when (member "Input Mono" (font-family-list))
+  (set-default-font "Input Mono 12"))
+  ;;(set-face-attribute 'default nil :font "Input Mono" :height 120))
 (setq line-spacing 0.2)
    #+END_SRC
    
@@ -131,6 +132,7 @@ Useful to have access to power of common lisp within emacs.
      (use-package solarized-theme :ensure t)
      (use-package zenburn-theme :ensure t)
      (use-package molokai-theme :ensure t)
+     (use-package cyberpunk-theme :ensure t)
 
      (defun light()
        "Activate a light color theme."
@@ -142,7 +144,7 @@ Useful to have access to power of common lisp within emacs.
        (interactive)
        (load-theme 'solarized-dark))
 
-     (load-theme 'solarized-light t)
+     (load-theme 'cyberpunk t)
    #+END_SRC
    
 ** *maybe* suspend frame
