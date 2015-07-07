@@ -829,14 +829,14 @@ Something like Sacha Chua's yank-more, but using the current region as 'more'
 Below is /kind of/ along the right lines, but need to make it work with either the kill ring or the clipboard, as well as removing the current region.
 #+BEGIN_SRC emacs-lisp
   (setq save-interprogram-paste-before-kill t)
-  (defun cd/yank-with-selection-as-description ()
-    (interactive)
-    (let* ((url (car kill-ring))
-           (desc (delete-and-extract-region (region-beginning) (region-end)))
-           (desc-and-end (concat "][" desc "]]")))
-      (insert "[[")
-      (clipboard-yank)
-      (insert desc-and-end))
+
+  (defun cd/yank-with-selection-as-description (title)
+    (interactive "MLink Title: \n")
+    (insert "[[")
+    (clipboard-yank)
+    (insert "][")
+    (insert title)
+    insert "]]"
     (message "Yanked with Selection"))
 
   (global-set-key (kbd "<f7>") 'cd/yank-with-selection-as-description)
