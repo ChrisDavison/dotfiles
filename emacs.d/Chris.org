@@ -144,7 +144,7 @@ Useful to have access to power of common lisp within emacs.
        (interactive)
        (load-theme 'solarized-dark))
 
-     (load-theme 'cyberpunk t)
+     (load-theme 'solarized-light t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -230,7 +230,7 @@ Useful to have access to power of common lisp within emacs.
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
 #+BEGIN_SRC emacs-lisp
-    (use-package evil
+  (use-package evil
     :ensure t
     :config (evil-mode 1))
 
@@ -434,6 +434,7 @@ Hide files beginning with .[not a dot]
   (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.\\|^__.*$")
 #+END_SRC
 
+Show current and total matches while searching
 #+BEGIN_SRC emacs-lisp
   ;; Show current and total matches while searching
   (use-package anzu
@@ -461,6 +462,7 @@ Hide files beginning with .[not a dot]
     :config (global-smartscan-mode t))
 #+end_src
 
+Prompt with a hud when switching to a window in a multi-pane display
 #+BEGIN_SRC emacs-lisp
 ;; Prompt with a hud when switching windows, if more than 2 windows
   (use-package switch-window
@@ -469,6 +471,7 @@ Hide files beginning with .[not a dot]
     :bind ("C-x o" . switch-window))
 #+END_SRC
 
+Interactively modify the buffer list
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
   (use-package fullframe :ensure t)
@@ -517,6 +520,15 @@ Hide files beginning with .[not a dot]
 
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+#+END_SRC
+
+Code folding
+#+BEGIN_SRC emacs-lisp
+(use-package fold-dwim :ensure t)
+(use-package fold-dwim-org :ensure t)
+
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+(add-hook 'prog-mode-hook #'fold-dwim-org/minor-mode)
 #+END_SRC
 
 * utility
