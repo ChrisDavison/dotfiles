@@ -51,7 +51,7 @@ Basically give a useful const to check if running OSX.  This may be useful for y
 Refresh the package list, to get newest versions.  Can cause a slight delay when opening emacs.
 Add org and use melpa for most packages.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   ;; Tangle to update packages, or call yourself
   (package-refresh-contents)
 #+END_SRC
@@ -279,8 +279,8 @@ Disk space is plentiful.  Keep backups and history.  Also, move the backups to t
   (setq delete-old-versions -1)
   (setq version-control t)
   (setq vc-make-backup-files t)
-  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
-
+  (setq auto-save-file-name-transforms 
+        '((".*" "~/.emacs.d/auto-save-list/" t)))
 
   (setq savehist-file "~/.emacs.d/savehist")
   (savehist-mode 1)
@@ -304,6 +304,9 @@ Disk space is plentiful.  Keep backups and history.  Also, move the backups to t
   (setq desktop-path (list user-emacs-directory)
         desktop-auto-save-timeout 600)
   (desktop-save-mode 1)
+
+  ;; Reload when file changed on disk
+  (global-auto-revert-mode t)
 #+end_src
 
 ** recent files
@@ -580,6 +583,7 @@ Mac needs a little bit of hand holding...
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
 )
 #+END_SRC
+
 * prog languages
 ** quick configs
   Re-writing this to only use use-package, as it clears it up fairly well
