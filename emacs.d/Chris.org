@@ -130,9 +130,7 @@ Useful to have access to power of common lisp within emacs.
    I always end up going back to solarized, but have been using 'github' within VIM, so should look into alternatives.  Also added functions to quickly jump between light and dark themes.
    #+BEGIN_SRC emacs-lisp
      (use-package solarized-theme :ensure t)
-     (use-package zenburn-theme :ensure t)
      (use-package molokai-theme :ensure t)
-     (use-package cyberpunk-theme :ensure t)
 
      (defun light()
        "Activate a light color theme."
@@ -144,7 +142,7 @@ Useful to have access to power of common lisp within emacs.
        (interactive)
        (load-theme 'solarized-dark))
 
-     (load-theme 'solarized-light t)
+     (load-theme 'molokai t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -541,6 +539,7 @@ It's hard to remember keyboard shortcuts. The =guide-key= package pops up help a
 
 #+begin_src emacs-lisp
   (use-package guide-key
+    :diminish guide-key-mode
     :ensure t
     :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
     :config (guide-key-mode 1))
@@ -673,6 +672,10 @@ Mac needs a little bit of hand holding...
     (add-hook 'cider-repl-mode-hook 'smartparens-mode)
     (cider-repl-set-ns "user"))
 
+  ;;(diminish 'auto-complete-mode)
+  (diminish 'hs-minor-mode)
+  (diminish 'smartparens-mode)
+  ;;(diminish 'smartparens-strict-mode)
    #+END_SRC
 ** lisp
    Paredit was included earlier as it's just generally useful.
@@ -812,6 +815,9 @@ Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up
           '((sequence "-TODO-(t)" "-WIP(w)-"
                       "|"
                       "-DONE(d)-" "-CANCELLED-(c)")))
+    (setq org-startup-indented t)
+    (add-hook 'org-mode-hook '(diminish 'org-indent-mode))
+    
     ;; Settings for refiling
     (setq org-reverse-note-order t)
     (setq org-refile-use-outline-path nil)
@@ -823,8 +829,11 @@ Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up
   (use-package ox-reveal :ensure t)
   (use-package htmlize :ensure t)
   (use-package org-bullets 
+    :disabled t
     :ensure t
     :config (org-bullets-mode 1))
+ 
+  
 #+END_SRC
 
 This makes it easier to add links from outside.
@@ -927,6 +936,7 @@ Set files as registers and then comfortably jump to them
 general helm setup
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :diminish helm-mode
     :ensure t
     :init (require 'helm-config)
     :config 
