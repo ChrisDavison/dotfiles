@@ -131,18 +131,9 @@ Useful to have access to power of common lisp within emacs.
    #+BEGIN_SRC emacs-lisp
      (use-package solarized-theme :ensure t)
      (use-package molokai-theme :ensure t)
+     (use-package seoul256-theme :ensure t) ; enable once melpa updates today
 
-     (defun light()
-       "Activate a light color theme."
-       (interactive)
-       (load-theme 'solarized-light))
-
-     (defun dark()
-       "Activate a dark color theme."
-       (interactive)
-       (load-theme 'solarized-dark))
-
-     (load-theme 'molokai t)
+     ;;(load-theme seoul256 t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -224,6 +215,10 @@ Useful to have access to power of common lisp within emacs.
   (global-prettify-symbols-mode +1)
    #+END_SRC
    
+** smart mode line
+#+BEGIN_SRC emacs-lisp
+(sml/setup)
+#+END_SRC
 * vim
 Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make this editing experience as close to the VIM experience as possible, while allowing for the nicety of Emacs.  Key-chord is pretty nice to keep my key presses down.
 
