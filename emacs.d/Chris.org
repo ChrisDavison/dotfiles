@@ -121,7 +121,7 @@ Useful to have access to power of common lisp within emacs.
 ** font stuff
    #+BEGIN_SRC emacs-lisp
 (when (member "Input Mono" (font-family-list))
-  (set-default-font "Input Mono 14"))
+  (set-default-font "Input Mono 15"))
   ;;(set-face-attribute 'default nil :font "Input Mono" :height 120))
 (setq line-spacing 0.2)
    #+END_SRC
