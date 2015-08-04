@@ -41,7 +41,7 @@ cbf() { cat "$1" | cb; }
 
 # Make find easier to use
 myfind() {
-    find ./ -name "*$2*" -type "$1" | tee ${TMPDIR}/my_ffound | cat -n
+    find ./ -iname "*$2*" -type "$1" | tee ${TMPDIR}/my_ffound | cat -n
     FFOUND_PWD=${PWD}
     FFOUND=($(cat ${TMPDIR}/my_ffound))
 }
