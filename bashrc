@@ -11,7 +11,6 @@ esac
 export GOROOT="/usr/local/go";
 export GOPATH="$HOME/prog/Go";
 export GOBIN="$GOPATH/bin";
-export HSBIN="~/Library/Haskell/bin";
 export PATH=$PATH:$GOPATH/bin:$HSBIN
 
 shopt -s histappend
