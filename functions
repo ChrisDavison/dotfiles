@@ -91,3 +91,14 @@ mans () {
     man $1 | grep -iC2 --color=always $2 | less
 }
 
+mktar () {
+    tar -cvf "$1".tar.gz "$2"
+}
+
+opentar () {
+    tar -xvf "$1" 
+}
+
+prevtar () {
+    tar -ztvf "$1"
+}
