@@ -50,15 +50,13 @@
  'dl
 
  '(default ((t (:background "#ffffff" :foreground "#000000"))))
+ '(region ((t (:background "#F76F8E" :foreground "#000"))))
 
  '(bold ((t (:weight bold))))
  '(bold-italic ((t (:weight bold :slant italic))))
  '(italic ((t (:slant italic))))
  '(underline ((t (:underline t))))
 
- ;; '(custom-face-tag ((t (:foreground "#66D9EF" :weight bold))))
- ;; '(custom-state ((t (:foreground "#FFBD98"))))
- ;; '(region ((t (:background "#007173"))))
 
  ;; '(css-selector ((t (:foreground "#ffc0de"))))
  ;; '(css-property ((t (:foreground "#66D9EF"))))
@@ -72,35 +70,37 @@
  ;; '(diff-hunk-header ((t (:foreground "#AE81FF" :background "#232526"))))
  ;; '(diff-removed ((t (:foreground "#ffc0de" :weight bold))))
 
- ;; '(escape-glyph ((t (:foreground "#E6DB74"))))
- ;; '(minibuffer-prompt ((t (:foreground "#66D9EF"))))
- ;; '(mode-line ((t (:foreground "#F8F8F2" :background "#000000"
- ;;                              :box (:line-width 1 :color "#000000" :style released-button)))))
- ;; '(mode-line-buffer-id ((t (:foreground nil :background "#000000" :weight semi-bold))))
- ;; '(mode-line-inactive ((t (:foreground "#BCBCBC" :background "#000000"
- ;;                                       ':box (:line-width 1 :color "#232526")))))
- ;; '(mode-line-mousable ((t (:foreground "#BCBCBC" :background "#000000"))))
- ;; '(mode-line-mousable-minor-mode ((t (:foreground "#BCBCBC" :background "#000000"))))
+ '(escape-glyph ((t (:foreground "#F76F8E"))))
 
- ;; '(font-lock-builtin-face ((t (:foreground "#FFBD98"))))
- ;; '(font-lock-comment-face ((t (:foreground "#719872" :slant italic))))
- ;; '(font-lock-comment-delimiter-face ((t (:foreground "#719872" :slant italic))))
- ;; '(font-lock-constant-face ((t (:foreground "#AE81FF"))))
- ;; '(font-lock-doc-face ((t (:foreground "#E6DB74" :slant italic))))
- ;; '(font-lock-function-name-face ((t (:foreground "#dedd99" :slant italic))))
- ;; '(font-lock-keyword-face ((t (:foreground "#e17899"))))
- ;; '(font-lock-negation-char-face ((t (:weight bold))))
- ;; '(font-lock-preprocessor-face ((t (:foreground "#FFBD98"))))
- ;; '(font-lock-regexp-grouping-backslash ((t (:weight bold))))
- ;; '(font-lock-regexp-grouping-construct ((t (:weight bold))))
- ;; '(font-lock-string-face ((t (:foreground "#98BCBD"))))
- ;; '(font-lock-type-face ((t (:foreground "#e19772"))))
- ;; '(font-lock-variable-name-face ((t (:foreground "#ffc0de"))))
- ;; '(font-lock-warning-face ((t (:foreground "#FF0000" ':background "#333333"))))
+ '(minibuffer-prompt ((t (:foreground "#B79CED" :weight bold))))
 
- ;; '(fringe ((t (:background "#3f3f3f"))))
- '(highlight ((t (:foreground "#000000" :background  "#DCE1F2"))))
- ;; '(hl-line ((t (:background "#293739"))))
+ '(mode-line ((t (:foreground "#111" :background "#eee"
+                              :box (:line-width 1 :color "#eee" :style released-button)))))
+ '(mode-line-buffer-id ((t (:foreground "#111" :background "#eee" :weight semi-bold))))
+ '(mode-line-inactive ((t (:foreground "#bbb" :background "#eee"
+                                       ':box (:line-width 1 :color "#232526")))))
+ '(mode-line-mousable ((t (:foreground "#111" :background "#eee"))))
+ '(mode-line-mousable-minor-mode ((t (:foreground "#111" :background "#eee"))))
+
+ '(font-lock-builtin-face ((t (:foreground "#555"))))
+ '(font-lock-comment-face ((t (:foreground "#F76F8E" :slant italic))))
+ '(font-lock-comment-delimiter-face ((t (:foreground "#F76F8E" :weight bold))))
+ '(font-lock-constant-face ((t (:foreground "#222" :weight bold))))
+ '(font-lock-doc-face ((t (:foreground "#928CE9" :slant italic))))
+ '(font-lock-function-name-face ((t (:foreground "#222" :slant italic))))
+ '(font-lock-keyword-face ((t (:foreground "#555" :weight bold))))
+ '(font-lock-negation-char-face ((t (:weight bold))))
+ '(font-lock-preprocessor-face ((t (:foreground "#222" :weight bold))))
+ '(font-lock-regexp-grouping-backslash ((t (:weight bold))))
+ '(font-lock-regexp-grouping-construct ((t (:weight bold))))
+ '(font-lock-string-face ((t (:foreground "#928CE9"))))
+ '(font-lock-type-face ((t (:foreground "#555"))))
+ '(font-lock-variable-name-face ((t (:foreground "#555"))))
+ '(font-lock-warning-face ((t (:foreground "#FF0000" ':background "#333333"))))
+ 
+ '(fringe ((t (:background "#eee"))))
+ '(highlight ((t (:foreground "#000" :background  "#DCE1F2"))))
+ '(hl-line ((t (:foreground "#000" :background "#DCE1F2"))))
 
  ;; '(icompletep-choices ((t (:foreground "#ffc0de"))))
  ;; '(icompletep-determined ((t (:foreground "#FFBD98"))))
@@ -132,11 +132,11 @@
  ;; '(markdown-comment-face ((t (:foreground "#465457"))))
  ;; '(markdown-math-face ((t (:foreground "#AE81FF" :slant italic))))
 
+ '(org-hide ((t (:foreground "#ffffff"))))
  '(outline-1 ((t (:foreground "#483A58"))))
  '(outline-2 ((t (:foreground "#8681C6"))))
  '(outline-3 ((t (:foreground "#928CE9"))))
  '(outline-4 ((t (:foreground "#B79CED"))))
- '(org-hide ((t (:foreground "#ffffff"))))
  ;; '(outline-5 ((t (:foreground "#98bc99"))))
  ;; '(outline-6 ((t (:foreground "#ffdd00"))))
  ;; '(outline-7 ((t (:foreground "#bf2172"))))
@@ -146,7 +146,7 @@
  ;; '(helm-selection ((t (:background "#007173" :foreground "#d9d9d9"))))
  ;; '(helm-visible-mark ((t (:background "#007173" :foreground "#d9d9d9"))))
 
- '(link ((t (:foreground "#DCE1F2" :underline t))))
+ '(link ((t (:foreground "#ff00ff" :underline t))))
 
  '(secondary-selection ((t (:background "#4b4b4b"))))
  ;; '(show-paren-match-face ((t (:foreground "#000000" :background "#FD971F"))))
