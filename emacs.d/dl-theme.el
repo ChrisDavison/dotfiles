@@ -39,6 +39,7 @@
 ;; purple 2 "#928CE9"
 ;; purple 3 "#B79CED"
 ;; peach pink "#F76F8E"
+(setq dl-purple0 "#483A58")
 
 ;;; Code:
 
@@ -56,7 +57,6 @@
  '(bold-italic ((t (:weight bold :slant italic))))
  '(italic ((t (:slant italic))))
  '(underline ((t (:underline t))))
-
 
  ;; '(css-selector ((t (:foreground "#ffc0de"))))
  ;; '(css-property ((t (:foreground "#66D9EF"))))
@@ -83,8 +83,8 @@
  '(mode-line-mousable-minor-mode ((t (:foreground "#111" :background "#eee"))))
 
  '(font-lock-builtin-face ((t (:foreground "#555"))))
- '(font-lock-comment-face ((t (:foreground "#F76F8E" :slant italic))))
- '(font-lock-comment-delimiter-face ((t (:foreground "#F76F8E" :weight bold))))
+ '(font-lock-comment-face ((t (:foreground "#aaa" :slant italic))))
+ '(font-lock-comment-delimiter-face ((t (:foreground "#aaa" :weight bold))))
  '(font-lock-constant-face ((t (:foreground "#222" :weight bold))))
  '(font-lock-doc-face ((t (:foreground "#928CE9" :slant italic))))
  '(font-lock-function-name-face ((t (:foreground "#222" :slant italic))))
@@ -102,25 +102,18 @@
  '(highlight ((t (:foreground "#000" :background  "#DCE1F2"))))
  '(hl-line ((t (:foreground "#000" :background "#DCE1F2"))))
 
- ;; '(icompletep-choices ((t (:foreground "#ffc0de"))))
- ;; '(icompletep-determined ((t (:foreground "#FFBD98"))))
- ;; '(icompletep-keys ((t (:foreground "#ffc0de"))))
- ;; '(icompletep-nb-candidates ((t (:foreground "#AE81FF"))))
-
  ;; '(isearch ((t (:foreground "#C4BE89" :background "#000000"))))
  ;; '(isearch-fail ((t (:foreground "#FFFFFF" :background "#333333"))))
 
  ;; '(lazy-highlight ((t (:foreground "#465457" :background "#000000"))))
 
- ;; '(markdown-italic-face ((t (:slant italic))))
- ;; '(markdown-bold-face ((t (:weight bold))))
- ;; '(markdown-header-face ((t (:weight normal))))
- ;; '(markdown-header-face-1 ((t (:foreground "#e17899"))))
- ;; '(markdown-header-face-2 ((t (:foreground "#bcddbd"))))
- ;; '(markdown-header-face-3 ((t (:foreground "#ffde99"))))
- ;; '(markdown-header-face-4 ((t (:foreground "#009799"))))
- ;; '(markdown-header-face-5 ((t (:foreground "#98bc99"))))
- ;; '(markdown-header-face-6 ((t (:foreground "#ffdd00"))))
+ '(markdown-italic-face ((t (:slant italic))))
+ '(markdown-bold-face ((t (:weight bold))))
+ '(markdown-header-face ((t (:weight normal))))
+ '(markdown-header-face-1 ((t (:foreground "#483A58"))))
+ '(markdown-header-face-2 ((t (:foreground "#8681C6"))))
+ '(markdown-header-face-3 ((t (:foreground "#928CE9"))))
+ '(markdown-header-face-4 ((t (:foreground "#B79CED"))))
  ;; '(markdown-inline-code-face ((t (:foreground "#66D9EF"))))
  ;; '(markdown-list-face ((t (:foreground "#FFBD98"))))
  ;; '(markdown-blockquote-face ((t (:slant italic))))
@@ -133,25 +126,20 @@
  ;; '(markdown-math-face ((t (:foreground "#AE81FF" :slant italic))))
 
  '(org-hide ((t (:foreground "#ffffff"))))
- '(outline-1 ((t (:foreground "#483A58"))))
+ '(outline-1 ((t (:foreground "#483A58" :weight bold))))
  '(outline-2 ((t (:foreground "#8681C6"))))
  '(outline-3 ((t (:foreground "#928CE9"))))
  '(outline-4 ((t (:foreground "#B79CED"))))
- ;; '(outline-5 ((t (:foreground "#98bc99"))))
- ;; '(outline-6 ((t (:foreground "#ffdd00"))))
- ;; '(outline-7 ((t (:foreground "#bf2172"))))
- ;; '(outline-8 ((t (:foreground "#FFBD98"))))
  
- ;; '(helm-source-header ((t (:foreground "#000000" :background "#e17899" ))))
- ;; '(helm-selection ((t (:background "#007173" :foreground "#d9d9d9"))))
- ;; '(helm-visible-mark ((t (:background "#007173" :foreground "#d9d9d9"))))
+ '(helm-source-header ((t (:background "#F76F8E" :foreground "#fff"))))
+ '(helm-selection ((t (:background "#F76F8E" :foreground "#d9d9d9"))))
+ '(helm-visible-mark ((t (:background "#F76F8E" :foreground "#d9d9d9"))))
 
  '(link ((t (:foreground "#ff00ff" :underline t))))
 
  '(secondary-selection ((t (:background "#4b4b4b"))))
  ;; '(show-paren-match-face ((t (:foreground "#000000" :background "#FD971F"))))
  ;; '(show-paren-mismatch-face ((t (:foreground "#960050" :background "#1E0010"))))
- ;; '(widget-inactive-face ((t (:background "#ff0000"))))
  )
 
 ;;; autoload
