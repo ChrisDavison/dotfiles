@@ -629,7 +629,7 @@ Mac needs a little bit of hand holding...
     :config (add-hook 'before-save-hook 'gofmt-before-save))
 
   ;; Rust
-  (use-package rust-mode)
+  (use-package rust-mode :ensure t)
   (use-package flymake-rust)
   (use-package flycheck-rust)
 
