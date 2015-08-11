@@ -75,19 +75,16 @@ set foldmethod=marker
 " Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
 
-Plug 'ap/vim-css-color'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'fatih/vim-go'
 Plug 'guns/vim-sexp'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'lervag/vimtex'
+Plug 'majutsushi/tagbar'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'mattn/emmet-vim'
 Plug 'rking/ag.vim'
 Plug 'plasticboy/vim-markdown'
-Plug 'nvie/vim-flake8'
-"Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'Shougo/vimproc.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -99,6 +96,7 @@ Plug 'tpope/vim-surround'
 Plug 'jceb/vim-orgmode'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'vim-scripts/utl.vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 
@@ -113,8 +111,7 @@ set t_ut=
 au BufReadPost * set relativenumber
 
 " Bindings ----- {{{1
-" |==== GENERAL {{{2
-" Colon used a lot more often
+" Colon used a lot more often than semicolon
 nnoremap ; :
 nnoremap : :
 
@@ -154,7 +151,6 @@ nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
 " |==== For various useful plugins {{{2
-nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>v :VimtexTocToggle<CR>
 "nnoremap <leader>c :SyntasticCheck<CR>
@@ -218,7 +214,7 @@ function! CustomFoldText()
      let expansionString = repeat("⋅", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
  endfunction
- set foldnestmax=1
+ set foldnestmax=99
  set foldtext=CustomFoldText()
 
 
@@ -246,7 +242,7 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 let g:pymode_python = 'python3'
 
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-" Filetype management {{{1
+" Filetype management ----- {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
@@ -255,5 +251,3 @@ autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
-
-
