@@ -133,7 +133,8 @@ Useful to have access to power of common lisp within emacs.
      (use-package molokai-theme :ensure t)
      (use-package seoul256-theme :ensure t) ; enable once melpa updates today
 
-     ;;(load-theme seoul256 t)
+     ;;(load-theme 'seoul256 t)
+     (load-theme 'dl t)
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -321,7 +322,6 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
     (setq undo-tree-visualizer-timestamps nil)
     (setq undo-tree-visualizer-diff t))
 #+end_src
-
 * text editing
 ** parentheses
 Show matching parens.  Use paredit to make shifting parens easier, and colourise parens using rainbow delimeters to increase visual clarity.
@@ -424,6 +424,13 @@ Hide files beginning with .[not a dot]
 #+BEGIN_SRC emacs-lisp
   (setq dired-omit-mode t)
   (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.\\|^__.*$")
+#+END_SRC
+
+Rough version of TPope's vinegar
+#+BEGIN_SRC emacs-lisp
+  (defun cd/vinegar ()
+    (interactive)
+    (dired "."))
 #+END_SRC
 
 Show current and total matches while searching
@@ -989,6 +996,127 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
     "#+PROPERTY: header-args :tangle " (skeleton-read "Tangle filename: ") "\n")
   ;;(global-set-key [C-S-f4] 'org-skeleton)
 #+END_SRC
+** latex exporting
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-latex)
+
+  (unless (boundp 'org-latex-classes)
+    (setq org-latex-classes nil))
+
+  (add-to-list 'org-latex-classes
+               '("simple"
+                 "\\documentclass[a4paper, 12pt, article]{article}
+                  \\usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
+                  \\usepackage{mathpazo}
+                  \\usepackage{cite}
+                  \\usepackage{color}
+                  \\usepackage[unicode=true]{hyperref}
+                  \\hypersetup{breaklinks=true, bookmarks=true, pdfauthor={}, pdftitle={}, colorlinks=true, citecolor=blue, urlcolor=blue, linkcolor=magenta, pdfborder={0 0 0}}
+                  [DEFAULT-PACKAGES]
+                  [PACKAGES]
+                  "
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("cd"
+                 "\\documentclass[12pt, a4paper]{article}
+                  \\usepackage{setspace} % Line spacing
+                  \\singlespacing
+                  % \\onehalfspacing
+                  % \\doublespacing
+                  % \\setstretch{1.25}
+
+                  % Set Margins
+                  \\usepackage[left=2cm, right=2cm, top=2cm, bottom=4cm]{geometry}
+
+                  % Set paragraph indents to 1 cm
+                  \\setlength{\\parindent}{0.5cm}
+
+                  % Set no space between paragraphs
+                  \\setlength{\\parskip}{0ex}
+
+                  % No extra space between words
+                  \\frenchspacing
+
+                  % Set up margin notes
+                  \\usepackage{mparhack}
+                  \\newcommand{\\marginnote}[1]{\\marginpar{\\vspace{-8ex}\\singlespacing\\raggedright\\scriptsize{#1}}}
+
+                  % Prevent over-eager hyphenation
+                  % \\hyphenpenalty=5000
+                  \\tolerance=1000
+
+                  % Captions left justified
+                  \\usepackage[format=plain,labelsep=newline,singlelinecheck=false,font={small},labelfont={small,bf}]{caption}[2008/04/01]
+
+                  % Pretty tables
+                  \\usepackage{mdwtab}
+                  % Long tables
+                  \\usepackage{longtable, mdwtab}
+                  \\usepackage{longtable}
+                  % Don't indent longtables by a parindent!
+                  \\setlength\\LTleft{0pt}
+                  \\setlength\\LTright{0pt}
+
+                  % Multirow cells in tables
+                  \\usepackage{multirow}
+
+                  % Maths
+                  \\usepackage[fleqn]{amsmath} % All equations left justified
+                  \\usepackage{amsfonts}
+                  \\usepackage{amsthm}
+                  \\usepackage{stmaryrd}
+                  \\allowdisplaybreaks
+                  \\usepackage{latexsym}
+                  \\usepackage{bm}
+                  \\usepackage{dsfont}
+                  \\usepackage{mathrsfs}
+                  \\usepackage{xfrac} %  \\sfrac
+                  %% QED symbol
+                  \\renewcommand{\\qedsymbol}{$\\blacksquare$}
+
+
+                  % Subfigures
+                  % \\usepackage{subfig}
+                  \\usepackage{subcaption}
+
+                  % URLs
+                  \\usepackage{url}
+
+                  % Compact lists
+                  \\newenvironment{itemize*}%
+                  {\\begin{itemize}%
+                      \\setlength{\\itemsep}{0.5pt}%
+                      \\setlength{\\parskip}{0.5pt}}%
+                  {\\end{itemize}}
+
+                  \\newenvironment{enumerate*}%
+                  {\\begin{enumerate}%
+                      \\setlength{\\itemsep}{0.5pt}%
+                      \\setlength{\\parskip}{0.5pt}}%
+                  {\\end{enumerate}}
+
+                  % Set figure size
+                  \\newcommand{\\figsize}{4.5in}
+
+                  % Numbered subsubsections
+                  \\setcounter{secnumdepth}{3}
+
+                  % Annotate correction
+                  \\usepackage{color}
+                  \\newcommand{\\annotate}[2]{\\marginpar{{\\color{red}\\textbf{#1}}}{\\color{red}\\emph{#2}}}
+
+
+                  \\newcommand{\\divider}{\\begin{center}\\line(1,0){250}\\end{center}}
+                  [DEFAULT-PACKAGES]
+                  [PACKAGES]
+                  "
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+#+END_SRC
 * Jump to commonly used files (set as registers)
 Set files as registers and then comfortably jump to them 
 #+BEGIN_SRC emacs-lisp
@@ -1057,5 +1185,4 @@ key bindings
 (use-package s :ensure t)
 (use-package f :ensure t)
 #+END_SRC
-  
   
