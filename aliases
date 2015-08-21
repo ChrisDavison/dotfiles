@@ -49,3 +49,5 @@ alias gi='git ls-files --others'
 
 
 alias cl='catless'
+
+alias pipall='pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U'
