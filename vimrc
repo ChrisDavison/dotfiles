@@ -11,7 +11,7 @@
 let mapleader="\<Space>"
 
 " Initial ----- {{{1
-" |====  Good defaults {{{2
+" |==== Good defaults {{{2
 set nocompatible
 syntax on
 filetype plugin indent on
@@ -22,8 +22,9 @@ set wrap lbr
 set omnifunc=syntaxcomplete#Complete
 set number
 set iskeyword=a-z,A-Z,_,.,39
+set hidden
 
-" |====  Search options {{{2
+" |==== Search options {{{2
 set incsearch
 set hlsearch
 set ignorecase
@@ -31,7 +32,7 @@ set smartcase
 set magic
 set backspace=indent,eol,start
 
-" |====  Various coding preferences {{{2
+" |==== Various coding preferences {{{2
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -46,12 +47,12 @@ set title
 set sidescrolloff=15
 set sidescroll=1
 
-" |====  Put all temp files in one place {{{2
+" |==== Put all temp files in one place {{{2
 set backup
 set backupdir=~/.vim/backup,.
 set directory=~/.vim/tmp,.
 
-" |====  Wildmenu config {{{2
+" |==== Wildmenu config {{{2
 set wildmode=list:longest
 set wildmenu                
 
@@ -66,25 +67,30 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
-" |====  Allow code folding {{{2
+" |==== Allow code folding {{{2
 set foldenable
 set foldmethod=marker
-
-
 " Plugins ----- {{{1
 " Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
 
+
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Shougo/vimproc.vim'
+Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'fatih/vim-go'
+Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
+Plug 'jceb/vim-orgmode'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
-Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'mattn/emmet-vim'
-Plug 'rking/ag.vim'
+Plug 'mtth/scratch.vim'
 Plug 'plasticboy/vim-markdown'
+Plug 'rking/ag.vim'
+Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -93,19 +99,18 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
-Plug 'jceb/vim-orgmode'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'vim-scripts/occur.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 
 call plug#end()
 
-
 " Appearance ----- {{{1
-set bg=light
-colorscheme Github
+set bg=dark
+colorscheme solarized
 set t_ut=
 
 au BufReadPost * set relativenumber
