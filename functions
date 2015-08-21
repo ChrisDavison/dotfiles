@@ -113,7 +113,7 @@ extract () {
 }
 
 mktar () {
-    tar -cvf "$1".tar.gz "$2"
+    tar -cvf "$1".tar.gz "${@:2}"
 }
 
 prevtar () {
