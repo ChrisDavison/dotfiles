@@ -82,6 +82,7 @@ Plug 'dahu/vim-fanfingtastic'
 Plug 'fatih/vim-go'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
+Plug 'h1mesuke/unite-outline'
 Plug 'jceb/vim-orgmode'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'lervag/vimtex'
@@ -256,3 +257,12 @@ autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
+" Unite ----- {{{1
+if executable('ag')
+  let g:unite_source_grep_command='ag'
+  let g:unite_source_grep_default_opts='--nocolor --nogroup -S -C4'
+  let g:unite_source_grep_recursive_opt=''
+endif
+
+" set up coolguy arrow prompt
+let g:unite_prompt = '➜ '
