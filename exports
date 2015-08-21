@@ -1,6 +1,6 @@
 # Exports for bash/zsh
 
-export EDITOR="vim";
+export EDITOR="macvim";
 
 # Terminal history handling
 export HISTCONTROL=ignoreboth:erasedups;
