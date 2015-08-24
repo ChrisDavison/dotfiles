@@ -23,6 +23,7 @@ set omnifunc=syntaxcomplete#Complete
 set number
 set iskeyword=a-z,A-Z,_,.,39
 set hidden
+set nospell
 
 " |==== Search options {{{2
 set incsearch
@@ -74,7 +75,6 @@ set foldmethod=marker
 " Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
 
-
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/vimproc.vim'
 Plug 'airblade/vim-gitgutter'
@@ -85,14 +85,15 @@ Plug 'guns/vim-sexp'
 Plug 'h1mesuke/unite-outline'
 Plug 'jceb/vim-orgmode'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'kchmck/vim-coffee-script'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mtth/scratch.vim'
-Plug 'plasticboy/vim-markdown'
 Plug 'rking/ag.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
+Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -102,6 +103,8 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/occur.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wlangstroth/vim-racket'
@@ -110,8 +113,8 @@ Plug 'wting/rust.vim'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=dark
-colorscheme solarized
+set bg=light
+colorscheme github
 set t_ut=
 
 au BufReadPost * set relativenumber
@@ -250,6 +253,10 @@ let g:pymode_python = 'python3'
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 " Filetype management ----- {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+let g:markdown_fenced_languages = ['c', 'cpp', 'coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml', 'html', 'python', 'py=python', 'rust', 'racket', 'go']
+let g:scratch_filetype = 'markdown'
+
+
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType python set foldmethod=indent
