@@ -8,7 +8,7 @@
 
 " Set leader as space.  It's big, it's in the middle, and it's easy from the
 " home row
-let mapleader="\<Space>"
+let mapleader=","
 
 " Initial ----- {{{1
 " |==== Good defaults {{{2
@@ -93,7 +93,7 @@ Plug 'mtth/scratch.vim'
 Plug 'rking/ag.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
-Plug 'tpope/vim-markdown'
+Plug 'plasticboy/vim-markdown'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -103,7 +103,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-pandoc/vim-pandoc'
+"Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/occur.vim'
 Plug 'vim-scripts/utl.vim'
@@ -114,7 +114,7 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=light
-colorscheme github
+colorscheme Monokai
 set t_ut=
 
 au BufReadPost * set relativenumber
@@ -191,8 +191,7 @@ nnoremap <silent> p p`]
 
 " Select what was pasted
 noremap gV `[v`]
-" Utility ----- {{{1
-" |====  Custom fold {{{2
+" Custom fold {{{1
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -227,14 +226,6 @@ function! CustomFoldText()
  set foldtext=CustomFoldText()
 
 
-" |====  Nerdtree {{{2
-let NERDTreeMinimalUI=1
-let NERDTreeChDirMode=2
-let NERDTreeRespectWildIgnore=1
-let NERDTreeQuitOnOpen=1
-let NERDTreeWinSize=35
-let NERDTreeDirArrows=1
-
 " Languages ----- {{{1
 " |====  Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
@@ -253,6 +244,7 @@ let g:pymode_python = 'python3'
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 " Filetype management ----- {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
 let g:markdown_fenced_languages = ['c', 'cpp', 'coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml', 'html', 'python', 'py=python', 'rust', 'racket', 'go']
 let g:scratch_filetype = 'markdown'
 
@@ -264,6 +256,10 @@ autocmd FileType go     set foldmethod=syntax
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
+
+let g:pandoc#spell#enabled=0
+
+
 " Unite ----- {{{1
 if executable('ag')
   let g:unite_source_grep_command='ag'
