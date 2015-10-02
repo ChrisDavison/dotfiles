@@ -7,7 +7,7 @@
 " ----------------
 set encoding=utf-8
 set bg=light
-colorscheme github
+colorscheme Monokai
 
 " Disable menu bollocks
 set guioptions-=m
