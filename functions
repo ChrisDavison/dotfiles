@@ -136,5 +136,12 @@ ii() {
     echo
 }
 
+mdpreview() {
+    rm ~/.mdpreview.html
+    pandoc $1 >> ~/.mdpreview.html && open ~/.mdpreview.html
+}
+
 # Remove shitty DS_store files
 alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+
+alias todo="vim ~/Dropbox/notes/todo.md"
