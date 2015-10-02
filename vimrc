@@ -69,8 +69,7 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
 " |==== Allow code folding {{{2
-set foldenable
-set foldmethod=marker
+set nofoldenable
 " Plugins ----- {{{1
 " Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
@@ -252,7 +251,7 @@ let g:scratch_filetype = 'markdown'
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType python set foldmethod=indent
-autocmd FileType go     set foldmethod=syntax
+autocmd FileType go     set nofen
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
