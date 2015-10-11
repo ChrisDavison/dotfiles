@@ -284,7 +284,6 @@ aliases = {
   97 = "WINDOW GOTO 97";
   98 = "WINDOW GOTO 98";
   99 = "WINDOW GOTO 99";
-  ident = "msg NickServ identify zukert0rt";
   cfree = "connect irc.freenode.org 6667";
 };
 
