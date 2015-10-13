@@ -93,6 +93,7 @@ Plug 'rking/ag.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'plasticboy/vim-markdown'
+Plug 'racer-rust/vim-racer'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -267,4 +268,8 @@ if executable('ag')
 endif
 
 " set up coolguy arrow prompt
+
 let g:unite_prompt = '➜ '
+
+let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
+let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
