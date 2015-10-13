@@ -3,17 +3,14 @@
     userId: "9fbbea60-2131-e989-d7ff-c9d1193aea72"
   welcome:
     showOnStartup: false
-  core:
-    themes: [
-      "one-light-ui"
-      "one-light-syntax"
-    ]
+  core: {}
   editor:
     invisibles:
       cr: "h"
     fontFamily: "DejaVu Sans Mono"
-    tabLength: 4
+    tabLength: 2
     softWrap: true
+    showInvisibles: true
   "autocomplete-plus": {}
   "vim-mode": {}
   "tree-view": {}
@@ -23,3 +20,7 @@
     scrollAnimation: false
   "language-babel":
     createTranspiledCode: true
+  racer:
+    rustSrcPath: "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
+    racerBinPath: "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
+  "linter-rust": {}
