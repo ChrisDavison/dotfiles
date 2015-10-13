@@ -18,8 +18,11 @@ export TEXPATH="/usr/texbin";
 export HASKPATH="$HOME/Library/Haskell/bin"; # CABAL binary path
 export RACKETPATH="/Applications/Racket\ v6.1.1/bin";
 export NODEPATH="/usr/local/lib/node_modules";
+export HOMEBIN="$HOME/bin"
 
-export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH;
+export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH:$HOMEBIN;
 
 # 256 color terminal
 export TERM=xterm-256color;
+
+export RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
