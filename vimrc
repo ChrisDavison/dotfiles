@@ -34,9 +34,9 @@ set magic
 set backspace=indent,eol,start
 
 " |==== Various coding preferences {{{2
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set expandtab
 set wildmenu
 set autoread
@@ -69,7 +69,7 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
 " |==== Allow code folding {{{2
-set nofoldenable
+set foldenable
 " Plugins ----- {{{1
 " Using JuneGunn's plugged
 call plug#begin('~/.vim/plugged')
@@ -94,6 +94,7 @@ Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'racer-rust/vim-racer'
+Plug 'pangloss/vim-javascript'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -113,8 +114,8 @@ Plug 'wting/rust.vim'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=light
-colorscheme Monokai
+set bg=dark
+colorscheme seoul256
 set t_ut=
 
 au BufReadPost * set relativenumber
@@ -252,12 +253,15 @@ let g:scratch_filetype = 'markdown'
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
 autocmd FileType python set foldmethod=indent
+autocmd FileType python set tabstop=4
+autocmd FileType python set softtabstop=4
 autocmd FileType go     set nofen
 autocmd FileType make   set noexpandtab
 autocmd FileType rust   set foldmethod=syntax
 autocmd FileType vim    set foldmethod=marker
 
 let g:pandoc#spell#enabled=0
+let b:javascript_fold=1
 
 
 " Unite ----- {{{1
