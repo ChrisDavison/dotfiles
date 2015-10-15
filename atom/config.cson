@@ -24,3 +24,8 @@
     rustSrcPath: "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
     racerBinPath: "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
   "linter-rust": {}
+  "todo-show": {}
+  emmet: {}
+  "browser-plus": {}
+  tablr: {}
+  "markdown-preview": {}
