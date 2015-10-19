@@ -3,7 +3,10 @@
     userId: "9fbbea60-2131-e989-d7ff-c9d1193aea72"
   welcome:
     showOnStartup: false
-  core: {}
+  core:
+    packagesWithKeymapsDisabled: [
+      "browser-plus"
+    ]
   editor:
     invisibles:
       cr: "h"
@@ -13,7 +16,8 @@
     showInvisibles: true
   "autocomplete-plus": {}
   "vim-mode": {}
-  "tree-view": {}
+  "tree-view":
+    hideIgnoredNames: true
   "markdown-preview-katex": {}
   Hydrogen: {}
   "symbols-tree-view":
