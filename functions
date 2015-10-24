@@ -169,3 +169,7 @@ saratrain () {
     echo "Training: $fn"
     python scripts/train.py $1
 }
+
+ht () {
+  head -n 2 $1 && tail -n 1 $1
+}
