@@ -37,7 +37,7 @@ cb() {
 # Aliases / functions leveraging the cb() function
 # ------------------------------------------------
 # Copy contents of a file
-cbf() { cat "$1" | cb; }  
+cbf() { cat "$1" | cb; }
 
 # Make find easier to use
 myfind() {
@@ -156,8 +156,8 @@ saraclassify () {
     echo "Classifying"
     filename=$(basename "$1")
     file_no_ext="${filename%.*}"
-    echo "collar: $file_no_ext" 
-    echo "fs: $2" 
+    echo "collar: $file_no_ext"
+    echo "fs: $2"
     echo "mode:$3"
     echo ""
     echo "python -m scripts.classify_local $1 -s $2 -t $3"
@@ -168,4 +168,21 @@ saratrain () {
     fn=$(extractFilenameNoExt $1)
     echo "Training: $fn"
     python scripts/train.py $1
+}
+
+ht () {
+  if [ $# -lt 1 ]
+    then
+    echo "Usage: ht FILE [DELIMITER=' ']"
+    return -1
+  fi
+  if [ $# -eq 1 ]
+    then delim=' '
+  fi
+  if [ $# -ge 2 ]
+    then delim=$2
+  fi
+  awk -F $delim 'NR == 2 { print $1; exit }' $1
+  tail -n 1 $1 | awk -F $delim '{ print $1 }'
+  #    head -n 2 $1 && tail -n 1 $1
 }
