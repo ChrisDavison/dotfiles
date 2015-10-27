@@ -18,6 +18,7 @@
   "vim-mode": {}
   "tree-view":
     hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
   "markdown-preview-katex": {}
   Hydrogen: {}
   "symbols-tree-view":
@@ -33,3 +34,5 @@
   "browser-plus": {}
   tablr: {}
   "markdown-preview": {}
+  "markdown-table-formatter": {}
+  "atom-beautify": {}
