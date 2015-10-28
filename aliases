@@ -15,7 +15,7 @@ alias .4="cd ../../../.."
 alias .5="cd ../../../../.."
 
 # Copy SSH public key
-alias cbssh="cbf ~/.ssh/id_rsa.pub"  
+alias cbssh="cbf ~/.ssh/id_rsa.pub"
 
 # Switch to python numeric environment
 alias pyenv="source ~/Envs/numeric/bin/activate"
@@ -38,6 +38,7 @@ alias gap='git add -p'
 alias ga='git add'
 alias gp='git push'
 alias gi='git ls-files --others'
+alias gia='git ls-files --others | grep -v .pyc | grep -v ipynb_checkpoints'
 
 
 alias cl='catless'
