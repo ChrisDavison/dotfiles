@@ -186,3 +186,11 @@ ht () {
   tail -n 1 $1 | awk -F $delim '{ print $1 }'
   #    head -n 2 $1 && tail -n 1 $1
 }
+
+today () {
+    date +"%Y%m%d"
+}
+
+dir_today () {
+    mkdir output_`date +"%Y%m%s"`
+}
