@@ -200,3 +200,22 @@ today () {
 dir_today () {
     mkdir output_`date +"%Y%m%s"`
 }
+
+listfuncs () {
+  fn=$1
+  ctags $fn
+  extension="${fn##*.}"
+
+  if [[ "$extension" == "py" ]]
+  then
+    awk_cmd='/.*\^def/ { gsub(/.*\^def /, ""); gsub(/:\$.*/, ""); print $0 }'
+    awk $awk_cmd tags
+  fi
+
+  if [[ "$extension" == "rs" ]]
+  then
+    awk '/^fn/ { gsub(/^fn /, ""); gsub(/{$/, ""); print $0 }' "$fn"
+  fi
+
+  rm tags
+}
