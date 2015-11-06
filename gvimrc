@@ -6,8 +6,8 @@
 " My colour scheme
 " ----------------
 set encoding=utf-8
-set bg=light
-colorscheme Monokai
+set bg=dark
+colorscheme solarized
 
 " Disable menu bollocks
 set guioptions-=m
@@ -15,4 +15,4 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-set guifont=Inconsolata:h15
+set guifont=InputMono:h14
