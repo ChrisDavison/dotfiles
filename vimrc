@@ -119,6 +119,7 @@ colorscheme seoul256
 set t_ut=
 
 au BufReadPost * set relativenumber
+set gfn=InputMono:h14
 
 " Bindings ----- {{{1
 " Colon used a lot more often than semicolon
