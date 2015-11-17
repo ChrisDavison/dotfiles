@@ -152,23 +152,6 @@ extractFilenameNoExt () {
     echo $file_no_ext
 }
 
-saraclassify () {
-    echo "Classifying"
-    filename=$(basename "$1")
-    file_no_ext="${filename%.*}"
-    echo "collar: $file_no_ext"
-    echo "fs: $2"
-    echo "mode:$3"
-    echo ""
-    echo "python -m scripts.classify_local $1 -s $2 -t $3"
-    python -m scripts.classify_local $1 -s $2 -t $3
-}
-
-saratrain () {
-    fn=$(extractFilenameNoExt $1)
-    echo "Training: $fn"
-    python scripts/train.py $1
-}
 
 ht () {
   if [ $# -lt 1 ]
