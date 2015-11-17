@@ -19,3 +19,5 @@ source $ZSH/oh-my-zsh.sh
 
 PERL_MB_OPT="--install_base \"/Users/davison/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
+# Hook for desk activation
+[ -n "$DESK_ENV" ] && source "$DESK_ENV"
