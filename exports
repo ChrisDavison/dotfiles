@@ -11,7 +11,6 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
 
 # Environment variables/path
 # export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
-export SCRIPTS="$HOME/src/scripts";
 export GOPATH="$HOME/prog/go";
 export GOBIN="$HOME/prog/go/bin";
 export TEXPATH="/usr/texbin";
@@ -19,8 +18,9 @@ export HASKPATH="$HOME/Library/Haskell/bin"; # CABAL binary path
 export RACKETPATH="/Applications/Racket\ v6.1.1/bin";
 export NODEPATH="/usr/local/lib/node_modules";
 export HOMEBIN="$HOME/bin"
+export MULTIRUSTBIN="$HOME/.multirust/toolchains/beta/cargo/bin"
 
-export PATH=$PATH:$GOBIN:$SCRIPTS:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH:$HOMEBIN;
+export PATH=$PATH:$GOBIN:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN;
 
 # 256 color terminal
 export TERM=xterm-256color;
