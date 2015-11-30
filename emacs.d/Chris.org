@@ -621,16 +621,6 @@ Mac needs a little bit of hand holding...
     (add-hook 'html-mode-hook 'rainbow-mode)
     (add-hook 'sass-mode-hook 'rainbow-mode))
 
-  ;; Racket
-  (use-package racket-mode
-    :ensure t
-    :config 
-    (add-hook 'racket-mode-hook 'paredit-mode)
-    (setq racket-racket-program "/usr/local/bin/racket")
-    (setq racket-raco-program "/usr/local/bin/raco") 
-    (setq racket-program "/usr/local/bin/racket")
-    (setq raco-program "/usr/local/bin/raco"))
-
   ;; Go
   (use-package go-mode
     :config (add-hook 'before-save-hook 'gofmt-before-save))
@@ -654,58 +644,11 @@ Mac needs a little bit of hand holding...
 
   (use-package ein :ensure t)
 
-  (use-package clojure-mode :ensure t)
-  (use-package clojure-mode-extra-font-locking :ensure t)
-  (use-package cider 
-    :ensure t
-    :config
-    (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-    (setq cider-repl-pop-to-buffer-on-connect t)
-    (setq cider-show-error-buffer t)
-    (setq cider-repl-result-prefix ";; => ")
-    (setq cider-interactive-eval-result-prefix ";; => ")
-    (setq cider-repl-use-clojure-font-lock t)
-    (setq cider-auto-select-error-buffer t)
-    (setq cider-lein-command "/usr/local/bin/lein")
-    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
-    (cider-repl-set-ns "user"))
-
   ;;(diminish 'auto-complete-mode)
   (diminish 'hs-minor-mode)
   (diminish 'smartparens-mode)
   ;;(diminish 'smartparens-strict-mode)
    #+END_SRC
-** lisp
-   Paredit was included earlier as it's just generally useful.
-   
-   Give a default message when opening a scratch (elisp) buffer.
-   #+BEGIN_SRC emacs-lisp
-  (setq-default initial-scratch-message
-                (concat ";; Happy hacking, " (or user-login-name "") "!\n\n"))
-   #+END_SRC
-   
-   Automatically byte-compile
-   #+begin_src emacs-lisp
-     (use-package auto-compile
-       :config 
-       (auto-compile-on-save-mode 1)
-       (auto-compile-on-load-mode 1)
-       (setq load-prefer-newer t))
-
-     #+end_src
-   
-   Hook some useful settings into lisp modes
-   #+begin_src emacs-lisp
-     (defun davison/useful-lisp ()
-       (rainbow-delimiters-mode t)
-       (enable-paredit-mode)
-       (when (fboundp 'aggressive-indent-mode)
-         (aggressive-indent-mode)))
-
-     (add-hook 'lisp-mode 'davison/useful-lisp)
-     (add-hook 'emacs-lisp-mode 'davison/useful-lisp)
-   #+end_src
-   
 ** latex
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; General config
@@ -759,37 +702,7 @@ Mac needs a little bit of hand holding...
           LaTeX-section-label))
 #+END_SRC
 
-* ido
-Could Helm be a better all-round replacement for Ido?  Don't include IDO for now.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ido
-    :ensure t
-    :config 
-    (ido-mode t)
-    (ido-everywhere t)
-    (setq ido-enable-flex-matching t)
-    (setq ido-use-filename-at-point nil)
-    (setq ido-auto-merge-work-directories-length 0)
-    (setq ido-use-virtual-buffers t))
-
-  (use-package ido-menu
-    :ensure ido
-    :config 
-    (setq ido-default-buffer-method 'selected-window)
-    (ido-mode -1))
-
-  (use-package ido-ubiquitous
-    :ensure t
-    :config (ido-ubiquitous-mode t))
-
-  ;; Use smex to handle M-x
-  (use-package smex
-    :config
-    (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
-    (global-set-key [remap execute-extended-command] 'smex))
-#+END_SRC
-
-* org-mode
+* org-mode (powerful notes)
 ** taking notes
 Set up org for taking notes, using Dropbox/docs as my main folder.  Also, set up some nice config for org todo and agenda stuff.
 
@@ -1117,22 +1030,7 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 #+END_SRC
-* Jump to commonly used files (set as registers)
-Set files as registers and then comfortably jump to them 
-#+BEGIN_SRC emacs-lisp
-  ;;(global-set-key (kbd "C-x j") 'jump-to-register)
-  (set-register ?c (cons 'file "~/.emacs.d/Chris.org"))
-  (set-register ?u (cons 'file "~/Dropbox/docs/uni.org"))
-  (set-register ?l (cons 'file "~/Dropbox/docs/lisps.org"))
-  (set-register ?n (cons 'file "~/Dropbox/docs/notes.org"))
-  (set-register ?r (cons 'file "~/Dropbox/docs/rust.org"))
-  (set-register ?w (cons 'file "~/Dropbox/docs/wh40k.org"))
-  (set-register ?d (cons 'file "~/Dropbox/docs/dw.org"))
-  (set-register ?m (cons 'file "~/Dropbox/docs/numenera.org"))
-  (set-register ?t (cons 'file "~/.tmp.org"))
-#+END_SRC
-
-* helm
+* helm (easy navigation of options)
 general helm setup
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -1186,4 +1084,3 @@ key bindings
 (use-package s :ensure t)
 (use-package f :ensure t)
 #+END_SRC
-  
