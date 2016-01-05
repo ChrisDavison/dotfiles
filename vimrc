@@ -116,8 +116,8 @@ Plug 'wting/rust.vim'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=dark
-colorscheme seoul256
+set bg=light
+colorscheme github
 set t_ut=
 
 au BufReadPost * set relativenumber
@@ -133,6 +133,7 @@ map q: :q
 
 " View and switch to buffer
 nnoremap gb :ls<CR>:buffer<Space>
+nnoremap bd :ls<CR>:bd<Space>
 
 " Indent/De-dent visual selection
 vnoremap < <gv
