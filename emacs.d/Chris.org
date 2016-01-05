@@ -132,9 +132,29 @@ Useful to have access to power of common lisp within emacs.
      (use-package solarized-theme :ensure t)
      (use-package molokai-theme :ensure t)
      (use-package seoul256-theme :ensure t) ; enable once melpa updates today
+   #+END_SRC
 
+   #+BEGIN_SRC emacs-lisp
      ;;(load-theme 'seoul256 t)
-     (load-theme 'dl t)
+     ;; Disable themes before loading a new theme
+     (defadvice load-theme (before theme-dont-propagate activate)
+       (mapcar #'disable-theme custom-enabled-themes))
+
+     (load-theme 'solarized-light t)
+     (setq theme_dark nil)
+     (setq dark_theme 'molokai)
+     (setq light_theme 'dl)
+
+     (defun toggle-dark-theme ()
+       "Toggle theme between light and dark"
+       (interactive)
+       (if theme_dark
+           (progn
+             (load-theme dark_theme t)
+             (setq theme_dark nil))
+         (progn
+           (load-theme light_theme t)
+           (setq theme_dark t)))) 
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -671,7 +691,7 @@ Mac needs a little bit of hand holding...
   (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
 #+END_SRC
 
-#+BEGIN_SRC :tangle no
+#+BEGIN_SRC emacs-lisp :tangle no
 ;; Manage citations
   (require 'tex-site)
   (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
@@ -1078,7 +1098,6 @@ key bindings
 
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
-
 * helpers
 #+BEGIN_SRC emacs-lisp
 (use-package s :ensure t)
