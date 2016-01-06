@@ -131,7 +131,7 @@ Useful to have access to power of common lisp within emacs.
    #+BEGIN_SRC emacs-lisp
      (use-package solarized-theme :ensure t)
      (use-package molokai-theme :ensure t)
-     (use-package seoul256-theme :ensure t) ; enable once melpa updates today
+     (use-package seoul256-theme :ensure t)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -140,9 +140,8 @@ Useful to have access to power of common lisp within emacs.
      (defadvice load-theme (before theme-dont-propagate activate)
        (mapcar #'disable-theme custom-enabled-themes))
 
-     (load-theme 'solarized-light t)
      (setq theme_dark nil)
-     (setq dark_theme 'molokai)
+     (setq dark_theme 'solarized-dark)
      (setq light_theme 'dl)
 
      (defun toggle-dark-theme ()
@@ -155,6 +154,8 @@ Useful to have access to power of common lisp within emacs.
          (progn
            (load-theme light_theme t)
            (setq theme_dark t)))) 
+
+     (toggle-dark-theme) ;; Load theme, based on theme_dark var
    #+END_SRC
    
 ** *maybe* suspend frame
@@ -579,7 +580,11 @@ Mac needs a little bit of hand holding...
     (setq mac-command-modifier 'meta)
     (setq mac-option-modifier 'none)
     (setq default-input-method "MacOSX")
-    (use-package exec-path-from-shell :ensure t)
+    (use-package exec-path-from-shell
+      :ensure t
+      :config
+      (when (memq window-system '(mac ns))
+        (exec-path-from-shell-initialize)))
 
     ;;Make the mouse wheel/trackpad less jerky
     (setq mouse-wheel-scroll-amount '(1
@@ -598,7 +603,7 @@ Mac needs a little bit of hand holding...
     (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
     (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
-)
+    )
 #+END_SRC
 
 * prog languages
@@ -631,7 +636,29 @@ Mac needs a little bit of hand holding...
     :ensure t
     :config (setq-default scss-compile-at-save t))
 
+  (use-package js2-mode :ensure t)
+  (use-package json-mode :ensure t)
   (use-package coffee-mode :ensure t)
+  (use-package nodejs-repl :ensure t)
+  (use-package js-comint
+    :ensure t
+    :config
+    (setq inferior-js-program-command "node")
+    (add-hook 'js3-mode-hook
+              '(lambda ()
+                 (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+                 (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+                 (local-set-key "\C-cb" 'js-send-buffer)
+                 (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+                 (local-set-key "\C-cl" 'js-load-file-and-go))))
+
+  (setq inferior-js-mode-hook
+        (lambda ()
+          (ansi-color-for-comint-mode-on) ;; We like nice colors
+          (add-to-list ;; Deal with some prompt nonsense
+           'comint-preoutput-filter-functions
+           (lambda (output)
+             (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
   ;; Colourize CSS literals
   (use-package rainbow-mode
@@ -649,6 +676,25 @@ Mac needs a little bit of hand holding...
   (use-package rust-mode :ensure t)
   (use-package flymake-rust)
   (use-package flycheck-rust)
+
+  (use-package company
+    :ensure t
+    :diminish company-mode
+    :config
+    (global-set-key (kbd "TAB") #'company-indent-or-complete-common) ;
+    (setq company-tooltip-align-annotations t))
+
+  (use-package cargo :ensure t)
+
+  (use-package racer
+    :ensure t
+    :config
+    (setq racer-cmd "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer")
+    (setq racer-rust-src-path "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/")
+    (add-hook 'rust-mode-hook #'racer-mode)
+    (add-hook 'racer-mode-hook #'eldoc-mode)
+    (add-hook 'rust-mode-hook #'cargo-minor-mode)
+    (add-hook 'racer-mode-hook #'company-mode))
 
   ;; Python
   (use-package virtualenvwrapper
@@ -1073,7 +1119,7 @@ general helm setup
           helm-apropos-fuzzy-match t
           helm-split-window-in-side-p t)
     (helm-mode 1)
-    (helm-autoresize-mode 1))
+    (helm-autoresize-mode nil))
 
   (use-package helm-descbinds :ensure t)
 #+END_SRC
