@@ -95,7 +95,7 @@ Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mtth/scratch.vim'
 Plug 'pangloss/vim-javascript'
-Plug 'plasticboy/vim-markdown'
+Plug 'tpope/vim-markdown'
 Plug 'racer-rust/vim-racer'
 Plug 'rking/ag.vim'
 Plug 'tpope/vim-commentary'
@@ -121,7 +121,7 @@ colorscheme github
 set t_ut=
 
 au BufReadPost * set relativenumber
-set gfn=InputMono:h14
+set gfn=Input:h11
 
 " Bindings ----- {{{1
 " Colon used a lot more often than semicolon
@@ -281,3 +281,44 @@ let g:unite_prompt = '➜ '
 
 let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
+
+" Tagbar - Markdown ----- {{{1
+" Add support for markdown files in tagbar.
+let g:tagbar_type_markdown = {
+    \ 'ctagstype': 'markdown',
+    \ 'ctagsbin' : '/Users/davison/prog/z__NOT_MINE/markdown2ctags/markdown2ctags.py',
+    \ 'ctagsargs' : '-f - --sort=yes',
+    \ 'kinds' : [
+        \ 's:sections',
+        \ 'i:images'
+    \ ],
+    \ 'sro' : '|',
+    \ 'kind2scope' : {
+        \ 's' : 'section',
+    \ },
+    \ 'sort': 0,
+\ }
+" Markdown folding ----- {{{1
+function! MarkdownLevel()
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "=" 
+endfunction
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
+au BufEnter *.md setlocal foldmethod=expr   
