@@ -400,5 +400,7 @@ ignores = (
   { level = "JOINS PARTS QUITS MODES"; channels = ( "#python" ); },
   { level = "JOINS PARTS QUITS MODES"; channels = ( "#haskell" ); },
   { level = "JOINS PARTS QUITS MODES"; channels = ( "#go-nuts" ); },
-  { level = "JOINS PARTS QUITS MODES"; channels = ( "#clojure" ); }
+  { level = "JOINS PARTS QUITS MODES"; channels = ( "#clojure" ); },
+  { level = "JOINS PARTS QUITS MODES"; channels = ( "##javascript" ); },
+  { level = "JOINS PARTS QUITS MODES"; channels = ( "#vim" ); }
 );
