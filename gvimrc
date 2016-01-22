@@ -15,4 +15,4 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-set guifont=Input:h11
+set guifont=Input_Mono:h14
