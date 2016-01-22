@@ -585,6 +585,8 @@ Mac needs a little bit of hand holding...
       :config
       (when (memq window-system '(mac ns))
         (exec-path-from-shell-initialize)))
+      
+
 
     ;;Make the mouse wheel/trackpad less jerky
     (setq mouse-wheel-scroll-amount '(1
@@ -611,6 +613,17 @@ Mac needs a little bit of hand holding...
   Re-writing this to only use use-package, as it clears it up fairly well
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck :ensure t)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint)))
+
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+
+  (setq-default flycheck-temp-prefix ".flycheck")
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(json-jsonlist)))
 
   ;; not sure if add-auto-mode works like the setq...so leaving for now
   (use-package markdown-mode
@@ -659,6 +672,19 @@ Mac needs a little bit of hand holding...
            'comint-preoutput-filter-functions
            (lambda (output)
              (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
+
+  (defun my-web-mode-hook ()
+    "Hooks for Web mode.  Adjust indents"
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+  (defadvice web-mode-highlight-part (around tweak-jsx activate)
+    (if (equal web-mode-conten-type "jsx")
+        (let ((web-mode-enable-part-face nil))
+          ad-do-it)
+      ad-do-it))
 
   ;; Colourize CSS literals
   (use-package rainbow-mode
