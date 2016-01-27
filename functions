@@ -180,6 +180,10 @@ today () {
     date +"%Y%m%d"
 }
 
+md_today () {
+    touch `today`.md
+}
+
 dir_today () {
     mkdir output_`date +"%Y%m%s"`
 }
@@ -201,4 +205,8 @@ listfuncs () {
   fi
 
   rm tags
+}
+
+running(){
+  ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
 }
