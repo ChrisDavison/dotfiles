@@ -6,18 +6,20 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 ZSH_THEME="pure"
 
+# plugins can be found in ~/.oh-my-zsh/plugins/*
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+plugins=(pep8 autopep8)
+
+# Source oh-my-zsh BEFORE my sourcing
+# as it has it's own aliases that overlap mine
+source $ZSH/oh-my-zsh.sh
+
 for file in ~/.dotfiles/{aliases,exports,functions}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
 
-# plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(pep8 autopep8)
-
-source $ZSH/oh-my-zsh.sh
-
-PERL_MB_OPT="--install_base \"/Users/davison/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
 # Hook for desk activation
 [ -n "$DESK_ENV" ] && source "$DESK_ENV"
+
+
