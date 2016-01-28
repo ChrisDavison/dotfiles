@@ -1,8 +1,8 @@
 # Aliases for bash, zsh etc
 
 # some more ls aliases
-alias ll='gls -lF --group-directories-first --color=auto'
-alias la='gls -AlF --group-directories-first --color=auto'
+alias ll='gls -lFh --group-directories-first --color=auto'
+alias la='gls -AlFh --group-directories-first --color=auto'
 alias ls='gls -CF --group-directories-first --color=auto'
 alias l='gls -CF --group-directories-first --color=auto'
 
