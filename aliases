@@ -40,7 +40,8 @@ alias ga='git add'
 alias gp='git push'
 alias gi='git ls-files --others'
 alias gia='git ls-files --others | grep -v .pyc | grep -v ipynb_checkpoints'
-
+alias gbf='git checkout -b'
+alias gbn='git checkout master && git checkout -b'
 
 alias cl='catless'
 
