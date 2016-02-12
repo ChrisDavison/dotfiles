@@ -18,7 +18,7 @@ export HASKPATH="$HOME/Library/Haskell/bin"; # CABAL binary path
 export RACKETPATH="/Applications/Racket\ v6.1.1/bin";
 export NODEPATH="/usr/local/lib/node_modules";
 export HOMEBIN="$HOME/bin"
-export MULTIRUSTBIN="$HOME/.multirust/toolchains/beta/cargo/bin"
+export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 
 export PATH=$PATH:$GOBIN:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN;
 
