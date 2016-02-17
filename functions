@@ -184,6 +184,16 @@ md_today () {
     touch `today`.md
 }
 
+logbook_today () {
+  cur=`pwd`
+  date=`today`
+  fn=`today`.md
+  cd ~/Dropbox/notes/engd_logbook
+  md_today
+  echo '# '$date > $fn
+  cd $cur
+}
+
 dir_today () {
     mkdir output_`date +"%Y%m%s"`
 }
