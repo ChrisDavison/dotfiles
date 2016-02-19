@@ -188,7 +188,7 @@ logbook_today () {
   cur=`pwd`
   date=`today`
   fn=`today`.md
-  cd ~/Dropbox/notes/engd_logbook
+  cd ~/Dropbox/notes/engd--logbook
   md_today
   echo '# '$date > $fn
   cd $cur
