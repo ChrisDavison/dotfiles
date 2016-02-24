@@ -127,7 +127,7 @@ set t_ut=
 au BufReadPost * set relativenumber
 set gfn=Input_Mono:h14
 " Binding {{{1
-" Colon used a lot more often than semicolon ----- {{{2
+" Swap colon and semicolon ----- {{{2
 nnoremap ; :
 nnoremap : :
 
@@ -136,7 +136,6 @@ map q: :q
 
 " View and switch to buffer ----- {{{2
 nnoremap gb :ls<CR>:buffer<Space>
-nnoremap bd :ls<CR>:bd<Space>
 
 " Indent/De-dent visual selection ----- {{{2
 vnoremap < <gv
@@ -167,21 +166,19 @@ vnoremap  <buffer> <silent> 0 g0
 nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
-" For various useful plugins ----- {{{2
-nnoremap <leader>w :w<CR>
+" Toggle Vimtex Table of Contents ----- {{{2
 nnoremap <leader>v :VimtexTocToggle<CR>
-"nnoremap <leader>c :SyntasticCheck<CR>
 
-" Toggle whitespace visibility with ,s ----- {{{2
+" Toggle hidden character visibility with ----- {{{2
 nmap <Leader>s :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 
-" Easier search/replace ----- {{{2
+" Easier search/replace ---- {{{2
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
-nmap S :%s///g<LEFT><LEFT>
-vmap S :s///g<LEFT><LEFT>
+nmap S :%s//g<LEFT><LEFT>
+vmap S :s//g<LEFT><LEFT>
 
 " Common mistypes and abbreviations ----- {{{2
 cnoreabbrev E e
@@ -336,3 +333,4 @@ let g:tagbar_type_markdown = {
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
+
