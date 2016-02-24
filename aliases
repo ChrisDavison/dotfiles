@@ -24,7 +24,6 @@ alias pyenv="source ~/Envs/numeric/bin/activate"
 # Nice git aliases
 alias g='git'
 alias gst='git status'
-alias grst='gr status'
 alias gd='git diff'
 alias gdc='git diff --cached'
 alias gc='git commit -v'
@@ -42,6 +41,9 @@ alias gi='git ls-files --others'
 alias gia='git ls-files --others | grep -v .pyc | grep -v ipynb_checkpoints'
 alias gbf='git checkout -b'
 alias gbn='git checkout master && git checkout -b'
+
+alias grst='gr status'
+alias grstv='gr status -v'
 
 alias cl='catless'
 
