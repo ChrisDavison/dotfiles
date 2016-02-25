@@ -77,7 +77,6 @@ call matchadd('ColorColumn', '\%81v', 100)
 " Using JuneGunn's plugged {{{1
 call plug#begin('~/.vim/plugged')
 
-"Plug 'vim-pandoc/vim-pandoc'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
@@ -98,7 +97,7 @@ Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mtth/scratch.vim'
 Plug 'pangloss/vim-javascript'
-Plug 'tpope/vim-markdown'
+Plug 'plasticboy/vim-markdown'
 Plug 'racer-rust/vim-racer'
 Plug 'rking/ag.vim'
 Plug 'tpope/vim-commentary'
