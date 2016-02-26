@@ -1,14 +1,14 @@
 " Author: Chris Davison
-" Comments: My Vim config.  Not much language-specific stuff in this, as the
-" plugin defaults seem to be pretty good in most cases.  For the record, using
-" JuneGunn's 'plugged' plugin manager, as I find it's simplistic approach the
-" most appealling.  If your fold is set to "marker" for the "vim" filetype,
-" then this should fold in a relatively well explained manner, allowing you to
-" find and change whatever you need.
+" Comments: My Vim config.  
+" Most plugins default behaviour seems pretty decent, so not much language
+" specific config.
+" Using JuneGunn's `plugged`, as it's simple and effective.
+
 
 " Set leader as space.  It's big, it's in the middle, and it's easy from the
 " home row
-let mapleader=","
+nnoremap <SPACE> <Nop>
+let mapleader=" "
 
 " INIT ----- {{{1
 " Good defaults {{{2
@@ -74,7 +74,7 @@ set foldenable
 " Highlight long rows ----- {{{2
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
-" Using JuneGunn's plugged {{{1
+" Using JuneGunn's plugged ----- {{{1
 call plug#begin('~/.vim/plugged')
 
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -125,7 +125,7 @@ set t_ut=
 
 au BufReadPost * set relativenumber
 set gfn=Input_Mono:h14
-" Binding {{{1
+" Binding ----- {{{1
 " Swap colon and semicolon ----- {{{2
 nnoremap ; :
 nnoremap : :
@@ -187,7 +187,7 @@ cnoreabbrev Q q
 cnoreabbrev QA qa
 
 
-" Pasting ----- {{{2
+" Selecting and Pasting ----- {{{2
 " Paste and move to end
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
@@ -195,7 +195,9 @@ nnoremap <silent> p p`]
 
 " Select what was pasted
 noremap gV `[v`]
-" Custom fold {{{1
+
+nnoremap <leader>a ggVG
+" Custom fold ----- {{{1
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -221,7 +223,7 @@ function! CustomFoldText()
      let w = winwidth(0) - &foldcolumn - (&number ? 6 : 0)
      let foldSize = 1 + v:foldend - v:foldstart
      let foldSizeStr = " [" . foldSize . " lines] "
-     let foldLevelStr = repeat("|--", v:foldlevel)
+     let foldLevelStr = repeat("<", v:foldlevel)
      let lineCount = line("$")
      let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
@@ -275,7 +277,7 @@ let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
-" Filetype Management {{{1
+" Filetype Management ----- {{{1
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd Filetype markdown setlocal wrap textwidth=80
 autocmd Filetype markdown setlocal conceallevel=2
@@ -299,7 +301,7 @@ let g:pandoc#spell#enabled=0
 let b:javascript_fold=1
 
 
-" Unite {{{1
+" Unite ----- {{{1
 if executable('ag')
   let g:unite_source_grep_command='ag'
   let g:unite_source_grep_default_opts='--nocolor --nogroup -S -C4'
@@ -311,7 +313,7 @@ endif
 let g:unite_prompt = '➜ '
 
 
-" Tagbar Markdown {{{1
+" Tagbar Markdown ----- {{{1
 " Add support for markdown files in tagbar. 
 let g:tagbar_type_markdown = {
     \ 'ctagstype': 'markdown',
@@ -328,7 +330,7 @@ let g:tagbar_type_markdown = {
     \ 'sort': 0,
 \ }
 
-" Tablemode {{{1
+" Tablemode ----- {{{1
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
