@@ -7,8 +7,7 @@
 
 " Set leader as space.  It's big, it's in the middle, and it's easy from the
 " home row
-nnoremap <SPACE> <Nop>
-let mapleader=" "
+let mapleader=","
 
 " INIT ----- {{{1
 " Good defaults {{{2
@@ -79,7 +78,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
