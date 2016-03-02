@@ -76,27 +76,32 @@ call matchadd('ColorColumn', '\%81v', 100)
 " Using JuneGunn's plugged ----- {{{1
 call plug#begin('~/.vim/plugged')
 
+"" Languages
+Plug 'eagletmt/ghcmod-vim'
+Plug 'wlangstroth/vim-racket'
+Plug 'wting/rust.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
+Plug 'racer-rust/vim-racer'
+Plug 'fatih/vim-go'
+Plug 'vim-pandoc/vim-markdownfootnotes'
+
+"" Utility
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'racer-rus/vim-racer'
-Plug 'fatih/vim-go'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
 Plug 'h1mesuke/unite-outline'
-Plug 'jceb/vim-orgmode'
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'kchmck/vim-coffee-script'
 Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mtth/scratch.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'plasticboy/vim-markdown'
-Plug 'racer-rust/vim-racer'
 Plug 'rking/ag.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -107,12 +112,9 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/occur.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'wlangstroth/vim-racket'
-Plug 'wting/rust.vim'
 
 call plug#end()
 
@@ -121,7 +123,7 @@ set bg=dark
 colorscheme molokai
 set t_ut=
 
-au BufReadPost * set relativenumber
+"au BufReadPost * set relativenumber
 set gfn=Input_Mono:h14
 " Binding ----- {{{1
 " Swap colon and semicolon ----- {{{2
@@ -271,7 +273,6 @@ let g:pymode_python = 'python3'
 
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 
-" Rust ----- {{{1
 let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
