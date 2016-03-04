@@ -8,6 +8,7 @@
 " Set leader as space.  It's big, it's in the middle, and it's easy from the
 " home row
 let mapleader=","
+set t_Co=256
 
 " INIT ----- {{{1
 " Good defaults {{{2
@@ -119,8 +120,8 @@ Plug 'dhruvasagar/vim-table-mode'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=dark
-colorscheme molokai
+set bg=light
+colorscheme github
 set t_ut=
 
 "au BufReadPost * set relativenumber
@@ -167,6 +168,9 @@ vnoremap  <buffer> <silent> $ g$
 
 " Toggle Vimtex Table of Contents ----- {{{2
 nnoremap <leader>v :VimtexTocToggle<CR>
+
+" Toggle tagbar ----- {{{2
+nnoremap <leader>t :TagbarToggle<CR>
 
 " Toggle hidden character visibility with ----- {{{2
 nmap <Leader>s :set list!<CR>
@@ -262,7 +266,6 @@ let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 let g:tex_flavor = "latex"
-autocmd BufWritePre *.tex :VimtexRefreshFolds
 
 " C++ ----- {{{1
 let g:syntastic_cpp_compiler = 'clang++'
