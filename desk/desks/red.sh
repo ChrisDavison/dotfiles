@@ -15,8 +15,15 @@ train () {
 }
 
 # Plot scatter of classified features
-plot () {
+scatterplot () {
     python scripts/plot.py $1 --centroid
+}
+
+extract () {
+    fn=$1
+    t=$2
+    fs=`infer_samplerate $fn`
+    python -m scripts.extract_features $1 -s $fs -t $t
 }
 
 desk
