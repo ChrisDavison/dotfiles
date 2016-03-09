@@ -82,9 +82,11 @@ Plug 'eagletmt/ghcmod-vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 Plug 'pangloss/vim-javascript'
-Plug 'plasticboy/vim-markdown'
+"Plug 'plasticboy/vim-markdown'
 Plug 'racer-rust/vim-racer'
 Plug 'fatih/vim-go'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 
 "" Utility
@@ -280,13 +282,11 @@ let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
 " Filetype Management ----- {{{1
-autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+" autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd Filetype markdown setlocal wrap textwidth=80
 autocmd Filetype markdown setlocal conceallevel=2
 
-let g:markdown_fenced_languages = ['c', 'cpp', 'coffee', 'css', 'erb=eruby', 'javascript', 'js=javascript', 'json=javascript', 'ruby', 'sass', 'xml', 'html', 'python', 'py=python', 'rust', 'racket', 'go']
 let g:scratch_filetype = 'markdown'
-
 
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
 autocmd FileType c      set foldmethod=syntax
@@ -300,6 +300,7 @@ autocmd FileType vim    set foldmethod=marker
 autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
 
 let g:pandoc#spell#enabled=0
+let g:pandoc#syntax#conceal#urls = 1
 let b:javascript_fold=1
 
 
@@ -337,3 +338,4 @@ let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
 
+autocmd BufNewFile,BufReadPost *.md hi Conceal cterm=None ctermbg=None
