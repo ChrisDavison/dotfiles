@@ -141,8 +141,7 @@ ii() {
 }
 
 mdpreview() {
-    rm ~/.mdpreview.html
-    pandoc $1 >> ~/.mdpreview.html && open ~/.mdpreview.html
+    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
 }
 
 # Remove shitty DS_store files
