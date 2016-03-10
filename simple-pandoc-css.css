@@ -201,6 +201,7 @@ img
        paragraph, it might not be so great. 
     */
     vertical-align: middle;
+    max-width: 800px;
     }
 
 div.figure /* Pandoc figure-style image */

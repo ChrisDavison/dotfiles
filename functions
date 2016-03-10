@@ -144,6 +144,10 @@ mdpreview() {
     pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
 }
 
+mdpreviewself() {
+    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --self-contained --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
+}
+
 # Remove shitty DS_store files
 alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 
@@ -193,7 +197,7 @@ logbook_today () {
   fn=`today`.md
   cd ~/Dropbox/notes/engd--logbook/`date +"%Y"`
   md_today
-  echo '# '$date > $fn
+  echo '---\ntitle: '$date '\n---\n' > $fn
   cd $cur
 }
 
