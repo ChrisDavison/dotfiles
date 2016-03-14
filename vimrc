@@ -260,8 +260,8 @@ function! MarkdownLevel()
     endif
     return "=" 
 endfunction
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
-au BufEnter *.md setlocal foldmethod=expr   
+au Filetype markdown setlocal foldexpr=MarkdownLevel()  
+au Filetype markdown setlocal foldmethod=expr   
 
 " Latex / Vimtex ----- {{{1
 let g:vimtex_quickfix_ignore_all_warnings=1
@@ -285,6 +285,7 @@ let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 " autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 autocmd Filetype markdown setlocal wrap textwidth=80
 autocmd Filetype markdown setlocal conceallevel=2
+autocmd Filetype markdown hi Conceal cterm=None ctermbg=None
 
 let g:scratch_filetype = 'markdown'
 
@@ -301,6 +302,9 @@ autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
 
 let g:pandoc#spell#enabled=0
 let g:pandoc#syntax#conceal#urls = 1
+let g:pandoc#formatting#mode='ha'
+let g:pandoc#formatting#textwidth=80
+
 let b:javascript_fold=1
 
 
@@ -337,5 +341,3 @@ let g:tagbar_type_markdown = {
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
-
-autocmd BufNewFile,BufReadPost *.md hi Conceal cterm=None ctermbg=None
