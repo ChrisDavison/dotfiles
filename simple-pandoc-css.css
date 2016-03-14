@@ -386,9 +386,9 @@ caption /* This is for a table caption tag, not the p.caption Pandoc uses in a d
 
 dl /* The whole list */
     {
-    border-top: 2pt solid black;
+    /* border-top: 2pt solid black; */
     padding-top: 0.5em;
-    border-bottom: 2pt solid black;
+    /* border-bottom: 2pt solid black; */
     }
 
 dt /* Definition term */
@@ -398,7 +398,7 @@ dt /* Definition term */
 
 dd+dt /* 2nd or greater term in the list */
     {
-    border-top: 1pt solid black;
+    border-top: 1pt dotted black;
     padding-top: 0.5em;
     }
     
