@@ -75,3 +75,5 @@ hi CursorLine   guibg=#D8D8DD ctermbg=253  gui=NONE cterm=NONE
 hi CursorColumn guibg=#D8D8DD ctermbg=253  gui=NONE cterm=NONE
 
 hi link rubyStringDelimiter String
+
+hi Conceal ctermbg=None
