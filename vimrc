@@ -98,6 +98,8 @@ Plug 'dahu/vim-fanfingtastic'
 Plug 'racer-rus/vim-racer'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'h1mesuke/unite-outline'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'kien/ctrlp.vim'
@@ -341,3 +343,11 @@ let g:tagbar_type_markdown = {
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
+
+let g:tex_flavor='latex'
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigger="<c-z>"
+
+let g:UltiSnipsEditSplit="vertical"
