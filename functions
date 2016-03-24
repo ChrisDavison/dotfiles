@@ -197,7 +197,7 @@ logbook_today () {
   fn=`today`.md
   cd ~/Dropbox/notes/engd--logbook/`date +"%Y"`
   md_today
-  echo '---\ntitle: '$date '\n---\n' > $fn
+  echo '# '$date '\n\n' > $fn
   cd $cur
 }
 
