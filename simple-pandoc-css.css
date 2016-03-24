@@ -446,6 +446,10 @@ div.footnotes li[id^="fn"] /* A footnote item within that div */
    imports this one and adds a class just to do this.
 */
 
+h1[id^="section-"]{
+    padding-top: 2em;
+}
+
 @media print
     {
     .noprint
