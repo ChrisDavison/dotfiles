@@ -95,7 +95,6 @@ Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
-Plug 'racer-rus/vim-racer'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
 Plug 'SirVer/ultisnips'
@@ -107,7 +106,9 @@ Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mtth/scratch.vim'
+Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
+Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-scriptease'
@@ -279,6 +280,7 @@ let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 let g:pymode_python = 'python3'
 
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
+let g:syntastic_python_checkers = ['flake8']
 
 let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
@@ -351,3 +353,12 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-z>"
 
 let g:UltiSnipsEditSplit="vertical"
+
+" Syntastic ----- {{{1
+set statusline+=%#warningmsg#
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
