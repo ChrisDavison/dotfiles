@@ -2,11 +2,7 @@
 " Comments: My Vim config.  
 " Most plugins default behaviour seems pretty decent, so not much language
 " specific config.
-" Using JuneGunn's `plugged`, as it's simple and effective.
 
-
-" Set leader as space.  It's big, it's in the middle, and it's easy from the
-" home row
 let mapleader=","
 set t_Co=256
 
@@ -135,6 +131,9 @@ set gfn=Input_Mono:h14
 " Swap colon and semicolon ----- {{{2
 nnoremap ; :
 nnoremap : :
+
+" Use spacebar for folds ----- {{{2
+nnoremap <space> za
 
 " EX mode is a pain ----- {{{2
 map q: :q
