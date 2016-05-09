@@ -128,25 +128,29 @@ set t_ut=
 "au BufReadPost * set relativenumber
 set gfn=Input_Mono:h14
 " Binding ----- {{{1
-" Swap colon and semicolon ----- {{{2
+" Use '//' in visual mode to search for selection
+vnoremap // y/<C-R>"<CR>
+nnoremap gl vi]y/\[<C-R>"\]<CR>$
+
+" Swap colon and semicolon
 nnoremap ; :
 nnoremap : :
 
-" Use spacebar for folds ----- {{{2
+" Use spacebar for folds
 nnoremap <space> za
 
-" EX mode is a pain ----- {{{2
+" EX mode is a pain
 map q: :q
 
-" View and switch to buffer ----- {{{2
+" View and switch to buffer
 nnoremap gb :ls<CR>:buffer<Space>
 
-" Indent/De-dent visual selection ----- {{{2
+" Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
 
 
-" Split/Window management ----- {{{2
+" Split/Window management
 " Move windows
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
@@ -159,7 +163,7 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
-" Move by VISUAL lines ----- {{{2
+" Move by VISUAL lines
 nnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
 vnoremap  <buffer> <silent> k gk
@@ -170,24 +174,24 @@ vnoremap  <buffer> <silent> 0 g0
 nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
-" Toggle Vimtex Table of Contents ----- {{{2
+" Toggle Vimtex Table of Contents
 nnoremap <leader>v :VimtexTocToggle<CR>
 
-" Toggle tagbar ----- {{{2
+" Toggle tagbar
 nnoremap <leader>t :TagbarToggle<CR>
 
-" Toggle hidden character visibility with ----- {{{2
+" Toggle hidden character visibility with
 nmap <Leader>s :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 
-" Easier search/replace ---- {{{2
+" Easier search/replace
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
 nmap S :%s//g<LEFT><LEFT>
 vmap S :s//g<LEFT><LEFT>
 
-" Common mistypes and abbreviations ----- {{{2
+" Common mistypes and abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
 cnoreabbrev WQ wq
@@ -195,7 +199,7 @@ cnoreabbrev Q q
 cnoreabbrev QA qa
 
 
-" Selecting and Pasting ----- {{{2
+" Selecting and Pasting
 " Paste and move to end
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
@@ -205,6 +209,10 @@ nnoremap <silent> p p`]
 noremap gV `[v`]
 
 nnoremap <leader>a ggVG
+
+" Generate a MD preview for the current file
+nnoremap mp :!pandoc -s -c ~/.dotfiles/simple-pandoc-css.css % -o ~/.mdpreview.html<CR><CR>
+
 " Custom fold ----- {{{1
 function! ToggleFold()
     if &foldlevel < 10
@@ -239,31 +247,6 @@ function! CustomFoldText()
  set foldnestmax=99
  set foldtext=CustomFoldText()
 
-
-" Markdown Folding ----- {{{1
-function! MarkdownLevel()
-    if getline(v:lnum) =~ '^# .*$'
-        return ">1"
-    endif
-    if getline(v:lnum) =~ '^## .*$'
-        return ">2"
-    endif
-    if getline(v:lnum) =~ '^### .*$'
-        return ">3"
-    endif
-    if getline(v:lnum) =~ '^#### .*$'
-        return ">4"
-    endif
-    if getline(v:lnum) =~ '^##### .*$'
-        return ">5"
-    endif
-    if getline(v:lnum) =~ '^###### .*$'
-        return ">6"
-    endif
-    return "=" 
-endfunction
-au Filetype markdown setlocal foldexpr=MarkdownLevel()  
-au Filetype markdown setlocal foldmethod=expr   
 
 " Latex / Vimtex ----- {{{1
 let g:vimtex_quickfix_ignore_all_warnings=1
