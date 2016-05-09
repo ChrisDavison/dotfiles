@@ -1,7 +1,7 @@
 #+TITLE: My Emacs configuration
 #+AUTHOR: Chris Davison
 #+EMAIL: c.jr.davison@gmail.com
-#+OPTIONS: results: nil
+#+OPTIONS: :results output silent
 
 * about this file
 Inspired by [[http://pages.sachachua.com/.emacs.d/Sacha.html#unnumbered-3][Sacha Chua's Config]], I decided to move from a multi-file approach, to use org mode's power to really easily manage the complexity.
@@ -127,6 +127,7 @@ Useful to have access to power of common lisp within emacs.
      (use-package molokai-theme :ensure t)
      (use-package seoul256-theme :ensure t)
      (use-package color-theme-sanityinc-tomorrow :ensure t)
+     (use-package tao-theme :ensure t)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -150,6 +151,7 @@ Useful to have access to power of common lisp within emacs.
            (load-theme light_theme t)
            (setq theme_dark t)))) 
 
+     (load-theme 'tao-yang)
      ;;(toggle-dark-theme) ;; Load theme, based on theme_dark var
    #+END_SRC
    
@@ -586,7 +588,7 @@ Hide files beginning with .[not a dot]
     :config (setq csv-separators '("," ";" "|" " ")))
 
   ;; Lua
-  (use-packag lua-mode
+  (use-package lua-mode
     :ensure t)
 
   ;; Emmet is fantastic for quickly outlining HTML
@@ -759,6 +761,8 @@ Also, set up some nice config for org todo and agenda stuff.
 them under.
 
 #+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c q") 'auto-fill-mode)
+
   (use-package org
     :ensure t
     :bind (("<f1>" . org-capture)
@@ -766,34 +770,36 @@ them under.
            ("<f3>" . org-agenda-list)
            ("<f4>" . org-timeline))
     :config
-    (setq org-directory "~/Dropbox/notes-org")
-    (setq org-default-notes-file "~/Dropbox/notes-org/inbox.org")
+    (setq org-directory "~/Dropbox/notes")
+    (setq org-default-notes-file "~/Dropbox/notes/inbox.org")
     (setq org-src-window-setup 'current-window) 
     (setq org-src-fontify-natively t)
     (setq org-agenda-files
           (delq nil (mapcar (lambda (x) (and (file-exists-p x) x))
-                            '("~/Dropbox/notes-org/"))))
+                            '("~/Dropbox/notes/"))))
     (setq org-todo-keywords 
           '((sequence "-TODO-" "-WIP-" "|" "-DONE-" "-CANCELLED-")))
     (setq org-startup-indented t)
-    
-    
+
+
     ;; Settings for refiling
     (setq org-reverse-note-order t)
     (setq org-refile-use-outline-path nil)
     (setq org-refile-allow-creating-parent-nodes 'confirm)
     (setq org-refile-use-cache nil)
     (setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
-    (setq org-blank-before-new-entry nil))
+    (setq org-blank-before-new-entry nil)
+    (add-hook 'org-mode-hook 'auto-fill-mode)
+    (setq fill-column 80))
 
-  (use-package ox-reveal :ensure t)
-  (use-package htmlize :ensure t)
-  (use-package org-bullets 
-    :disabled f
-    :ensure t
-    :config (org-bullets-mode 1))
+    (use-package ox-reveal :ensure t)
+    (use-package htmlize :ensure t)
+    (use-package org-bullets 
+      :disabled f
+      :ensure t
+      :config (org-bullets-mode 1))
  
-  
+
 #+END_SRC
 
 This makes it easier to add links from outside.
@@ -839,32 +845,38 @@ various kinds.
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
         '(("q" "quotes" entry
-           (file "~/Dropbox/notes-org/quotes.org")
+           (file "~/Dropbox/notes/quotes.org")
            "* %^{WHAT} ** %^{WHO? WHERE?}\n%^{QUOTE}"
            :immediate-finish)
 
-          ("t" "todo" entry
-           (file+headline "~/Dropbox/notes-org/todo.org" "REFILE")
-           "** -TODO- %^{PROJECT} :: %^{Task}\n%^{WHEN?}t\n%^{DETAILS}"
+          ("t" "todo" item
+           (file "~/Dropbox/notes/todo.org")
+           "- %^{PRIORITY} %^{WHEN} %^{TASK} %^{CONTEXT} %^{TAGS}"
            :immediate-finish)
 
           ("e" "engd" entry
-           (file+headline "~/Dropbox/notes-org/inbox.org" "EngD")
+           (file+headline "~/Dropbox/notes/inbox.org" "EngD")
            "** %^{WHAT}\n%?"
            :immediate-finish)
 
-          ("l" "logbook" item
-           (file+datetree "~/Dropbox/notes-org/engd/logbook2016.org")
+          ("l" "logbook" plain
+           (file+datetree "~/Dropbox/notes/engd/logbook2016.org")
            "%^{LOGBOOK ENTRY}\n\n"
            :immediate-finish)
 
           ("n" "note" item
-           (file+headline "~/Dropbox/notes-org/inbox.org" "REFILE")
+           (file+headline "~/Dropbox/notes/inbox.org" "REFILE")
            "%^{NOTE}\n"
            :immediate-finish)
 
+          ("p" "plain note" plain
+           (file+headline "~/Dropbox/notes/inbox.org" "REFILE")
+           "%^{NOTE}\n"
+           :immediate-finish)
+
+
           ("u" "url" item
-           (file+headline "~/Dropbox/notes-org/inbox.org" "REFILE")
+           (file+headline "~/Dropbox/notes/inbox.org" "REFILE")
            "[[%^{URL}][%^{DESCRIPTION}]]\n"
            :immediate-finish)
           ))
@@ -1041,9 +1053,9 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
 ** agenda
 
 #+BEGIN_SRC emacs-lisp :results no
-  (setq org-agenda-files '("~/Dropbox/notes-org/inbox.org"
-                           "~/Dropbox/notes-org/engd/logbook2016.org"
-                           "~/Dropbox/notes-org/todo.org"
+  (setq org-agenda-files '("~/Dropbox/notes/inbox.org"
+                           "~/Dropbox/notes/engd/logbook2016.org"
+                           "~/Dropbox/notes/todo.org"
                            ))
 #+END_SRC
 
