@@ -7,7 +7,7 @@
 " ----------------
 set encoding=utf-8
 set bg=light
-colorscheme github
+colorscheme mml
 
 " Disable menu bollocks
 set guioptions-=m
@@ -15,4 +15,4 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-set guifont=Input_Mono:h14
+set guifont=Source_Code_Pro_ExtraLight:h14
