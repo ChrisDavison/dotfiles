@@ -195,7 +195,7 @@ logbook_today () {
   cur=`pwd`
   date=`today`
   fn=`today`.md
-  cd ~/Dropbox/notes/engd--logbook/`date +"%Y"`
+  cd ~/Dropbox/notes/engd/logbook/`date +"%Y"`
   md_today
   echo '# '$date '\n\n' > $fn
   cd $cur
@@ -232,4 +232,12 @@ md2pdf(){
   outfn="$1"
   title="$2"
   pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in  
+}
+
+org2html(){
+  pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --toc $1 -o ~/Dropbox/notes/html/$(extractFilenameNoExt $1).html
+}
+
+todotoday(){
+  grep -e "- #A" $TODOFILE
 }
