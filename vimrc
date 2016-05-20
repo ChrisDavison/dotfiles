@@ -1,13 +1,7 @@
-" Author: Chris Davison
-" Comments: My Vim config.  
-" Most plugins default behaviour seems pretty decent, so not much language
-" specific config.
-
-let mapleader=","
-set t_Co=256
+let mapleader="\\"
 
 " INIT ----- {{{1
-" Good defaults {{{2
+"-- Good defaults {{{2
 set nocompatible
 syntax on
 filetype plugin indent on
@@ -22,7 +16,7 @@ set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
 
-" Search options {{{2
+"-- Search options {{{2
 set incsearch
 set hlsearch
 set ignorecase
@@ -30,7 +24,7 @@ set smartcase
 set magic
 set backspace=indent,eol,start
 
-" Various coding preferences {{{2
+"-- Various coding preferences {{{2
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -45,12 +39,12 @@ set title
 set sidescrolloff=15
 set sidescroll=1
 
-" Put all temp files in one place {{{2
+"-- Put all temp files in one place {{{2
 set backup
-set backupdir=~/.vim/backup,.
-set directory=~/.vim/tmp,.
+set backupdir=~/.backup,.
+set directory=~/.temp,.
 
-" Wildmenu config {{{2
+"-- Wildmenu config {{{2
 set wildmode=list:longest
 set wildmenu                
 
@@ -65,12 +59,13 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
-" Allow code folding {{{2
+"-- Allow code folding {{{2
 set foldenable
-" Highlight long rows ----- {{{2
+"-- Highlight long rows ----- {{{2
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
-" Using JuneGunn's plugged ----- {{{1
+" PLUGINS ----- {{{1
+" Using JuneGunn's 'plugged'
 call plug#begin('~/.vim/plugged')
 
 "" Languages
@@ -117,16 +112,21 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/occur.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'dhruvasagar/vim-table-mode'
+Plug 'pelodelfuego/vim-swoop'
 
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=light
-colorscheme github
+set bg=dark
+colorscheme Github
 set t_ut=
 
 "au BufReadPost * set relativenumber
-set gfn=Input_Mono:h14
+set gfn=Fira\ Mono:h10
+
+" Highlight long lines
+highlight OverLength ctermbg=red ctermfg=white
+match OverLength /\%81v.\+/
 " Binding ----- {{{1
 " Use '//' in visual mode to search for selection
 vnoremap // y/<C-R>"<CR>
