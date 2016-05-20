@@ -132,7 +132,6 @@ match OverLength /\%81v.\+/
 " Binding ----- {{{1
 " Use '//' in visual mode to search for selection
 vnoremap // y/<C-R>"<CR>
-nnoremap gl vi]y/\[<C-R>"\]<CR>$
 
 " Swap colon and semicolon
 nnoremap ; :
@@ -295,6 +294,11 @@ let g:pandoc#formatting#textwidth=80
 
 let b:javascript_fold=1
 
+fu! OpenLink()
+    :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )
+endfunction
+
+nnoremap grl vi]y/<C-R>"<CR>:call OpenLink()<cr>:noh<cr>
 
 " Unite ----- {{{1
 if executable('ag')
