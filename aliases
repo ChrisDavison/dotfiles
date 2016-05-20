@@ -51,3 +51,5 @@ alias pipall='pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip i
 
 alias del='rmtrash'
 alias rm="echo Use 'del' or the full path, i.e. '/bin/rm'"
+
+alias todos="todof ~/Dropbox/notes/todo.md"
