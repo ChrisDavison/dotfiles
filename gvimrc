@@ -15,4 +15,4 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-set guifont=Source_Code_Pro_ExtraLight:h14
+set guifont=Fira\ Mono:h13
