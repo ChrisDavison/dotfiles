@@ -239,5 +239,5 @@ org2html(){
 }
 
 todotoday(){
-  grep -e "- #A" $TODOFILE
+  todof $TODOFILE 'A'
 }
