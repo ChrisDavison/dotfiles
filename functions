@@ -241,3 +241,13 @@ org2html(){
 todotoday(){
   todof $TODOFILE 'A'
 }
+
+mygitinit(){
+  git init
+  touch .gitignore  
+  echo ".gitignore" > .gitignore
+  git touch README.md
+  git add README.md
+  git commit -m "Initial Commit"
+  git checkout -b develop
+}
