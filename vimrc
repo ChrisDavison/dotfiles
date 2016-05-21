@@ -83,6 +83,7 @@ Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
+Plug 'jpalardy/vim-slime'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
@@ -132,6 +133,9 @@ match OverLength /\%81v.\+/
 " Binding ----- {{{1
 " Use '//' in visual mode to search for selection
 vnoremap // y/<C-R>"<CR>
+"
+" <leader>e -- edit file, starting in same directory as current file
+map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Swap colon and semicolon
 nnoremap ; :
@@ -352,3 +356,5 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+" Vim Slime ----- {{{1
+let g:slime_target = "tmux"
