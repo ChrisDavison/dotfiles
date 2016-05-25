@@ -121,7 +121,7 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=dark
-colorscheme Github
+colorscheme Monokai
 set t_ut=
 
 "au BufReadPost * set relativenumber
@@ -304,7 +304,7 @@ fu! OpenLink()
     :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )
 endfunction
 
-nnoremap grl vi]y/<C-R>"<CR>:call OpenLink()<cr>:noh<cr>
+nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
 
 " Unite ----- {{{1
 if executable('ag')
