@@ -242,6 +242,11 @@ todotoday(){
   todof $TODOFILE 'A'
 }
 
+makelogbook(){
+  logbookout=~/Dropbox/$(extractFilenameNoExt $LOGBOOK).pdf
+  pandoc --template="/Users/davison/.dotfiles/pandoc.latex" -s --toc -o $logbookout $LOGBOOK
+}
+
 mygitinit(){
   git init
   touch .gitignore  
