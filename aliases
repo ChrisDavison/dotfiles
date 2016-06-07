@@ -53,3 +53,6 @@ alias del='rmtrash'
 alias rm="echo Use 'del' or the full path, i.e. '/bin/rm'"
 
 alias todos="todof ~/Dropbox/notes/todo.md"
+alias mdtidy="pandoc -s --atx-headers -t markdown"
+alias mdtidyref="pandoc -s --atx-headers --reference-links -t markdown"
+alias mdepub="pandoc -s -t epub"
