@@ -15,6 +15,7 @@ set iskeyword=a-z,A-Z,_,.,39
 set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
+set relativenumber
 
 "-- Search options {{{2
 set incsearch
@@ -60,7 +61,7 @@ set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
 "-- Allow code folding {{{2
-set foldenable
+set nofoldenable
 "-- Highlight long rows ----- {{{2
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
@@ -87,15 +88,13 @@ Plug 'jpalardy/vim-slime'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/unite-outline'
 Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
-Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'h1mesuke/unite-outline'
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
@@ -167,6 +166,11 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
+
+" Unite
+nnoremap <leader>p :Unite buffer -no-split<cr>
+nnoremap <leader>o :Unite outline -no-split<cr>
+nnoremap - :Unite file -no-split<cr>
 
 " Move by VISUAL lines
 nnoremap  <buffer> <silent> k gk
