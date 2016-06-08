@@ -84,6 +84,7 @@ Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
+Plug 'Konfekt/FastFold'
 Plug 'jpalardy/vim-slime'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/unite.vim'
@@ -120,11 +121,11 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=dark
-colorscheme Monokai
+colorscheme material-theme
 set t_ut=
 
 "au BufReadPost * set relativenumber
-set gfn=Fira\ Mono:h10
+set gfn=Fira\ Mono:h15
 
 " Highlight long lines
 highlight OverLength ctermbg=red ctermfg=white
@@ -308,7 +309,7 @@ fu! OpenLink()
     :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )
 endfunction
 
-nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
+nnoremap grl vi]y/\[<C-R>"\]<CR>f]f:W:call OpenLink()<cr>N:noh<cr>
 
 " Unite ----- {{{1
 if executable('ag')
