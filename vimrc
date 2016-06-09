@@ -120,8 +120,8 @@ Plug 'pelodelfuego/vim-swoop'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=dark
-colorscheme material-theme
+set bg=light
+colorscheme github
 set t_ut=
 
 "au BufReadPost * set relativenumber
@@ -309,7 +309,7 @@ fu! OpenLink()
     :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )
 endfunction
 
-nnoremap grl vi]y/\[<C-R>"\]<CR>f]f:W:call OpenLink()<cr>N:noh<cr>
+nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
 
 " Unite ----- {{{1
 if executable('ag')
