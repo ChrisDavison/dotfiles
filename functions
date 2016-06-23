@@ -148,6 +148,11 @@ mdpreviewself() {
     pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --self-contained --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
 }
 
+mdtohtml() {
+    fn=__tohtml/$(extractFilenameNoExt $1).html
+    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --self-contained --mathjax $1 > $fn
+}
+
 # Remove shitty DS_store files
 alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 
