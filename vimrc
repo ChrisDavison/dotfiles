@@ -84,6 +84,8 @@ Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'Konfekt/FastFold'
 Plug 'jpalardy/vim-slime'
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -263,6 +265,8 @@ let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 let g:tex_flavor = "latex"
+let g:vimtex_indent_enabled=1
+let g:vimtex_fold_enabled=1
 
 " C++ ----- {{{1
 let g:syntastic_cpp_compiler = 'clang++'
@@ -363,3 +367,8 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 " Vim Slime ----- {{{1
 let g:slime_target = "tmux"
+
+" Goyo ----- {{{1
+autocmd! User GoyoEnter Limelight 0.8
+autocmd! User GoyoLeave Limelight!
+let g:goyo_width=100
