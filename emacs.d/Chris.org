@@ -151,7 +151,7 @@ Useful to have access to power of common lisp within emacs.
            (load-theme light_theme t)
            (setq theme_dark t)))) 
 
-     (load-theme 'tao-yang)
+     (load-theme 'tao-yang t)
      ;;(toggle-dark-theme) ;; Load theme, based on theme_dark var
    #+END_SRC
    
@@ -662,9 +662,8 @@ Hide files beginning with .[not a dot]
   (use-package company
     :ensure t
     :diminish company-mode
-    :config
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common) ;
-    (setq company-tooltip-align-annotations t))
+    :config (setq company-tooltip-align-annotations t)
+    :bind (("TAB" . company-indent-or-complete-common)))
 
   (use-package cargo :ensure t)
 
@@ -1059,8 +1058,7 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
                            ))
 #+END_SRC
 
-* helm (easy navigation of options)
-** general helm setup
+* helm (navigation of ~everything)
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :diminish helm-mode
@@ -1082,39 +1080,41 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
           helm-apropos-fuzzy-match t
           helm-split-window-in-side-p t)
     (helm-mode 1)
-    (helm-autoresize-mode nil))
+    (helm-autoresize-mode nil)
+    :bind (("C-c h" . helm-mini)
+           ("C-c a" . helm-apropos)
+           ("C-c o" . helm-occur)
+           ("C-c s" . helm-swoop)
+           ("C-c i" . helm-imenu)
+           ("C-c r" . helm-regexp)
+           ("C-c g" . helm-do-grep)
+           ("C-x C-f" . helm-find-files)
+           ("M-y" . helm-show-kill-ring)
+           ("M-x" . helm-M-x)))
 
-  (use-package helm-descbinds :ensure t)
+  (use-package helm-descbinds
+    :ensure t
+    :bind (("C-c b" . helm-descbinds)))
 #+END_SRC
-
-** key bindings
-#+BEGIN_SRC emacs-lisp 
-  (global-set-key (kbd "C-c h") 'helm-mini)
-  (global-set-key (kbd "C-c a") 'helm-apropos)
-  (global-set-key (kbd "C-c o") 'helm-occur)
-  (global-set-key (kbd "C-c s") 'helm-swoop)
-  (global-set-key (kbd "C-c i") 'helm-imenu)
-  (global-set-key (kbd "C-c b") 'helm-descbinds)
-  (global-set-key (kbd "C-c r") 'helm-regexp)
-  (global-set-key (kbd "C-c g") 'helm-do-grep)
-
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-
-#+END_SRC
+* jump to register (file shortcuts)
 
 #+BEGIN_SRC emacs-lisp
+  (set-register ?i (cons 'file "~/Dropbox/notes/inbox.md"))
+  (set-register ?m (cons 'file "~/Dropbox/notes/ml.md"))
+  (set-register ?g (cons 'file "~/Dropbox/notes/guitar.md"))
+  (set-register ?l (cons 'file "~/Dropbox/notes/engd/logbook2016.md"))
+  (set-register ?t (cons 'file "~/Dropbox/notes/todo.md"))
 #+END_SRC
+
 * utility 
-** utility packages
+
+utility packages
 #+BEGIN_SRC emacs-lisp
 (use-package s :ensure t)
 (use-package f :ensure t)
 #+END_SRC
 
-** help - guide-key
+help - guide-key
 
 It's hard to remember keyboard shortcuts. The =guide-key= package pops
 up help after a short delay.
@@ -1127,7 +1127,7 @@ up help after a short delay.
     :config (guide-key-mode 1))
 #+end_src
 
-** utf-8
+utf-8
 
 From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 #+begin_src emacs-lisp
@@ -1136,7 +1136,7 @@ From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.htm
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
 
-** mac osx
+* hand-holding for mac osx
 Mac needs a little bit of hand holding...
 #+BEGIN_SRC emacs-lisp
   (when *is-a-mac*
