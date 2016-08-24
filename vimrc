@@ -138,7 +138,7 @@ match OverLength /\%81v.\+/
 vnoremap // y/<C-R>"<CR>
 "
 " <leader>e -- edit file, starting in same directory as current file
-map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
+nmap <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Swap colon and semicolon
 nnoremap ; :
@@ -226,6 +226,10 @@ nnoremap <leader>a ggVG
 " Generate a MD preview for the current file
 nnoremap mp :!pandoc -s -c ~/.dotfiles/simple-pandoc-css.css % -o ~/.mdpreview.html<CR><CR>
 
+" Keychords to quickly navigate quickfix list
+nnoremap cn :cn<CR>
+nnoremap cp :cp<CR>
+
 " Custom fold ----- {{{1
 function! ToggleFold()
     if &foldlevel < 10
@@ -261,52 +265,21 @@ function! CustomFoldText()
  set foldtext=CustomFoldText()
 
 
-" Latex / Vimtex ----- {{{1
-let g:vimtex_quickfix_ignore_all_warnings=1
-let g:vimtex_latexmk_continuous=0
-let g:vimtex_quickfix_mode=0
-let g:tex_flavor = "latex"
-let g:vimtex_indent_enabled=1
-let g:vimtex_fold_enabled=1
-
-" C++ ----- {{{1
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-
-" Python ----- {{{1
-let g:pymode_python = 'python3'
-
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-let g:syntastic_python_checkers = ['flake8']
-
-let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
-let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
 " Filetype Management ----- {{{1
-" autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-autocmd Filetype markdown setlocal wrap textwidth=80
-autocmd Filetype markdown setlocal conceallevel=2
-autocmd Filetype markdown hi Conceal cterm=None ctermbg=None
-
-let g:scratch_filetype = 'markdown'
 
 autocmd BufNewFile,BufReadPost *.tex set filetype=tex
-autocmd FileType c      set foldmethod=syntax
-autocmd FileType python set foldmethod=indent
-autocmd FileType python set tabstop=4
-autocmd FileType python set softtabstop=4
-autocmd FileType go     set nofen
-autocmd FileType make   set noexpandtab
-autocmd FileType rust   set foldmethod=syntax
-autocmd FileType vim    set foldmethod=marker
+autocmd FileType c       set foldmethod=syntax
+autocmd FileType cpo     set foldmethod=syntax
+autocmd FileType arduino set foldmethod=syntax
+autocmd FileType python  set foldmethod=indent
+autocmd FileType python  set tabstop=4
+autocmd FileType python  set softtabstop=4
+autocmd FileType go      set nofen
+autocmd FileType make    set noexpandtab
+autocmd FileType rust    set foldmethod=syntax
+autocmd FileType vim     set foldmethod=marker
 autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
-
-let g:pandoc#spell#enabled=0
-let g:pandoc#syntax#conceal#urls = 1
-let g:pandoc#formatting#mode='ha'
-let g:pandoc#formatting#textwidth=80
-let g:pandoc#formatting#equalprg = "pandoc -t markdown --reference-links"
-let g:pandoc#formatting#extra_equalprg = "--wrap=auto --normalize --atx-headers"
 
 let b:javascript_fold=1
 
@@ -316,19 +289,62 @@ endfunction
 
 nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
 
+" Latex / Vimtex
+let g:vimtex_quickfix_ignore_all_warnings=1
+let g:vimtex_latexmk_continuous=0
+let g:vimtex_quickfix_mode=0
+let g:tex_flavor = "latex"
+let g:vimtex_indent_enabled=1
+let g:vimtex_fold_enabled=1
+
+" C++
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+
+" Python
+let g:pymode_python = 'python3'
+
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
+let g:syntastic_python_checkers = ['flake8']
+
+" Rust
+let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
+let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
+
+
 " Unite ----- {{{1
 if executable('ag')
   let g:unite_source_grep_command='ag'
   let g:unite_source_grep_default_opts='--nocolor --nogroup -S -C4'
   let g:unite_source_grep_recursive_opt=''
 endif
+"
+" The Silver Searcher (Ag) for grep
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
 
+  " " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " " ag is fast enough that CtrlP doesn't need to cache
+  " let g:ctrlp_use_caching = 0
+endif
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " set up coolguy arrow prompt
+"
+" bind \ (backward slash) to grep shortcut
+"command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap <Leader>g :Ag<SPACE>
 
 let g:unite_prompt = '➜ '
 
 
-" Tagbar Markdown ----- {{{1
+" Markdown ----- {{{1
+"
+" Tagbar support
 " Add support for markdown files in tagbar. 
 let g:tagbar_type_markdown = {
     \ 'ctagstype': 'markdown',
@@ -345,7 +361,7 @@ let g:tagbar_type_markdown = {
     \ 'sort': 0,
 \ }
 
-" Tablemode ----- {{{1
+" Tables
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
@@ -357,6 +373,19 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-z>"
 
 let g:UltiSnipsEditSplit="vertical"
+
+autocmd Filetype markdown setlocal wrap textwidth=80
+autocmd Filetype markdown setlocal conceallevel=2
+autocmd Filetype markdown hi Conceal cterm=None ctermbg=None
+let g:scratch_filetype = 'markdown'
+
+
+let g:pandoc#spell#enabled=0
+let g:pandoc#syntax#conceal#urls = 1
+let g:pandoc#formatting#mode='ha'
+let g:pandoc#formatting#textwidth=80
+let g:pandoc#formatting#equalprg = "pandoc -t markdown --reference-links"
+let g:pandoc#formatting#extra_equalprg = "--wrap=auto --normalize --atx-headers"
 
 " Syntastic ----- {{{1
 set statusline+=%#warningmsg#
