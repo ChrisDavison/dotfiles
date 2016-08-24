@@ -189,20 +189,17 @@ epoch2date () {
 }
 
 today () {
-    date +"%Y%m%d"
-}
-
-md_today () {
-    touch `today`.md
+    date +"%Y-%m-%d"
 }
 
 logbook_today () {
   cur=`pwd`
   date=`today`
   fn=`today`.md
-  cd ~/Dropbox/notes/engd/logbook/`date +"%Y"`
-  md_today
-  echo '# '$date '\n\n' > $fn
+  logbook_dir='/Users/davison/engd-notes/logbook2016/'
+  cd $logbook_dir
+  touch `today`.md
+  echo '...replace...' > $fn
   cd $cur
 }
 
@@ -256,7 +253,7 @@ mygitinit(){
   git init
   touch .gitignore  
   echo ".gitignore" > .gitignore
-  git touch README.md
+  touch README.md
   git add README.md
   git commit -m "Initial Commit"
   git checkout -b develop
