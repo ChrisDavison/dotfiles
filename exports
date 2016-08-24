@@ -28,5 +28,4 @@ export TERM=xterm-256color;
 
 export RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 export TODOFILE="/Users/davison/Dropbox/notes/todo.md"
-export LOGBOOK="/Users/davison/Dropbox/notes/engd/logbook2016.md"
 export INBOX="/Users/davison/Dropbox/notes/inbox.md"
