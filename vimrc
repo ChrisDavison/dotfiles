@@ -85,6 +85,7 @@ Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
 Plug 'junegunn/goyo.vim'
+Plug 'vim-scripts/a.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'Konfekt/FastFold'
 Plug 'jpalardy/vim-slime'
