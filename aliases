@@ -58,3 +58,6 @@ alias mdtidyref="pandoc -s --atx-headers --reference-links -f markdown_github -t
 alias mdepub="pandoc -s -t epub"
 
 alias todoa="~/bin/addtodo.py"
+
+alias tma='tmux attach -d -t'
+alias git-tmux='tmux new -s $(basename $(pwd))'
