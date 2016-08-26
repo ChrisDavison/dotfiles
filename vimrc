@@ -275,6 +275,9 @@ autocmd FileType arduino set foldmethod=syntax
 autocmd FileType python  set foldmethod=indent
 autocmd FileType python  set tabstop=4
 autocmd FileType python  set softtabstop=4
+autocmd FileType json    set tabstop=2
+autocmd FileType json    set softtabstop=2
+autocmd FileType json    set shiftwidth=2
 autocmd FileType go      set nofen
 autocmd FileType make    set noexpandtab
 autocmd FileType rust    set foldmethod=syntax
