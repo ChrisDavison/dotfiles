@@ -123,8 +123,8 @@ Plug 'pelodelfuego/vim-swoop'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=light
-colorscheme Monokai
+set bg=dark
+colorscheme solarized
 set t_ut=
 
 "au BufReadPost * set relativenumber
@@ -400,6 +400,7 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 " Vim Slime ----- {{{1
 let g:slime_target = "tmux"
+let g:slime_python_ipython = 1
 
 " Goyo ----- {{{1
 autocmd! User GoyoEnter Limelight 0.8
