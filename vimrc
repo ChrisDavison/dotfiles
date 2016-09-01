@@ -84,6 +84,7 @@ Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
+Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
 Plug 'vim-scripts/a.vim'
 Plug 'junegunn/limelight.vim'
