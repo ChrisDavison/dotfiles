@@ -44,6 +44,9 @@ alias gbn='git checkout master && git checkout -b'
 
 alias grst='gr status'
 alias grstv='gr status -v'
+alias grest='gr @engd status'
+alias grpst='gr @personal status'
+alias grnst='gr @notes status'
 
 alias cl='catless'
 
@@ -60,4 +63,4 @@ alias mdepub="pandoc -s -t epub"
 alias todoa="~/bin/addtodo.py"
 
 alias tma='tmux attach -d -t'
-alias git-tmux='tmux new -s $(basename $(pwd))'
+alias tmuxhere='tmux new -s $(basename $(pwd))'
