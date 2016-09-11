@@ -47,7 +47,7 @@ set directory=~/.temp,.
 
 "-- Wildmenu config {{{2
 set wildmode=list:longest
-set wildmenu                
+set wildmenu
 
 set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
 set wildignore+=*vim/backups*
@@ -84,6 +84,7 @@ Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
+Plug 'vim-airline/vim-airline'
 Plug 'terryma/vim-expand-region'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
@@ -255,7 +256,7 @@ function! CustomFoldText()
      else
          let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
      endif
- 
+
      let w = winwidth(0) - &foldcolumn - (&number ? 6 : 0)
      let foldSize = 1 + v:foldend - v:foldstart
      let foldSizeStr = " [" . foldSize . " lines] "
@@ -351,7 +352,7 @@ let g:unite_prompt = '➜ '
 " Markdown ----- {{{1
 "
 " Tagbar support
-" Add support for markdown files in tagbar. 
+" Add support for markdown files in tagbar.
 let g:tagbar_type_markdown = {
     \ 'ctagstype': 'markdown',
     \ 'ctagsbin' : '/Users/davison/prog/z__NOT_MINE/markdown2ctags/markdown2ctags.py',
@@ -412,7 +413,7 @@ let g:goyo_width=100
 
 " Automatically add HashBang lines ----- {{{1
 function! Hashbang(portable, permission)
-let shells = { 
+let shells = {
         \    'awk': "awk",
         \     'sh': "bash",
         \     'hs': "runhaskell",
@@ -421,7 +422,7 @@ let shells = {
         \    'mak': "make",
         \     'js': "node",
         \      'm': "octave",
-        \     'pl': "perl", 
+        \     'pl': "perl",
         \    'php': "php",
         \     'py': "python",
         \      'r': "Rscript",
@@ -434,22 +435,50 @@ let shells = {
 let extension = expand("%:e")
 
 if has_key(shells,extension)
-	let fileshell = shells[extension]
-	
-	if a:portable
-		let line =  "#! /usr/bin/env " . fileshell 
-	else 
-		let line = "#! " . system("which " . fileshell)
-	endif
+    let fileshell = shells[extension]
 
-	0put = line
+    if a:portable
+        let line =  "#! /usr/bin/env " . fileshell
+    else
+        let line = "#! " . system("which " . fileshell)
+    endif
 
-	if a:permission
-		:autocmd BufWritePost * :autocmd VimLeave * :!chmod u+x %
-	endif
+    0put = line
+
+    if a:permission
+        :autocmd BufWritePost * :autocmd VimLeave * :!chmod u+x %
+    endif
 
 endif
 
 endfunction
 
 :autocmd BufNewFile *.* :call Hashbang(1,1)
+
+" Airline --- {{{1
+
+let g:airline_left_sep=''
+let g:airline_right_sep=''
+let g:airline_skip_empty_sections=1
+let g:airline#extensions#tabline#enabled=1
+
+let g:airline#extensions#tabline#left_sep=' '
+let g:airline#extensions#tabline#left_alt_sep='|'
+
+let g:airline_section_x = ''
+let g:airline_section_y = '%{airline#util#prepend(airline#extensions#tagbar#currenttag(), 0)}%{airline#util#wrap(airline#parts#filetype(), 0)}'
+let g:airline_section_z = '%3p%% %#__accent_bold#%{g:airline_symbols.linenr}%#__accent_bold#%4l%#__restore__#%#__restore__#:%3v'
+
+let g:airline_mode_map = {
+    \ '__' : '-',
+    \ 'n' : 'N',
+    \ 'i' : 'I',
+    \ 'R' : 'R',
+    \ 'c' : 'C',
+    \ 'v' : 'V',
+    \ 'V' : 'V',
+    \ '^V' : 'V',
+    \ 's' : 'S',
+    \ 'S' : 'S',
+    \ '^S' : 'S',
+\ }
