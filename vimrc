@@ -85,6 +85,7 @@ Plug 'vim-scripts/Miranda-syntax-highlighting'
 
 "" Utility
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-expand-region'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
@@ -198,7 +199,7 @@ nnoremap <leader>v :VimtexTocToggle<CR>
 nnoremap <leader>t :TagbarToggle<CR>
 
 " Toggle hidden character visibility with
-nmap <Leader>s :set list!<CR>
+nmap <Leader>h :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 
@@ -384,7 +385,7 @@ let g:UltiSnipsEditSplit="vertical"
 autocmd Filetype markdown setlocal wrap textwidth=80
 autocmd Filetype markdown setlocal conceallevel=2
 autocmd Filetype markdown hi Conceal cterm=None ctermbg=None
-let g:scratch_filetype = 'markdown'
+let g:scratch_filetype = 'pandoc'
 
 
 let g:pandoc#spell#enabled=0
@@ -482,3 +483,5 @@ let g:airline_mode_map = {
     \ 'S' : 'S',
     \ '^S' : 'S',
 \ }
+
+nmap <leader>s <plug>(scratch-insert-reuse)
