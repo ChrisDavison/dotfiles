@@ -128,8 +128,8 @@ Plug 'pelodelfuego/vim-swoop'
 call plug#end()
 
 " Appearance ----- {{{1
-set bg=light
-colorscheme github
+set bg=dark
+colorscheme molokai
 set t_ut=
 
 "au BufReadPost * set relativenumber
