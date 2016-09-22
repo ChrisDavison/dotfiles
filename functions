@@ -150,6 +150,7 @@ mdpreviewself() {
 
 mdtohtml() {
     fn=__tohtml/$(extractFilenameNoExt $1).html
+    rm $fn
     pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --self-contained --mathjax $1 > $fn
 }
 
