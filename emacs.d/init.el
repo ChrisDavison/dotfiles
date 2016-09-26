@@ -18,17 +18,3 @@
 
 ;; Finally, load my Org-mode (literate programming) config file
 (org-babel-load-file "~/.emacs.d/Chris.org")
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("a7dcbc7254ba3ca2d03fda34219a92c9cc8a71f7cdaa354ef12bc59fc9b0b31a" default))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
