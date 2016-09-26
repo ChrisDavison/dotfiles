@@ -137,8 +137,8 @@ Useful to have access to power of common lisp within emacs.
        (mapcar #'disable-theme custom-enabled-themes))
 
      (setq theme_dark nil)
-     (setq dark_theme 'sanityinc-tomorrow-night)
-     (setq light_theme 'dl)
+     (setq dark_theme 'solarized-dark)
+     (setq light_theme 'solarized-light)
 
      (defun toggle-dark-theme ()
        "Toggle theme between light and dark"
@@ -151,7 +151,7 @@ Useful to have access to power of common lisp within emacs.
            (load-theme light_theme t)
            (setq theme_dark t)))) 
 
-     (load-theme 'tao-yang)
+     (load-theme 'solarized-dark t)
      ;;(toggle-dark-theme) ;; Load theme, based on theme_dark var
    #+END_SRC
    
