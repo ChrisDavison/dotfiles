@@ -668,9 +668,8 @@ Hide files beginning with .[not a dot]
   (use-package company
     :ensure t
     :diminish company-mode
-    :config
-    (global-set-key (kbd "TAB") #'company-indent-or-complete-common) ;
-    (setq company-tooltip-align-annotations t))
+    :config (setq company-tooltip-align-annotations t)
+    :bind (("TAB" . company-indent-or-complete-common)))
 
   (use-package cargo :ensure t)
 
