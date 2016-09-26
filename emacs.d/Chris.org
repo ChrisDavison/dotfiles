@@ -1105,9 +1105,16 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
     :ensure t
     :bind (("C-c b" . helm-descbinds)))
 #+END_SRC
+* jump to register (file shortcuts)
 
 #+BEGIN_SRC emacs-lisp
+  (set-register ?i (cons 'file "~/Dropbox/notes/inbox.md"))
+  (set-register ?m (cons 'file "~/Dropbox/notes/ml.md"))
+  (set-register ?g (cons 'file "~/Dropbox/notes/guitar.md"))
+  (set-register ?l (cons 'file "~/Dropbox/notes/engd/logbook2016.md"))
+  (set-register ?t (cons 'file "~/Dropbox/notes/todo.md"))
 #+END_SRC
+
 * utility 
 
 utility packages
@@ -1172,5 +1179,4 @@ Mac needs a little bit of hand holding...
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
     )
 #+END_SRC
-
 
