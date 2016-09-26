@@ -137,8 +137,8 @@ Useful to have access to power of common lisp within emacs.
        (mapcar #'disable-theme custom-enabled-themes))
 
      (setq theme_dark nil)
-     (setq dark_theme 'sanityinc-tomorrow-night)
-     (setq light_theme 'dl)
+     (setq dark_theme 'solarized-dark)
+     (setq light_theme 'solarized-light)
 
      (defun toggle-dark-theme ()
        "Toggle theme between light and dark"
@@ -151,7 +151,7 @@ Useful to have access to power of common lisp within emacs.
            (load-theme light_theme t)
            (setq theme_dark t)))) 
 
-     (load-theme 'tao-yang t)
+     (load-theme 'solarized-dark t)
      ;;(toggle-dark-theme) ;; Load theme, based on theme_dark var
    #+END_SRC
    
@@ -563,6 +563,12 @@ Hide files beginning with .[not a dot]
 * prog languages
 ** quick configs
   Re-writing this to only use use-package, as it clears it up fairly well
+  
+#+BEGIN_SRC emacs-lisp
+(use-package cider :ensure t)
+
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck :ensure t)
   (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -580,7 +586,10 @@ Hide files beginning with .[not a dot]
   ;; not sure if add-auto-mode works like the setq...so leaving for now
   (use-package markdown-mode
     :ensure t
-    :config (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'"))
+    :config
+    (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'")
+    (add-hook 'markdown-mode-hook 'pandoc-mode)
+    (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
 
   (use-package csv-mode
     :ensure csv-nav
@@ -1183,5 +1192,4 @@ Mac needs a little bit of hand holding...
     (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
     )
 #+END_SRC
-
 
