@@ -1086,27 +1086,21 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
           helm-apropos-fuzzy-match t
           helm-split-window-in-side-p t)
     (helm-mode 1)
-    (helm-autoresize-mode nil))
+    (helm-autoresize-mode nil)
+    :bind (("C-c h" . helm-mini)
+           ("C-c a" . helm-apropos)
+           ("C-c o" . helm-occur)
+           ("C-c s" . helm-swoop)
+           ("C-c i" . helm-imenu)
+           ("C-c r" . helm-regexp)
+           ("C-c g" . helm-do-grep)
+           ("C-x C-f" . helm-find-files)
+           ("M-y" . helm-show-kill-ring)
+           ("M-x" . helm-M-x)))
 
-  (use-package helm-descbinds :ensure t)
-#+END_SRC
-
-** key bindings
-#+BEGIN_SRC emacs-lisp 
-  (global-set-key (kbd "C-c h") 'helm-mini)
-  (global-set-key (kbd "C-c a") 'helm-apropos)
-  (global-set-key (kbd "C-c o") 'helm-occur)
-  (global-set-key (kbd "C-c s") 'helm-swoop)
-  (global-set-key (kbd "C-c i") 'helm-imenu)
-  (global-set-key (kbd "C-c b") 'helm-descbinds)
-  (global-set-key (kbd "C-c r") 'helm-regexp)
-  (global-set-key (kbd "C-c g") 'helm-do-grep)
-
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-
+  (use-package helm-descbinds
+    :ensure t
+    :bind (("C-c b" . helm-descbinds)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
