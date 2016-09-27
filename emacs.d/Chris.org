@@ -271,11 +271,10 @@ Being a VIM user...Emacs' keybindings are quite nasty.  As such, I try to make t
   ;; But VIM is added early incase customisation breaks.
   (evil-leader/set-key
     "w" 'save-buffer
-    "f" 'helm-find-files
-    "h" 'helm-mini
-    "o" 'helm-occur
-    "s" 'helm-swoop
-    "i" 'helm-imenu
+    "f" 'counsel-find-file
+    "i" 'counsel-imenu
+    "h" 'ivy-switch-buffer
+    "s" 'swiper
     "j" 'jump-to-register
     "k" 'kill-buffer)
 
@@ -821,6 +820,18 @@ This makes it easier to add links from outside.
 (global-set-key (kbd "<f6>") 'sacha/yank-more)
 #+end_src
 
+#+BEGIN_SRC emacs-lisp
+  (defun cd/yank-md ()
+    (interactive)
+    (insert "[")
+    (insert (read-from-minibuffer "Link text: "))
+    (insert "](")
+    (yank)
+    (insert ")"))
+  (global-set-key (kbd "<f5>") 'cd/yank-md)
+
+#+END_SRC
+
 Paste a link into an org file document, using the currently selected
 text as the description
 
@@ -1080,8 +1091,42 @@ In an Org-Babel block, run my/org-cleanup to fix indentation
                            ))
 #+END_SRC
 
-* helm (navigation of ~everything)
+* navigation of ~everything (helm OR ivy)
 #+BEGIN_SRC emacs-lisp
+  (use-package ivy :ensure t
+    :diminish (ivy-mode . "")
+    :bind
+    (:map ivy-mode-map
+          ("C-'" . ivy-avy)
+          ("C-c h" . ivy-switch-buffer)
+          ("C-c s" . swiper)
+          )
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-height 15)
+    (setq ivy-count-format "")
+    (setq ivy-initial-inputs-alist nil)
+    (setq ivy-re-builders-alist
+          '((t . ivy--regex-ignore-order))))
+
+  (use-package counsel :ensure t
+    :bind*
+    (("C-x f" . counsel-find-file)
+     ("C-c i" . counsel-imenu)
+     ("C-c a" . counsel-ag)
+     ("C-c g s" . counsel-grep-or-swiper)
+     ("C-c b" . counsel-descbinds)
+     ("M-x" . counsel-M-x)))
+
+  (use-package swiper :ensure t)
+
+  ;; ("C-c i" . helm-imenu)
+  ;; ("C-c r" . helm-regexp)
+  ;; ("M-y" . helm-show-kill-ring)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package helm
     :diminish helm-mode
     :ensure t
