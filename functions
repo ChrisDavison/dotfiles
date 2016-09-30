@@ -200,7 +200,7 @@ logbook_today () {
   logbook_dir='/Users/davison/engd-notes/logbook2016/'
   cd $logbook_dir
   touch `today`.md
-  echo '...replace...' > $fn
+  echo '...replace...' >> $fn
   cd $cur
 }
 
@@ -257,4 +257,12 @@ mygitinit(){
   touch README.md
   git add README.md
   git commit -m "Initial Commit"
+}
+
+mdtidy(){
+  pandoc -s --atx-headers -t markdown_github $1 -o $1
+}
+
+mdtidyref(){
+  pandoc --reference-links -s --atx-headers -t markdown_github $1 -o $1
 }
