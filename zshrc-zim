@@ -1,0 +1,49 @@
+#
+# User configuration sourced by interactive shells
+#
+
+# Source zim
+if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
+  source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+fi
+
+source ~/.dotfiles/exports
+source ~/.dotfiles/functions
+
+alias c='clear'
+alias h='history'
+alias j='jobs -l'
+
+alias pyenv="source ~/Envs/num/bin/activate"
+
+alias mdepub="pandoc -s -t epub"
+
+alias tma="tmux attach -d -t"
+alias tmuxhere="tmux new -s $(basename $(pwd))"
+
+# Nice git aliases
+alias g='git'
+alias gst='git status'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gc='git commit -v'
+alias gc!='git commit -v --amend'
+alias gco='git checkout'
+alias gcom='git checkout master'
+alias gb='git branch'
+alias gba='git branch -a'
+alias glg='git log --stat --max-count=10'
+alias glog='git log --oneline --decorate --color --graph'
+alias gap='git add -p'
+alias ga='git add'
+alias gp='git push'
+alias gi='git ls-files --others'
+alias gia='git ls-files --others | grep -v .pyc | grep -v ipynb_checkpoints'
+alias gbf='git checkout -b'
+alias gbn='git checkout master && git checkout -b'
+
+alias grst='gr status'
+alias grstv='gr status -v'
+alias grest='gr @engd status'
+alias grpst='gr @personal status'
+alias grnst='gr @notes status'
