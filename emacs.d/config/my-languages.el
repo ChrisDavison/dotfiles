@@ -26,6 +26,7 @@
   (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'")
   (add-hook 'markdown-mode-hook 'pandoc-mode)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
+(use-package pandoc-mode :ensure t)
 (defun cd/yank-md ()
   "Yank a markdown link and enter a description for it."
   (interactive)
