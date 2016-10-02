@@ -157,54 +157,8 @@
 
 (use-package swiper :ensure t)
 
-;; ("C-c i" . helm-imenu)
-;; ("C-c r" . helm-regexp)
-;; ("M-y" . helm-show-kill-ring)
-
-;; (use-package helm
-;;   :diminish helm-mode
-;;   :ensure t
-;;   :init (require 'helm-config)
-;;   :config 
-;;   (setq helm-candidate-number-limit 100
-;;         helm-idle-delay 0.0
-;;         helm-input-idle-delay 0.01
-;;         helm-quick-update t
-;;         helm-M-x-requires-pattern nil
-;;         helm-ff-skip-boring-files t
-;;         helm-recentf-fuzzy-match t
-;;         helm-buffers-fuzzy-matching t
-;;         helm-locate-fuzzy-match t
-;;         helm-imenu-fuzzy-match t
-;;         helm-M-x-fuzzy-match t
-;;         helm-semantic-fuzzy-match t
-;;         helm-apropos-fuzzy-match t
-;;         helm-split-window-in-side-p t)
-;;   (helm-mode 1)
-;;   (helm-autoresize-mode nil)
-;;   :bind (("C-c h" . helm-mini)
-;;          ("C-c a" . helm-apropos)
-;;          ("C-c o" . helm-occur)
-;;          ("C-c s" . helm-swoop)
-;;          ("C-c i" . helm-imenu)
-;;          ("C-c r" . helm-regexp)
-;;          ("C-c g" . helm-do-grep)
-;;          ("C-x C-f" . helm-find-files)
-;;          ("M-y" . helm-show-kill-ring)
-;;          ("M-x" . helm-M-x)))
-
-;; (use-package helm-descbinds
-;;   :ensure t
-;;   :bind (("C-c b" . helm-descbinds)))
-;; #+END_SRC
-
-
 ;; jump to register (file shortcuts)
-
 (set-register ?i (cons 'file "~/Dropbox/notes/inbox.md"))
-(set-register ?m (cons 'file "~/Dropbox/notes/ml.md"))
-(set-register ?g (cons 'file "~/Dropbox/notes/guitar.md"))
-(set-register ?l (cons 'file "~/Dropbox/notes/engd/logbook2016.md"))
 (set-register ?t (cons 'file "~/Dropbox/notes/todo.md"))
 
 (provide 'my-navigation)

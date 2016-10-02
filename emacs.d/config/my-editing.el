@@ -6,10 +6,6 @@
 
 ;; parentheses
 
-;; (use-package rainbow-delimiters
-;;   :ensure t
-;;   :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
 (show-paren-mode 1)
 (use-package smartparens :ensure t
   :config 
