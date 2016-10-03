@@ -1,4 +1,4 @@
-;;; .emacs --- My emacs configuration
+;;; init --- My emacs configuration
 
 ;;; Commentary:
 ;;;
@@ -44,8 +44,9 @@
 (/// "navigation")(require 'my-navigation)
 (/// "utility")(require 'my-utility)
 (/// "osx")(require 'my-osx)
+(/// "new stuff") (require 'my-new-stuff)
 ;; (/// "org")(require 'my-org)
 
-(provide 'emacs)
+(provide 'init)
 
-;;; .emacs ends here
+;;; init ends here

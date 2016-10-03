@@ -5,7 +5,7 @@
 ;;; Code:
 
 ;; Progress bar & logs
-(defvar ///-steps 7 "Number of calls to `///'.")
+(defvar ///-steps 11 "Number of calls to `///'.")
 (defvar ///-counter 0 "Initializing the counter.")
 (defvar ///-time (current-time) "Time counter.")
 (defvar ///-previous nil "Previous loaded package.")
