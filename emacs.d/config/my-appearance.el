@@ -26,26 +26,27 @@
 (use-package color-theme-sanityinc-tomorrow :ensure t)
 (use-package tao-theme :ensure t)
 
-(setq theme_dark nil)
-(setq dark_theme 'solarized-dark)
-(setq light_theme 'solarized-light)
+(defvar cd/theme_dark nil)
+(defvar cd/dark_theme 'solarized-dark)
+(defvar cd/light_theme 'solarized-light)
 
 (defun toggle-dark-theme ()
-  "Toggle theme between light and dark"
+  "Toggle theme between light and dark."
   (interactive)
-  (if theme_dark
+  (if cd/theme_dark
       (progn
-        (load-theme dark_theme t)
-        (setq theme_dark nil))
+        (load-theme cd/dark_theme t)
+        (setq cd/theme_dark nil))
     (progn
-      (load-theme light_theme t)
-      (setq theme_dark t))))
+      (load-theme cd/light_theme t)
+      (setq cd/theme_dark t))))
 (toggle-dark-theme) ;; Load theme, based on theme_dark var
 
 ;; *maybe* suspend frame
 ;; This is useful if running a mac, so that C-z wont hide it.  Considered
 ;; 'appearance' as I want to see windows.
 (defun maybe-suspend-frame ()
+  "Don't suspend the frame if it's a Mac."
   (interactive)
   (unless (and *is-a-mac* window-system)
     (suspend-frame)))
