@@ -44,7 +44,7 @@
 (/// "navigation")(require 'my-navigation)
 (/// "utility")(require 'my-utility)
 (/// "osx")(require 'my-osx)
-(/// "new stuff") (require 'my-new-stuff)
+(/// "new stuff") (require 'my-newstuff)
 ;; (/// "org")(require 'my-org)
 
 (provide 'init)
