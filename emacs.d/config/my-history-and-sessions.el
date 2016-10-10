@@ -6,7 +6,7 @@
 ;;; dir,so the backup files =.*~= don't clutter.
 
 ;;; Code:
-(setq backup-directory-alist '(("." . "~/emacs.d/backups")))
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq delete-old-versions -1)
 (setq version-control t)
 (setq vc-make-backup-files t)
