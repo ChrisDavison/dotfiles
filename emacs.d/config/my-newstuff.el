@@ -9,6 +9,24 @@
 (use-package magit :ensure t)
 
 ;; =================================
+;; ======== Elpy for Python ========
+;; =================================
+(use-package elpy :ensure t
+  :config
+  (add-hook 'python-mode-hook (lambda () (elpy-enable)))
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -i"))
+
+;; need to set up VENV usage
+;; Python
+(use-package virtualenvwrapper :ensure t
+  :config
+  (venv-initialize-interactive-shells)
+  (venv-initialize-eshell)
+  (setq venv-location "/Users/davison/.envs/")
+  (add-hook 'python-mode-hook (lambda () (venv-workon "ml"))))
+
+;; =================================
 ;; ======== Rainbow brackets =======
 ;; =================================
 ;; Thought i detected a slowdown with this, so not auto-including
@@ -129,6 +147,17 @@
 ;; (use-package helm-descbinds
 ;;   :ensure t
 ;;   :bind (("C-c b" . helm-descbinds)))
+
+;; =================================
+;; === Ace-mode - Jump to letter ===
+;; =================================
+;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
+;; Hybrid of isearch and ace-jump.  Type a single character in search and words 
+;; beginning with that will highlight.  Press the highlighted letter to jump to 
+;; that occurence
+                                        ; (use-package ace-isearch :disable t :ensure t
+                                        ;   :diminish ""
+                                        ;   :config (global-ace-isearch-mode 1))
 
 
 (provide 'my-newstuff)
