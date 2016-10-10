@@ -44,10 +44,6 @@
 ;; DEL during isearch should edit the search string, not jump back to the previous result
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
-;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
-;; Hybrid of isearch and ace-jump.  Type a single character in search and words beginning with that will highlight.  Press the highlighted letter to jump to that occurence
-(use-package ace-isearch :ensure t
-  :config (global-ace-isearch-mode 1))
 
 ;; smartscan (Vim *)
 ;; From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
@@ -144,7 +140,7 @@
   (setq ivy-count-format "")
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
-        '((t . ivy--regex-ignore-order))))
+        '((t . ivy--regex-plus))))
 
 (use-package counsel :ensure t
   :bind*
