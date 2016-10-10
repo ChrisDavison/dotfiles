@@ -5,7 +5,19 @@
 ;;; Code:
 
 ;; Cider for interactive clojure programming
-(use-package cider :ensure t)
+(use-package flycheck-clojure :ensure t)
+
+(use-package cider :ensure t
+  :config
+  (setq nrepl-popup-stacktraces nil)
+  (after-load 'cider
+    (add-hook 'cider-mode-hook 'eldoc-mode)
+    (add-hook 'cider-repl-mode-hook 'subword-mode)
+    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
+    (add-hook 'cider-repl-mode-hook 'paredit-mode)
+    (after-load 'clojure-mode
+      (after-load 'flycheck
+        (flycheck-clojure-setup)))))
 
 (use-package flycheck :ensure t)
 (add-hook 'after-init-hook #'global-flycheck-mode)
