@@ -33,12 +33,20 @@
                       '(json-jsonlist)))
 
 ;; not sure if add-auto-mode works like the setq...so leaving for now
+(defun cd/auto-fill-at-80 ()
+  "Use auto fill mode and wrap at col 80."
+  (progn
+    (auto-fill-mode)
+    (set-fill-column 80)))
+
 (use-package markdown-mode :ensure t
   :config
   (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'")
   (add-hook 'markdown-mode-hook 'pandoc-mode)
-  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
-(use-package pandoc-mode :ensure t)
+  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+  (add-hook 'markdown-mode-hook 'cd/auto-fill-at-80))
+
+(use-package pandoc-mode :ensure t :diminish "")
 (defun cd/yank-md ()
   "Yank a markdown link and enter a description for it."
   (interactive)
