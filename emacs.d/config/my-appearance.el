@@ -6,8 +6,8 @@
 
 ;; FONT
 
-(when (member "Input Mono" (font-family-list))
-  (set-default-font "Input Mono 15"))
+(when (member "Fira Mono" (font-family-list))
+  (set-default-font "Fira Mono 12"))
 (setq line-spacing 0.2)
 
 ;; colour theme
@@ -15,6 +15,7 @@
 ;; Disable themes before loading a new theme
 (defadvice load-theme (before theme-dont-propagate activate)
   (mapc #'disable-theme custom-enabled-themes))
+(setq custom-safe-themes t)
 
 ;; I always end up going back to solarized, but have been using 'github' within
 ;; VIM, so should look into alternatives.  Also added functions to quickly jump
@@ -78,8 +79,7 @@
 ;; y or n.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; faster keystroke echoing
-(setq echo-keystrokes 0.1)
+;; faster keystroke echoing (setq echo-keystrokes 0.1)
 
 ;; tabs to spaces, and tab-related things
 (setq tab-stop-list (number-sequence 2 200 2))
