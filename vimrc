@@ -32,7 +32,7 @@ set shiftwidth=4
 set expandtab
 set wildmenu
 set autoread
-set clipboard=unnamed
+set clipboard=unnamedplus
 set lazyredraw
 set laststatus=2
 set nrformats=
@@ -89,6 +89,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-expand-region'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'vim-scripts/a.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'Konfekt/FastFold'
@@ -485,3 +487,17 @@ let g:airline_mode_map = {
 \ }
 
 nmap <leader>s <plug>(scratch-insert-reuse)
+
+" --column: Show column number
+" --line-number: Show line number
+" --no-heading: Do not show file headings in results
+" --fixed-strings: Search term as a literal string
+" --ignore-case: Case insensitive search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+" --color: Search color options
+
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+set grepprg=rg\ --vimgrep
