@@ -17,6 +17,7 @@ set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
 set relativenumber
 
+
 "-- Search options {{{2
 set incsearch
 set hlsearch
@@ -32,7 +33,7 @@ set shiftwidth=4
 set expandtab
 set wildmenu
 set autoread
-set clipboard=unnamedplus
+set clipboard=unnamed
 set lazyredraw
 set laststatus=2
 set nrformats=
@@ -80,6 +81,7 @@ Plug 'fatih/vim-go'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-markdownfootnotes'
+Plug 'jonathanfilip/vim-lucius'
 
 Plug 'vim-scripts/Miranda-syntax-highlighting'
 
@@ -131,11 +133,11 @@ call plug#end()
 
 " Appearance ----- {{{1
 set bg=dark
-colorscheme molokai
+colorscheme lucius
 set t_ut=
 
 "au BufReadPost * set relativenumber
-set gfn=Fira\ Mono:h15
+set gfn=Fira\ Mono:h14
 
 " Highlight long lines
 highlight OverLength ctermbg=red ctermfg=white
