@@ -7,7 +7,7 @@
 " ----------------
 set encoding=utf-8
 set bg=dark
-colorscheme solarized
+colorscheme lucius
 
 " Disable menu bollocks
 set guioptions-=m
