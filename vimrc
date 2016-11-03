@@ -503,3 +503,14 @@ nmap <leader>s <plug>(scratch-insert-reuse)
 
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 set grepprg=rg\ --vimgrep
+
+fu! ToggleWrap()
+    let wr=&wrap
+    if wr
+        set nowrap
+    else
+        set wrap
+    endif
+endfu
+
+nmap nw :call ToggleWrap()<CR>
