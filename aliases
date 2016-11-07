@@ -48,6 +48,8 @@ alias grest='gr @engd status'
 alias grpst='gr @personal status'
 alias grnst='gr @notes status'
 
+alias dirtyrepo='gr status | grep -v "Clean"'
+
 alias cl='catless'
 
 alias del='rmtrash'
