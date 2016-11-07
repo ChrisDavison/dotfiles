@@ -63,6 +63,9 @@ set wildignore+=*.png,*.jpg,*.gif
 
 "-- Allow code folding {{{2
 set nofoldenable
+
+set shell=/bin/zsh
+
 "-- Highlight long rows ----- {{{2
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
@@ -514,3 +517,7 @@ fu! ToggleWrap()
 endfu
 
 nmap nw :call ToggleWrap()<CR>
+
+fu! CopyFilename()
+    let @+=expand("%")
+endfu
