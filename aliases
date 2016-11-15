@@ -49,6 +49,7 @@ alias grpst='gr @personal status'
 alias grnst='gr @notes status'
 
 alias dirtyrepo='gr status | grep -v "Clean"'
+alias unpushedrepo='gr status | grep "Clean" | grep "ahead"'
 
 alias cl='catless'
 
