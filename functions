@@ -227,11 +227,11 @@ mygitinit(){
 }
 
 mdtidy(){
-  pandoc -s --atx-headers -t markdown_github $1 -o $1
+  pandoc -s --atx-headers -t markdown $1 -o $1
 }
 
 mdtidyref(){
-  pandoc --reference-links -s --atx-headers -t markdown_github $1 -o $1
+  pandoc --reference-links -s --atx-headers -t markdown $1 -o $1
 }
 
 todohtml(){
