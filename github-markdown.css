@@ -282,3 +282,6 @@ pre {
     background-color: transparent;
     border: none; }
 
+.flex {display: flex;}
+
+.flex > div {border: 1px solid black;}
