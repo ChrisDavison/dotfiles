@@ -240,4 +240,11 @@ todohtml(){
   [ -e $fno ] && rm $fno
   todohtml.py > $tmpfile
   pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained $tmpfile > $fno
+git_merge() {
+    proj=$1
+    gitdir=$2
+    git remote add -f $proj $gitdir
+    git merge -s ours --allow-unrelated-histories --no-commit $proj/master
+    git read-tree --prefix=$proj/ -u $proj/master
+    echo "Need to commit"
 }
