@@ -162,12 +162,10 @@ today () {
 
 logbook_today () {
   cur=`pwd`
-  date=`today`
-  fn=`today`.md
-  logbook_dir='/Users/davison/engd-notes/logbook2016/'
+  logbook_dir='/Users/davison/engd/paperwork/logbook/2016/'
   cd $logbook_dir
   touch `today`.md
-  echo '...replace...' >> $fn
+  echo "# "`today` >> `today`.md
   cd $cur
 }
 
