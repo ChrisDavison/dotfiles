@@ -240,6 +240,8 @@ todohtml(){
   [ -e $fno ] && rm $fno
   todohtml.py > $tmpfile
   pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained $tmpfile > $fno
+  [ -e $tmpfile ] && rm $tmpfile
+}
 last_logbook_html(){
     fn_short=`ls -1 ~/engd/paperwork/logbook/2016/ | tail -n1`
     fn=/Users/davison/engd/paperwork/logbook/2016/$fn_short
