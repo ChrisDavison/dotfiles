@@ -117,7 +117,7 @@ mdpreviewself() {
 
 mdtohtml() {
     fn=.$(extractFilenameNoExt $1).html
-    rm $fn
+    [ -e $fn ] && rm $fn
     pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn
 }
 
@@ -245,6 +245,8 @@ todohtml(){
   awk 'BEGIN{print "\n# LATER\n"} /^-   Z -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
   fno="/Users/davison/Dropbox/notes/.todo.html"
   rm $fno
+  [ -e $tmpfile ] && rm $tmpfile
+  [ -e $fno ] && rm $fno
   pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained $tmpfile > $fno
   rm $tmpfile
 }
