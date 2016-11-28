@@ -237,16 +237,9 @@ mdtidyref(){
 todohtml(){
   fn="/Users/davison/Dropbox/notes/todo.md"
   tmpfile="/Users/davison/Dropbox/notes/.todo.md"
-  touch $tmpfile
-  awk 'BEGIN{print "# Now\n"} /^-   A -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
-  awk 'BEGIN{print "\n# This Week\n"} /^-   B -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
-  awk 'BEGIN{print "\n# Next Week\n"} /^-   C -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
-  awk 'BEGIN{print "\n# This Month\n"} /^-   D -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
-  awk 'BEGIN{print "\n# LATER\n"} /^-   Z -/&&!/#personal/{ print substr($0,7) }' < $fn >> $tmpfile
   fno="/Users/davison/Dropbox/notes/.todo.html"
-  rm $fno
   [ -e $tmpfile ] && rm $tmpfile
   [ -e $fno ] && rm $fno
+  todohtml.py > $tmpfile
   pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained $tmpfile > $fno
-  rm $tmpfile
 }
