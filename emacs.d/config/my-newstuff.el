@@ -155,9 +155,9 @@
 ;; Hybrid of isearch and ace-jump.  Type a single character in search and words 
 ;; beginning with that will highlight.  Press the highlighted letter to jump to 
 ;; that occurence
-                                        ; (use-package ace-isearch :disable t :ensure t
-                                        ;   :diminish ""
-                                        ;   :config (global-ace-isearch-mode 1))
+(use-package ace-isearch :ensure t
+  :diminish ""
+  :config (global-ace-isearch-mode 1))
 
 
 (provide 'my-newstuff)
