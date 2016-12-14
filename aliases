@@ -1,11 +1,12 @@
 # Aliases for bash, zsh etc
 
-# some more ls aliases
+# Directory listing aliases
 alias ll='gls -lFh --group-directories-first --color=auto'
 alias la='gls -AlFh --group-directories-first --color=auto'
 alias ls='gls -CF --group-directories-first --color=auto'
 alias l='gls -CF --group-directories-first --color=auto'
 
+# Session management
 alias c='clear'
 alias h='history'
 alias j='jobs -l'
@@ -18,8 +19,12 @@ alias .5="cd ../../../../.."
 # Copy SSH public key
 alias cbssh="cbf ~/.ssh/id_rsa.pub"
 
-# Switch to python numeric environment
-alias pyenv="source ~/Envs/num/bin/activate"
+# Python machine-learning environment
+alias ml="source ~/.envs/ml/bin/activate"
+
+# Tmux session handling
+alias tma="tmux attach -d -t"
+alias tmuxhere="tmux new -s $(basename $(pwd))"
 
 # Nice git aliases
 alias g='git'
@@ -42,15 +47,17 @@ alias gia='git ls-files --others | grep -v .pyc | grep -v ipynb_checkpoints'
 alias gbf='git checkout -b'
 alias gbn='git checkout master && git checkout -b'
 
-alias grst='gr status'
-alias grstv='gr status -v'
+# Mixu git-run (gr) aliases...
+# For handling multiple git repos
+alias grst='gr @live status'
+alias grstv='gr @live status -v'
 alias grest='gr @engd status'
 alias grpst='gr @personal status'
-alias grnst='gr @notes status'
 
 alias dirtyrepo='gr status | grep -v "Clean"'
 alias unpushedrepo='gr status | grep "Clean" | grep "ahead"'
 
+# Utilities
 alias cl='catless'
 
 alias del='rmtrash'
