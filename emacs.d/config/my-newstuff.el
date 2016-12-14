@@ -159,6 +159,10 @@
   :diminish ""
   :config (global-ace-isearch-mode 1))
 
+(defun ipython()
+  (interactive)
+  (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython"))
+
 
 (provide 'my-newstuff)
 ;;; my-newstuff.el ends here
