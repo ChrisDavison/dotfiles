@@ -163,6 +163,9 @@
   (interactive)
   (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython"))
 
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--simple-prompt -i --pprint")
+
 
 (provide 'my-newstuff)
 ;;; my-newstuff.el ends here
