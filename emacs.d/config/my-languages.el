@@ -101,11 +101,11 @@
            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
 (defun my-web-mode-hook ()
-  "Hooks for Web mode.  Adjust indents"
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook 'my-web-mode-hook)
+  "Hooks for Web mode.  Adjust indent."
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2)
+  (add-hook 'web-mode-hook 'my-web-mode-hook))
 
 (defadvice web-mode-highlight-part (around tweak-jsx activate)
   (if (equal web-mode-conten-type "jsx")
@@ -122,7 +122,9 @@
 
 ;; Go
 (use-package go-mode :ensure t
-  :config (add-hook 'before-save-hook 'gofmt-before-save))
+  :config
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (setq gofmt-command "goimports"))
 
 ;; Rust
 (use-package rust-mode :ensure t)
