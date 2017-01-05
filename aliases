@@ -60,9 +60,6 @@ alias unpushedrepo='gr status | grep "Clean" | grep "ahead"'
 # Utilities
 alias cl='catless'
 
-alias del='rmtrash'
-alias rm="echo Use 'del' or the full path, i.e. '/bin/rm'"
-
 alias todos="todof ~/Dropbox/notes/todo.md"
 alias mdepub="pandoc -s -t epub"
 
