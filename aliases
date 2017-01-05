@@ -1,10 +1,18 @@
 # Aliases for bash, zsh etc
 
 # Directory listing aliases
-alias ll='gls -lFh --group-directories-first --color=auto'
-alias la='gls -AlFh --group-directories-first --color=auto'
-alias ls='gls -CF --group-directories-first --color=auto'
-alias l='gls -CF --group-directories-first --color=auto'
+
+if [ -x "$(command -v gls)" ]; then
+    alias ll='gls -lFh --group-directories-first --color=auto'
+    alias la='gls -AlFh --group-directories-first --color=auto'
+    alias ls='gls -CF --group-directories-first --color=auto'
+    alias l='gls -CF --group-directories-first --color=auto'
+else
+    alias ll='ls -lFh --group-directories-first --color=auto'
+    alias la='ls -AlFh --group-directories-first --color=auto'
+    alias ls='ls -CF --group-directories-first --color=auto'
+    alias l='ls -CF --group-directories-first --color=auto'
+fi
 
 # Session management
 alias c='clear'
