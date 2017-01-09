@@ -10,7 +10,8 @@
   (use-package exec-path-from-shell :ensure t
     :config
     (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize)))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "GOPATH"))
   
   ;;Make the mouse wheel/trackpad less jerky
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 5) ((control))))
