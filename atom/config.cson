@@ -141,9 +141,9 @@
     scrollAnimation: false
   "sync-settings":
     _analyticsUserId: "8fcc4dca-04b4-4933-8889-c63bd4195ce1"
-    _lastBackupHash: "1b3cc04512b784b0bfa6e96298411dc8b0e60a17"
+    _lastBackupHash: "441f35cb7216f9a89c13f911827f1e9e12c7d6b8"
     gistId: "50225cbe9bf4e834f54c"
-    personalAccessToken: "87e4bbd7d4943e9053d5640663615e4d274f0d5a"
+    personalAccessToken: "e6d3720094366614bf2460a4fe1ee3a609433c43"
   tablength: 2
   tabs:
     addNewTabsAtEnd: true
