@@ -1,0 +1,161 @@
+"*":
+  "atom-beautify":
+    _analyticsUserId: "b662d3cc-2654-46d9-851b-6defc52ebfea"
+    general:
+      _analyticsUserId: "5c83f3bf-fb7c-43b9-a783-c121c20ba980"
+  "atom-material-ui":
+    colors:
+      abaseColor: "#7e57c2"
+      accentColor: "#b0e457"
+      predefinedColor: "Purple"
+    fonts:
+      fontSize: 15
+  "autocomplete-bibtex":
+    bibtex: [
+      "/Users/davison/engd/papers/library.bib"
+    ]
+  "autocomplete-plus":
+    fileBlacklist: [
+      ".*"
+    ]
+  "coffee-paste": {}
+  core:
+    audioBeep: false
+    autoHideMenuBar: true
+    disabledPackages: [
+      "tidy-markdown"
+      "atom-beautify"
+      "coffee-paste"
+      "atom-compile-coffee"
+      "color-picker"
+      "ex-mode"
+      "language-r"
+      "language-racket"
+      "linter-coffeescript"
+      "webbox-color"
+      "standardjs-snippets"
+      "vim-mode"
+      "vim-surround"
+      "atom-html-preview"
+      "wrap-guide"
+      "welcome"
+      "proto-repl"
+      "proto-repl-charts"
+      "ink"
+      "spell-check"
+      "about"
+      "archive-view"
+      "autocomplete-html"
+      "background-tips"
+      "language-mustache"
+      "language-objective-c"
+      "language-php"
+      "language-property-list"
+      "language-ruby-on-rails"
+      "timecop"
+    ]
+    ignoredNames: [
+      ".git"
+      ".git*"
+      "._*"
+      "*.pdf"
+      "*.csv"
+      "*.*~"
+      ".*"
+    ]
+    packagesWithKeymapsDisabled: [
+      "browser-plus"
+    ]
+    projectHome: "/Users/davison/home/p"
+    telemetryConsent: "limited"
+    themeMode: "dark"
+    themes: [
+      "nord-atom-syntax"
+      "nord-atom-ui"
+    ]
+  editor:
+    confirmCheckoutHeadRevision: false
+    fontFamily: "Input"
+    fontSize: 15
+    invisibles:
+      cr: "h"
+    softWrap: true
+    softWrapAtPreferredLineLength: true
+    tabLength: 4
+    tabType: "soft"
+  "exception-reporting":
+    userId: "f427b1f4-7203-003f-7470-a831cb1675b9"
+  "file-icons": {}
+  fonts:
+    fontFamily: "FiraCode"
+  "git-plus":
+    general:
+      _analyticsUserId: "487c68f3-a645-46d9-bdd5-5d3bc48556bc"
+      analytics: false
+      splitPane: "Right"
+    remoteInteractions:
+      pullRebase: true
+  "go-imports": {}
+  "go-plus":
+    navigator:
+      mode: "godef"
+    panelDisplayMode: "closed"
+  goto: {}
+  "highlight-column":
+    opacity: 0.06
+  "isotope-ui":
+    fontFamily: "Oxygen"
+    matchEditorFont: true
+    minimalMode: true
+  "language-babel":
+    createTranspiledCode: true
+  linter:
+    errorPanelHeight: 111
+  "linter-jshint":
+    executablePath: "/usr/local/bin/jshint"
+  "lisp-paredit": {}
+  "markdown-writer":
+    fileExtension: ".md"
+  "one-dark-ui":
+    layoutMode: "Compact"
+  pigments:
+    supportedFiletypes: [
+      "*.css"
+      "*.html"
+      "*.js"
+      "*.sass"
+      "*.coffee"
+      "*.es6"
+    ]
+  "proto-repl":
+    autoPrettyPrint: true
+    displayHelpText: false
+    leinPath: "C:\\Users\\user01\\.lein\\bin\\lein.bat"
+  racer:
+    racerBinPath: "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
+    rustSrcPath: "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
+  showInvisibles: false
+  softWrap: false
+  softWrapAtPrefferedLineLength: false
+  "symbols-tree-view":
+    scrollAnimation: false
+  "sync-settings":
+    _analyticsUserId: "8fcc4dca-04b4-4933-8889-c63bd4195ce1"
+    _lastBackupHash: "1b3cc04512b784b0bfa6e96298411dc8b0e60a17"
+    gistId: "50225cbe9bf4e834f54c"
+    personalAccessToken: "87e4bbd7d4943e9053d5640663615e4d274f0d5a"
+  tablength: 2
+  tabs:
+    addNewTabsAtEnd: true
+  term2: {}
+  "tree-view":
+    hideIgnoredNames: true
+  "vim-mode":
+    useClipboardAsDefaultRegister: true
+    useSmartcaseForSearch: true
+    wrapLeftRightMotion: true
+  "vim-surround": {}
+  "webbox-color":
+    fillColorAsBackground: false
+  welcome:
+    showOnStartup: false
