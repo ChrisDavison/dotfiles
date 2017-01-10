@@ -44,7 +44,7 @@ alias grstv='gr @live status -v'
 alias grest='gr @engd status'
 alias grpst='gr @personal status'
 
-alias dirtyrepo='gr status | grep -v "Clean"'
+alias dirtyrepo='gr status | grep -E "behind|ahead|modified"'
 alias unpushedrepo='gr status | grep "Clean" | grep "ahead"'
 
 # Utilities
