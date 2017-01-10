@@ -1,8 +1,13 @@
 "*":
   "atom-beautify":
-    _analyticsUserId: "b662d3cc-2654-46d9-851b-6defc52ebfea"
+    coffeescript:
+      beautify_on_save: true
     general:
-      _analyticsUserId: "5c83f3bf-fb7c-43b9-a783-c121c20ba980"
+      _analyticsUserId: "b662d3cc-2654-46d9-851b-6defc52ebfea"
+    go:
+      beautify_on_save: true
+    markdown:
+      default_beautifier: "Remark"
   "atom-material-ui":
     colors:
       abaseColor: "#7e57c2"
@@ -24,7 +29,6 @@
     autoHideMenuBar: true
     disabledPackages: [
       "tidy-markdown"
-      "atom-beautify"
       "coffee-paste"
       "atom-compile-coffee"
       "color-picker"
@@ -36,7 +40,6 @@
       "standardjs-snippets"
       "vim-mode"
       "vim-surround"
-      "atom-html-preview"
       "wrap-guide"
       "welcome"
       "proto-repl"
