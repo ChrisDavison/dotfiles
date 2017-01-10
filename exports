@@ -22,6 +22,8 @@ export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export STACKBIN="$HOME/.local/bin"
 export SCRIPTPATH="$HOME/p/scripts"
 
+export JOBSTATUS="$HOME/.jobstatus"
+
 export PATH=$PATH:$GOBIN:$TEXBIN:$HASKPATH:$RACKETPATH:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$SCRIPTPATH;
 
 # 256 color terminal
