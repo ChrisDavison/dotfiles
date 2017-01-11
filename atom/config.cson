@@ -78,11 +78,10 @@
   editor:
     confirmCheckoutHeadRevision: false
     fontFamily: "Input"
-    fontSize: 15
+    fontSize: 17
     invisibles:
       cr: "h"
     softWrap: true
-    softWrapAtPreferredLineLength: true
     tabLength: 4
     tabType: "soft"
   "exception-reporting":
@@ -102,6 +101,8 @@
     navigator:
       mode: "godef"
     panelDisplayMode: "closed"
+    test:
+      runTestsOnSave: false
   goto: {}
   "highlight-column":
     opacity: 0.06
