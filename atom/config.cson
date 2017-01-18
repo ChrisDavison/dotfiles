@@ -2,6 +2,8 @@
   "atom-beautify":
     coffeescript:
       beautify_on_save: true
+      default_beautifier: "Coffee Formatter"
+      indent_size: 2
     general:
       _analyticsUserId: "b662d3cc-2654-46d9-851b-6defc52ebfea"
     go:
@@ -37,12 +39,9 @@
       "language-racket"
       "linter-coffeescript"
       "webbox-color"
-      "standardjs-snippets"
-      "vim-surround"
       "wrap-guide"
       "welcome"
       "proto-repl"
-      "proto-repl-charts"
       "ink"
       "spell-check"
       "about"
@@ -55,6 +54,12 @@
       "language-property-list"
       "language-ruby-on-rails"
       "timecop"
+      "vim-mode-plus"
+      "racer"
+      "bookmarks"
+      "deprecation-cop"
+      "open-on-github"
+      "update-package-dependencies"
     ]
     ignoredNames: [
       ".git"
@@ -77,8 +82,8 @@
     ]
   editor:
     confirmCheckoutHeadRevision: false
-    fontFamily: "Input"
-    fontSize: 17
+    fontFamily: "Input Mono"
+    fontSize: 15
     invisibles:
       cr: "h"
     softWrap: true
@@ -110,6 +115,9 @@
     fontFamily: "Oxygen"
     matchEditorFont: true
     minimalMode: true
+  jumpy:
+    fontSize: 0.8
+    useHomingBeaconEffectOnJumps: false
   "language-babel":
     createTranspiledCode: true
   linter:
