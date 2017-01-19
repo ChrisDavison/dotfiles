@@ -21,10 +21,10 @@ atom.commands.add 'body', 'cd:swap-theme', ->
     tm = atom.themes
     currentMode = atom.config.get('core.themeMode')
     if currentMode != 'dark'
-        atom.config.set('core.themes', ["nord-atom-syntax", "nord-atom-ui"])
+        atom.config.set('core.themes', [ "northem-dark-atom-ui", "northem-dark-atom-syntax" ])
         atom.config.set('core.themeMode', 'dark')
     else
-        atom.config.set('core.themes', ["base16-tomorrow-light-theme", "atom-material-ui"])
+        atom.config.set('core.themes', [ "northem-light-atom-ui", "northem-light-atom-syntax" ])
         atom.config.set('core.themeMode', 'light')
 
 RunGoMD = () ->
