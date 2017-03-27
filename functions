@@ -162,7 +162,7 @@ today () {
 
 logbook_today () {
   cur=`pwd`
-  logbook_dir='/Users/davison/engd/paperwork/logbook/'`date +"%Y"`'/'
+  logbook_dir='/Users/davison/paperwork/logbook/'`date +"%Y"`'/'
   cd $logbook_dir
   touch `today`.md
   echo "# "`today` >> `today`.md
