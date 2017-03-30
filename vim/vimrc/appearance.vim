@@ -1,0 +1,15 @@
+set bg=dark
+colorscheme molokai
+set t_ut=
+
+"au BufReadPost * set relativenumber
+set gfn=Fira\ Mono:h14
+
+" Highlight long lines
+highlight OverLength ctermbg=red ctermfg=white
+match OverLength /\%81v.\+/
+
+"-- Highlight long rows ----- {{{2
+highlight ColorColumn ctermbg=magenta
+call matchadd('ColorColumn', '\%81v', 100)
+
