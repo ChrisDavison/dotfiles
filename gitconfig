@@ -150,5 +150,5 @@
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 	#############
 	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
-[ghq]
-    root=~/p
+[push]
+	default = simple
