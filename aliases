@@ -8,10 +8,10 @@ if [ -x "$(command -v gls)" ]; then
     alias ls='gls -CF --group-directories-first --color=auto'
     alias l='gls -CF --group-directories-first --color=auto'
 else
-    alias ll='ls -lFh --group-directories-first --color=auto'
-    alias la='ls -AlFh --group-directories-first --color=auto'
-    alias ls='ls -CF --group-directories-first --color=auto'
-    alias l='ls -CF --group-directories-first --color=auto'
+    alias ll='ls -GlFh'
+    alias la='ls -GAlFh'
+    alias ls='ls -GCF'
+    alias l='ls -GCF'
 fi
 
 # Session management
@@ -30,9 +30,6 @@ alias cbssh="cbf ~/.ssh/id_rsa.pub"
 # Python machine-learning environment
 alias ml="source ~/.envs/ml/bin/activate"
 
-# Tmux session handling
-alias tma="tmux attach -d -t"
-alias tmuxhere="tmux new -s $(basename $(pwd))"
 
 # Nice git aliases
 alias g='git'
