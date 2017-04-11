@@ -11,6 +11,7 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'jonathanfilip/vim-lucius'
+Plug 'kien/ctrlp.vim'
 
 "" Utility
 Plug 'vim-airline/vim-airline'
