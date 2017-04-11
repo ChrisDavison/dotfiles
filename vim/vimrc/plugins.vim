@@ -1,11 +1,10 @@
 call plug#begin('~/.vim/plugged')
 
 "" Languages
-Plug 'eagletmt/ghcmod-vim'
+" Plug 'eagletmt/ghcmod-vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 Plug 'pangloss/vim-javascript'
-"Plug 'plasticboy/vim-markdown'
 Plug 'racer-rust/vim-racer'
 Plug 'fatih/vim-go'
 Plug 'vim-pandoc/vim-pandoc'
@@ -13,11 +12,10 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'jonathanfilip/vim-lucius'
 
-Plug 'vim-scripts/Miranda-syntax-highlighting'
-
 "" Utility
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
 Plug 'terryma/vim-expand-region'
 Plug 'ervandew/supertab'
 Plug 'junegunn/goyo.vim'
