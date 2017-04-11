@@ -3,7 +3,7 @@ colorscheme molokai
 set t_ut=
 
 "au BufReadPost * set relativenumber
-set gfn=Fira\ Mono:h14
+set gfn=Iosevka:h14
 
 " Highlight long lines
 highlight OverLength ctermbg=red ctermfg=white
