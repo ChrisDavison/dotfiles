@@ -4,7 +4,7 @@ ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
-ZSH_THEME="crunch2"
+ZSH_THEME="crunch"
 
 # plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -34,3 +34,5 @@ man() {
     LESS_TERMCAP_us=$'\e'"[1;32m" \
     command man "$@"
 }
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

@@ -162,7 +162,7 @@ today () {
 
 logbook_today () {
   cur=`pwd`
-  logbook_dir='/Users/davison/paperwork/logbook/'`date +"%Y"`'/'
+  logbook_dir='/Users/christopherdavison/paperwork/logbook/'`date +"%Y"`'/'
   cd $logbook_dir
   touch `today`.md
   echo "# "`today` >> `today`.md
@@ -199,7 +199,7 @@ running(){
 md2pdf(){
   outfn="$1"
   title="$2"
-  pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in  
+  pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in
 }
 
 org2html(){
@@ -217,7 +217,7 @@ makelogbook(){
 
 mygitinit(){
   git init
-  touch .gitignore  
+  touch .gitignore
   echo ".gitignore" > .gitignore
   touch README.md
   git add README.md
@@ -255,4 +255,42 @@ git_merge() {
     git merge -s ours --allow-unrelated-histories --no-commit $proj/master
     git read-tree --prefix=$proj/ -u $proj/master
     echo "Need to commit"
+}
+
+kpython(){
+    docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python python "$@"
+}
+
+kipython(){
+    docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python ipython
+}
+
+kjupyter(){
+    (sleep 3 && open "http://$(docker-machine ip):8888")&
+    docker run -v $PWD:/tmp/working -w=/tmp/working -p 8888:8888 --rm -it kaggle/python jupyter notebook --no-browser --ip="\*" --notebook-dir=/tmp/working
+}
+
+shuffleclipboard(){
+    pbpaste | gshuf | pbcopy
+    pbpaste | gshuf | pbcopy
+    pbpaste | gshuf | pbcopy
+    pbpaste | gshuf | pbcopy
+    pbpaste | gshuf | pbcopy
+}
+
+tm() {
+    local session
+    newsession=${1:-new}
+    session=$(tmux list-sessions -F "#{session_name}" | \
+        fzf --query="$1" --select-1 --exit-0) &&
+        tmux attach-session -t "$session" || tmux new-session -s $newsession
+}
+
+zl() {
+    local choice
+    choice="$(zl.pl)"
+    if [ -n "$choice" ]; then
+        echo "$choice"
+        cd "$choice"
+    fi
 }

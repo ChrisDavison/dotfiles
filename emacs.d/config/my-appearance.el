@@ -6,8 +6,8 @@
 
 ;; FONT
 
-(when (member "Noto Mono" (font-family-list))
-  (set-default-font "Noto Mono 15"))
+(when (member "Fira Mono" (font-family-list))
+  (set-default-font "Fira Mono 15"))
 (setq line-spacing 0.2)
 
 ;; colour theme
