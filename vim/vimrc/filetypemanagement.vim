@@ -16,3 +16,4 @@ autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
 
 let b:javascript_fold=1
 
+let g:go_fmt_command = "goimports"
