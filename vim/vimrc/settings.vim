@@ -7,6 +7,7 @@ set encoding=utf-8
 scriptencoding utf-8
 set showcmd
 set wrap lbr
+set showbreak=⇇
 set omnifunc=syntaxcomplete#Complete
 set number
 set iskeyword=a-z,A-Z,_,.,39
