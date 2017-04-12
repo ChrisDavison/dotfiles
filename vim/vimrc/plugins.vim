@@ -1,7 +1,6 @@
 call plug#begin('~/.vim/plugged')
 
 "" Languages
-" Plug 'eagletmt/ghcmod-vim'
 Plug 'wlangstroth/vim-racket'
 Plug 'wting/rust.vim'
 Plug 'pangloss/vim-javascript'
@@ -14,6 +13,7 @@ Plug 'jonathanfilip/vim-lucius'
 Plug 'kien/ctrlp.vim'
 
 "" Utility
+Plug 'jiangmiao/auto-pairs'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
@@ -34,6 +34,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
+Plug 'tomtom/tlib_vim'
+Plug 'garbas/vim-snipmate'
 Plug 'honza/vim-snippets'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'lervag/vimtex'
