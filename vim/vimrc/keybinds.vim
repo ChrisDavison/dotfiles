@@ -97,3 +97,5 @@ nnoremap cp :cp<CR>
 
 
 nmap <leader>s <plug>(scratch-insert-reuse)
+
+nnoremap <silent> <leader>/ :nohlsearch<CR>
