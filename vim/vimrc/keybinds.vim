@@ -37,7 +37,17 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " Unite
-nnoremap <leader>p :Unite buffer -no-split<cr>
+let g:cd_prefer_fzf = 0
+if get(g:, 'cd_prefer_fzf', 0)
+    nnoremap <leader>p :Files<cr>
+    nnoremap <leader>b :Buffers<cr>
+else
+    nnoremap <leader>p :CtrlP<cr>
+    nnoremap <leader>b :CtrlPBuffer<cr>
+endif
+nnoremap <leader>fu :CtrlPFunky<Cr>
+nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+
 nnoremap <leader>o :Unite outline -no-split<cr>
 nnoremap - :Unite file -no-split<cr>
 
@@ -53,7 +63,7 @@ nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
 
 " Toggle Vimtex Table of Contents
-nnoremap <leader>v :VimtexTocToggle<CR>
+" nnoremap <leader>v :VimtexTocToggle<CR>
 
 " Toggle tagbar
 nnoremap <leader>t :TagbarToggle<CR>
@@ -99,3 +109,4 @@ nnoremap cp :cp<CR>
 nmap <leader>s <plug>(scratch-insert-reuse)
 
 nnoremap <silent> <leader>/ :nohlsearch<CR>
+
