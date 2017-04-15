@@ -58,4 +58,14 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 "command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap <Leader>g :Ag<SPACE>
 
+nnoremap <leader>ev :e $MYVIMRC<Cr>GO
+nnoremap <leader>sv :so $MYVIMRC<Cr>
+nnoremap <leader>V :e $HOME/.vim/vimrc/totidy.vim<Cr>GO
+iabbrev @@ c.jr.davison@gmail.com
+
+nnoremap <silent>/ /\v
+
+" Uppercase the previous WORD while in insert mode
+inoremap <c-u> <esc>ViwUEa
+nnoremap <c-u> viwUE
 
