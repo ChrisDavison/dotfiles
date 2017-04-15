@@ -40,7 +40,7 @@ let g:pandoc#spell#enabled=0
 let g:pandoc#syntax#conceal#urls = 1
 let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#textwidth=80
-let g:pandoc#formatting#equalprg = "pandoc -t markdown --reference-links"
+let g:pandoc#formatting#equalprg = "pandoc -t markdown -s"
 let g:pandoc#formatting#extra_equalprg = "--wrap=auto --normalize --atx-headers"
 
 
