@@ -99,7 +99,7 @@ noremap gV `[v`]
 nnoremap <leader>a ggVG
 
 " Generate a MD preview for the current file
-nnoremap mp :!pandoc -s -c ~/.dotfiles/simple-pandoc-css.css % -o ~/.mdpreview.html<CR><CR>
+nnoremap mp :!pandoc -s --self-contained -c ~/dotfiles/simple-pandoc-css.css % -o ~/.mdpreview.html<CR><CR>
 
 " Keychords to quickly navigate quickfix list
 nnoremap cn :cn<CR>
