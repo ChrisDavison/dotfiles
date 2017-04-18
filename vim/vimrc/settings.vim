@@ -15,11 +15,13 @@ set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
 set relativenumber
-
+set shell=/bin/zsh
+set nofoldenable " Don't fold by default
 
 "-- Search options {{{2
-set incsearch
-set hlsearch
+set incsearch " Search as you type
+set gdefault " By default, replace all matches on a line (i.e. always s///g)
+set hlsearch " Highlight search results
 set ignorecase
 set smartcase
 set magic
@@ -30,7 +32,6 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set wildmenu
 set autoread
 set clipboard=unnamed
 set lazyredraw
@@ -46,10 +47,11 @@ set backupdir=~/.backup,.
 set directory=~/.temp,.
 
 "-- Wildmenu config {{{2
-set wildmode=list:longest
 set wildmenu
+set wildmode=list:longest
 
-set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
+"""" Ignore certain files and directories in Wildmenu
+set wildignore=*.o,*.obj,*~ 
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
 set wildignore+=*DS_Store*
@@ -59,9 +61,4 @@ set wildignore+=*.gem
 set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
-
-"-- Allow code folding {{{2
-set nofoldenable
-set shell=/bin/zsh
-
 
