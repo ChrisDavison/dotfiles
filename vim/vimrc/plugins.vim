@@ -7,8 +7,10 @@ Plug 'racer-rust/vim-racer'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'wlangstroth/vim-racket'
-Plug 'wting/rust.vim'
+Plug 'vim-pandoc/vim-markdownfootnotes'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'kien/ctrlp.vim'
+Plug 'tacahiroy/ctrlp-funky'
 
 "" Utility
 " Plug 'junegunn/goyo.vim'
