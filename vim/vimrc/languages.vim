@@ -9,6 +9,7 @@ autocmd FileType json    set tabstop=2
 autocmd FileType json    set softtabstop=2
 autocmd FileType json    set shiftwidth=2
 autocmd FileType go      set nofen
+autocmd FileType go      set foldmethod=syntax
 autocmd FileType make    set noexpandtab
 autocmd FileType rust    set foldmethod=syntax
 autocmd FileType vim     set foldmethod=marker
