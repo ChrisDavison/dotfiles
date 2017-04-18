@@ -6,7 +6,6 @@ let mapleader="\\"
 source $HOME/.vim/vimrc/settings.vim
 source $HOME/.vim/vimrc/appearance.vim
 source $HOME/.vim/vimrc/abbreviations.vim
-source $HOME/.vim/vimrc/filetypemanagement.vim
 source $HOME/.vim/vimrc/keybinds.vim
 source $HOME/.vim/vimrc/fzf.vim
 source $HOME/.vim/vimrc/languages.vim
@@ -26,6 +25,5 @@ source $HOME/.vim/vimrc/customfuncs.vim
 " Still being tested
 source $HOME/.vim/vimrc/totidy.vim
 " source $HOME/.vim/vimrc/goyo.vim
-
 
 set autochdir
