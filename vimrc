@@ -9,7 +9,6 @@ source $HOME/.vim/vimrc/abbreviations.vim
 source $HOME/.vim/vimrc/keybinds.vim
 source $HOME/.vim/vimrc/fzf.vim
 source $HOME/.vim/vimrc/languages.vim
-source $HOME/.vim/vimrc/markdown.vim
 source $HOME/.vim/vimrc/plugins.vim
 source $HOME/.vim/vimrc/shebang.vim
 source $HOME/.vim/vimrc/shelltoscratch.vim
