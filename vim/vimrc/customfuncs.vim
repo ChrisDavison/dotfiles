@@ -12,3 +12,5 @@ nmap nw :call ToggleWrap()<CR>
 fu! CopyFilename()
     let @+=expand("%")
 endfu
+
+nnoremap fmt :normal "ggVG="<Cr>
