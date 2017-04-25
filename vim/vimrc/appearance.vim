@@ -5,9 +5,9 @@ set t_ut=
 "au BufReadPost * set relativenumber
 set gfn=Iosevka:h14
 
-" Highlight long lines
-highlight OverLength ctermbg=red ctermfg=white
-match OverLength /\%81v.\+/
+" " Highlight long lines
+" highlight OverLength ctermbg=red ctermfg=white
+" match OverLength /\%81v.\+/
 
 "-- Highlight long rows ----- {{{2
 highlight ColorColumn ctermbg=magenta
