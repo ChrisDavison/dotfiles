@@ -25,6 +25,7 @@ Plug 'honza/vim-snippets'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'junegunn/vim-emoji'
 Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
