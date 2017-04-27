@@ -54,9 +54,9 @@ nnoremap cp :cp<CR>
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{
 " Unite
-nnoremap <leader>p :Unite buffer -no-split<cr>
-nnoremap <leader>o :Unite outline -no-split<cr>
-nnoremap - :Unite file -no-split<cr>
+"nnoremap <leader>p :Unite buffer -no-split<cr>
+"nnoremap <leader>o :Unite outline -no-split<cr>
+"nnoremap - :Unite file -no-split<cr>
 
 if get(g:, 'cd_prefer_fzf', 0)
     nnoremap <leader>b :Buffers<Cr>
