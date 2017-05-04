@@ -60,6 +60,7 @@ nnoremap cp :cp<CR>
 
 if get(g:, 'cd_prefer_fzf', 0)
     nnoremap <leader>b :Buffers<Cr>
+    nnoremap <C-p> :Files<Cr>
     nnoremap <leader>p :Files<Cr>
 else
     nnoremap <leader>b  :CtrlPBuffer<Cr>
@@ -90,7 +91,7 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 nnoremap <leader>t :TagbarToggle<CR>
 
 " Generate a MD preview for the current file
-nnoremap mp :!pandoc -s -c ~/.dotfiles/simple-pandoc-css.css % -o ~/.mdpreview.html<CR><CR>
+nnoremap mp :!pandoc -f markdown_github --toc --toc-depth=2 -s --self-contained -c ~/dotfiles/github-markdown.css % -o ~/.mdpreview.html<CR>
 
 nmap <leader>s <plug>(scratch-insert-reuse)
 
