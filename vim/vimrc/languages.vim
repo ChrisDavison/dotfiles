@@ -70,7 +70,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
 autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
-autocmd Filetype markdown,pandoc setlocal conceallevel=0
+autocmd Filetype markdown,pandoc setlocal conceallevel=2
 autocmd Filetype markdown,pandoc hi Conceal cterm=None ctermbg=None
 let g:scratch_filetype = 'pandoc'
 
