@@ -49,6 +49,8 @@ if executable('ag')
 endif
 if executable('rg')
   set grepprg=rg\ --vimgrep
+  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+  let g:ctrlp_use_caching = 0
 endif
 
 " bind K to grep word under cursor {{{1
@@ -68,4 +70,5 @@ iabbrev @@ c.jr.davison@gmail.com
 nnoremap <silent>/ /\v
 
 " Uppercase the previous WORD while in normal mode {{{1
+
 nnoremap <c-u> viwUE
