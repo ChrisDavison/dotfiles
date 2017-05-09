@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 "" Languages
 Plug 'fatih/vim-go'
-Plug 'pangloss/vim-javascript'
+Plug 'pangloss/vim-javascript' 
 Plug 'racer-rust/vim-racer'
 Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'vim-pandoc/vim-pandoc'
@@ -36,7 +36,6 @@ Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-scriptease'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
