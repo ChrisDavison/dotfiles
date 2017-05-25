@@ -71,6 +71,10 @@ nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 " Keybinds to manipulate my vim config {{{
 nnoremap <leader>ev :e $MYVIMRC<Cr>
 nnoremap <leader>sv :so $MYVIMRC<Cr>
+nnoremap <leader>es :e $SRCME/
+nnoremap <leader>ee :e $HOME/dev/etc/
+nnoremap <leader>ei :e $HOME/Dropbox/notes/inbox.md<Cr>
+
 nnoremap <leader>et :e ~/.vim/vimrc/totidy.vim<Cr>GO
 nnoremap <leader>V :e ~/.vim/vimrc/
 " }}}
