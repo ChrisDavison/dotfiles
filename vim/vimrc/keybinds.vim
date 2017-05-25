@@ -1,5 +1,3 @@
-let g:cd_prefer_fzf = 1
-
 " Split/Window management {{{
 " Move windows
 map <C-w><C-h> <C-w><S-h>
@@ -53,18 +51,14 @@ nnoremap cp :cp<CR>
 " }}}
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{
-" Unite
-"nnoremap <leader>p :Unite buffer -no-split<cr>
-"nnoremap <leader>o :Unite outline -no-split<cr>
-"nnoremap - :Unite file -no-split<cr>
 
-if get(g:, 'cd_prefer_fzf', 0)
+if has('gui_running')
+    nnoremap <leader>b  :CtrlPBuffer<Cr>
+    nnoremap <leader>p  :CtrlP<Cr>
+else
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <C-p> :Files<Cr>
     nnoremap <leader>p :Files<Cr>
-else
-    nnoremap <leader>b  :CtrlPBuffer<Cr>
-    nnoremap <leader>p  :CtrlP<Cr>
 endif
 
 " Funky (CtrlP for functions)
