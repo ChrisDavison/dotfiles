@@ -64,8 +64,8 @@
 
     undo = reset HEAD~1 --mixed
 
-    s = status
-    st = status
+    s = status -s
+    st = status -s
 	sb = status -s -b
     stb = status -s -b
 
