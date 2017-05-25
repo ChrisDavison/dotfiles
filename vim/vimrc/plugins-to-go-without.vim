@@ -7,25 +7,22 @@
 if 0
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
+endif
 
-    Plug 'jonathanfilip/vim-lucius' " a colorscheme
-
-    " navigation across ~anything (files, functions, markdown headings)
-    Plug 'Shougo/unite-outline' 
-    Plug 'Shougo/unite.vim'
-    Plug 'Shougo/vimproc.vim'
-
-    " Show git changes in the sidebar
+" Show git changes in the sidebar
+if 1
     Plug 'airblade/vim-gitgutter'
-    Plug 'dhruvasagar/vim-table-mode'
+endif
 
-    " Lispy stuff
+
+" Lispy stuff
+if 0
     Plug 'jpalardy/vim-slime'
     Plug 'tpope/vim-sexp-mappings-for-regular-people'
+endif
 
-    " Utility
-    Plug 'jiangmiao/auto-pairs'
+" Utility
+if 0
     Plug 'mattn/emmet-vim'
-    Plug 'mtth/scratch.vim'
-    Plug 'pelodelfuego/vim-swoop'
+    Plug 'dhruvasagar/vim-table-mode'
 endif
