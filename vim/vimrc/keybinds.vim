@@ -45,9 +45,11 @@ noremap gV `[v`]
 nnoremap <leader>a ggVG
 " }}}
 
-" Navigate quickfix with keychords {{{
+" Navigate quickfix/locationlist with keychords {{{
 nnoremap cn :cn<CR>
 nnoremap cp :cp<CR>
+nnoremap ln :lnext<CR>
+nnoremap lp :lprev<CR>
 " }}}
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{
