@@ -9,12 +9,6 @@ if 0
     Plug 'junegunn/limelight.vim'
 endif
 
-" Show git changes in the sidebar
-if 1
-    Plug 'airblade/vim-gitgutter'
-endif
-
-
 " Lispy stuff
 if 0
     Plug 'jpalardy/vim-slime'
