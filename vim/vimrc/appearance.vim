@@ -1,9 +1,9 @@
 set bg=dark
-colorscheme molokai
+colorscheme paramount
 set t_ut=
 
 "au BufReadPost * set relativenumber
-set gfn=Iosevka:h14
+set gfn=Iosevka:h18
 
 " " Highlight long lines
 " highlight OverLength ctermbg=red ctermfg=white
