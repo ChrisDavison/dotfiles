@@ -93,4 +93,5 @@ let g:pandoc#formatting#textwidth=0
 let g:pandoc#formatting#equalprg = "pandoc -t markdown -s"
 let g:pandoc#formatting#extra_equalprg = "--columns=80 --normalize --atx-headers"
 let g:pandoc#syntax#conceal#blacklist = ['list', 'atx']
+let g:vim_markdown_toc_autofit = 1
 " }}}

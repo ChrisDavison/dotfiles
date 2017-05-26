@@ -66,3 +66,14 @@ function! OpenScopesSnippets()
     execute "e " . fn
 endfunction
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
+
+function MarkdownLevel() 
+    let h = matchstr(getline(v:lnum), '^#\+') 
+    if empty(h) 
+        return "=" 
+    endif 
+    return ">" . len(h) 
+endfunction
+
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
+au BufEnter *.md setlocal foldmethod=expr   
