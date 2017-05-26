@@ -55,3 +55,16 @@ nnoremap <Leader>g :Ag<SPACE>
 " Uppercase the previous WORD while in normal mode {{{1
 nnoremap <c-u> viwUE
 " }}}
+
+
+autocmd! BufWritePre *.md %s/\s+$//e
+
+function! OpenScopesSnippets()
+    let ft = &filetype
+    let dr = expand('~/.vim/snippets/')
+    let fn = dr . ft . '.snippets'
+    execute "e " . fn
+endfunction
+nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
+
+G
