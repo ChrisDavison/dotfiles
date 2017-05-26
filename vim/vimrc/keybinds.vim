@@ -91,16 +91,34 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 nnoremap <leader>t :TagbarToggle<CR>
 
 " Generate a MD preview for the current file
-nnoremap mp :!pandoc -f markdown_github --toc --toc-depth=2 -s --self-contained -c ~/dotfiles/github-markdown.css % -o ~/.mdpreview.html<CR>
+function! MDPreview()
+    silent !clear
+    let toc = '--toc --toc-depth=2'
+    let self = '-s --self-contained'
+    let style = '-c ~/.dotfiles/github-markdown.css'
+    let out = '-o ~/.mdpreview.html'
+    execute '!pandoc %' . ' ' . toc . ' ' . self . ' ' . style . ' ' . out
+endfunction
 
-nmap <leader>s <plug>(scratch-insert-reuse)
+nnoremap mp :call MDPreview()<Cr>
+
+" Tidy up the current markdown file
+function! MDTidy()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --wrap=None --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
 
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Use '//' in visual mode to search for selection
 vnoremap // y/<C-R>"<CR>
 
-nnoremap / /\v
+nnoremap <silent>/ /\v
 
 " <leader>e -- edit file, starting in same directory as current file
 " perhaps not needed...using autochdir, so ':e' will use curdir
