@@ -66,5 +66,3 @@ function! OpenScopesSnippets()
     execute "e " . fn
 endfunction
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-
-G
