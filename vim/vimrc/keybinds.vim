@@ -72,7 +72,7 @@ nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 nnoremap <leader>ev :e $MYVIMRC<Cr>
 nnoremap <leader>sv :so $MYVIMRC<Cr>
 
-nnoremap <leader>et :e ~/.vim/vimrc/totidy.vim<Cr>GO
+nnoremap <leader>et :e ~/.vim/vimrc/totidy.vim<Cr>Go
 nnoremap <leader>V :e ~/.vim/vimrc/
 " }}}
 
@@ -96,11 +96,13 @@ nnoremap <leader>t :TagbarToggle<CR>
 " Generate a MD preview for the current file
 function! MDPreview()
     silent !clear
-    let toc = '--toc --toc-depth=2'
-    let self = '-s --self-contained'
+    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
+    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
     let style = '-c ~/.dotfiles/github-markdown.css'
     let out = '-o ~/.mdpreview.html'
-    execute '!pandoc %' . ' ' . toc . ' ' . self . ' ' . style . ' ' . out
+    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
+    " echo str
+    execute str
 endfunction
 
 nnoremap mp :call MDPreview()<Cr>
