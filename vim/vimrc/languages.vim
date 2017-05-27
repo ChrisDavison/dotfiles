@@ -45,12 +45,39 @@ augroup END
 " }}}
 
 " Pandoc (markdown) {{{
+function! MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    endif
+    return ">" . len(h)
+endfunction
+
+" Open Relative Markdown Links
+" function! OpenRelativeMarkdownLink()
+"     normal vi]y
+"     normal /\[<C-R>"\]:
+"     normal f:W
+"     normal :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )<Cr>
+"     normal N:noh<Cr>
+" endfunction
+
+"nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
+
 augroup pandoc
+    autocmd!
     autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
     autocmd Filetype markdown,pandoc setlocal conceallevel=2
-    autocmd Filetype markdown,pandoc hi Conceal cterm=None ctermbg=None
+    autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
+    autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
+    autocmd BufWritePre *.md %s/\s\+$//ge
+    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
+    autocmd BufEnter *.md setlocal foldmethod=expr
 augroup END
 " }}}
+
+autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
+autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
 
 " Settings --- 'let' commands {{{
 let b:javascript_fold=1
