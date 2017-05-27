@@ -118,6 +118,17 @@ function! MDTidy()
     execute "!" . mdtidy_command
 endfunction
 
+function! MDTidyWrap()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --columns=80 --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
+
+
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Use '//' in visual mode to search for selection
