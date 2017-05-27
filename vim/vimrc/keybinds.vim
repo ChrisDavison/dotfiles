@@ -46,10 +46,13 @@ nnoremap <leader>a ggVG
 " }}}
 
 " Navigate quickfix/locationlist with keychords {{{
-nnoremap cn :cn<CR>
-nnoremap cp :cp<CR>
-nnoremap ln :lnext<CR>
-nnoremap lp :lprev<CR>
+" if empty(getloclist(0))
+"     nnoremap <C-S-n> :cn<CR>
+"     nnoremap <C-S-p> :cp<CR>
+" else
+"     nnoremap <C-S-n> :lnext<CR>
+"     nnoremap <C-S-p> :lprev<CR>
+" endif
 " }}}
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{
