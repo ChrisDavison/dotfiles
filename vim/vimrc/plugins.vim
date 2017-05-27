@@ -1,17 +1,15 @@
 call plug#begin('~/.vim/plugged')
 
-"" Languages
+" Languages {{{
 Plug 'fatih/vim-go'
-Plug 'pangloss/vim-javascript' 
+Plug 'pangloss/vim-javascript'
 Plug 'racer-rust/vim-racer'
-" Plug 'vim-pandoc/vim-pandoc'
-" Plug 'vim-pandoc/vim-pandoc-syntax'
-" Plug 'vim-pandoc/vim-markdownfootnotes'
 Plug 'plasticboy/vim-markdown'
-Plug 'kien/ctrlp.vim'
-Plug 'tacahiroy/ctrlp-funky'
+" }}}
 
-"" Utility
+" Utility {{{
+Plug 'Rykka/riv.vim'
+Plug 'shime/vim-livedown'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'Konfekt/FastFold'
@@ -45,5 +43,29 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
+"}}}
+
+" Plugins I'm currently *not* using {{{
+" Distraction-free writing
+if 1
+    Plug 'junegunn/goyo.vim'
+    Plug 'junegunn/limelight.vim'
+endif
+
+" Lispy stuff
+if 0
+    Plug 'jpalardy/vim-slime'
+    Plug 'tpope/vim-sexp-mappings-for-regular-people'
+endif
+
+" Utility
+if 0
+    Plug 'mattn/emmet-vim'
+    Plug 'dhruvasagar/vim-table-mode'
+endif
+" }}}
+
 call plug#end()
+
+
 
