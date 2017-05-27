@@ -8,7 +8,6 @@ Plug 'plasticboy/vim-markdown'
 " }}}
 
 " Utility {{{
-Plug 'Rykka/riv.vim'
 Plug 'shime/vim-livedown'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
