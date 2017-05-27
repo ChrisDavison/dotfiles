@@ -1,11 +1,3 @@
-" Open Relative Markdown Links {{{
-function! OpenLink()
-    :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )
-endfunction
-
-nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
-" }}}
-
 " Latex / Vimtex {{{
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
@@ -56,9 +48,6 @@ nnoremap <Leader>g :Ag<SPACE>
 nnoremap <c-u> viwUE
 " }}}
 
-
-autocmd! BufWritePre *.md %s/\s+$//e
-
 function! OpenScopesSnippets()
     let ft = &filetype
     let dr = expand('~/.vim/snippets/')
@@ -67,13 +56,6 @@ function! OpenScopesSnippets()
 endfunction
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 
-function MarkdownLevel() 
-    let h = matchstr(getline(v:lnum), '^#\+') 
-    if empty(h) 
-        return "=" 
-    endif 
-    return ">" . len(h) 
-endfunction
-
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
-au BufEnter *.md setlocal foldmethod=expr   
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
