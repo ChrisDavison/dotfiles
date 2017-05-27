@@ -16,6 +16,7 @@ source $HOME/.vim/vimrc/statusbar.vim
 source $HOME/.vim/vimrc/supertab.vim
 source $HOME/.vim/vimrc/syntastic.vim
 source $HOME/.vim/vimrc/vimslime.vim
+source $HOME/.vim/vimrc/goyo.vim
 
 " My / non-package-based vim
 source $HOME/.vim/vimrc/customfold.vim
@@ -23,6 +24,5 @@ source $HOME/.vim/vimrc/customfuncs.vim
 
 " Still being tested
 source $HOME/.vim/vimrc/totidy.vim
-" source $HOME/.vim/vimrc/goyo.vim
 
 set autochdir
