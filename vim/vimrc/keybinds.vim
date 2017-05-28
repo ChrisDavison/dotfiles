@@ -28,8 +28,8 @@ vnoremap  <buffer> <silent> $ g$
 " Quicker search/replace {{{
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
-nmap S :%s//g<LEFT><LEFT>
-vmap S :s//g<LEFT><LEFT>
+nmap S :%s///g<LEFT><LEFT>
+vmap S :s///g<LEFT><LEFT>
 " }}}
 
 " Selecting and Pasting {{{
@@ -95,41 +95,6 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 " Toggle tagbar
 nnoremap <leader>t :TagbarToggle<CR>
-
-" Generate a MD preview for the current file
-function! MDPreview()
-    silent !clear
-    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
-    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
-    let style = '-c ~/.dotfiles/github-markdown.css'
-    let out = '-o ~/.mdpreview.html'
-    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
-    " echo str
-    execute str
-endfunction
-
-nnoremap mp :call MDPreview()<Cr>
-
-" Tidy up the current markdown file
-function! MDTidy()
-    silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --wrap=None --normalize --standalone'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
-endfunction
-
-function! MDTidyWrap()
-    silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --columns=80 --normalize --standalone'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
-endfunction
 
 
 nnoremap <silent> <leader>/ :nohlsearch<CR>
