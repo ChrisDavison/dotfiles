@@ -33,27 +33,18 @@ augroup filetype_go
 augroup END
 " }}}
 
-" Miscellany {{{
-augroup filetype_miscellany
-    autocmd!
-    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
-    autocmd FileType make    set noexpandtab
-    autocmd FileType rust    set foldmethod=syntax
-    autocmd FileType vim     set foldmethod=marker
-    autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
-augroup END
-" }}}
-
 " Pandoc (markdown) {{{
-function! MarkdownLevel()
-    let h = matchstr(getline(v:lnum), '^#\+')
-    if empty(h)
-        return "="
-    endif
-    return ">" . len(h)
-endfunction
+augroup pandoc
+    autocmd!
+    autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
+    autocmd Filetype markdown,pandoc setlocal conceallevel=2
+    autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
+    autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
+    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
+    autocmd BufEnter *.md setlocal foldmethod=expr
+augroup END
 
-" Open Relative Markdown Links
+" Open Relative Markdown Links {{{2
 " function! OpenRelativeMarkdownLink()
 "     normal vi]y
 "     normal /\[<C-R>"\]:
@@ -63,17 +54,17 @@ endfunction
 " endfunction
 
 "nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
+" }}}
 
-augroup pandoc
-    autocmd!
-    autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
-    autocmd Filetype markdown,pandoc setlocal conceallevel=2
-    autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
-    autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
-    autocmd BufWritePre *.md %s/\s\+$//ge
-    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
-    autocmd BufEnter *.md setlocal foldmethod=expr
-augroup END
+" Function for markdown folding {{{2
+function! MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    endif
+    return ">" . len(h)
+endfunction
+" }}}
 
 " Generate a MD preview for the current file {{{2
 function! MDPreview()
@@ -124,8 +115,18 @@ command! MDToPDF call MDToPDF()
 command! MDPreview call MDPreview()
 " }}}
 
-autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
-autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
+" Miscellany {{{
+augroup filetype_miscellany
+    autocmd!
+    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
+    autocmd FileType make    set noexpandtab
+    autocmd FileType rust    set foldmethod=syntax
+    autocmd FileType vim     set foldmethod=marker
+    autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
+    autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
+    autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
+augroup END
+" }}}
 
 " Settings --- 'let' commands {{{
 let b:javascript_fold=1
@@ -170,3 +171,4 @@ let g:pandoc#formatting#extra_equalprg = "--columns=80 --normalize --atx-headers
 let g:pandoc#syntax#conceal#blacklist = ['list', 'atx']
 let g:vim_markdown_toc_autofit = 1
 " }}}
+
