@@ -74,6 +74,54 @@ augroup pandoc
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
 augroup END
+
+" Generate a MD preview for the current file {{{2
+function! MDPreview()
+    silent !clear
+    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
+    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
+    let style = '-c ~/.dotfiles/github-markdown.css'
+    let out = '-o ~/.mdpreview.html'
+    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
+    " echo str
+    execute str
+endfunction
+" }}}
+
+" Tidy up the current markdown file {{{2
+function! MDTidy()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --wrap=None --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
+
+function! MDTidyWrap()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --columns=80 --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
+" }}}
+
+" Convert current markdown file to PDF {{{2
+function! MDToPDF()
+    silent !clear
+    let outfn=expand('%:r') . '.pdf'
+    let cmd = 'pandoc % -o ' . outfn
+    execute "!" . cmd
+endfunction
+" }}}
+
+command! MDTidy call MDTidyWrap()
+command! MDToPDF call MDToPDF()
+command! MDPreview call MDPreview()
 " }}}
 
 autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
