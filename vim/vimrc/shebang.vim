@@ -40,6 +40,6 @@ endif
 
 endfunction
 
-:autocmd BufNewFile *.* :call Hashbang(1,1)
+autocmd! BufNewFile *.* :call Hashbang(1,1)
 
 
