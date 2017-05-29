@@ -1,5 +1,5 @@
 set bg=dark
-colorscheme paramount
+colorscheme seoul256
 set t_ut=
 
 "au BufReadPost * set relativenumber
