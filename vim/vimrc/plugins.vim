@@ -28,7 +28,11 @@ Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
-Plug 'scrooloose/syntastic'
+if v:version < 800
+    Plug 'scrooloose/syntastic'
+else
+    Plug 'w0rp/ale'
+endif
 Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
 Plug 'tomtom/tlib_vim'
