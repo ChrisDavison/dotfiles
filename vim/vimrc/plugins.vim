@@ -44,6 +44,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
+Plug 'wellle/targets.vim'
 "}}}
 
 " Plugins I'm currently *not* using {{{
