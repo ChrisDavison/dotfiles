@@ -38,8 +38,6 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 "}}}
