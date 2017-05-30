@@ -6,3 +6,9 @@ cnoreabbrev Q q
 cnoreabbrev QA qa
 
 iabbrev @@ c.jr.davison@gmail.com
+iabbrev GNSS goods and services
+iabbrev GNS good and service
+iabbrev TD **TODO**
+iabbrev WIP **WIP**
+iabbrev EX **EXAMPLE:**
+iabbrev E: Explain:
