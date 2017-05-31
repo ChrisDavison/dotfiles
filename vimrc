@@ -195,7 +195,7 @@ iabbrev Q? **Q?**
 " ============================================================================
 " KEYBINDS {{{ 
 " ============================================================================
-
+" Navigation {{{2
 " Split/Window management
 " Move windows
 map <C-w><C-h> <C-w><S-h>
@@ -219,14 +219,22 @@ nnoremap  <buffer> <silent> 0 g0
 vnoremap  <buffer> <silent> 0 g0
 nnoremap  <buffer> <silent> $ g$
 vnoremap  <buffer> <silent> $ g$
+" }}}2
 
-" Quicker search/replace
+" Search/replace {{{2
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
 nmap S :%s///g<LEFT><LEFT>
 vmap S :s///g<LEFT><LEFT>
+nnoremap <silent> <leader>/ :nohlsearch<CR>
 
-" Selecting and Pasting
+" Use '//' in visual mode to search for selection
+vnoremap // y/<C-R>"<CR>
+
+nnoremap <silent>/ /\v
+" }}}2
+
+" Selecting and Pasting {{{2
 " Paste and move to end
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
@@ -238,7 +246,12 @@ noremap gV `[v`]
 " Select ALL
 nnoremap <leader>a ggVG
 
-" Navigate quickfix/locationlist with keychords
+" Indent/De-dent visual selection
+vnoremap < <gv
+vnoremap > >gv
+" }}}2
+
+" Navigate quickfix/locationlist with keychords {{{2
 " if empty(getloclist(0))
 "     nnoremap <C-S-n> :cn<CR>
 "     nnoremap <C-S-p> :cp<CR>
@@ -246,9 +259,9 @@ nnoremap <leader>a ggVG
 "     nnoremap <C-S-n> :lnext<CR>
 "     nnoremap <C-S-p> :lprev<CR>
 " endif
+" }}}2
 
-" Buffer/File/Function/Outline navigation (CtrlP versus FZF)
-
+" Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{2
 if has('gui_running')
     nnoremap <leader>b  :CtrlPBuffer<Cr>
     nnoremap <leader>p  :CtrlP<Cr>
@@ -270,8 +283,9 @@ nnoremap <leader>sv :so $MYVIMRC<Cr>
 nnoremap <leader>es :e $SRCME/
 nnoremap <leader>ee :e $HOME/dev/etc/
 nnoremap <leader>ei :e $HOME/Dropbox/notes/inbox.md<Cr>
+" }}}2
 
-" Miscellany
+" Miscellany {{{2
 " Toggle hidden character visibility with
 nmap <Leader>h :set list!<CR>
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
@@ -281,18 +295,6 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 " Toggle tagbar
 nnoremap <leader>t :TagbarToggle<CR>
-
-
-nnoremap <silent> <leader>/ :nohlsearch<CR>
-
-" Use '//' in visual mode to search for selection
-vnoremap // y/<C-R>"<CR>
-
-nnoremap <silent>/ /\v
-
-" <leader>e -- edit file, starting in same directory as current file
-" perhaps not needed...using autochdir, so ':e' will use curdir
-" nmap <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Swap colon and semicolon
 nnoremap ; :
@@ -307,10 +309,6 @@ map q: :q
 " View and switch to buffer
 nnoremap gb :ls<CR>:buffer<Space>
 
-" Indent/De-dent visual selection
-vnoremap < <gv
-vnoremap > >gv
-
 " Fold HTML tags
 nnoremap <leader>ft Vatzf
 
@@ -319,6 +317,7 @@ nnoremap <leader>q gqip
 
 " Easily toggle distraction free - Goyo
 nnoremap <F11> :Goyo<Cr>
+" }}}2
 " }}}
 " ============================================================================
 " Search/navigation --- FZF & rg/ag {{{ 
