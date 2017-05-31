@@ -1,12 +1,13 @@
 " vim: set foldmethod=marker foldlevel=0:
+" ChrisDavison's VIMRC {{{ 
+" ============================================================================
 set nocompatible
 syntax on
 filetype plugin indent on
 let mapleader="\\"
 set autochdir
-
 let s:darwin = has('mac')
-
+" }}}
 " ============================================================================
 " SETTINGS {{{ 
 " ============================================================================
