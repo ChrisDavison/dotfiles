@@ -155,8 +155,9 @@ call plug#end()
 if has('gui')
     set encoding=utf-8
     set bg=dark
-    colorscheme lucius
-    set guifont=Iosevka:h15
+    colorscheme phoenix
+    execute ':PhoenixPurple'
+    set guifont=Iosevka:h14
     
     " Disable menu bollocks
     set guioptions-=m
@@ -264,11 +265,8 @@ nnoremap <leader>fu :CtrlPFunky<Cr>
 nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 
 " Keybinds to manipulate my vim config
-nnoremap <leader>ev :e $MYVIMRC<Cr>
+nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
-
-nnoremap <leader>et :e ~/.vim/vimrc/totidy.vim<Cr>Go
-nnoremap <leader>V :e ~/.vim/vimrc/
 
 " Keybinds to go to specific files/dirs
 nnoremap <leader>es :e $SRCME/
