@@ -1,4 +1,4 @@
-" vim: set foldmethod=marker foldlevel=0:
+" vim: set foldmethod=marker foldlevel=2:
 " ChrisDavison's VIMRC {{{ 
 " ============================================================================
 set nocompatible
@@ -176,7 +176,6 @@ call matchadd('ColorColumn', '\%81v', 100)
 " ============================================================================
 " ABBREVIATIONS {{{ 
 " ============================================================================
-
 " Useful abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
@@ -322,7 +321,7 @@ nnoremap <leader>q gqip
 nnoremap <F11> :Goyo<Cr>
 " }}}
 " ============================================================================
-" FZF {{{ 
+" Search/navigation --- FZF & rg/ag {{{ 
 " ============================================================================
 " --column: Show column number
 " --line-number: Show line number
@@ -341,10 +340,28 @@ set grepprg=rg\ --vimgrep
 nmap <leader>b :Buffers<CR>
 nmap <leader>f :Files<CR>
 nmap <leader>F :Find 
+
+" Use a better default searcher
+" for both CtrlP and Grep
+" ripgrep, if available, otherwise Ag
+let g:ctrlp_use_caching = 0
+if executable('rg')
+  set grepprg=rg\ --vimgrep
+  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+elseif executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+    let g:ctrlp_use_caching = 1
+endif
+
+nnoremap <Leader>g :Ag<SPACE>
 " }}}
 " ============================================================================
 " LANGUAGES {{{ 
 " ============================================================================
+" Autocommand groups for filetypes/languages {{{2
 augroup filetype_c
     autocmd!
     autocmd FileType c       set foldmethod=syntax
@@ -382,71 +399,6 @@ augroup pandoc
     autocmd BufEnter *.md setlocal foldmethod=expr
 augroup END
 
-" Open Relative Markdown Links 
-" function! OpenRelativeMarkdownLink()
-"     normal vi]y
-"     normal /\[<C-R>"\]:
-"     normal f:W
-"     normal :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )<Cr>
-"     normal N:noh<Cr>
-" endfunction
-
-"nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
-
-" Function for markdown folding 
-function! MarkdownLevel()
-    let h = matchstr(getline(v:lnum), '^#\+')
-    if empty(h)
-        return "="
-    endif
-    return ">" . len(h)
-endfunction
-
-" Generate a MD preview for the current file 
-function! MDPreview()
-    silent !clear
-    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
-    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
-    let style = '-c ~/.dotfiles/github-markdown.css'
-    let out = '-o ~/.mdpreview.html'
-    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
-    " echo str
-    execute str
-endfunction
-
-" Tidy up the current markdown file 
-function! MDTidy()
-    silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --wrap=None --normalize --standalone'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
-endfunction
-
-function! MDTidyWrap()
-    silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --columns=80 --normalize --standalone'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
-endfunction
-
-" Convert current markdown file to PDF 
-function! MDToPDF()
-    silent !clear
-    let outfn=expand('%:r') . '.pdf'
-    let cmd = 'pandoc % -o ' . outfn
-    execute "!" . cmd
-endfunction
-
-command! MDTidy call MDTidyWrap()
-command! MDToPDF call MDToPDF()
-command! MDPreview call MDPreview()
-
 " Miscellany 
 augroup filetype_miscellany
     autocmd!
@@ -458,6 +410,34 @@ augroup filetype_miscellany
     autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
     autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
 augroup END
+" }}}2
+
+" Let/settings for language-based packages {{{2
+" Latex / Vimtex 
+let g:vimtex_quickfix_ignore_all_warnings=1
+let g:vimtex_latexmk_continuous=0
+let g:vimtex_quickfix_mode=0
+let g:tex_flavor = "latex"
+let g:vimtex_indent_enabled=1
+let g:vimtex_fold_enabled=1
+
+" C++ 
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+
+" Python 
+let g:pymode_python = 'python3'
+
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
+let g:syntastic_python_checkers = ['flake8']
+
+" Vim-slime - tmux & python
+let g:slime_target = "tmux"
+let g:slime_python_ipython = 1
+
+" Rust 
+let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
+let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
 " Settings --- 'let' commands 
 let b:javascript_fold=1
@@ -501,7 +481,7 @@ let g:pandoc#formatting#equalprg = "pandoc -t markdown -s"
 let g:pandoc#formatting#extra_equalprg = "--columns=80 --normalize --atx-headers"
 let g:pandoc#syntax#conceal#blacklist = ['list', 'atx']
 let g:vim_markdown_toc_autofit = 1
-
+" }}}2
 " }}}
 " ============================================================================
 " SHEBANG {{{ 
@@ -555,7 +535,7 @@ autocmd! BufNewFile *.* :call Hashbang(1,1)
 " ============================================================================
 " STATUSBAR {{{ 
 " ============================================================================
-" Vim status bar {{{
+" Vim status bar
 " %< Where to truncate
 " %n buffer number
 " %F Full path
@@ -660,7 +640,6 @@ if 1
     endif
 endif
 " }}}
-" }}}
 " ============================================================================
 " SUPERTAB {{{ 
 " ============================================================================
@@ -678,12 +657,6 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 " }}}
 " ============================================================================
-" VIM SLIME {{{ 
-" ============================================================================
-let g:slime_target = "tmux"
-let g:slime_python_ipython = 1
-" }}}
-" ============================================================================
 " GOYO -- Distraction free writing {{{ 
 " ============================================================================
 autocmd! User GoyoEnter Limelight
@@ -693,7 +666,7 @@ let g:goyo_width=80
 " ============================================================================
 " FUNCTIONS {{{ 
 " ============================================================================
-" Custom fold
+" Custom fold {{{2
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -701,9 +674,6 @@ function! ToggleFold()
         set foldlevel=0
     endif
 endfunction
-
-noremap zt :call ToggleFold()<CR>
-
 
 function! CustomFoldText()
      "get first non-blank line
@@ -723,84 +693,126 @@ function! CustomFoldText()
      let lineCount = line("$")
      let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
- endfunction
- set foldnestmax=99
- set foldtext=CustomFoldText()
+endfunction
+set foldnestmax=99
+set foldtext=CustomFoldText()
+" }}}2
 
-fu! ToggleWrap()
+" Toggle line wrapping {{{2
+function! ToggleWrap()
     let wr=&wrap
     if wr
         set nowrap
     else
         set wrap
     endif
-endfu
+endfunction
+" }}}2
 
-nmap nw :call ToggleWrap()<CR>
-
+" Copy filename of current file {{{2
 function! CopyFilename()
     let @+=expand("%")
 endfunction
+" }}}2
 
-nnoremap fmt :normal "ggVG="<Cr>
-
+" Open snippets for this filetype {{{2
 function! OpenScopesSnippets()
     let ft = &filetype
     let dr = expand('~/.vim/snippets/')
     let fn = dr . ft . '.snippets'
     execute "e " . fn
 endfunction
+" }}}2
+
+" Show the color syntax scope under point {{{2
+function! s:GetScope()
+    let s:vHi = synIDattr(synID(line("."),col("."),1),"name")
+    let s:vTrans = synIDattr(synID(line("."),col("."),0),"name")
+    let s:vLo = synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
+    echo "hi<" . s:vHi . "> trans<" . s:vTrans . "> lo<" . s:vLo . ">"
+endfunction
+command! CurrentScope call s:GetScope()
+" }}}2
+
+" Markdown level, for folding {{{2
+" Function for markdown folding 
+function! MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    endif
+    return ">" . len(h)
+endfunction
+" }}}2
+
+" Functions for running pandoc on markdown files {{{2
+" Generate a MD preview for the current file
+function! MDPreview()
+    silent !clear
+    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
+    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
+    let style = '-c ~/.dotfiles/github-markdown.css'
+    let out = '-o ~/.mdpreview.html'
+    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
+    " echo str
+    execute str
+endfunction
+command! MDPreview call MDPreview()
+
+" Tidy up the current markdown file 
+function! MDTidy()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --wrap=None --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
+
+function! MDTidyWrap()
+    silent !clear
+    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
+    let to = '--to=' . ext
+    let extra = '--atx-headers --columns=80 --normalize --standalone'
+    let out = '-o %'
+    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
+    execute "!" . mdtidy_command
+endfunction
+command! MDTidy call MDTidyWrap()
+
+" Convert current markdown file to PDF 
+function! MDToPDF()
+    silent !clear
+    let outfn=expand('%:r') . '.pdf'
+    let cmd = 'pandoc % -o ' . outfn
+    execute "!" . cmd
+endfunction
+command! MDToPDF call MDToPDF()
+" }}}2
+
+" Bindings for functions {{{2
+noremap zt :call ToggleFold()<CR>
+nmap nw :call ToggleWrap()<CR>
+nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
+map <F10> :CurrentScope<Cr>
+" }}}2
+
 " }}}
 " ============================================================================
-" TO TIDY -- Experimental stuff that may not stay {{{ 
+" ----- EXPERIMENTAL ----- {{{ 
 " ============================================================================
-" Latex / Vimtex 
-let g:vimtex_quickfix_ignore_all_warnings=1
-let g:vimtex_latexmk_continuous=0
-let g:vimtex_quickfix_mode=0
-let g:tex_flavor = "latex"
-let g:vimtex_indent_enabled=1
-let g:vimtex_fold_enabled=1
 
-" C++ 
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-
-" Python 
-let g:pymode_python = 'python3'
-
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-let g:syntastic_python_checkers = ['flake8']
-
-" Rust 
-let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
-let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
-
-" Use a better default searcher
-" for both CtrlP and Grep
-" ripgrep, if available, otherwise Ag
-let g:ctrlp_use_caching = 0
-if executable('rg')
-  set grepprg=rg\ --vimgrep
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-elseif executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-else
-    let g:ctrlp_use_caching = 1
-endif
-
-nnoremap <Leader>g :Ag<SPACE>
-
-" function! GetScope()
-"     let vHi = synIDattr(synID(line("."),col("."),1),"name")
-"     let vTrans = synIDattr(synID(line("."),col("."),0),"name")
-"     let vLo = synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
-"     echo "hi<" . vHi . "> trans<" . vTrans . "> lo<" . vLo . ">"<Cr>
+" Open Relative Markdown Links 
+" function! OpenRelativeMarkdownLink()
+"     normal vi]y
+"     normal /\[<C-R>"\]:
+"     normal f:W
+"     normal :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )<Cr>
+"     normal N:noh<Cr>
 " endfunction
-" command! CurrentScope call GetScope()
-" map <F10> :call GetScope()<Cr>
-" }}}
+
+"nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
+"}}}
 " ============================================================================
