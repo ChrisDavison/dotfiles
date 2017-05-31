@@ -155,8 +155,7 @@ call plug#end()
 if has('gui')
     set encoding=utf-8
     set bg=dark
-    colorscheme phoenix
-    execute ':PhoenixPurple'
+    colorscheme seoul256
     set guifont=Iosevka:h14
     
     " Disable menu bollocks
@@ -318,6 +317,9 @@ nnoremap <leader>ft Vatzf
 
 " Format a paragraph
 nnoremap <leader>q gqip
+
+" Easily toggle distraction free - Goyo
+nnoremap <F11> :Goyo<Cr>
 " }}}
 " ============================================================================
 " FZF {{{ 
@@ -689,7 +691,7 @@ autocmd! User GoyoLeave Limelight!
 let g:goyo_width=80
 " }}}
 " ============================================================================
-" CUSTOM FOLD {{{ 
+" FUNCTIONS {{{ 
 " ============================================================================
 " Custom fold
 function! ToggleFold()
@@ -725,11 +727,6 @@ function! CustomFoldText()
  set foldnestmax=99
  set foldtext=CustomFoldText()
 
-
-" }}}
-" ============================================================================
-" CUSTOM FUNCS {{{ 
-" ============================================================================
 fu! ToggleWrap()
     let wr=&wrap
     if wr
@@ -741,11 +738,19 @@ endfu
 
 nmap nw :call ToggleWrap()<CR>
 
-fu! CopyFilename()
+function! CopyFilename()
     let @+=expand("%")
-endfu
+endfunction
 
 nnoremap fmt :normal "ggVG="<Cr>
+
+function! OpenScopesSnippets()
+    let ft = &filetype
+    let dr = expand('~/.vim/snippets/')
+    let fn = dr . ft . '.snippets'
+    execute "e " . fn
+endfunction
+nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 " }}}
 " ============================================================================
 " TO TIDY -- Experimental stuff that may not stay {{{ 
@@ -772,41 +777,30 @@ let g:syntastic_python_checkers = ['flake8']
 let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
 let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
 
-" The Silver Searcher (Ag) for grep 
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
+" Use a better default searcher
+" for both CtrlP and Grep
+" ripgrep, if available, otherwise Ag
+let g:ctrlp_use_caching = 0
 if executable('rg')
   set grepprg=rg\ --vimgrep
   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-  let g:ctrlp_use_caching = 0
+elseif executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+    let g:ctrlp_use_caching = 1
 endif
 
 nnoremap <Leader>g :Ag<SPACE>
 
-" Uppercase the previous WORD while in normal mode
-nnoremap <c-u> viwUE
-
-function! OpenScopesSnippets()
-    let ft = &filetype
-    let dr = expand('~/.vim/snippets/')
-    let fn = dr . ft . '.snippets'
-    execute "e " . fn
-endfunction
-nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-
-map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
-nnoremap <F11> :Goyo<Cr>
-
+" function! GetScope()
+"     let vHi = synIDattr(synID(line("."),col("."),1),"name")
+"     let vTrans = synIDattr(synID(line("."),col("."),0),"name")
+"     let vLo = synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
+"     echo "hi<" . vHi . "> trans<" . vTrans . "> lo<" . vLo . ">"<Cr>
+" endfunction
+" command! CurrentScope call GetScope()
+" map <F10> :call GetScope()<Cr>
 " }}}
 " ============================================================================
