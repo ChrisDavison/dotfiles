@@ -807,16 +807,5 @@ map <F10> :CurrentScope<Cr>
 " ============================================================================
 " ----- EXPERIMENTAL ----- {{{ 
 " ============================================================================
-
-" Open Relative Markdown Links 
-" function! OpenRelativeMarkdownLink()
-"     normal vi]y
-"     normal /\[<C-R>"\]:
-"     normal f:W
-"     normal :call pandoc#hypertext#OpenLink( g:pandoc#hypertext#edit_open_cmd )<Cr>
-"     normal N:noh<Cr>
-" endfunction
-
-"nnoremap grl vi]y/\[<C-R>"\]<CR>f:W:call OpenLink()<cr>N:noh<cr>
 "}}}
 " ============================================================================
