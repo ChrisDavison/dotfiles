@@ -294,3 +294,7 @@ zl() {
         cd "$choice"
     fi
 }
+
+mostCommonWords() {
+    cat $1 | tr -c '[:alnum:]' '[\n*]' | sort | uniq -c | sort -nr | head -$2
+}
