@@ -184,13 +184,18 @@ cnoreabbrev Q q
 cnoreabbrev QA qa
 
 iabbrev @@ c.jr.davison@gmail.com
-iabbrev GNSS goods and services
-iabbrev GNS good and service
 iabbrev TD **TODO**
 iabbrev WIP **WIP**
 iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
 iabbrev Q? **Q?** 
+
+" Economics-specific abbreviations{{{2
+iabbrev gnss goods and services
+iabbrev gns good and service
+iabbrev eqb equilibrium
+iabbrev gvt government
+" }}}2
 " }}}
 " ============================================================================
 " KEYBINDS {{{ 
