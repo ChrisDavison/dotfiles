@@ -194,7 +194,7 @@ iabbrev Q? **Q?**
 iabbrev gnss goods and services
 iabbrev gns good and service
 iabbrev eqb equilibrium
-iabbrev gvt government
+iabbrev govt government
 " }}}2
 " }}}
 " ============================================================================
@@ -322,6 +322,8 @@ nnoremap <leader>q gqip
 
 " Easily toggle distraction free - Goyo
 nnoremap <F11> :Goyo<Cr>
+
+command! CurPath let @+=expand("%")
 " }}}2
 " }}}
 " ============================================================================
