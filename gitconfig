@@ -45,12 +45,10 @@
     ignored = ls-files --others
 
 	l = log --oneline
-	log = log --oneline --graph --decorate
-    lg = log --stat --max-count=10
-    l2 = log --all --since='2 weeks' --oneline --no-merges
-    lg2 = log --stat --all --since='2 weeks' --oneline --no-merges
-    lgme = log --all --oneline --no-merges --author=c.jr.davison@gmail.com
-    plog = log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'
+    lg = log --stat --decorate
+    plg = log --graph --date=short --pretty='format:%C(green)%C(bold)%cd %C(yellow)%h%C(reset) %s%C(reset) (%an)%C(red)%d%C(reset) '
+    plgme = log --graph --author=c.jr.davison@gmail.com --pretty='format:%C(yellow)%h %C(blue)<%ar> %C(reset)%s%C(reset) %C(red)%d%C(reset)' 
+    sinceup = log origin/master.. --graph --pretty='format:%C(yellow)%h %C(blue)<%ar> %C(reset)%s%C(reset) %C(red)%d%C(reset)' 
 
 	ls = ls-files
 
