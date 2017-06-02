@@ -298,3 +298,18 @@ zl() {
 mostCommonWords() {
     cat $1 | tr -c '[:alnum:]' '[\n*]' | sort | uniq -c | sort -nr | head -$2
 }
+
+MoveNamedScreenshot() {
+    if ! [ -d $2 ]; then
+        echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
+        return -2
+    fi
+    if ! [ -f $1 ]; then
+      echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
+      return -1
+    fi
+    local fn
+    fn=$2"/"$3
+    echo "../"$(basename $2)"/"$3 | pbcopy
+    mv $1 $fn
+}
