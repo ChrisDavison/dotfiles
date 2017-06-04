@@ -51,7 +51,8 @@
 
 	ls = ls-files
 
-	m = merge
+    mff = merge
+	m = merge --no-ff
 
     pr = prune -v
 
