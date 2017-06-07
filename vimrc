@@ -87,6 +87,8 @@ Plug 'racer-rust/vim-racer'
 Plug 'plasticboy/vim-markdown'
 
 " Utility
+Plug 'mattn/webapi-vim'
+Plug 'mattn/gist-vim'
 Plug 'shime/vim-livedown'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
