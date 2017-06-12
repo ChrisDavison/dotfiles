@@ -29,6 +29,7 @@ set nospell
 set relativenumber
 set shell=/bin/zsh
 set foldenable " Don't fold by default
+set foldlevelstart=1
 
 "-- Search options 
 set incsearch " Search as you type
@@ -158,7 +159,7 @@ if has('gui')
     set encoding=utf-8
     set bg=dark
     colorscheme seoul256
-    set guifont=Iosevka:h14
+    set guifont=Iosevka:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -799,6 +800,21 @@ endfunction
 command! MDToPDF call MDToPDF()
 " }}}2
 
+" Insert date/timestamp at point {{{2
+function! InsertDateAtPoint()
+    read!date "+\%Y-\%m-\%d"
+    normal kJ
+endfunction
+
+function! InsertTimestampAtPoint()
+    read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
+    normal kJ
+endfunction
+
+command! Today call InsertDateAtPoint()
+command! TimeNow call InsertTimestampAtPoint()
+" }}}2
+
 " Bindings for functions {{{2
 noremap zt :call ToggleFold()<CR>
 nmap nw :call ToggleWrap()<CR>
@@ -814,6 +830,7 @@ map <F10> :CurrentScope<Cr>
 " enable dictionary, and use it in autocomplete
 set dictionary+=/usr/share/dict/words
 set complete+=k
-"
+
+command! Wd write|bdelete
 "}}}
 " ============================================================================
