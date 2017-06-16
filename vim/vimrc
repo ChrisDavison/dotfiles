@@ -238,15 +238,13 @@ nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Use '//' in visual mode to search for selection
 vnoremap // y/<C-R>"<CR>
-
-nnoremap <silent>/ /\v
 " }}}2
 
 " Selecting and Pasting {{{2
-" Paste and move to end
-vnoremap <silent> y y`]
-vnoremap <silent> p p`]
-nnoremap <silent> p p`]
+" " Paste and move to end
+" vnoremap <silent> y y`]
+" vnoremap <silent> p p`]
+" nnoremap <silent> p p`]
 
 " Select what was pasted
 noremap gV `[v`]
@@ -829,5 +827,14 @@ set dictionary+=/usr/share/dict/words
 set complete+=k
 
 command! Wd write|bdelete
+
+set autoread
+set updatetime=1000
+
+augroup autoSaveAndRead
+    autocmd!
+    autocmd TextChanged,InsertLeave,FocusLost * silent! wall
+    autocmd CursorHold * silent! checktime
+augroup END
 "}}}
 " ============================================================================
