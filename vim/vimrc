@@ -232,8 +232,8 @@ vnoremap  <buffer> <silent> $ g$
 " Search/replace {{{2
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
-nmap S :%s///g<LEFT><LEFT>
-vmap S :s///g<LEFT><LEFT>
+nmap S :%s///<LEFT>
+vmap S :s///<LEFT>
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Use '//' in visual mode to search for selection
