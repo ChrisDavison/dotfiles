@@ -158,8 +158,8 @@ call plug#end()
 if has('gui')
     set encoding=utf-8
     set bg=dark
-    colorscheme seoul256
-    set guifont=Iosevka:h18
+    colorscheme base16-eighties
+    set guifont=Monaco:h14
     
     " Disable menu bollocks
     set guioptions-=m
@@ -764,11 +764,23 @@ endfunction
 command! MDPreview call MDPreview()
 
 " Tidy up the current markdown file 
+function! s:MDToFormat()
+    let md = 'markdown_github-hard_line_breaks'
+    let meta = 'yaml_metadata_block'
+    let math = 'tex_math_dollars'
+    let blocks = 'line_blocks'
+    let out = '--to=' . md . '+' . meta . '+' . math . '+' . blocks
+    return out
+endfunction
+
+function! s:MDFormatExtra()
+     return '--atx-headers --normalize --standalone'
+endfunction
+
 function! MDTidy()
     silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --wrap=None --normalize --standalone'
+    let to = s:MDToFormat()
+    let extra = s:MDFormatExtra() . ' --wrap=None'
     let out = '-o %'
     let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
     execute "!" . mdtidy_command
@@ -776,9 +788,8 @@ endfunction
 
 function! MDTidyWrap()
     silent !clear
-    let ext = 'markdown+yaml_metadata_block+tex_math_dollars+line_blocks'
-    let to = '--to=' . ext
-    let extra = '--atx-headers --columns=80 --normalize --standalone'
+    let to = s:MDToFormat()
+    let extra = s:MDFormatExtra() . ' --columns=80'
     let out = '-o %'
     let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
     execute "!" . mdtidy_command
