@@ -56,6 +56,7 @@ set sidescroll=1
 
 "-- Put all temp files in one place 
 set backup
+set backupcopy=yes
 set backupdir=~/.backup,.
 set directory=~/.temp,.
 
