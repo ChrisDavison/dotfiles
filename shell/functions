@@ -7,30 +7,12 @@
 
 # Make find easier to use
 myfind() {
-    find ./ -iname "*$2*" -type "$1" | tee ${TMPDIR}/my_ffound | cat -n
-    FFOUND_PWD=${PWD}
-    FFOUND=($(cat ${TMPDIR}/my_ffound))
+    find ./ -iname "*$2*" -type "$1"
 }
 
 # And even simpler, for files and directories
 ff() { myfind "f" "$1"; }
 fd() { myfind "d" "$1"; }
-
-# Extract filename from find list
-fn() {
-    [ ! -z ${FFOUND[$1-1]} ] && echo ${FFOUND_PWD}/${FFOUND[$1-1]};
-}
-
-fo() {
-  open $(fn "$1")
-}
-
-# Open file from find list in vim, or change to the directory
-v() { vim $(fn "$1");  }
-ch() { cd $(dirname $(fn "$1")); }
-
-# Re-list previous finds
-lf() { echo ${FFOUND[*]} | tr -s ' ' '\n' | cat -n; }
 
 # Easily jump back to Vim with CtrlZ
 fancy-ctrl-z () {
@@ -107,145 +89,62 @@ ii() {
     echo
 }
 
-mdpreview() {
-    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
-}
-
-mdpreviewself() {
-    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --self-contained --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
-}
-
-mdtohtml() {
-    fn=.$(extractFilenameNoExt $1).html
-    [ -e $fn ] && rm $fn
-    pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn
-}
-
-# Remove shitty DS_store files
-alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
-
-alias todo="vim ~/Dropbox/notes/todo.md"
-
 extractFilenameNoExt () {
     filename=$(basename "$1")
     file_no_ext="${filename%.*}"
     echo $file_no_ext
 }
 
-
 ht () {
-  if [ $# -lt 1 ]
-    then
-    echo "Usage: ht FILE [DELIMITER=' ']"
-    return -1
-  fi
-  if [ $# -eq 1 ]
-    then delim=' '
-  fi
-  if [ $# -ge 2 ]
-    then delim=$2
-  fi
-  awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
-  tail -n 1 $1 | awk -F $delim '{ print $1 }'
+    if [ $# -lt 1 ]; then
+        echo "Usage: ht FILE [DELIMITER=' ']"
+        return -1
+    fi
+    if [ $# -eq 1 ]; then 
+        delim=' '
+    fi
+    if [ $# -ge 2 ]; then 
+        delim=$2
+    fi
+    awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
+    tail -n 1 $1 | awk -F $delim '{ print $1 }'
   #    head -n 2 $1 && tail -n 1 $1
 }
 
 epoch2date () {
-  epc=$1
-  fmt='+%Y%m%d %H:%M:%S'
-  date -r $epc $fmt
+    epc=$1
+    fmt='+%Y%m%d %H:%M:%S'
+    date -r $epc $fmt
 }
 
 today () {
     date +"%Y-%m-%d"
 }
 
-logbook_today () {
-  cur=`pwd`
-  logbook_dir='/Users/christopherdavison/paperwork/logbook/'`date +"%Y"`'/'
-  cd $logbook_dir
-  touch `today`.md
-  echo "# "`today` >> `today`.md
-  cd $cur
-}
-
 dir_today () {
     mkdir output_`date +"%Y%m%s"`
 }
 
-listfuncs () {
-  fn=$1
-  ctags $fn
-  extension="${fn##*.}"
-
-  if [[ "$extension" == "py" ]]
-  then
-    awk_cmd='/.*\^def/ { gsub(/.*\^def /, ""); gsub(/:\$.*/, ""); print $0 }'
-    awk $awk_cmd tags
-  fi
-
-  if [[ "$extension" == "rs" ]]
-  then
-    awk '/^fn/ { gsub(/^fn /, ""); gsub(/{$/, ""); print $0 }' "$fn"
-  fi
-
-  rm tags
+running() {
+    ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
 }
 
-running(){
-  ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
+
+mygitinit() {
+    git init
+    touch .gitignore
+    echo ".gitignore" > .gitignore
+    touch README.md
+    git add README.md
+    git commit -m "Initial Commit"
 }
 
-md2pdf(){
-  outfn="$1"
-  title="$2"
-  pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in
+mdtidy() {
+    pandoc -s --atx-headers -t markdown $1 -o $1
 }
 
-org2html(){
-  pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --toc $1 -o ~/Dropbox/notes/html/$(extractFilenameNoExt $1).html
-}
-
-todotoday(){
-  todof $TODOFILE 'A'
-}
-
-makelogbook(){
-  logbookout=~/Dropbox/$(extractFilenameNoExt $LOGBOOK).pdf
-  pandoc --template="/Users/davison/.dotfiles/pandoc.latex" -s --toc -o $logbookout $LOGBOOK
-}
-
-mygitinit(){
-  git init
-  touch .gitignore
-  echo ".gitignore" > .gitignore
-  touch README.md
-  git add README.md
-  git commit -m "Initial Commit"
-}
-
-mdtidy(){
-  pandoc -s --atx-headers -t markdown $1 -o $1
-}
-
-mdtidyref(){
-  pandoc --reference-links -s --atx-headers -t markdown $1 -o $1
-}
-
-todohtml(){
-  fn="/Users/davison/Dropbox/notes/todo.md"
-  tmpfile="/Users/davison/Dropbox/notes/.todo.md"
-  fno="/Users/davison/Dropbox/notes/.todo.html"
-  [ -e $tmpfile ] && rm $tmpfile
-  [ -e $fno ] && rm $fno
-  todohtml.py > $tmpfile
-  pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained $tmpfile > $fno
-  [ -e $tmpfile ] && rm $tmpfile
-}
-last_logbook_html(){
-    fn_short=`ls -1 ~/engd/paperwork/logbook/2016/ | tail -n1`
-    fn=/Users/davison/engd/paperwork/logbook/2016/$fn_short
-    (cd ~/Dropbox/notes/ && mdtohtml $fn && mv .$(extractFilenameNoExt $fn_short).html .last.html)
+mdtidyref() {
+    pandoc --reference-links -s --atx-headers -t markdown $1 -o $1
 }
 
 git_merge() {
@@ -257,20 +156,20 @@ git_merge() {
     echo "Need to commit"
 }
 
-kpython(){
+kpython() {
     docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python python "$@"
 }
 
-kipython(){
+kipython() {
     docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python ipython
 }
 
-kjupyter(){
+kjupyter() {
     (sleep 3 && open "http://$(docker-machine ip):8888")&
     docker run -v $PWD:/tmp/working -w=/tmp/working -p 8888:8888 --rm -it kaggle/python jupyter notebook --no-browser --ip="\*" --notebook-dir=/tmp/working
 }
 
-shuffleclipboard(){
+shuffleclipboard() {
     pbpaste | gshuf | pbcopy
     pbpaste | gshuf | pbcopy
     pbpaste | gshuf | pbcopy
@@ -284,15 +183,6 @@ tm() {
     session=$(tmux list-sessions -F "#{session_name}" | \
         fzf --query="$1" --select-1 --exit-0) &&
         tmux attach-session -t "$session" || tmux new-session -s $newsession
-}
-
-zl() {
-    local choice
-    choice="$(zl.pl)"
-    if [ -n "$choice" ]; then
-        echo "$choice"
-        cd "$choice"
-    fi
 }
 
 mostCommonWords() {
@@ -317,15 +207,25 @@ MoveNamedScreenshot() {
 # --- Functions for dealing with CSV files
 ## Print rows until a regex is found at the start of a row
 print_before () {
-  awk -v date=$1 '$0 ~ "^"date{exit} {print $0}' $2
+    awk -v date=$1 '$0 ~ "^"date{exit} {print $0}' $2
 }
 
 # Ignore rows until a regex is found at the start of a row
 print_after () {
-  awk -v date=$1 '$0 ~ "^"date{start=1} start==1{print $0}' $2
+    awk -v date=$1 '$0 ~ "^"date{start=1} start==1{print $0}' $2
 }
 
 # Ignore rows before regex1 is found, exit after regex2 is found.
 print_between () {
-  awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3
+    awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3
 }
+
+checkchurning () {
+    pushd ~/dev/src/github.com/etsteam/churning > /dev/null
+    pwd
+    git fetch --all
+    git status
+    popd > /dev/null
+}
+
+source ~/.dotfiles/shell/markdown
