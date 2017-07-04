@@ -62,6 +62,9 @@
 	pl = pull
 	pb = pull --rebase --prune
 
+    rb = rebase
+    rbc = rebase --continue
+
     undo = reset HEAD~1 --mixed
 
     s = status -s
