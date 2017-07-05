@@ -28,8 +28,7 @@ alias .5="cd ../../../../.."
 alias cbssh="cbf ~/.ssh/id_rsa.pub"
 
 # Python machine-learning environment
-alias ml="source ~/.envs/ml/bin/activate"
-
+alias datasci="source ~/.virtualenvs/datasci/bin/activate"
 
 # Nice git aliases
 alias g='git'
