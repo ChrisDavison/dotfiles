@@ -2023,6 +2023,10 @@ div.prompt.input_prompt {
     margin: 0.5em 0;
 }
 
+.output_png {
+    margin: 0 auto;
+}
+
 <script>
     MathJax.Hub.Config({
         "HTML-CSS": {
