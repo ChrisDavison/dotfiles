@@ -1,0 +1,19 @@
+# ~/.tmuxinator/jupyter.yml
+
+name: jupyter
+root: ~/
+
+pre_window: source ~/.virtualenvs/datasci/bin/activate
+attach: false
+
+windows:
+  - research:
+      layout: main-vertical
+      root: ~/dev/src/github.com/chrisdavison/research/
+      panes:
+        - jupyter notebook
+  - churning:
+      layout: main-vertical
+      root: ~/dev/src/github.com/etsteam/churning/notebooks
+      panes:
+        - jupyter notebook
