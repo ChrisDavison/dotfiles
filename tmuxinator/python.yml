@@ -1,0 +1,14 @@
+# ~/.tmuxinator/python.yml
+
+name: python
+root: ~/
+
+pre_window: source ~/.virtualenvs/datasci/bin/activate
+attach: false
+
+windows:
+  - cowanalysis:
+      layout: main-vertical
+      root: ~/dev/src/github.com/chrisdavison/cow-analysis/
+      panes:
+        - ipython

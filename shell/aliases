@@ -41,18 +41,13 @@ alias grest='gr @engd status'
 alias grpst='gr @personal status'
 alias grl="gr @live git --no-pager log --decorate --graph --oneline -n 3"
 
-
-alias dirtyrepo='gr status | grep -E "behind|ahead|modified"'
 alias dr='gr status | grep -E "behind|ahead|modified"'
-alias unpushedrepo='gr status | grep "Clean" | grep "ahead"'
 
 # Utilities
 alias cl='catless'
 
-alias todos="todof ~/Dropbox/notes/todo.md"
 alias mdepub="pandoc -s -t epub"
-
-alias todoa="~/bin/addtodo.py"
 
 alias tma='tmux attach -d -t'
 alias tmuxhere='tmux new -s $(basename $(pwd))'
+alias mux="tmuxinator"
