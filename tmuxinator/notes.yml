@@ -20,7 +20,7 @@ windows:
   - paperwork:
       root: ~/dev/src/github.com/chrisdavison/paperwork
       panes:
-        - vim logbook/2017.md projects/precision-beef/README.md projects/precision-beef/minutes.md projects/cow-health/README.md projects/cow-health/minutes.md projects/calving/README.md projects/bbsrc-sara--cochno/README.md papers/README.md
+        - vim logbook/2017.md projects/precision-beef/README.md projects/cow-health/README.md projects/calving/README.md projects/bbsrc-sara--cochno/README.md papers/README.md
   - research: 
       root: ~/dev/src/github.com/chrisdavison/research/
       panes:
