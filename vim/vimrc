@@ -189,6 +189,7 @@ iabbrev WIP **WIP**
 iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
 iabbrev Q? **Q?** 
+iabbrev ACT **ACTION:**
 
 " Economics-specific abbreviations{{{2
 iabbrev gnss goods and services
@@ -859,5 +860,7 @@ endfunction
 
 command! RotateScheduleWord call RotateWord()
 nnoremap <leader>r  :RotateScheduleWord<Cr>
+
+iabbrev invq ¿
 "}}}
-" ============================================================================
+"============================================================================
