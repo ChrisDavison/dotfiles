@@ -156,13 +156,15 @@ if has('gui')
     set encoding=utf-8
     set bg=dark
     colorscheme base16-eighties
-    set guifont=Monaco:h14
+    set guifont=Iosevka:h18,Input_Mono:h18
     
     " Disable menu bollocks
     set guioptions-=m
     set guioptions-=T
     set guioptions-=r
+    set guioptions-=R
     set guioptions-=L
+    set guioptions-=l
 else
     set bg=dark
     colorscheme Monokai
