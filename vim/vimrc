@@ -288,7 +288,6 @@ nnoremap <leader>sv :so $MYVIMRC<Cr>
 " Keybinds to go to specific files/dirs
 nnoremap <leader>es :e $SRCME/
 nnoremap <leader>ee :e $HOME/dev/etc/
-nnoremap <leader>ei :e $HOME/Dropbox/notes/inbox.md<Cr>
 " }}}2
 
 " Miscellany {{{2
