@@ -24,6 +24,7 @@ export SCRIPTPATH="$HOME/dev/etc/scripts"
 export SRCME="$HOME/dev/src/github.com/chrisdavison"
 export SRCALL="$HOME/dev/src/"
 export GIT_GET_PATH="$HOME/dev/src"
+export RESEARCHFIGURES="$HOME/dev/src/github.com/chrisdavison/paperwork/interesting-figures"
 
 export JOBSTATUS="$HOME/.jobstatus"
 
