@@ -147,14 +147,19 @@ endif
 
 call plug#end()
 
-
 " }}}
 " ============================================================================
 " APPEARANCE {{{ 
 " ============================================================================
+" Using theme variables to facilitate a light-dark toggle function
+let g:cd_theme_mode = 'DARK'
+let g:cd_light_theme = 'github'
+let g:cd_dark_theme = 'base16-eighties'
+
 if has('gui')
     set encoding=utf-8
     set bg=dark
+    execute 'colorscheme ' g:cd_dark_theme
     colorscheme base16-eighties
     set guifont=Iosevka:h18,Input_Mono:h18
     
@@ -167,13 +172,15 @@ if has('gui')
     set guioptions-=l
 else
     set bg=dark
-    colorscheme Monokai
+    let g:cd_dark_theme='Monokai'
+    execute 'colorscheme ' g:cd_dark_theme
     set t_ut=
 endif
 
 "-- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
+
 " }}}
 " ============================================================================
 " ABBREVIATIONS {{{ 
@@ -192,6 +199,9 @@ iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
 iabbrev Q? **Q?** 
 iabbrev ACT **ACTION:**
+iabbrev ASM *Assume* :: 
+iabbrev T4 $\therefore$
+iabbrev IMPL $\implies$
 
 " Economics-specific abbreviations{{{2
 iabbrev gnss goods and services
@@ -533,7 +543,6 @@ endfunction
 
 autocmd! BufNewFile *.* :call Hashbang(1,1)
 
-
 " }}}
 " ============================================================================
 " STATUSBAR {{{ 
@@ -820,14 +829,46 @@ command! Today call InsertDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
 " }}}2
 
+" Toggle theme between light and dark {{{2
+function! ToggleTheme()
+    if g:cd_theme_mode == 'DARK'
+        execute 'colorscheme ' g:cd_light_theme
+        set bg=light
+        let g:cd_theme_mode='LIGHT'
+    else
+        execute 'colorscheme ' g:cd_dark_theme
+        set bg=dark
+        let g:cd_theme_mode='DARK'
+    endif
+endfunction
+
+command! ToggleTheme call ToggleTheme()
+" }}}2
+
+" Schedule words, like Emacs' Org-Mode {{{2
+let g:cd_schedule_words = [ 'TODO' , 'DONE', 'CANCELLED' ]
+function! RotateWord()
+    let N = len(g:cd_schedule_words)
+    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
+    let idx = index(g:cd_schedule_words, cur)
+    if idx >= 0
+        let next = g:cd_schedule_words[(idx+1) % N]
+        let cmd = "ciW**" . next . "**"
+        execute "normal " . cmd
+    endif
+endfunction
+
+command! RotateScheduleWord call RotateWord()
+" }}}2
+
 " Bindings for functions {{{2
 noremap zt :call ToggleFold()<CR>
 nmap nw :call ToggleWrap()<CR>
 nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 map <F10> :CurrentScope<Cr>
+nnoremap <leader>r  :RotateScheduleWord<Cr>
 " }}}2
-
 " }}}
 " ============================================================================
 " ----- EXPERIMENTAL ----- {{{ 
@@ -847,21 +888,10 @@ augroup autoSaveAndRead
     autocmd CursorHold * silent! checktime
 augroup END
 
-let g:cd_schedule_words = [ 'TODO' , 'DONE', 'CANCELLED' ]
-function! RotateWord()
-    let N = len(g:cd_schedule_words)
-    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
-    let idx = index(g:cd_schedule_words, cur)
-    if idx >= 0
-        let next = g:cd_schedule_words[(idx+1) % N]
-        let cmd = "ciW**" . next . "**"
-        execute "normal " . cmd
-    endif
-endfunction
-
-command! RotateScheduleWord call RotateWord()
-nnoremap <leader>r  :RotateScheduleWord<Cr>
 
 iabbrev invq ¿
+let g:snips_author='Chris Davison'
+let g:snips_email='c.jr.davison@gmail.com'
+let g:snips_github='ChrisDavison'
 "}}}
 "============================================================================
