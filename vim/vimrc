@@ -153,8 +153,8 @@ call plug#end()
 " ============================================================================
 " Using theme variables to facilitate a light-dark toggle function
 let g:cd_theme_mode = 'DARK'
-let g:cd_light_theme = 'github'
-let g:cd_dark_theme = 'base16-eighties'
+let g:cd_light_theme = 'seoul256'
+let g:cd_dark_theme = 'seoul256'
 
 if has('gui')
     set encoding=utf-8
