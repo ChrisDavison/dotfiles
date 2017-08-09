@@ -87,6 +87,7 @@ Plug 'fatih/vim-go'
 Plug 'pangloss/vim-javascript'
 Plug 'racer-rust/vim-racer'
 Plug 'plasticboy/vim-markdown'
+Plug 'rbonvall/snipmate-snippets-bib'
 
 " Utility
 Plug 'mattn/webapi-vim'
@@ -894,4 +895,5 @@ let g:snips_author='Chris Davison'
 let g:snips_email='c.jr.davison@gmail.com'
 let g:snips_github='ChrisDavison'
 "}}}
+let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 "============================================================================
