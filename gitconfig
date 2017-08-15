@@ -23,6 +23,15 @@
 
 	a = add --all
  
+    branches = branch -a
+    tags = tag
+    stashes = stash list
+
+    unadd = reset -q HEAD -- 
+    discard = checkout -- 
+    uncommit = reset --mixed HEAD~ 
+    precommit = diff --cached --diff-algorithm=minimal -w 
+
 	b = branch
 	ba = branch -a
 	bd = branch -d
