@@ -821,12 +821,18 @@ function! InsertDateAtPoint()
     normal kJ
 endfunction
 
+function! InsertNamedDateAtPoint()
+    read!date "+\%Y-\%m-\%d - \%a"
+    normal kJ
+endfunction
+
 function! InsertTimestampAtPoint()
     read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
     normal kJ
 endfunction
 
 command! Today call InsertDateAtPoint()
+command! TodayNamed call InsertNamedDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
 " }}}2
 
@@ -894,6 +900,6 @@ iabbrev invq ¿
 let g:snips_author='Chris Davison'
 let g:snips_email='c.jr.davison@gmail.com'
 let g:snips_github='ChrisDavison'
-"}}}
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
+"}}}
 "============================================================================
