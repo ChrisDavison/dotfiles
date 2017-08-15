@@ -169,14 +169,6 @@ kjupyter() {
     docker run -v $PWD:/tmp/working -w=/tmp/working -p 8888:8888 --rm -it kaggle/python jupyter notebook --no-browser --ip="\*" --notebook-dir=/tmp/working
 }
 
-shuffleclipboard() {
-    pbpaste | gshuf | pbcopy
-    pbpaste | gshuf | pbcopy
-    pbpaste | gshuf | pbcopy
-    pbpaste | gshuf | pbcopy
-    pbpaste | gshuf | pbcopy
-}
-
 tm() {
     local session
     newsession=${1:-new}
@@ -219,13 +211,3 @@ print_after () {
 print_between () {
     awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3
 }
-
-checkchurning () {
-    pushd ~/dev/src/github.com/etsteam/churning > /dev/null
-    pwd
-    git fetch --all
-    git status
-    popd > /dev/null
-}
-
-source ~/.dotfiles/shell/markdown
