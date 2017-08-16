@@ -449,30 +449,9 @@ let g:syntastic_python_checkers = ['flake8']
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
 
-" Rust 
-let g:racer_cmd = "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer"
-let $RUST_SRC_PATH="/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/"
-
 " Settings --- 'let' commands 
 let b:javascript_fold=1
 let g:go_fmt_command = "goimports"
-
-" Tagbar support
-" Add support for markdown files in tagbar.
-let g:tagbar_type_markdown = {
-    \ 'ctagstype': 'markdown',
-    \ 'ctagsbin' : '/Users/davison/prog/z__NOT_MINE/markdown2ctags/markdown2ctags.py',
-    \ 'ctagsargs' : '-f - --sort=yes',
-    \ 'kinds' : [
-        \ 's:sections',
-        \ 'i:images'
-    \ ],
-    \ 'sro' : '|',
-    \ 'kind2scope' : {
-        \ 's' : 'section',
-    \ },
-    \ 'sort': 0,
-\ }
 
 " Tables
 let g:table_mode_corner="|"
