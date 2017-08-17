@@ -195,7 +195,6 @@ cnoreabbrev QA qa
 
 iabbrev @@ c.jr.davison@gmail.com
 iabbrev TD **TODO**
-iabbrev WIP **WIP**
 iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
 iabbrev Q? **Q?** 
@@ -832,7 +831,7 @@ command! ToggleTheme call ToggleTheme()
 " }}}2
 
 " Schedule words, like Emacs' Org-Mode {{{2
-let g:cd_schedule_words = [ 'TODO' , 'DONE', 'CANCELLED' ]
+let g:cd_schedule_words = [ 'TODO' , 'WIP' , 'DONE', 'CANCELLED' ]
 function! RotateWord()
     let N = len(g:cd_schedule_words)
     let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
