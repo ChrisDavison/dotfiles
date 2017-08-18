@@ -117,6 +117,7 @@ Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
@@ -843,7 +844,17 @@ function! RotateWord()
     endif
 endfunction
 
+function! ScheduleDone()
+    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
+    let idx = index(g:cd_schedule_words, cur)
+    if idx >= 0
+        let cmd = "ciW**DONE**"
+        execute "normal " . cmd
+    endif
+endfunction
+
 command! RotateScheduleWord call RotateWord()
+command! ScheduleDone call ScheduleDone()
 " }}}2
 
 " Bindings for functions {{{2
@@ -853,6 +864,7 @@ nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 map <F10> :CurrentScope<Cr>
 nnoremap <leader>r  :RotateScheduleWord<Cr>
+nnoremap <leader>d  :ScheduleDone<Cr>
 " }}}2
 " }}}
 " ============================================================================
