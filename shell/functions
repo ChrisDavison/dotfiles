@@ -140,11 +140,18 @@ mygitinit() {
 }
 
 mdtidy() {
-    pandoc -s --atx-headers -t markdown $1 -o $1
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt $1 -o $1
+}
+
+mdtidywrap() {
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt --columns=80 $1 -o $1
 }
 
 mdtidyref() {
-    pandoc --reference-links -s --atx-headers -t markdown $1 -o $1
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1
 }
 
 git_merge() {
