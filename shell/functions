@@ -141,7 +141,7 @@ mygitinit() {
 
 mdtidy() {
     fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-    pandoc -s --atx-headers --normalize -t $fmt $1 -o $1
+    pandoc -s --atx-headers --normalize -t $fmt --wrap=none $1 -o $1
 }
 
 mdtidywrap() {
