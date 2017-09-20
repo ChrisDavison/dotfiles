@@ -11,11 +11,11 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
 
 # Environment variables/path
 # export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
-export GOPATH="$HOME/go";
-export GOBIN="$HOME/go/bin";
+export GOPATH="$HOME";
+export GOBIN="$HOME/bin";
 export TEXPATH="/usr/texbin";
 export NODEPATH="/usr/local/lib/node_modules";
-export HOMEBIN="$HOME/.bin"
+export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export STACKBIN="$HOME/.local/bin"
 export RESEARCHFIGURES="$HOME/Dropbox/work/figures/"
