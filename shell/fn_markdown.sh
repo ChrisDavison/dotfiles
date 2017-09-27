@@ -19,3 +19,17 @@ md2pdf() {
     pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in
 }
 
+mdtidy() {
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt --wrap=none $1 -o $1
+}
+
+mdtidywrap() {
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt --columns=80 $1 -o $1
+}
+
+mdtidyref() {
+    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+    pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1
+}

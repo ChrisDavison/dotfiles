@@ -1,33 +1,3 @@
-# Functions for use in terminal
-
-
-# A shortcut function that simplifies usage of xclip.
-# - Accepts input from either stdin (pipe), or params.
-# ------------------------------------------------
-
-# Make find easier to use
-myfind() {
-    find ./ -iname "*$2*" -type "$1"
-}
-
-# And even simpler, for files and directories
-ff() { myfind "f" "$1"; }
-fd() { myfind "d" "$1"; }
-
-# Easily jump back to Vim with CtrlZ
-fancy-ctrl-z () {
-    if [[ $#BUFFER -eq 0 ]]; then
-        BUFFER="fg"
-        zle accept-line
-    else
-        zle push-input
-        zle clear-screen
-    fi
-}
-zle -N fancy-ctrl-z
-bindkey '^Z' fancy-ctrl-z
-
-
 # Use cat or less, depending on linecount
 catless() {
     height=$(tput lines)
@@ -44,49 +14,8 @@ mans () {
     man $1 | grep -iC2 --color=always $2 | less
 }
 
-extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
-mktar () {
-    tar -cvf "$1".tar.gz "${@:2}"
-}
-
-prevtar () {
-    tar -ztvf "$1"
-}
-
 remspace () {
     rename 's/\s+/_/g' "$1"
-}
-
-ii() {
-    echo -e "\nYou are logged on ${RED}$HOST"
-    echo -e "\nAdditionnal information:$NC " ; uname -a
-    echo -e "\n${RED}Users logged on:$NC " ; w -h
-    echo -e "\n${RED}Current date :$NC " ; date
-    echo -e "\n${RED}Machine stats :$NC " ; uptime
-    echo -e "\n${RED}Current network location :$NC " ; scselect
-    echo -e "\n${RED}Public facing IP Address :$NC " ;myip
-    #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-    echo
 }
 
 extractFilenameNoExt () {
@@ -95,85 +24,8 @@ extractFilenameNoExt () {
     echo $file_no_ext
 }
 
-ht () {
-    if [ $# -lt 1 ]; then
-        echo "Usage: ht FILE [DELIMITER=' ']"
-        return -1
-    fi
-    if [ $# -eq 1 ]; then 
-        delim=' '
-    fi
-    if [ $# -ge 2 ]; then 
-        delim=$2
-    fi
-    awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
-    tail -n 1 $1 | awk -F $delim '{ print $1 }'
-  #    head -n 2 $1 && tail -n 1 $1
-}
-
-epoch2date () {
-    epc=$1
-    fmt='+%Y%m%d %H:%M:%S'
-    date -r $epc $fmt
-}
-
-today () {
-    date +"%Y-%m-%d"
-}
-
-dir_today () {
-    mkdir output_`date +"%Y%m%s"`
-}
-
 running() {
     ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
-}
-
-
-mygitinit() {
-    git init
-    touch .gitignore
-    echo ".gitignore" > .gitignore
-    touch README.md
-    git add README.md
-    git commit -m "Initial Commit"
-}
-
-mdtidy() {
-    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-    pandoc -s --atx-headers --normalize -t $fmt --wrap=none $1 -o $1
-}
-
-mdtidywrap() {
-    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-    pandoc -s --atx-headers --normalize -t $fmt --columns=80 $1 -o $1
-}
-
-mdtidyref() {
-    fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-    pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1
-}
-
-git_merge() {
-    proj=$1
-    gitdir=$2
-    git remote add -f $proj $gitdir
-    git merge -s ours --allow-unrelated-histories --no-commit $proj/master
-    git read-tree --prefix=$proj/ -u $proj/master
-    echo "Need to commit"
-}
-
-kpython() {
-    docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python python "$@"
-}
-
-kipython() {
-    docker run -v $PWD:/tmp/working -w=/tmp/working --rm -it kaggle/python ipython
-}
-
-kjupyter() {
-    (sleep 3 && open "http://$(docker-machine ip):8888")&
-    docker run -v $PWD:/tmp/working -w=/tmp/working -p 8888:8888 --rm -it kaggle/python jupyter notebook --no-browser --ip="\*" --notebook-dir=/tmp/working
 }
 
 tm() {
@@ -201,20 +53,4 @@ MoveNamedScreenshot() {
     fn=$2"/"$3
     echo "../"$(basename $2)"/"$3 | pbcopy
     mv $1 $fn
-}
-
-# --- Functions for dealing with CSV files
-## Print rows until a regex is found at the start of a row
-print_before () {
-    awk -v date=$1 '$0 ~ "^"date{exit} {print $0}' $2
-}
-
-# Ignore rows until a regex is found at the start of a row
-print_after () {
-    awk -v date=$1 '$0 ~ "^"date{start=1} start==1{print $0}' $2
-}
-
-# Ignore rows before regex1 is found, exit after regex2 is found.
-print_between () {
-    awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3
 }
