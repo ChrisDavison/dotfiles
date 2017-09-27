@@ -3,23 +3,25 @@ ZSH_THEME="cloud"
 
 SRCME=~/.dotfiles/shell
 
-for file in $SRCME/{aliases,exports,functions,markdown}; do
-    [ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
-unset file;
-
-source $ZSH/oh-my-zsh.sh
-
-man() {
-    LESS_TERMCAP_mb=$'\e'"[1;31m" \
-    LESS_TERMCAP_md=$'\e'"[1;31m" \
-    LESS_TERMCAP_me=$'\e'"[0m" \
-    LESS_TERMCAP_se=$'\e'"[0m" \
-    LESS_TERMCAP_so=$'\e'"[1;44;33m" \
-    LESS_TERMCAP_ue=$'\e'"[0m" \
-    LESS_TERMCAP_us=$'\e'"[1;32m" \
-    command man "$@"
+sourceOrMessage() {
+    [ -f $1 ] && source $1 || echo "No $1"
 }
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+sourceOrMessage $ZSH/oh-my-zsh.sh
+
+sourceOrMessage $SRCME/aliases.sh
+sourceOrMessage $SRCME/exports.sh
+sourceOrMessage $SRCME/fn_coloured_man.sh
+sourceOrMessage $SRCME/fn_markdown.sh
+sourceOrMessage $SRCME/fn_find.sh
+sourceOrMessage $SRCME/fn_compression.sh
+sourceOrMessage $SRCME/fn_csv_filter.sh
+sourceOrMessage $SRCME/fn_ctrl_z.sh
+sourceOrMessage $SRCME/fn_dated.sh
+sourceOrMessage $SRCME/fn_headtail.sh
+sourceOrMessage $SRCME/fn_git.sh
+
+sourceOrMessage $SRCME/functions
+
+sourceOrMessage ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
