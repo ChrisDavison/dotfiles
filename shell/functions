@@ -54,3 +54,11 @@ MoveNamedScreenshot() {
     echo "../"$(basename $2)"/"$3 | pbcopy
     mv $1 $fn
 }
+
+literatureTitle() {
+    authors="$(slugify "$1")"
+    year=$2
+    title="$(slugify "$3")"
+    ext=$4
+    echo "$year--$authors--$title.$ext"
+}
