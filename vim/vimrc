@@ -155,14 +155,13 @@ call plug#end()
 " ============================================================================
 " Using theme variables to facilitate a light-dark toggle function
 let g:cd_theme_mode = 'DARK'
-let g:cd_light_theme = 'seoul256'
-let g:cd_dark_theme = 'seoul256'
+let g:cd_light_theme = 'solarized'
+let g:cd_dark_theme = 'solarized'
 
 if has('gui')
     set encoding=utf-8
     set bg=dark
     execute 'colorscheme ' g:cd_dark_theme
-    colorscheme base16-eighties
     set guifont=Iosevka:h18,Input_Mono:h18
     
     " Disable menu bollocks
@@ -174,7 +173,8 @@ if has('gui')
     set guioptions-=l
 else
     set bg=dark
-    let g:cd_dark_theme='Monokai'
+    let g:cd_dark_theme='paramount'
+    let g:cd_light_theme='github'
     execute 'colorscheme ' g:cd_dark_theme
     set t_ut=
 endif
@@ -816,8 +816,8 @@ command! TimeNow call InsertTimestampAtPoint()
 " }}}2
 
 " Toggle theme between light and dark {{{2
-function! ToggleTheme()
-    if g:cd_theme_mode == 'DARK'
+function! ToggleTheme(mode)
+    if a:mode == 'DARK'
         execute 'colorscheme ' g:cd_light_theme
         set bg=light
         let g:cd_theme_mode='LIGHT'
@@ -828,7 +828,9 @@ function! ToggleTheme()
     endif
 endfunction
 
-command! ToggleTheme call ToggleTheme()
+command! ToggleTheme call ToggleTheme(cd_theme_mode)
+command! DayTheme call ToggleTheme('DARK')
+command! NightTheme call ToggleTheme('LIGHT')
 " }}}2
 
 " Schedule words, like Emacs' Org-Mode {{{2
