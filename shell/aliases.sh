@@ -32,6 +32,7 @@ alias datasci="source ~/.virtualenvs/datasci/bin/activate"
 
 # Nice git aliases
 alias g='git'
+alias gap='git add -p'
 
 # Mixu git-run (gr) aliases...
 # For handling multiple git repos
