@@ -893,5 +893,13 @@ let g:snips_author='Chris Davison'
 let g:snips_email='c.jr.davison@gmail.com'
 let g:snips_github='ChrisDavison'
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
+
+
+function! ToggleLinum()
+    set relativenumber!
+    set number!
+endfunction
+
+command! ToggleLinum call ToggleLinum()
 "}}}
 "============================================================================
