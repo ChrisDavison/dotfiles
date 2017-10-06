@@ -9,16 +9,12 @@ snippet rqtemplate
 
 	### Tasks
 
-snippet tlog
-	-   **TODO** Check email
-	-   **TODO** Check newsletters/information
-	-   **TODO** 'Waiting'; anything updated?
-	-   **TODO** Change any priorities?
-	-   **TODO** Today's work
-	-   **TODO** Anything needing followed up from yesterday?
-	-   **TODO** Any code/notebooks needing commented/clarified?
+snippet logbook
+	#   `InsertNamedDateAtPoint()`
 
-	Extra:
+	-   ***Today***: ${1:todo}
+	-   ***Email***: ${2:email?}
+	-   ${3:extra}
 
 snippet LBR
 	`repeat('-', 80)`
