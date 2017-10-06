@@ -90,13 +90,10 @@ Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 
 " Utility
-Plug 'mattn/webapi-vim'
-Plug 'mattn/gist-vim'
-Plug 'shime/vim-livedown'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'airblade/vim-gitgutter'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'
 Plug 'ervandew/supertab'
@@ -104,20 +101,25 @@ Plug 'garbas/vim-snipmate'
 Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
 Plug 'honza/vim-snippets'
+Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
+Plug 'mattn/gist-vim'
+Plug 'mattn/webapi-vim'
 Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/syntastic'
+Plug 'shime/vim-livedown'
 Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
@@ -126,7 +128,6 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
-Plug 'jpalardy/vim-slime'
 
 " Plugins I'm currently *not* using
 " Distraction-free writing
@@ -900,6 +901,20 @@ function! ToggleLinum()
     set number!
 endfunction
 
+function! Linum()
+    set number
+    set relativenumber
+endfunction
+
+function! NoLinum()
+    set nonumber
+    set norelativenumber
+endfunction
+
+
 command! ToggleLinum call ToggleLinum()
+command! NoLinum call NoLinum()
+command! Linum call Linum()
+
 "}}}
 "============================================================================
