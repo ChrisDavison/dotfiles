@@ -19,7 +19,8 @@ set encoding=utf-8
 scriptencoding utf-8
 set showcmd
 set wrap lbr
-set showbreak=⇇
+set showbreak=▶
+set breakindent
 set omnifunc=syntaxcomplete#Complete
 set number
 set iskeyword=a-z,A-Z,_,.,39
@@ -105,7 +106,7 @@ Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
@@ -156,14 +157,17 @@ call plug#end()
 " ============================================================================
 " Using theme variables to facilitate a light-dark toggle function
 let g:cd_theme_mode = 'DARK'
-let g:cd_light_theme = 'solarized'
-let g:cd_dark_theme = 'solarized'
+let g:cd_dark_theme='pencil'
+let g:cd_light_theme='pencil'
 
 if has('gui')
+    let g:cd_light_theme = 'pencil'
+    let g:cd_dark_theme = 'pencil'
+
     set encoding=utf-8
     set bg=dark
     execute 'colorscheme ' g:cd_dark_theme
-    set guifont=Iosevka:h18,Input_Mono:h18
+    set guifont=Fira_Code:h18,Iosevka:h18,Input_Mono:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -174,11 +178,11 @@ if has('gui')
     set guioptions-=l
 else
     set bg=dark
-    let g:cd_dark_theme='paramount'
-    let g:cd_light_theme='github'
-    execute 'colorscheme ' g:cd_dark_theme
+    let g:cd_dark_theme='PaperColor'
+    let g:cd_light_theme='PaperColor'
     set t_ut=
 endif
+execute 'colorscheme ' g:cd_dark_theme
 
 "-- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
@@ -204,6 +208,8 @@ iabbrev ACT **ACTION:**
 iabbrev ASM *Assume* :: 
 iabbrev T4 $\therefore$
 iabbrev IMPL $\implies$
+iabbrev *@ **email:**
+iabbrev exp **experiment:**
 
 " Economics-specific abbreviations{{{2
 iabbrev gnss goods and services
@@ -406,10 +412,12 @@ augroup END
 
 augroup pandoc
     autocmd!
-    autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
+    " autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
     autocmd Filetype markdown,pandoc setlocal conceallevel=2
     autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
+    autocmd Filetype markdown,pandoc setlocal breakindent
+    autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
 augroup END
@@ -915,6 +923,6 @@ endfunction
 command! ToggleLinum call ToggleLinum()
 command! NoLinum call NoLinum()
 command! Linum call Linum()
-
+let gitgutter_enabled=0
 "}}}
 "============================================================================
