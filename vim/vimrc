@@ -1,18 +1,22 @@
 " vim: set foldmethod=marker foldlevel=2:
 " ChrisDavison's VIMRC {{{ 
 " ============================================================================
-set nocompatible
-syntax on
-filetype plugin indent on
+" --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
-set autochdir
+" --- Helper functions for environment, should they be needed elsewhere
+let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
 " }}}
 " ============================================================================
 " SETTINGS {{{ 
 " ============================================================================
-"-- Good defaults 
+" --- Pretty much necessary
 set nocompatible
+syntax on
+filetype plugin indent on
+
+" --- Good defaults 
+set autochdir
 syntax on
 filetype plugin indent on
 set encoding=utf-8
@@ -32,7 +36,7 @@ set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
 
-"-- Search options 
+" --- Search options 
 set incsearch " Search as you type
 set gdefault " By default, replace all matches on a line (i.e. always s///g)
 set hlsearch " Highlight search results
@@ -41,7 +45,7 @@ set smartcase
 set magic
 set backspace=indent,eol,start
 
-"-- Various coding preferences 
+" --- Various coding preferences 
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -55,13 +59,13 @@ set title
 set sidescrolloff=15
 set sidescroll=1
 
-"-- Put all temp files in one place 
+" --- Put all temp files in one place 
 set backup
 set backupcopy=yes
 set backupdir=~/.backup,.
 set directory=~/.temp,.
 
-"-- Wildmenu config 
+" --- Wildmenu config 
 set wildmenu
 set wildmode=list:longest
 
@@ -77,9 +81,11 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
+" -- Statusbar
+set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
 " }}}
 " ============================================================================
-" PLUGINS {{{ 
+" PLUGIN INSTALL {{{ 
 " ============================================================================
 call plug#begin('~/.vim/plugged')
 
@@ -91,10 +97,13 @@ Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 
 " Utility
+Plug 'ChrisDavison/daynight.vim'
+Plug 'ChrisDavison/scheduling.vim'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'airblade/vim-gitgutter'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'
 Plug 'ervandew/supertab'
@@ -105,8 +114,10 @@ Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'kkoenig/wimproved.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
@@ -130,13 +141,6 @@ Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
 
-" Plugins I'm currently *not* using
-" Distraction-free writing
-if 1
-    Plug 'junegunn/goyo.vim'
-    Plug 'junegunn/limelight.vim'
-endif
-
 " Lispy stuff
 if 0
     Plug 'jpalardy/vim-slime'
@@ -155,19 +159,9 @@ call plug#end()
 " ============================================================================
 " APPEARANCE {{{ 
 " ============================================================================
-" Using theme variables to facilitate a light-dark toggle function
-let g:cd_theme_mode = 'DARK'
-let g:cd_dark_theme='pencil'
-let g:cd_light_theme='pencil'
-
 if has('gui')
-    let g:cd_light_theme = 'pencil'
-    let g:cd_dark_theme = 'pencil'
-
     set encoding=utf-8
-    set bg=dark
-    execute 'colorscheme ' g:cd_dark_theme
-    set guifont=Fira_Code:h18,Iosevka:h18,Input_Mono:h18
+    set guifont=Fira_Code:h14,Iosevka:h16,Input_Mono:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -177,14 +171,21 @@ if has('gui')
     set guioptions-=L
     set guioptions-=l
 else
-    set bg=dark
-    let g:cd_dark_theme='PaperColor'
-    let g:cd_light_theme='PaperColor'
     set t_ut=
 endif
-execute 'colorscheme ' g:cd_dark_theme
 
-"-- Highlight long rows ----- 
+" Variables for theme switching using my custom plugin daynight.vim
+let g:themeswitch_night='paramount'
+let g:themeswitch_day='github'
+if has('gui')
+    let g:themeswitch_day='pencil'
+    let g:themeswitch_night='pencil'
+endif
+if exists("NightTheme")
+    NightTheme
+endif
+
+" --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
 
@@ -208,8 +209,9 @@ iabbrev ACT **ACTION:**
 iabbrev ASM *Assume* :: 
 iabbrev T4 $\therefore$
 iabbrev IMPL $\implies$
+iabbrev invq ¿
 iabbrev *@ **email:**
-iabbrev exp **experiment:**
+iabbrev EXP **experiment:**
 
 " Economics-specific abbreviations{{{2
 iabbrev gnss goods and services
@@ -298,14 +300,13 @@ endif
 " Funky (CtrlP for functions)
 nnoremap <leader>fu :CtrlPFunky<Cr>
 nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+" }}}2
 
+" Maps to commonly used files (VIMRC etc) {{{2
 " Keybinds to manipulate my vim config
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
-
-" Keybinds to go to specific files/dirs
-nnoremap <leader>es :e $SRCME/
-nnoremap <leader>ee :e $HOME/dev/etc/
+nnoremap <leader>es :e ~/src/github.com/chrisdavison/
 " }}}2
 
 " Miscellany {{{2
@@ -343,46 +344,18 @@ nnoremap <F11> :Goyo<Cr>
 
 command! CurPath let @+=expand("%")
 " }}}2
+
+" My Plugins - DayNight NONE
+
+" My Plugins - Scheduling {{{2
+nnoremap <leader>r :RotateScheduleWord<Cr>
+nnoremap <leader>d :ScheduleDone<Cr>
+" }}}2
 " }}}
 " ============================================================================
-" Search/navigation --- FZF & rg/ag {{{ 
+" PLUGINS / LANGUAGES {{{ 
 " ============================================================================
-" --column: Show column number
-" --line-number: Show line number
-" --no-heading: Do not show file headings in results
-" --fixed-strings: Search term as a literal string
-" --ignore-case: Case insensitive search
-" --no-ignore: Do not respect .gitignore, etc...
-" --hidden: Search hidden files and folders
-" --follow: Follow symlinks
-" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-" --color: Search color options
-
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
-
-" Use a better default searcher
-" for both CtrlP and Grep
-" ripgrep, if available, otherwise Ag
-let g:ctrlp_use_caching = 0
-if executable('rg')
-  set grepprg=rg\ --vimgrep
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-elseif executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-else
-    let g:ctrlp_use_caching = 1
-endif
-
-nnoremap <Leader>g :Find<SPACE>
-nnoremap <leader>F :Find<SPACE>
-" }}}
-" ============================================================================
-" LANGUAGES {{{ 
-" ============================================================================
-" Autocommand groups for filetypes/languages {{{2
+" Autocommand groups --- filetype specific stuff {{{2
 augroup filetype_c
     autocmd!
     autocmd FileType c       set foldmethod=syntax
@@ -412,12 +385,11 @@ augroup END
 
 augroup pandoc
     autocmd!
-    " autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
+    "autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
     autocmd Filetype markdown,pandoc setlocal conceallevel=2
+    autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
     autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
-    autocmd Filetype markdown,pandoc setlocal breakindent
-    autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
 augroup END
@@ -434,21 +406,54 @@ augroup filetype_miscellany
     autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
 augroup END
 " }}}2
+" Search (FZF / CtrlP / Ag) {{{2
+" Use `rg` if available, fallback to `ag`
+let g:ctrlp_use_caching = 0
+if !s:haswin
+    if executable('rg')
+      set grepprg=rg\ --vimgrep
+      let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
 
-" Let/settings for language-based packages {{{2
-" Latex / Vimtex 
+      " --column: Show column number
+      " --line-number: Show line number
+      " --no-heading: Do not show file headings in results
+      " --fixed-strings: Search term as a literal string
+      " --ignore-case: Case insensitive search
+      " --no-ignore: Do not respect .gitignore, etc...
+      " --hidden: Search hidden files and folders
+      " --follow: Follow symlinks
+      " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+      " --color: Search color options
+
+      command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+
+
+      nnoremap <Leader>g :Find<SPACE>
+      nnoremap <leader>F :Find<SPACE>
+    elseif executable('ag')
+      " Use ag over grep
+      set grepprg=ag\ --nogroup\ --nocolor
+      let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+    let g:ctrlp_use_caching = 1
+    let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files --oc --exclude-standard']
+endif
+
+
+" }}}2
+" Latex / Vimtex {{{2
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 let g:tex_flavor = "latex"
 let g:vimtex_indent_enabled=1
 let g:vimtex_fold_enabled=1
-
-" C++ 
+" }}}2
+" C++ {{{2
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-
-" Python 
+" }}}2
+" Python  {{{2
 let g:pymode_python = 'python3'
 
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
@@ -457,24 +462,19 @@ let g:syntastic_python_checkers = ['flake8']
 " Vim-slime - tmux & python
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
-
-" Settings --- 'let' commands 
-let b:javascript_fold=1
-let g:go_fmt_command = "goimports"
-
-" Tables
+" }}}2
+" Tables {{{2
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
-
-let g:tex_flavor='latex'
-
+" }}}2
+" UltiSnips {{{2
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
-
-
+" }}}2
+" Pandoc {{{2
 let g:pandoc#spell#enabled=0
 let g:pandoc#syntax#conceal#urls = 1
 let g:pandoc#formatting#mode='s'
@@ -483,6 +483,22 @@ let g:pandoc#formatting#equalprg = "pandoc -t markdown -s"
 let g:pandoc#formatting#extra_equalprg = "--columns=80 --normalize --atx-headers"
 let g:pandoc#syntax#conceal#blacklist = ['list', 'atx']
 let g:vim_markdown_toc_autofit = 1
+" }}}2
+" Goyo {{{2
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
+let g:goyo_width=80
+" }}}2
+" Syntastic {{{2
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+"  }}}2
+" EXTRA {{{2
+let b:javascript_fold=1
+let g:go_fmt_command = "goimports"
+let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
 " ============================================================================
@@ -534,137 +550,6 @@ autocmd! BufNewFile *.* :call Hashbang(1,1)
 
 " }}}
 " ============================================================================
-" STATUSBAR {{{ 
-" ============================================================================
-" Vim status bar
-" %< Where to truncate
-" %n buffer number
-" %F Full path
-" %m Modified flag: [+], [-]
-" %r Readonly flag: [RO]
-" %y Type:          [vim]
-" fugitive#statusline()
-" %= Separator
-" %-14.(...)
-" %l Line
-" %c Column
-" %V Virtual column
-" %P Percentage
-" %#HighlightGroup#
-if 1
-    set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
-    silent! if emoji#available()
-      let s:ft_emoji = map({
-        \ 'c':          'baby_chick',
-        \ 'clojure':    'lollipop',
-        \ 'coffee':     'coffee',
-        \ 'cpp':        'chicken',
-        \ 'css':        'art',
-        \ 'eruby':      'ring',
-        \ 'gitcommit':  'soon',
-        \ 'haml':       'hammer',
-        \ 'help':       'angel',
-        \ 'html':       'herb',
-        \ 'java':       'older_man',
-        \ 'javascript': 'monkey',
-        \ 'make':       'seedling',
-        \ 'markdown':   'book',
-        \ 'perl':       'camel',
-        \ 'python':     'snake',
-        \ 'ruby':       'gem',
-        \ 'scala':      'barber',
-        \ 'sh':         'shell',
-        \ 'slim':       'dancer',
-        \ 'text':       'books',
-        \ 'vim':        'poop',
-        \ 'vim-plug':   'electric_plug',
-        \ 'yaml':       'yum',
-        \ 'yaml.jinja': 'yum'
-        \ }, 'emoji#for(v:val)')
-
-        function! S_filetype()
-        if empty(&filetype)
-          return emoji#for('grey_question')
-        else
-          return get(s:ft_emoji, &filetype, '['.&filetype.']')
-        endif
-      endfunction
-
-      function! S_modified()
-        if &modified
-          return emoji#for('kiss').' '
-        elseif !&modifiable
-          return emoji#for('construction').' '
-        else
-          return ''
-        endif
-      endfunction
-
-      function! S_fugitive()
-        if !exists('g:loaded_fugitive')
-          return ''
-        endif
-        let head = fugitive#head()
-        if empty(head)
-          return ''
-        else
-          return head == 'master' ? emoji#for('crown') : emoji#for('dango').'='.head
-        endif
-      endfunction
-
-      let s:braille = split('"⠉⠒⠤⣀', '\zs')
-      function! Braille()
-        let len = len(s:braille)
-        let [cur, max] = [line('.'), line('$')]
-        let pos  = min([len * (cur - 1) / max([1, max - 1]), len - 1])
-        return s:braille[pos]
-      endfunction
-
-      hi def link User1 TablineFill
-      let s:cherry = emoji#for('cherry_blossom')
-      function! MyStatusLine()
-        let mod = '%{S_modified()}'
-        let ro  = "%{&readonly ? emoji#for('lock') . ' ' : ''}"
-        let ft  = '%{S_filetype()}'
-        let fug = ' %{S_fugitive()}'
-        let sep = ' %= '
-        let pos = ' %l,%c%V '
-        let pct = ' %P '
-
-        return s:cherry.' [%n] %F %<'.mod.ro.ft.fug.sep.pos.'%{Braille()}%*'.pct.s:cherry
-      endfunction
-
-      " Note that the "%!" expression is evaluated in the context of the
-      " current window and buffer, while %{} items are evaluated in the
-      " context of the window that the statusline belongs to.
-      set statusline=%!MyStatusLine()
-    endif
-endif
-" }}}
-" ============================================================================
-" SUPERTAB {{{ 
-" ============================================================================
-let g:SuperTabDefaultCompletionType = "context"
-" }}}
-" ============================================================================
-" SYNTASTIC {{{ 
-" ============================================================================
-" set statusline+=%#warningmsg#
-" set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-" }}}
-" ============================================================================
-" GOYO -- Distraction free writing {{{ 
-" ============================================================================
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-let g:goyo_width=80
-" }}}
-" ============================================================================
 " FUNCTIONS {{{ 
 " ============================================================================
 " Custom fold {{{2
@@ -697,17 +582,6 @@ function! CustomFoldText()
 endfunction
 set foldnestmax=99
 set foldtext=CustomFoldText()
-" }}}2
-
-" Toggle line wrapping {{{2
-function! ToggleWrap()
-    let wr=&wrap
-    if wr
-        set nowrap
-    else
-        set wrap
-    endif
-endfunction
 " }}}2
 
 " Copy filename of current file {{{2
@@ -824,62 +698,46 @@ command! TodayNamed call InsertNamedDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
 " }}}2
 
-" Toggle theme between light and dark {{{2
-function! ToggleTheme(mode)
-    if a:mode == 'DARK'
-        execute 'colorscheme ' g:cd_light_theme
-        set bg=light
-        let g:cd_theme_mode='LIGHT'
-    else
-        execute 'colorscheme ' g:cd_dark_theme
-        set bg=dark
-        let g:cd_theme_mode='DARK'
-    endif
-endfunction
-
-command! ToggleTheme call ToggleTheme(cd_theme_mode)
-command! DayTheme call ToggleTheme('DARK')
-command! NightTheme call ToggleTheme('LIGHT')
-" }}}2
-
-" Schedule words, like Emacs' Org-Mode {{{2
-let g:cd_schedule_words = [ 'TODO' , 'WIP' , 'DONE', 'CANCELLED' ]
-function! RotateWord()
-    let N = len(g:cd_schedule_words)
-    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
-    let idx = index(g:cd_schedule_words, cur)
-    if idx >= 0
-        let next = g:cd_schedule_words[(idx+1) % N]
-        let cmd = "ciW**" . next . "**"
-        execute "normal " . cmd
-    endif
-endfunction
-
-function! ScheduleDone()
-    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
-    let idx = index(g:cd_schedule_words, cur)
-    if idx >= 0
-        let cmd = "ciW**DONE**"
-        execute "normal " . cmd
-    endif
-endfunction
-
-command! RotateScheduleWord call RotateWord()
-command! ScheduleDone call ScheduleDone()
-" }}}2
-
 " Bindings for functions {{{2
 noremap zt :call ToggleFold()<CR>
-nmap nw :call ToggleWrap()<CR>
+nmap nw :set wrap!<CR>
 nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-map <F10> :CurrentScope<Cr>
-nnoremap <leader>r  :RotateScheduleWord<Cr>
-nnoremap <leader>d  :ScheduleDone<Cr>
+map <F9> :CurrentScope<Cr>
+" }}}2
+
+" Toggle Line numbers {{{2
+function! ToggleLinum()
+    set relativenumber!
+    set number!
+endfunction
+
+function! Linum()
+    set number
+    set relativenumber
+endfunction
+
+function! NoLinum()
+    set nonumber
+    set norelativenumber
+endfunction
+
+command! ToggleLinum call ToggleLinum()
+command! NoLinum call NoLinum()
+command! Linum call Linum()
 " }}}2
 " }}}
 " ============================================================================
-" ----- EXPERIMENTAL ----- {{{ 
+" WINDOWS {{{ 
+" ============================================================================
+if s:haswin
+    nnoremap <F10> :WToggleFullscreen<CR>
+    autocmd GUIEnter * silent! WToggleClean
+    let gitgutter_enabled=0
+endif
+" }}}
+"============================================================================
+" ----- EXPERIMENTAL {{{ 
 " ============================================================================
 " enable dictionary, and use it in autocomplete
 set dictionary+=/usr/share/dict/words
@@ -896,33 +754,13 @@ augroup autoSaveAndRead
     autocmd CursorHold * silent! checktime
 augroup END
 
-
-iabbrev invq ¿
 let g:snips_author='Chris Davison'
 let g:snips_email='c.jr.davison@gmail.com'
 let g:snips_github='ChrisDavison'
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 
+cd ~\src\github.com\chrisdavison
+nnoremap <BS> <C-^>
+" }}}
+" ============================================================================
 
-function! ToggleLinum()
-    set relativenumber!
-    set number!
-endfunction
-
-function! Linum()
-    set number
-    set relativenumber
-endfunction
-
-function! NoLinum()
-    set nonumber
-    set norelativenumber
-endfunction
-
-
-command! ToggleLinum call ToggleLinum()
-command! NoLinum call NoLinum()
-command! Linum call Linum()
-let gitgutter_enabled=0
-"}}}
-"============================================================================
