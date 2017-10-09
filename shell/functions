@@ -62,3 +62,13 @@ literatureTitle() {
     ext=$4
     echo "$year--$authors--$title.$ext"
 }
+
+uuidrecord() {
+    id="$(uuid)"
+    echo $id > ~/.lastuuid
+    cat ~/.lastuuid
+}
+
+uuidlast() {
+    [ -f ~/.lastuuid ] && cat ~/.lastuuid
+}
