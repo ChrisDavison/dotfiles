@@ -161,7 +161,7 @@ call plug#end()
 " ============================================================================
 if has('gui')
     set encoding=utf-8
-    set guifont=Fira_Code:h14,Iosevka:h16,Input_Mono:h18
+    set guifont=Fira_Code:h18,Iosevka:h18,Input_Mono:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -193,13 +193,13 @@ call matchadd('ColorColumn', '\%81v', 100)
 " ============================================================================
 " ABBREVIATIONS {{{ 
 " ============================================================================
-" Useful abbreviations
+" Command abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
-
+" Shortcuts for utility inputs
 iabbrev @@ c.jr.davison@gmail.com
 iabbrev TD **TODO**
 iabbrev EX **EXAMPLE:**
@@ -213,12 +213,11 @@ iabbrev invq ¿
 iabbrev *@ **email:**
 iabbrev EXP **experiment:**
 
-" Economics-specific abbreviations{{{2
+" Economics-specific abbreviations
 iabbrev gnss goods and services
 iabbrev gns good and service
 iabbrev eqb equilibrium
 iabbrev govt government
-" }}}2
 " }}}
 " ============================================================================
 " KEYBINDS {{{ 
@@ -260,12 +259,6 @@ nnoremap <silent> <leader>/ :nohlsearch<CR>
 vnoremap // y/<C-R>"<CR>
 " }}}2
 
-" Selecting and Pasting {{{2
-" " Paste and move to end
-" vnoremap <silent> y y`]
-" vnoremap <silent> p p`]
-" nnoremap <silent> p p`]
-
 " Select what was pasted
 noremap gV `[v`]
 
@@ -275,16 +268,6 @@ nnoremap <leader>a ggVG
 " Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
-" }}}2
-
-" Navigate quickfix/locationlist with keychords {{{2
-" if empty(getloclist(0))
-"     nnoremap <C-S-n> :cn<CR>
-"     nnoremap <C-S-p> :cp<CR>
-" else
-"     nnoremap <C-S-n> :lnext<CR>
-"     nnoremap <C-S-p> :lprev<CR>
-" endif
 " }}}2
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{2
@@ -434,6 +417,7 @@ if !s:haswin
       " Use ag over grep
       set grepprg=ag\ --nogroup\ --nocolor
       let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  endif
 else
     let g:ctrlp_use_caching = 1
     let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files --oc --exclude-standard']
@@ -734,6 +718,7 @@ if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
     let gitgutter_enabled=0
+    cd ~\src\github.com\chrisdavison
 endif
 " }}}
 "============================================================================
@@ -759,8 +744,6 @@ let g:snips_email='c.jr.davison@gmail.com'
 let g:snips_github='ChrisDavison'
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 
-cd ~\src\github.com\chrisdavison
 nnoremap <BS> <C-^>
 " }}}
 " ============================================================================
-
