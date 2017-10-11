@@ -140,6 +140,8 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
+Plug 'kana/vim-textobj-user'         " Custom text objects ('verbs')
+Plug 'paulhybryant/vim-textobj-path' " Text object for paths
 
 " Lispy stuff
 if 0
@@ -178,8 +180,8 @@ endif
 let g:themeswitch_night='paramount'
 let g:themeswitch_day='github'
 if has('gui')
-    let g:themeswitch_day='pencil'
-    let g:themeswitch_night='pencil'
+    let g:themeswitch_day='solarized'
+    let g:themeswitch_night='solarized'
 endif
 if exists("NightTheme")
     NightTheme
@@ -237,15 +239,15 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " Move by VISUAL lines
-nnoremap  <buffer> <silent> k gk
-vnoremap  <buffer> <silent> k gk
-vnoremap  <buffer> <silent> k gk
-nnoremap  <buffer> <silent> j gj
-vnoremap  <buffer> <silent> j gj
-nnoremap  <buffer> <silent> 0 g0
-vnoremap  <buffer> <silent> 0 g0
-nnoremap  <buffer> <silent> $ g$
-vnoremap  <buffer> <silent> $ g$
+nmap  <buffer> <silent> k gk
+vmap  <buffer> <silent> k gk
+vmap  <buffer> <silent> k gk
+nmap  <buffer> <silent> j gj
+vmap  <buffer> <silent> j gj
+nmap  <buffer> <silent> 0 g0
+vmap  <buffer> <silent> 0 g0
+nmap  <buffer> <silent> $ g$
+vmap  <buffer> <silent> $ g$
 " }}}2
 
 " Search/replace {{{2
@@ -368,7 +370,6 @@ augroup END
 
 augroup pandoc
     autocmd!
-    "autocmd Filetype markdown,pandoc setlocal wrap textwidth=80
     autocmd Filetype markdown,pandoc setlocal conceallevel=2
     autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
     autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
@@ -745,5 +746,10 @@ let g:snips_github='ChrisDavison'
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 
 nnoremap <BS> <C-^>
+
+autocmd VimResized * wincmd= " equally resize splits on window resize
+if s:darwin && has('gui')
+    set macligatures
+endif
 " }}}
 " ============================================================================
