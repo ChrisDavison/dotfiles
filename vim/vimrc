@@ -102,7 +102,6 @@ Plug 'ChrisDavison/scheduling.vim'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'NLKNguyen/papercolor-theme'
-Plug 'airblade/vim-gitgutter'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'
@@ -178,14 +177,13 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 let g:themeswitch_night='paramount'
-let g:themeswitch_day='github'
+let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='solarized'
     let g:themeswitch_night='solarized'
 endif
-if exists("NightTheme")
-    NightTheme
-endif
+execute 'colorscheme ' . g:themeswitch_night
+set bg=dark
 
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
@@ -372,6 +370,8 @@ augroup pandoc
     autocmd!
     autocmd Filetype markdown,pandoc setlocal conceallevel=2
     autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
+    autocmd Filetype markdown,pandoc setlocal norelativenumber
+    autocmd Filetype markdown,pandoc setlocal nonumber
     autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
