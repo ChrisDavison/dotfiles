@@ -176,14 +176,15 @@ else
 endif
 
 " Variables for theme switching using my custom plugin daynight.vim
-let g:themeswitch_night='paramount'
-let g:themeswitch_day='paramount'
+set bg=dark
+let g:themeswitch_night='phoenix'
+let g:themeswitch_day='phoenix'
 if has('gui')
     let g:themeswitch_day='solarized'
     let g:themeswitch_night='solarized'
 endif
 execute 'colorscheme ' . g:themeswitch_night
-set bg=dark
+PhoenixPurple
 
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
