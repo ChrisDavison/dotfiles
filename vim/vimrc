@@ -238,14 +238,13 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 
 " Move by VISUAL lines
-nmap  <buffer> <silent> k gk
+nnoremap  <buffer> <silent> <C-k> gk
+nnoremap  <buffer> <silent> <C-j> gj
+nnoremap  <buffer> <silent> 0 g0
+nnoremap  <buffer> <silent> <C-$> g$
 vmap  <buffer> <silent> k gk
-vmap  <buffer> <silent> k gk
-nmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> j gj
-nmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> 0 g0
-nmap  <buffer> <silent> $ g$
 vmap  <buffer> <silent> $ g$
 " }}}2
 
