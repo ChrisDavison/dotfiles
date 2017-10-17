@@ -678,9 +678,18 @@ function! InsertTimestampAtPoint()
     normal kJ
 endfunction
 
+function! InsertLogbookHeader()
+    normal i# 
+    read!date "+\%Y-\%m-\%d - \%a"
+    normal kJ
+    normal o
+    normal o-   **today**: 
+endfunction
+
 command! Today call InsertDateAtPoint()
 command! TodayNamed call InsertNamedDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
+command! Logbook call InsertLogbookHeader()
 " }}}2
 
 " Bindings for functions {{{2
