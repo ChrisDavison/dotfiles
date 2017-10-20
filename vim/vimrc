@@ -99,6 +99,7 @@ Plug 'rbonvall/snipmate-snippets-bib'
 " Utility
 Plug 'ChrisDavison/daynight.vim'
 Plug 'ChrisDavison/scheduling.vim'
+Plug 'mbbill/undotree'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'NLKNguyen/papercolor-theme'
@@ -123,7 +124,11 @@ Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim'
 Plug 'nvie/vim-flake8'
 Plug 'rking/ag.vim'
-Plug 'scrooloose/syntastic'
+if 0
+    Plug 'scrooloose/syntastic'
+else
+    Plug 'w0rp/ale'
+endif
 Plug 'shime/vim-livedown'
 Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
@@ -160,7 +165,7 @@ call plug#end()
 " ============================================================================
 " APPEARANCE {{{ 
 " ============================================================================
-if has('gui')
+if has('gui_running')
     set encoding=utf-8
     set guifont=Fira_Code:h18,Iosevka:h18,Input_Mono:h18
     
@@ -172,19 +177,33 @@ if has('gui')
     set guioptions-=L
     set guioptions-=l
 else
-    set t_ut=
+    if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+       set t_Co=256
+    elseif has("terminfo")
+       colorscheme default
+       set t_Co=8
+       set t_Sf=[3%p1%dm
+       set t_Sb=[4%p1%dm
+     else
+       colorscheme default
+       set t_Co=8
+       set t_Sf=[3%dm
+       set t_Sb=[4%dm
+     endif
+     if $TMUX != ""
+        set t_ut=
+     endif
 endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_night='phoenix'
-let g:themeswitch_day='phoenix'
+let g:themeswitch_night='paramount'
+let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='solarized'
     let g:themeswitch_night='solarized'
 endif
 execute 'colorscheme ' . g:themeswitch_night
-PhoenixPurple
 
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
@@ -276,7 +295,6 @@ if has('gui_running')
     nnoremap <leader>p  :CtrlP<Cr>
 else
     nnoremap <leader>b :Buffers<Cr>
-    nnoremap <C-p> :Files<Cr>
     nnoremap <leader>p :Files<Cr>
 endif
 
@@ -304,8 +322,8 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 nnoremap <leader>t :TagbarToggle<CR>
 
 " Swap colon and semicolon
-nnoremap ; :
-nnoremap : :
+" nnoremap ; :
+" nnoremap : ;
 
 " Use spacebar for folds
 nnoremap <space> za
@@ -338,6 +356,11 @@ nnoremap <leader>d :ScheduleDone<Cr>
 " ============================================================================
 " PLUGINS / LANGUAGES {{{ 
 " ============================================================================
+" ALE - Asynchronous linting {{{2
+let g:ale_python_mypy_options = '--ignore-missing-imports'
+let g:ale_sign_error='✗'
+let g:ale_sign_warning='∎'
+
 " Autocommand groups --- filetype specific stuff {{{2
 augroup filetype_c
     autocmd!
@@ -443,6 +466,7 @@ let g:pymode_python = 'python3'
 
 let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 let g:syntastic_python_checkers = ['flake8']
+
 
 " Vim-slime - tmux & python
 let g:slime_target = "tmux"
@@ -759,6 +783,10 @@ nnoremap <BS> <C-^>
 autocmd VimResized * wincmd= " equally resize splits on window resize
 if s:darwin && has('gui')
     set macligatures
+endif
+if has('persistent_undo')
+    set undodir=~/.undodir/
+    set undofile
 endif
 " }}}
 " ============================================================================
