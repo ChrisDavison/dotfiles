@@ -96,13 +96,16 @@ Plug 'racer-rust/vim-racer'
 Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 
+" Colorschemes
+Plug 'NLKNguyen/papercolor-theme'
+
 " Utility
 Plug 'ChrisDavison/daynight.vim'
 Plug 'ChrisDavison/scheduling.vim'
+Plug 'itchyny/lightline.vim'
 Plug 'mbbill/undotree'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'
