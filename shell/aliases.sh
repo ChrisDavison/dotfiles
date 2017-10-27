@@ -43,7 +43,8 @@ alias grpst='gr @personal status'
 alias grl="gr @live git --no-pager log --decorate --graph --oneline -n 3"
 
 alias dr='gr status | grep -E "behind|ahead|modified"'
-alias gitsync='(cd ~/ && mu up --all)'
+alias gitsync='gr git fetch --all'
+alias gitdown='gr git pull --rebase'
 
 # Utilities
 alias cl='catless'
