@@ -102,6 +102,9 @@ Plug 'NLKNguyen/papercolor-theme'
 " Utility
 Plug 'ChrisDavison/daynight.vim'
 Plug 'ChrisDavison/scheduling.vim'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'bps/vim-textobj-python'
+Plug 'shime/vim-livedown'
 Plug 'itchyny/lightline.vim'
 Plug 'mbbill/undotree'
 Plug 'Konfekt/FastFold'
@@ -170,7 +173,7 @@ call plug#end()
 " ============================================================================
 if has('gui_running')
     set encoding=utf-8
-    set guifont=Fira_Code:h18,Iosevka:h18,Input_Mono:h18
+    set guifont=Input:h18,Fira_Code:h18,Iosevka:h18,Input_Mono:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -203,8 +206,8 @@ set bg=dark
 let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
 if has('gui')
-    let g:themeswitch_day='solarized'
-    let g:themeswitch_night='solarized'
+    let g:themeswitch_day='paramount'
+    let g:themeswitch_night='paramount'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 
