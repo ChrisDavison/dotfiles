@@ -32,3 +32,4 @@ export WORKON_HOME=~/.envs
 source /usr/local/bin/virtualenvwrapper.sh
 
 export CODE="$HOME/src/github.com/chrisdavison"
+export TEMPLATES="$CODE/ProjectTemplates"
