@@ -207,7 +207,7 @@ let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='paramount'
-    let g:themeswitch_night='paramount'
+    let g:themeswitch_night='molokai'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 
