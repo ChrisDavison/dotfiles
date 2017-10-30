@@ -1,15 +1,15 @@
 " vim: set foldmethod=marker foldlevel=2:
 " ChrisDavison's VIMRC {{{ 
-" ============================================================================
+" ========================================
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
 " --- Helper functions for environment, should they be needed elsewhere
 let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
 " }}}
-" ============================================================================
+" ========================================
 " SETTINGS {{{ 
-" ============================================================================
+" ========================================
 " --- Pretty much necessary
 set nocompatible
 syntax on
@@ -84,9 +84,9 @@ set wildignore+=*.png,*.jpg,*.gif
 " -- Statusbar
 set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
 " }}}
-" ============================================================================
+" ========================================
 " PLUGIN INSTALL {{{ 
-" ============================================================================
+" ========================================
 call plug#begin('~/.vim/plugged')
 
 " Languages
@@ -168,12 +168,12 @@ endif
 call plug#end()
 
 " }}}
-" ============================================================================
+" ========================================
 " APPEARANCE {{{ 
-" ============================================================================
+" ========================================
 if has('gui_running')
     set encoding=utf-8
-    set guifont=Input:h18,Fira_Code:h18,Iosevka:h18,Input_Mono:h18
+    set guifont=Input:h18,Input_Mono:h18,Fira_Code:h18,Iosevka:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -207,7 +207,7 @@ let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='paramount'
-    let g:themeswitch_night='molokai'
+    let g:themeswitch_night='paramount'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 
@@ -216,9 +216,9 @@ highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
 
 " }}}
-" ============================================================================
+" ========================================
 " ABBREVIATIONS {{{ 
-" ============================================================================
+" ========================================
 " Command abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
@@ -245,9 +245,9 @@ iabbrev gns good and service
 iabbrev eqb equilibrium
 iabbrev govt government
 " }}}
-" ============================================================================
+" ========================================
 " KEYBINDS {{{ 
-" ============================================================================
+" ========================================
 " Navigation {{{2
 " Split/Window management
 " Move windows
@@ -359,9 +359,9 @@ nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}2
 " }}}
-" ============================================================================
+" ========================================
 " PLUGINS / LANGUAGES {{{ 
-" ============================================================================
+" ========================================
 " ALE - Asynchronous linting {{{2
 let g:ale_python_mypy_options = '--ignore-missing-imports'
 let g:ale_sign_error='✗'
@@ -516,9 +516,9 @@ let g:go_fmt_command = "goimports"
 let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
-" ============================================================================
+" ========================================
 " SHEBANG {{{ 
-" ============================================================================
+" ========================================
 " Automatically add HashBang lines -----
 function! Hashbang(portable, permission)
 let shells = {
@@ -564,9 +564,9 @@ endfunction
 autocmd! BufNewFile *.* :call Hashbang(1,1)
 
 " }}}
-" ============================================================================
+" ========================================
 " FUNCTIONS {{{ 
-" ============================================================================
+" ========================================
 " Custom fold {{{2
 function! ToggleFold()
     if &foldlevel < 10
@@ -713,7 +713,7 @@ function! InsertLogbookHeader()
     read!date "+\%Y-\%m-\%d - \%a"
     normal kJ
     normal o
-    normal o-   **today**: 
+    normal o-   
 endfunction
 
 command! Today call InsertDateAtPoint()
@@ -751,9 +751,9 @@ command! NoLinum call NoLinum()
 command! Linum call Linum()
 " }}}2
 " }}}
-" ============================================================================
+" ========================================
 " WINDOWS {{{ 
-" ============================================================================
+" ========================================
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
@@ -761,9 +761,9 @@ if s:haswin
     cd ~\src\github.com\chrisdavison
 endif
 " }}}
-"============================================================================
+" ========================================
 " ----- EXPERIMENTAL {{{ 
-" ============================================================================
+" ========================================
 " enable dictionary, and use it in autocomplete
 set dictionary+=/usr/share/dict/words
 set complete+=k
@@ -795,4 +795,4 @@ if has('persistent_undo')
     set undofile
 endif
 " }}}
-" ============================================================================
+" ========================================
