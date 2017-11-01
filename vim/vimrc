@@ -173,7 +173,7 @@ call plug#end()
 " ========================================
 if has('gui_running')
     set encoding=utf-8
-    set guifont=Input:h18,Input_Mono:h18,Fira_Code:h18,Iosevka:h18
+    set guifont=Iosevka:h18,Input:h18,Input_Mono:h18,Fira_Code:h18
     
     " Disable menu bollocks
     set guioptions-=m
