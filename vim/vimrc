@@ -105,7 +105,6 @@ Plug 'ChrisDavison/scheduling.vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'bps/vim-textobj-python'
 Plug 'shime/vim-livedown'
-Plug 'itchyny/lightline.vim'
 Plug 'mbbill/undotree'
 Plug 'Konfekt/FastFold'
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -206,8 +205,8 @@ set bg=dark
 let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
 if has('gui')
-    let g:themeswitch_day='paramount'
-    let g:themeswitch_night='paramount'
+    let g:themeswitch_day='seoul256'
+    let g:themeswitch_night='seoul256'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 
@@ -794,5 +793,7 @@ if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
 endif
+
+nmap gm :LivedownToggle<CR>
 " }}}
 " ========================================
