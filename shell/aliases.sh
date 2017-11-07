@@ -52,3 +52,11 @@ alias mdepub="pandoc -s -t epub"
 alias tma='tmux attach -d -t'
 alias tmuxhere='tmux new -s $(basename $(pwd))'
 alias mux="tmuxinator"
+
+nbconvclean() {
+    fn="${1}"
+    noIn=--"${2}"Exporter.exclude_input=True
+    noRaw=--"${2}"Exporter.exclude_raw=True
+    fmtLow=`echo $2 | tr /A-Z/ /a-z/`
+    jupyter nbconvert --to="$fmtLow" "$noIn" "$noRaw" $1
+}
