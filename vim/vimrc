@@ -202,8 +202,8 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_night='paramount'
-let g:themeswitch_day='paramount'
+let g:themeswitch_night='seoul256'
+let g:themeswitch_day='seoul256'
 if has('gui')
     let g:themeswitch_day='seoul256'
     let g:themeswitch_night='seoul256'
@@ -501,7 +501,7 @@ let g:vim_markdown_toc_autofit = 1
 " Goyo {{{2
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
-let g:goyo_width=80
+let g:goyo_width=100
 " }}}2
 " Syntastic {{{2
 let g:syntastic_always_populate_loc_list = 1
