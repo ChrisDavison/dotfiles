@@ -789,11 +789,13 @@ autocmd VimResized * wincmd= " equally resize splits on window resize
 if s:darwin && has('gui')
     set macligatures
 endif
+
 if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
 endif
 
-nmap gm :LivedownToggle<CR>
+nmap gk :LivedownKill<CR>
+nmap gp :LivedownPreview<CR>
 " }}}
 " ========================================
