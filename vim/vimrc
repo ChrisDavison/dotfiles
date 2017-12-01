@@ -202,8 +202,8 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_night='seoul256'
-let g:themeswitch_day='seoul256'
+let g:themeswitch_night='paramount'
+let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='seoul256'
     let g:themeswitch_night='seoul256'
@@ -379,6 +379,7 @@ augroup filetype_py
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
+    autocmd BufWritePre *.py :%s/\s\+$//e
 augroup END
 
 augroup filetype_json
@@ -404,6 +405,7 @@ augroup pandoc
     autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
+    autocmd BufWritePre *.md :%s/\s\+$//e
 augroup END
 
 " Miscellany 
@@ -797,5 +799,6 @@ endif
 
 nmap gk :LivedownKill<CR>
 nmap gp :LivedownPreview<CR>
+let g:ale_sign_column_always=1
 " }}}
 " ========================================
