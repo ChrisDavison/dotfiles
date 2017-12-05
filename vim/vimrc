@@ -23,7 +23,7 @@ set encoding=utf-8
 scriptencoding utf-8
 set showcmd
 set wrap lbr
-set showbreak=▶
+let &showbreak = '⇥   '
 set breakindent
 set omnifunc=syntaxcomplete#Complete
 set number
@@ -172,7 +172,7 @@ call plug#end()
 " ========================================
 if has('gui_running')
     set encoding=utf-8
-    set guifont=Iosevka:h18,Input:h18,Input_Mono:h18,Fira_Code:h18
+    set guifont=Input:h18,Input_Mono:h18,Fira_Code:h18
     
     " Disable menu bollocks
     set guioptions-=m
