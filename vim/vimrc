@@ -93,6 +93,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'fatih/vim-go'
 Plug 'pangloss/vim-javascript'
 Plug 'racer-rust/vim-racer'
+Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 
