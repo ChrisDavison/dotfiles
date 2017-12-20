@@ -659,38 +659,26 @@ function! MDPreview()
 endfunction
 command! MDPreview call MDPreview()
 
-" Tidy up the current markdown file 
-function! s:MDToFormat()
-    let md = 'markdown_github-hard_line_breaks'
-    let meta = 'yaml_metadata_block'
-    let math = 'tex_math_dollars'
-    let blocks = 'line_blocks'
-    let out = '--to=' . md . '+' . meta . '+' . math . '+' . blocks
-    return out
-endfunction
-
-function! s:MDFormatExtra()
-     return '--atx-headers --normalize --standalone'
-endfunction
-
-function! MDTidy()
+function! RunPandoc(extra, wrap, atx, reflink)
     silent !clear
-    let to = s:MDToFormat()
-    let extra = s:MDFormatExtra() . ' --wrap=None'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
+    let format='markdown_github-hard_line_breaks+line_blocks+tex_math_dollars'
+    let format = format . '+yaml_metadata_block-shortcut_reference_links'
+    let cmd = 'pandoc % -o % -t ' . format . ' ' . a:extra
+    if a:reflink
+        let cmd = cmd . ' --reference-links'
+    endif
+    if a:atx
+        let cmd = cmd . ' --atx-headers'
+    endif
+    if a:wrap
+        let cmd = cmd . ' --columns=80'
+    endif
+    execute "!" . cmd
 endfunction
-
-function! MDTidyWrap()
-    silent !clear
-    let to = s:MDToFormat()
-    let extra = s:MDFormatExtra() . ' --columns=80'
-    let out = '-o %'
-    let mdtidy_command = 'pandoc % ' . to . ' ' . extra . ' ' . out
-    execute "!" . mdtidy_command
-endfunction
-command! MDTidy call MDTidyWrap()
+command! MDTidy call RunPandoc('', 0, 1, 0)
+command! MDTidyRef call RunPandoc('', 0, 1, 1)
+command! MDTidyWrap call RunPandoc('', 1, 1, 0)
+command! MDTidyWrapRef call RunPandoc('', 1, 1, 1)
 
 " Convert current markdown file to PDF 
 function! MDToPDF()
