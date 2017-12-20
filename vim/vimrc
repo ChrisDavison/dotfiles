@@ -101,6 +101,7 @@ Plug 'rbonvall/snipmate-snippets-bib'
 Plug 'NLKNguyen/papercolor-theme'
 
 " Utility
+Plug 'francoiscabrol/ranger.vim'
 Plug 'ChrisDavison/daynight.vim'
 Plug 'ChrisDavison/scheduling.vim'
 Plug 'michaeljsmith/vim-indent-object'
