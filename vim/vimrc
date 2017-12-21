@@ -97,9 +97,6 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 
-" Colorschemes
-Plug 'NLKNguyen/papercolor-theme'
-
 " Utility
 Plug 'francoiscabrol/ranger.vim'
 Plug 'ChrisDavison/daynight.vim'
@@ -404,14 +401,15 @@ augroup filetype_go
     autocmd FileType go      set foldmethod=syntax
 augroup END
 
-augroup pandoc
+augroup markdown
     autocmd!
-    autocmd Filetype markdown,pandoc setlocal conceallevel=2
-    autocmd Filetype markdown,pandoc setlocal breakindentopt=shift:4,sbr
-    autocmd Filetype markdown,pandoc setlocal norelativenumber
-    autocmd Filetype markdown,pandoc setlocal nonumber
-    autocmd Filetype markdown,pandoc hi Conceal cterm=NONE ctermbg=NONE
-    autocmd Filetype markdown,pandoc hi Conceal guibg=NONE guifg=NONE
+    autocmd Filetype markdown setlocal conceallevel=2
+    autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
+    autocmd Filetype markdown setlocal norelativenumber
+    autocmd Filetype markdown setlocal nonumber
+    autocmd Filetype markdown setlocal equalprg=pandoc\ -t\ markdown-shortcut_reference_links\ --wrap=none\ --atx-headers\ --reference-links\ -s
+    autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
+    autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
     autocmd BufWritePre *.md :%s/\s\+$//e
@@ -498,16 +496,6 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
-" }}}2
-" Pandoc {{{2
-let g:pandoc#spell#enabled=0
-let g:pandoc#syntax#conceal#urls = 1
-let g:pandoc#formatting#mode='s'
-let g:pandoc#formatting#textwidth=0
-let g:pandoc#formatting#equalprg = "pandoc -t markdown -s"
-let g:pandoc#formatting#extra_equalprg = "--columns=80 --normalize --atx-headers"
-let g:pandoc#syntax#conceal#blacklist = ['list', 'atx']
-let g:vim_markdown_toc_autofit = 1
 " }}}2
 " Goyo {{{2
 autocmd! User GoyoEnter Limelight
