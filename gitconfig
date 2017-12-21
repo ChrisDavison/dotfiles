@@ -119,6 +119,8 @@
     publish = "!git push -u origin $(git branch-name)"
     # Delete the remote version of the current branch
     unpublish = "!git push origin :$(git branch-name)"
+    in = log --pretty=oneline --abbrev-commit --graph ..@{u}
+    fin = !git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}
 
 [push]
 	default = simple
