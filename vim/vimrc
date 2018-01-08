@@ -242,6 +242,11 @@ iabbrev gnss goods and services
 iabbrev gns good and service
 iabbrev eqb equilibrium
 iabbrev govt government
+
+" HTML codes
+iabbrev ndash &ndash;
+iabbrev spndash &thinsp;&ndash;&thinsp;
+iabbrev mdash &mdash;
 " }}}
 " ========================================
 " KEYBINDS {{{ 
