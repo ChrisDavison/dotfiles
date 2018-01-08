@@ -60,3 +60,5 @@ nbconvclean() {
     fmtLow=`echo $2 | tr /A-Z/ /a-z/`
     jupyter nbconvert --to="$fmtLow" "$noIn" "$noRaw" $1
 }
+# Make ripgrep Smart-case search by default
+alias rg='rg -S'
