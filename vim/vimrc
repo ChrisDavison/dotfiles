@@ -204,8 +204,8 @@ set bg=dark
 let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
 if has('gui')
-    let g:themeswitch_day='seoul256'
-    let g:themeswitch_night='seoul256'
+    let g:themeswitch_day='paramount'
+    let g:themeswitch_night='molokai'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 
@@ -232,6 +232,7 @@ iabbrev Q? **Q?**
 iabbrev ACT **ACTION:**
 iabbrev ASM *Assume* :: 
 iabbrev T4 $\therefore$
+iabbrev t4 &there4;
 iabbrev IMPL $\implies$
 iabbrev invq ¿
 iabbrev *@ **email:**
