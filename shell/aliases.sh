@@ -62,3 +62,5 @@ nbconvclean() {
 }
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
+
+alias ME='cd ~/src/github.com/chrisdavison'
