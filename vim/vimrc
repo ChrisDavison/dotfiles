@@ -23,7 +23,7 @@ set encoding=utf-8
 scriptencoding utf-8
 set showcmd
 set wrap lbr
-let &showbreak = '⇥   '
+let &showbreak = '...'
 set breakindent
 set omnifunc=syntaxcomplete#Complete
 set number
