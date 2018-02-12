@@ -18,7 +18,7 @@ export NODEPATH="/usr/local/lib/node_modules";
 export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export STACKBIN="$HOME/.local/bin"
-export RESEARCHFIGURES="$HOME/Dropbox/work/figures/"
+export RESEARCHFIGURES="$HOME/Dropbox/f/figures/"
 
 export JOBSTATUS="$HOME/.jobstatus"
 
