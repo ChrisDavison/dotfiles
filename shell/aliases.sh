@@ -66,3 +66,4 @@ alias rg='rg -S'
 alias ME='cd ~/src/github.com/chrisdavison'
 
 alias nbx="jupyter nbconvert --execute --to notebook"
+alias ML='workon datasci'
