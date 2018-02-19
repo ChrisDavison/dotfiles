@@ -99,6 +99,7 @@ Plug 'rbonvall/snipmate-snippets-bib'
 Plug 'ekalinin/Dockerfile.vim'
 
 " Utility
+Plug 'tpope/vim-obsession'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'ChrisDavison/daynight.vim'
 Plug 'ChrisDavison/scheduling.vim'
