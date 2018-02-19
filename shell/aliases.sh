@@ -64,6 +64,7 @@ nbconvclean() {
 alias rg='rg -S'
 
 alias ME='cd ~/src/github.com/chrisdavison'
+alias CHURN='cd ~/src/github.com/etsteam/churning'
 
 alias nbx="jupyter nbconvert --execute --to notebook"
 alias ML='workon datasci'
