@@ -441,6 +441,7 @@ augroup markdown
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
     autocmd BufWritePre *.md :%s/\s\+$//e
+    autocmd BufWritePost *.md :Toc
 augroup END
 
 let g:vim_markdown_toc_autofit = 1
