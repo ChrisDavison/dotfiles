@@ -672,6 +672,8 @@ function! RunPandoc(extra, wrap, atx, reflink)
     endif
     if a:wrap
         let cmd = cmd . ' --columns=80'
+    else
+        let cmd = cmd . ' --wrap=none'
     endif
     execute "!" . cmd
 endfunction
