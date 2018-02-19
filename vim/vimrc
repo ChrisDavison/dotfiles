@@ -96,6 +96,7 @@ Plug 'racer-rust/vim-racer'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
+Plug 'ekalinin/Dockerfile.vim'
 
 " Utility
 Plug 'francoiscabrol/ranger.vim'
