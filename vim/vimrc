@@ -248,6 +248,27 @@ iabbrev govt government
 iabbrev ndash &ndash;
 iabbrev spndash &thinsp;&ndash;&thinsp;
 iabbrev mdash &mdash;
+
+" Unicode symbols
+iabbrev rarr →
+iabbrev larr ←
+iabbrev lrarr ⇔
+iabbrev implarr ⇒
+iabbrev forall ∀
+iabbrev pardif ∂
+iabbrev thereexists ∃
+iabbrev notexists ∄
+iabbrev memberof ∈
+iabbrev notmemberof ∉
+iabbrev endproof ∎
+iabbrev summ ∑
+iabbrev prodd ∏
+iabbrev isequal ≡
+iabbrev logicint ⋂
+iabbrev logicand ∧
+iabbrev logicor ∨
+iabbrev logicnot ¬
+iabbrev approxx ≈
 " }}}
 " ========================================
 " KEYBINDS {{{ 
