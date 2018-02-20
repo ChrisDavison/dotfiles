@@ -68,3 +68,7 @@ alias CHURN='cd ~/src/github.com/etsteam/churning'
 
 alias nbx="jupyter nbconvert --execute --to notebook"
 alias ML='workon datasci'
+
+# Docker bollocks
+alias dpandoc="docker run -it --rm -v `pwd`:/source jagregory/pandoc"
+alias dipy="docker run -it --rm -v `pwd`:/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython"
