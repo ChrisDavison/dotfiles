@@ -5,9 +5,11 @@ export EDITOR="vim";
 # Terminal history handling
 export HISTCONTROL=ignoreboth:erasedups;
 export HISTSIZE=32768;
+export HISTFILE=~/.zsh_history
 export HISTFILESIZE=$HISTSIZE;
 export HISTFILESIZE=2000;
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
+export SAVEHIST=9000
 
 # Environment variables/path
 # export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
