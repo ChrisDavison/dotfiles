@@ -72,3 +72,4 @@ alias ML='workon datasci'
 # Docker bollocks
 alias dpandoc="docker run -it --rm -v `pwd`:/source jagregory/pandoc"
 alias dipy="docker run -it --rm -v `pwd`:/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython"
+alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
