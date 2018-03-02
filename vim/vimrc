@@ -97,19 +97,17 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 Plug 'ekalinin/Dockerfile.vim'
+Plug 'leafgarland/typescript-vim'
 
-" Utility
-Plug 'tpope/vim-obsession'
-Plug 'francoiscabrol/ranger.vim'
-Plug 'ChrisDavison/daynight.vim'
-Plug 'ChrisDavison/scheduling.vim'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'bps/vim-textobj-python'
-Plug 'mbbill/undotree'
-Plug 'Konfekt/FastFold'
+"Utility
+Plug 'ChrisDavison/daynight.vim'  " Toggle between dark and light themes
+Plug 'ChrisDavison/scheduling.vim'  " Org-mode like TODO/WIP/DONE
+Plug 'Konfekt/FastFold'  " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'bps/vim-textobj-python'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dahu/vim-fanfingtastic'
+Plug 'dhruvasagar/vim-table-mode'
 Plug 'easymotion/vim-easymotion'
 Plug 'ervandew/supertab'
 Plug 'garbas/vim-snipmate'
@@ -122,25 +120,28 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'kana/vim-textobj-user'         " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'
 Plug 'lervag/vimtex'
 Plug 'majutsushi/tagbar'
+Plug 'mattn/emmet-vim'
 Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim'
+Plug 'mbbill/undotree'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'nvie/vim-flake8'
+Plug 'paulhybryant/vim-textobj-path' " Text object for paths
 Plug 'rking/ag.vim'
-if 0
-    Plug 'scrooloose/syntastic'
-else
-    Plug 'w0rp/ale'
-endif
 Plug 'tacahiroy/ctrlp-funky'
 Plug 'terryma/vim-expand-region'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
@@ -148,20 +149,13 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
-Plug 'kana/vim-textobj-user'         " Custom text objects ('verbs')
-Plug 'paulhybryant/vim-textobj-path' " Text object for paths
 
-" Lispy stuff
 if 0
-    Plug 'jpalardy/vim-slime'
-    Plug 'tpope/vim-sexp-mappings-for-regular-people'
+    Plug 'scrooloose/syntastic'
+else
+    Plug 'w0rp/ale'
 endif
 
-" Utility
-if 0
-    Plug 'mattn/emmet-vim'
-    Plug 'dhruvasagar/vim-table-mode'
-endif
 
 call plug#end()
 
