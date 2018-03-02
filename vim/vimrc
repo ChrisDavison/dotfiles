@@ -195,18 +195,20 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_night='paramount'
+let g:themeswitch_night='seoul256'
 let g:themeswitch_day='paramount'
 if has('gui')
     let g:themeswitch_day='paramount'
     let g:themeswitch_night='molokai'
 endif
 execute 'colorscheme ' . g:themeswitch_night
+highlight ColorColumn ctermbg=magenta
 
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
 
+hi! link SignColumn LineNr
 " }}}
 " ========================================
 " ABBREVIATIONS {{{ 
