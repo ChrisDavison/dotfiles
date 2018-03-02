@@ -698,6 +698,7 @@ command! MDTidy call RunPandoc('', 0, 1, 0)
 command! MDTidyRef call RunPandoc('', 0, 1, 1)
 command! MDTidyWrap call RunPandoc('', 1, 1, 0)
 command! MDTidyWrapRef call RunPandoc('', 1, 1, 1)
+nnoremap <silent> <leader>mdt :MDTidyRef<CR>
 
 " Convert current markdown file to PDF 
 function! MDToPDF()
