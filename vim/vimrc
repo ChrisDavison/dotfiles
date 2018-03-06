@@ -98,6 +98,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'rbonvall/snipmate-snippets-bib'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'leafgarland/typescript-vim'
+Plug 'udalov/kotlin-vim'
 
 "Utility
 Plug 'ChrisDavison/daynight.vim'  " Toggle between dark and light themes
