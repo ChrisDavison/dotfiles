@@ -10,12 +10,7 @@ let s:darwin = has('mac')
 " ========================================
 " SETTINGS {{{ 
 " ========================================
-" --- Pretty much necessary
 set nocompatible
-syntax on
-filetype plugin indent on
-
-" --- Good defaults 
 set autochdir
 syntax on
 filetype plugin indent on
@@ -106,6 +101,7 @@ Plug 'ChrisDavison/scheduling.vim'  " Org-mode like TODO/WIP/DONE
 Plug 'Konfekt/FastFold'  " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'bps/vim-textobj-python'
+Plug 'chmp/mdnav'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dhruvasagar/vim-table-mode'
@@ -137,6 +133,7 @@ Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
@@ -193,8 +190,8 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_night='paramount'
 let g:themeswitch_day='paramount'
+let g:themeswitch_night='seoul256'
 if has('gui')
     let g:themeswitch_day='paramount'
     let g:themeswitch_night='molokai'
@@ -241,9 +238,8 @@ iabbrev eqb equilibrium
 iabbrev govt government
 
 " HTML codes
-iabbrev ndash &ndash;
-iabbrev spndash &thinsp;&ndash;&thinsp;
-iabbrev mdash &mdash;
+iabbrev ndash –
+iabbrev mdash —
 
 " Unicode symbols
 iabbrev rarr →

@@ -1,44 +1,17 @@
-snippet rqtemplate
-	## __*TODO*__ ${1:title}
+snippet task
+	# ${1:title}
 
-	${2:description}
+	## Tasks
 
-	### Requirements
-
-	### Method
-
-	### Tasks
-
-snippet logbook
-	-   **today:** ${1:todo}
-	-   **email:** ${2:email?}
-	-   ${3:extra}
+	## Context
 
 snippet LBR
 	`repeat('-', 80)`
-
 snippet -td
-	- **TODO** ${1:task}
-
+	-   **TODO** ${1:task}
 snippet $FR
 	$\frac{${1:num}}{${2:denom}}$
-
-snippet ACT
-	**ACTION** ::  ${1:person} - ${2:task}
-
-snippet -ACT
-	- **ACTION** :: ${1:person} - ${2:task}
-
 snippet ASIDE
-	---${1:ASIDE}---
-
+	\&mdash;${1:ASIDE}\&mdash;
 snippet HT
 	\`#${1:hashtag}\`
-
-
-snippet defn
-	${1:word}
-	: ${2:definition}
-
-snippet mdfigure
-	![${1:Caption}\label{fig:${2:reference}}](${3:location}){width=${4:size}%}
