@@ -36,3 +36,4 @@ source /usr/local/bin/virtualenvwrapper.sh
 export CODE="$HOME/src/github.com/chrisdavison"
 export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
+export TASKDIR="$HOME/src/github.com/chrisdavison/logbook/tasks/"
