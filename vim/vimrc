@@ -5,6 +5,7 @@
 " ========================================
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
+
 " --- Helper functions for environment, should they be needed elsewhere
 let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
@@ -29,6 +30,7 @@ set nospell
 set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
+set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 
 " --- Search options 
 set incsearch " Search as you type
@@ -197,7 +199,6 @@ if has('gui')
     let g:themeswitch_night='molokai'
 endif
 execute 'colorscheme ' . g:themeswitch_night
-highlight ColorColumn ctermbg=magenta
 
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
@@ -271,12 +272,6 @@ map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
 
-" Move BETWEEN windows
-nnoremap <C-H> <C-W><C-H>
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-
 " Move by VISUAL lines
 nnoremap  <buffer> <silent> <C-k> gk
 nnoremap  <buffer> <silent> <C-j> gj
@@ -289,14 +284,15 @@ vmap  <buffer> <silent> $ g$
 " }}}2
 
 " Search/replace {{{2
-" Basically, put you between the brackets of s//g,
-" type your search, then /, then your replacement
-nmap S :%s///<LEFT>
-vnoremap S :s///<LEFT>
-nnoremap <silent> <leader>/ :nohlsearch<CR>
 
-" Use '//' in visual mode to search for selection
-vnoremap // y/<C-R>"<CR>
+" search something, then use 'S' to to a search-replace using that search.
+nmap S :%s///<LEFT>
+
+" highlight something, then use 'S' to use a search-replace with this highlight
+vnoremap S :s///<LEFT>
+
+" remove highlighting after searches
+nnoremap <silent> <leader>/ :nohlsearch<CR>
 " }}}2
 
 " Select what was pasted
@@ -314,7 +310,11 @@ vnoremap > >gv
 let s:prefer_fzf=1
 nnoremap <leader>b  :CtrlPBuffer<Cr>
 nnoremap <leader>p  :CtrlP<Cr>
-if s:prefer_fzf && has('gui-running')
+nnoremap <leader>ll :Lines<cr>
+nnoremap <leader>lb :BLines<cr>
+nnoremap <leader>m :Marks<cr>
+
+if s:prefer_fzf && !has('gui-running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
 endif
@@ -324,36 +324,20 @@ nnoremap <leader>fu :CtrlPFunky<Cr>
 nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 " }}}2
 
-" Maps to commonly used files (VIMRC etc) {{{2
-" Keybinds to manipulate my vim config
+" Modify/source my VIMRC {{{2
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
-nnoremap <leader>es :e ~/src/github.com/chrisdavison/
 " }}}2
 
 " Miscellany {{{2
-" Toggle hidden character visibility with
-nmap <Leader>h :set list!<CR>
-set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
-
-" Toggle Vimtex Table of Contents
-" nnoremap <leader>v :VimtexTocToggle<CR>
-
-" Toggle tagbar
+" Toggle certain functionality
 nnoremap <leader>t :TagbarToggle<CR>
-
-" Swap colon and semicolon
-" nnoremap ; :
-" nnoremap : ;
+nnoremap <leader>lt :LivedownToggle<cr>
+" -- hidden character visibility
+nmap <Leader>h :set list!<CR>
 
 " EX mode is a pain
 map q: :q
-
-" View and switch to buffer
-nnoremap gb :ls<CR>:buffer<Space>
-
-" Fold HTML tags
-nnoremap <leader>ft Vatzf
 
 " Format a paragraph
 nnoremap <leader>q gqip
@@ -361,7 +345,9 @@ nnoremap <leader>q gqip
 " Easily toggle distraction free - Goyo
 nnoremap <F11> :Goyo<Cr>
 
-command! CurPath let @+=expand("%")
+nnoremap nw :set wrap!<CR>
+
+nnoremap fmt :normal "ggVG="<Cr>
 " }}}2
 
 " My Plugins - DayNight NONE
@@ -370,11 +356,42 @@ command! CurPath let @+=expand("%")
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}2
+
+" Easily delete buffers {{{2
+nnoremap <leader>c :ls<Cr>:bd 
+" }}}
+
+" Use arrows for resizing panes {{{2
+nnoremap <Up> :resize +5<cr>
+nnoremap <Down> :resize -5<cr>
+nnoremap <Left> :vertical resize -5<cr>
+nnoremap <Right> :vertical resize +5<cr>
+" }}}2
+
+" Backspace goes to `alternage` file {{{2
+nnoremap <BS> <C-^>
+" }}}2
+
+
+" CUSTOM COMMANDS {{{2
+command! CopyFilename let @+=expand("%")
+" }}}2
 " }}}
 " ========================================
 " PLUGINS / LANGUAGES {{{ 
 " ========================================
-" ALE - Asynchronous linting {{{2
+" C/C++ {{{2
+augroup filetype_c
+    autocmd!
+    autocmd FileType c       set foldmethod=syntax
+    autocmd FileType cpo     set foldmethod=syntax
+    autocmd FileType arduino set foldmethod=syntax
+augroup END
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+" }}}2
+" Python {{{2
+" ALE - Asynchronous linting
 let g:ale_python_mypy_options = '--ignore-missing-imports'
 let g:ale_sign_error='✗'
 let g:ale_sign_warning='∎'
@@ -385,14 +402,7 @@ let g:ale_fixers = {
                        \'isort'],
 \}
 let g:ale_fix_on_save = 1
-
-" Autocommand groups --- filetype specific stuff {{{2
-augroup filetype_c
-    autocmd!
-    autocmd FileType c       set foldmethod=syntax
-    autocmd FileType cpo     set foldmethod=syntax
-    autocmd FileType arduino set foldmethod=syntax
-augroup END
+let g:ale_sign_column_always=1
 
 augroup filetype_py
     autocmd!
@@ -402,19 +412,35 @@ augroup filetype_py
     autocmd BufWritePre *.py :%s/\s\+$//e
 augroup END
 
+let g:pymode_python = 'python3'
+
+let g:syntastic_python_python_exec = '/usr/local/bin/python3'
+let g:syntastic_python_checkers = ['flake8']
+
+
+" Vim-slime - tmux & python
+let g:slime_target = "tmux"
+let g:slime_python_ipython = 1
+
+" }}}2
+" JSON {{{2
 augroup filetype_json
     autocmd!
     autocmd FileType json    set tabstop=2
     autocmd FileType json    set softtabstop=2
     autocmd FileType json    set shiftwidth=2
 augroup END
-
+" }}}2
+" Go {{{2
 augroup filetype_go
     autocmd!
     autocmd FileType go      set nofen
     autocmd FileType go      set foldmethod=syntax
 augroup END
 
+let g:go_fmt_command = "goimports"
+" }}}2
+" Markdown {{{2
 augroup markdown
     autocmd!
     autocmd Filetype markdown setlocal conceallevel=2
@@ -430,17 +456,16 @@ augroup END
 
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_follow_anchor = 1
-
-" Miscellany 
+" }}}2
+" Miscellany {{{2
 augroup filetype_miscellany
     autocmd!
-    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType vim     set foldmethod=marker
-    autocmd BufNewFile,BufReadPost *.es6 set filetype=javascript
     autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
     autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
+    autocmd BufEnter * hi! link SignColumn LineNr
 augroup END
 " }}}2
 " Search (FZF / CtrlP / Ag) {{{2
@@ -480,27 +505,15 @@ endif
 
 " }}}2
 " Latex / Vimtex {{{2
+augroup filetype_latex
+    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
+augroup END
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 let g:tex_flavor = "latex"
 let g:vimtex_indent_enabled=1
 let g:vimtex_fold_enabled=1
-" }}}2
-" C++ {{{2
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
-" }}}2
-" Python  {{{2
-let g:pymode_python = 'python3'
-
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-let g:syntastic_python_checkers = ['flake8']
-
-
-" Vim-slime - tmux & python
-let g:slime_target = "tmux"
-let g:slime_python_ipython = 1
 " }}}2
 " Tables {{{2
 let g:table_mode_corner="|"
@@ -518,15 +531,8 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 let g:goyo_width=100
 " }}}2
-" Syntastic {{{2
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-"  }}}2
 " EXTRA {{{2
 let b:javascript_fold=1
-let g:go_fmt_command = "goimports"
 let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
@@ -563,15 +569,8 @@ function! CustomFoldText()
 endfunction
 set foldnestmax=99
 set foldtext=CustomFoldText()
+noremap zt :call ToggleFold()<CR>
 " }}}2
-
-" Copy filename of current file {{{2
-function! CopyFilename()
-    let @+=expand("%")
-endfunction
-command! CopyFilename call CopyFilename()
-" }}}2
-
 " Open snippets for this filetype {{{2
 function! OpenScopesSnippets()
     let ft = &filetype
@@ -579,8 +578,8 @@ function! OpenScopesSnippets()
     let fn = dr . ft . '.snippets'
     execute "e " . fn
 endfunction
+nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 " }}}2
-
 " Markdown level, for folding {{{2
 " Function for markdown folding 
 function! MarkdownLevel()
@@ -591,21 +590,7 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}2
-
-" Functions for running pandoc on markdown files {{{2
-" Generate a MD preview for the current file
-function! MDPreview()
-    silent !clear
-    let frm = '--from markdown_github+yaml_metadata_block+raw_html'
-    let cfg = '--toc --toc-depth=2 --mathjax -s --self-contained'
-    let style = '-c ~/.dotfiles/github-markdown.css'
-    let out = '-o ~/.mdpreview.html'
-    let str = '!pandoc %' . ' ' . frm . ' ' . cfg . ' ' . style . ' ' . out
-    " echo str
-    execute str
-endfunction
-command! MDPreview call MDPreview()
-
+" Pandoc Markdown reformatting {{{2
 function! RunPandoc(extra, wrap, atx, reflink)
     silent !clear
     let format='markdown_github-hard_line_breaks+line_blocks+tex_math_dollars'
@@ -639,13 +624,6 @@ function! MDToPDF()
 endfunction
 command! MDToPDF call MDToPDF()
 " }}}2
-
-" Bindings for functions {{{2
-noremap zt :call ToggleFold()<CR>
-nmap nw :set wrap!<CR>
-nnoremap fmt :normal "ggVG="<Cr>
-nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-" }}}2
 " }}}
 " ========================================
 " WINDOWS {{{ 
@@ -675,12 +653,7 @@ augroup autoSaveAndRead
     autocmd CursorHold * silent! checktime
 augroup END
 
-let g:snips_author='Chris Davison'
-let g:snips_email='c.jr.davison@gmail.com'
-let g:snips_github='ChrisDavison'
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
-
-nnoremap <BS> <C-^>
 
 autocmd VimResized * wincmd= " equally resize splits on window resize
 if s:darwin && has('gui')
@@ -692,18 +665,6 @@ if has('persistent_undo')
     set undofile
 endif
 
-let g:ale_sign_column_always=1
-
 let g:livedown_autorun=0  " Livedown 'follows' open markdown file
-nnoremap <leader>lp :LivedownPreview<cr>
-
-" Extended FZF keybinds
-nnoremap <leader>ll :Lines<cr>
-nnoremap <leader>lb :BLines<cr>
-nnoremap <leader>m :Marks<cr>
-nnoremap <Up> :resize +5<cr>
-nnoremap <Down> :resize -5<cr>
-nnoremap <Left> :vertical resize -5<cr>
-nnoremap <Right> :vertical resize +5<cr>
 " }}}
 " ========================================
