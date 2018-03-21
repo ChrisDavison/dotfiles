@@ -96,6 +96,7 @@ Plug 'leafgarland/typescript-vim'
 Plug 'udalov/kotlin-vim'
 
 "Utility
+Plug 'shime/vim-livedown'
 Plug 'ChrisDavison/daynight.vim'  " Toggle between dark and light themes
 Plug 'ChrisDavison/scheduling.vim'  " Org-mode like TODO/WIP/DONE
 Plug 'Konfekt/FastFold'  " Refreshing folds only on save, or fold-usage
@@ -809,4 +810,7 @@ if has('persistent_undo')
 endif
 
 let g:ale_sign_column_always=1
+
+let g:livedown_autorun=0  " Livedown 'follows' open markdown file
+nnoremap <leader>lp :LivedownPreview<cr>
 " }}}
