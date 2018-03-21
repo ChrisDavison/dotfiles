@@ -146,12 +146,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
-
-if 0
-    Plug 'scrooloose/syntastic'
-else
-    Plug 'w0rp/ale'
-endif
+Plug 'w0rp/ale'
 
 
 call plug#end()
@@ -174,20 +169,15 @@ if has('gui_running')
 else
     if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
        set t_Co=256
-    elseif has("terminfo")
-       colorscheme default
-       set t_Co=8
-       set t_Sf=[3%p1%dm
-       set t_Sb=[4%p1%dm
-     else
+    else
        colorscheme default
        set t_Co=8
        set t_Sf=[3%dm
        set t_Sb=[4%dm
-     endif
-     if $TMUX != ""
-        set t_ut=
-     endif
+    endif
+    if $TMUX != ""
+       set t_ut=
+    endif
 endif
 
 " Variables for theme switching using my custom plugin daynight.vim
@@ -215,6 +205,7 @@ cnoreabbrev Q q
 cnoreabbrev QA qa
 cnoreabbrev Qa qa
 cnoreabbrev Bd bd 
+
 " Shortcuts for utility inputs
 iabbrev @@ c.jr.davison@gmail.com
 iabbrev TD **TODO**
@@ -264,15 +255,14 @@ iabbrev approxx ≈
 " ========================================
 " KEYBINDS {{{ 
 " ========================================
-" Navigation {{{2
-" Split/Window management
-" Move windows
+" Move splits/windows {{{2
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
+" }}}2
 
-" Move by VISUAL lines
+" Move by VISUAL lines {{{2
 nnoremap  <buffer> <silent> <C-k> gk
 nnoremap  <buffer> <silent> <C-j> gj
 nnoremap  <buffer> <silent> 0 g0
@@ -282,7 +272,6 @@ vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
 " }}}2
-
 " Search/replace {{{2
 
 " search something, then use 'S' to to a search-replace using that search.
@@ -305,7 +294,6 @@ nnoremap <leader>a ggVG
 vnoremap < <gv
 vnoremap > >gv
 " }}}2
-
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{2
 let s:prefer_fzf=1
 nnoremap <leader>b  :CtrlPBuffer<Cr>
@@ -323,12 +311,10 @@ endif
 nnoremap <leader>fu :CtrlPFunky<Cr>
 nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 " }}}2
-
 " Modify/source my VIMRC {{{2
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
 " }}}2
-
 " Miscellany {{{2
 " Toggle certain functionality
 nnoremap <leader>t :TagbarToggle<CR>
@@ -349,30 +335,23 @@ nnoremap nw :set wrap!<CR>
 
 nnoremap fmt :normal "ggVG="<Cr>
 " }}}2
-
 " My Plugins - DayNight NONE
-
 " My Plugins - Scheduling {{{2
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}2
-
 " Easily delete buffers {{{2
 nnoremap <leader>c :ls<Cr>:bd 
 " }}}
-
 " Use arrows for resizing panes {{{2
 nnoremap <Up> :resize +5<cr>
 nnoremap <Down> :resize -5<cr>
 nnoremap <Left> :vertical resize -5<cr>
 nnoremap <Right> :vertical resize +5<cr>
 " }}}2
-
-" Backspace goes to `alternage` file {{{2
+" Backspace goes to `alternate` file {{{2
 nnoremap <BS> <C-^>
 " }}}2
-
-
 " CUSTOM COMMANDS {{{2
 command! CopyFilename let @+=expand("%")
 " }}}2
@@ -387,8 +366,6 @@ augroup filetype_c
     autocmd FileType cpo     set foldmethod=syntax
     autocmd FileType arduino set foldmethod=syntax
 augroup END
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
 " }}}2
 " Python {{{2
 " ALE - Asynchronous linting
@@ -413,10 +390,6 @@ augroup filetype_py
 augroup END
 
 let g:pymode_python = 'python3'
-
-let g:syntastic_python_python_exec = '/usr/local/bin/python3'
-let g:syntastic_python_checkers = ['flake8']
-
 
 " Vim-slime - tmux & python
 let g:slime_target = "tmux"
@@ -638,10 +611,6 @@ endif
 " ========================================
 " EXPERIMENTAL {{{ 
 " ========================================
-" enable dictionary, and use it in autocomplete
-set dictionary+=/usr/share/dict/words
-set complete+=k
-
 command! Wd write|bdelete
 
 set autoread
