@@ -1,15 +1,15 @@
 " vim: set foldmethod=marker foldlevel=2:
-" ChrisDavison's VIMRC {{{ 
+" Chris Davison's Vimrc
+" ========================================
+" SETTINGS {{{ 
 " ========================================
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
 " --- Helper functions for environment, should they be needed elsewhere
 let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
-" }}}
-" ========================================
-" SETTINGS {{{ 
-" ========================================
+
+" --- Some useful settings that need documented
 set nocompatible
 set autochdir
 syntax on
@@ -203,8 +203,6 @@ highlight ColorColumn ctermbg=magenta
 " --- Highlight long rows ----- 
 highlight ColorColumn ctermbg=magenta
 call matchadd('ColorColumn', '\%81v', 100)
-
-hi! link SignColumn LineNr
 " }}}
 " ========================================
 " ABBREVIATIONS {{{ 
@@ -295,7 +293,7 @@ vmap  <buffer> <silent> $ g$
 " Basically, put you between the brackets of s//g,
 " type your search, then /, then your replacement
 nmap S :%s///<LEFT>
-vmap S :s///<LEFT>
+vnoremap S :s///<LEFT>
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Use '//' in visual mode to search for selection
@@ -314,10 +312,10 @@ vnoremap > >gv
 " }}}2
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{2
-if has('gui_running')
-    nnoremap <leader>b  :CtrlPBuffer<Cr>
-    nnoremap <leader>p  :CtrlP<Cr>
-else
+let s:prefer_fzf=1
+nnoremap <leader>b  :CtrlPBuffer<Cr>
+nnoremap <leader>p  :CtrlP<Cr>
+if s:prefer_fzf & has('gui-running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
 endif
@@ -348,9 +346,6 @@ nnoremap <leader>t :TagbarToggle<CR>
 " Swap colon and semicolon
 " nnoremap ; :
 " nnoremap : ;
-
-" Use spacebar for folds
-nnoremap <space> za
 
 " EX mode is a pain
 map q: :q
@@ -427,7 +422,6 @@ augroup markdown
     autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
     autocmd Filetype markdown setlocal norelativenumber
     autocmd Filetype markdown setlocal nonumber
-    autocmd Filetype markdown setlocal equalprg=pandoc\ -t\ markdown-shortcut_reference_links\ --wrap=none\ --atx-headers\ --reference-links\ -s
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
@@ -457,7 +451,7 @@ let g:ctrlp_use_caching = 0
 if !s:haswin
     if executable('rg')
       set grepprg=rg\ --vimgrep
-      let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+      let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
 
       " --column: Show column number
       " --line-number: Show line number
@@ -539,54 +533,6 @@ let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
 " ========================================
-" SHEBANG {{{ 
-" ========================================
-" Automatically add HashBang lines -----
-function! Hashbang(portable, permission)
-let shells = {
-        \    'awk': "awk",
-        \     'sh': "bash",
-        \     'hs': "runhaskell",
-        \     'jl': "julia",
-        \    'lua': "lua",
-        \    'mak': "make",
-        \     'js': "node",
-        \      'm': "octave",
-        \     'pl': "perl",
-        \    'php': "php",
-        \     'py': "python",
-        \      'r': "Rscript",
-        \     'rb': "ruby",
-        \  'scala': "scala",
-        \    'tcl': "tclsh",
-        \    ' tk': "wish"
-        \    }
-
-let extension = expand("%:e")
-
-if has_key(shells,extension)
-    let fileshell = shells[extension]
-
-    if a:portable
-        let line =  "#! /usr/bin/env " . fileshell
-    else
-        let line = "#! " . system("which " . fileshell)
-    endif
-
-    0put = line
-
-    if a:permission
-        :autocmd BufWritePost * :autocmd VimLeave * :!chmod u+x %
-    endif
-
-endif
-
-endfunction
-
-autocmd! BufNewFile *.* :call Hashbang(1,0)
-
-" }}}
-" ========================================
 " FUNCTIONS {{{ 
 " ========================================
 " Custom fold {{{2
@@ -634,16 +580,6 @@ function! OpenScopesSnippets()
     let fn = dr . ft . '.snippets'
     execute "e " . fn
 endfunction
-" }}}2
-
-" Show the color syntax scope under point {{{2
-function! s:GetScope()
-    let s:vHi = synIDattr(synID(line("."),col("."),1),"name")
-    let s:vTrans = synIDattr(synID(line("."),col("."),0),"name")
-    let s:vLo = synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
-    echo "hi<" . s:vHi . "> trans<" . s:vTrans . "> lo<" . s:vLo . ">"
-endfunction
-command! CurrentScope call s:GetScope()
 " }}}2
 
 " Markdown level, for folding {{{2
@@ -705,42 +641,11 @@ endfunction
 command! MDToPDF call MDToPDF()
 " }}}2
 
-" Insert date/timestamp at point {{{2
-function! InsertDateAtPoint()
-    read!date "+\%Y-\%m-\%d"
-    normal kJ
-endfunction
-
-function! InsertNamedDateAtPoint()
-    read!date "+\%Y-\%m-\%d - \%a"
-    normal kJ
-endfunction
-
-function! InsertTimestampAtPoint()
-    read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
-    normal kJ
-endfunction
-
-function! InsertLogbookHeader()
-    normal i# 
-    read!date "+\%Y-\%m-\%d - \%a"
-    normal kJ
-    normal o
-    normal o-   
-endfunction
-
-command! Today call InsertDateAtPoint()
-command! TodayNamed call InsertNamedDateAtPoint()
-command! TimeNow call InsertTimestampAtPoint()
-command! Logbook call InsertLogbookHeader()
-" }}}2
-
 " Bindings for functions {{{2
 noremap zt :call ToggleFold()<CR>
 nmap nw :set wrap!<CR>
 nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-map <F9> :CurrentScope<Cr>
 " }}}2
 
 " Toggle Line numbers {{{2
@@ -775,7 +680,7 @@ if s:haswin
 endif
 " }}}
 " ========================================
-" ----- EXPERIMENTAL {{{ 
+" EXPERIMENTAL {{{ 
 " ========================================
 " enable dictionary, and use it in autocomplete
 set dictionary+=/usr/share/dict/words
@@ -813,4 +718,14 @@ let g:ale_sign_column_always=1
 
 let g:livedown_autorun=0  " Livedown 'follows' open markdown file
 nnoremap <leader>lp :LivedownPreview<cr>
+
+" Extended FZF keybinds
+nnoremap <leader>ll :Lines<cr>
+nnoremap <leader>lb :BLines<cr>
+nnoremap <leader>m :Marks<cr>
+nnoremap <Up> :resize +5<cr>
+nnoremap <Down> :resize -5<cr>
+nnoremap <Left> :vertical resize -5<cr>
+nnoremap <Right> :vertical resize +5<cr>
 " }}}
+" ========================================
