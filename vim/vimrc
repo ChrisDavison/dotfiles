@@ -26,7 +26,6 @@ set iskeyword=a-z,A-Z,_,.,39
 set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
-set relativenumber
 set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
@@ -315,7 +314,7 @@ vnoremap > >gv
 let s:prefer_fzf=1
 nnoremap <leader>b  :CtrlPBuffer<Cr>
 nnoremap <leader>p  :CtrlP<Cr>
-if s:prefer_fzf & has('gui-running')
+if s:prefer_fzf && has('gui-running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
 endif
@@ -420,7 +419,6 @@ augroup markdown
     autocmd!
     autocmd Filetype markdown setlocal conceallevel=2
     autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
-    autocmd Filetype markdown setlocal norelativenumber
     autocmd Filetype markdown setlocal nonumber
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
@@ -571,6 +569,7 @@ set foldtext=CustomFoldText()
 function! CopyFilename()
     let @+=expand("%")
 endfunction
+command! CopyFilename call CopyFilename()
 " }}}2
 
 " Open snippets for this filetype {{{2
@@ -646,27 +645,6 @@ noremap zt :call ToggleFold()<CR>
 nmap nw :set wrap!<CR>
 nnoremap fmt :normal "ggVG="<Cr>
 nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
-" }}}2
-
-" Toggle Line numbers {{{2
-function! ToggleLinum()
-    set relativenumber!
-    set number!
-endfunction
-
-function! Linum()
-    set number
-    set relativenumber
-endfunction
-
-function! NoLinum()
-    set nonumber
-    set norelativenumber
-endfunction
-
-command! ToggleLinum call ToggleLinum()
-command! NoLinum call NoLinum()
-command! Linum call Linum()
 " }}}2
 " }}}
 " ========================================
