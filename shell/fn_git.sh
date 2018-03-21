@@ -16,3 +16,11 @@ git_merge() {
     git read-tree --prefix=$proj/ -u $proj/master
     echo "Need to commit"
 }
+
+gbetween() {
+    git plgdall --after="$1" --before="$2"
+}
+
+gsince() {
+    git plgdall --after="$1"
+}
