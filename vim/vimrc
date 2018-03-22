@@ -1,8 +1,8 @@
 " vim: set foldmethod=marker foldlevel=2:
 " Chris Davison's Vimrc
-" ========================================
+
 " SETTINGS {{{ 
-" ========================================
+
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
 
@@ -31,6 +31,8 @@ set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
+set autoread
+set updatetime=1000
 
 " --- Search options 
 set incsearch " Search as you type
@@ -80,65 +82,61 @@ set wildignore+=*.png,*.jpg,*.gif
 " -- Statusbar
 set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
 " }}}
-" ========================================
 " PLUGIN INSTALL {{{ 
-" ========================================
+
 call plug#begin('~/.vim/plugged')
 
-" Languages
-Plug 'fatih/vim-go'
-Plug 'pangloss/vim-javascript'
-Plug 'racer-rust/vim-racer'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'rbonvall/snipmate-snippets-bib'
-Plug 'ekalinin/Dockerfile.vim'
-Plug 'leafgarland/typescript-vim'
-Plug 'udalov/kotlin-vim'
-
-"Utility
-Plug 'shime/vim-livedown'
-Plug 'ChrisDavison/daynight.vim'  " Toggle between dark and light themes
-Plug 'ChrisDavison/scheduling.vim'  " Org-mode like TODO/WIP/DONE
-Plug 'Konfekt/FastFold'  " Refreshing folds only on save, or fold-usage
+Plug 'fatih/vim-go'                               " Syntax: Go
+Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
+Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
+Plug 'godlygeek/tabular'                          " Support for formatting tables
+Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
+Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
+Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
+Plug 'leafgarland/typescript-vim'                 " Language: Typescript
+Plug 'udalov/kotlin-vim'                          " Language: Kotlin
+Plug 'jalvesaq/Nvim-R'                            " Language: R
+Plug 'shime/vim-livedown'                         " Markdown preview
+Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
+Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
+Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'bps/vim-textobj-python'
-Plug 'chmp/mdnav'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'dahu/vim-fanfingtastic'
+Plug 'bps/vim-textobj-python'                     " Text objects for python
+Plug 'ctrlpvim/ctrlp.vim'                         " CtrlP for navigation
+Plug 'dahu/vim-fanfingtastic'                     " Make 'F' work across newlines
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion'                  " Easily navigate to any character on screen
 Plug 'ervandew/supertab'
 Plug 'garbas/vim-snipmate'
-Plug 'godlygeek/tabular'
 Plug 'guns/vim-sexp'
 Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
-Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'kana/vim-textobj-user'         " Custom text objects ('verbs')
+Plug 'junegunn/goyo.vim'                          " Distraction free mode
+Plug 'junegunn/limelight.vim'                     " Typewriter mode for distraction free
+Plug 'junegunn/rainbow_parentheses.vim'           " Different colours for each paren pair
+Plug 'junegunn/vim-easy-align'
+Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'
-Plug 'lervag/vimtex'
+Plug 'lervag/vimtex'                              " Syntax: Latex
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mattn/webapi-vim'
 Plug 'michaeljsmith/vim-indent-object'
-Plug 'nvie/vim-flake8'
-Plug 'paulhybryant/vim-textobj-path' " Text object for paths
-Plug 'rking/ag.vim'
-Plug 'tacahiroy/ctrlp-funky'
-Plug 'terryma/vim-expand-region'
+Plug 'nvie/vim-flake8'                            " Lint with flake8
+Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
+Plug 'rking/ag.vim'                               " Support for TheSilverSearcher
+Plug 'tacahiroy/ctrlp-funky'                      " CtrlP through functions/tags
+Plug 'terryma/vim-expand-region'                  " Keybind to expand the scope of your selection
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fireplace'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-sexp-mappings-for-regular-people'
+Plug 'tpope/vim-fugitive'                         " Better git integration with vim
+Plug 'tpope/vim-obsession'                        " Better session management with vim
+Plug 'tpope/vim-sensible'                         " Sensible defaults
+Plug 'tpope/vim-sexp-mappings-for-regular-people' " Better Sexp mappings
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
@@ -148,13 +146,11 @@ Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
 Plug 'w0rp/ale'
 
-
 call plug#end()
 
 " }}}
-" ========================================
 " APPEARANCE {{{ 
-" ========================================
+
 if has('gui_running')
     set encoding=utf-8
     set guifont=Input:h18,Input_Mono:h18,Fira_Code:h18
@@ -189,14 +185,9 @@ if has('gui')
     let g:themeswitch_night='molokai'
 endif
 execute 'colorscheme ' . g:themeswitch_night
-
-" --- Highlight long rows ----- 
-highlight ColorColumn ctermbg=magenta
-call matchadd('ColorColumn', '\%81v', 100)
 " }}}
-" ========================================
 " ABBREVIATIONS {{{ 
-" ========================================
+
 " Command abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
@@ -252,17 +243,15 @@ iabbrev logicor ∨
 iabbrev logicnot ¬
 iabbrev approxx ≈
 " }}}
-" ========================================
 " KEYBINDS {{{ 
-" ========================================
-" Move splits/windows {{{2
+" Navigation {{{2
+" Move splits/windows
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
 map <C-w><C-k> <C-w><S-k>
 map <C-w><C-l> <C-w><S-l>
-" }}}2
 
-" Move by VISUAL lines {{{2
+" Move by VISUAL lines
 nnoremap  <buffer> <silent> <C-k> gk
 nnoremap  <buffer> <silent> <C-j> gj
 nnoremap  <buffer> <silent> 0 g0
@@ -271,6 +260,37 @@ vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
+
+" Select what was pasted
+noremap gV `[v`]
+
+" Select ALL
+nnoremap <leader>a ggVG
+
+" Buffer/File/Function/Outline navigation (CtrlP versus FZF)
+let s:prefer_fzf=1
+nnoremap <leader>b  :CtrlPBuffer<Cr>
+nnoremap <leader>p  :CtrlP<Cr>
+nnoremap <leader>ll :Lines<cr>
+nnoremap <leader>lb :BLines<cr>
+nnoremap <leader>m :Marks<cr>
+
+if s:prefer_fzf && !has('gui_running')
+    nnoremap <leader>b :Buffers<Cr>
+    nnoremap <leader>p :Files<Cr>
+endif
+
+" Funky (CtrlP for functions)
+nnoremap <leader>fu :CtrlPFunky<Cr>
+nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+
+" Modify/source my VIMRC
+nnoremap <leader>ev :e $MYVIMRC<Cr>G
+nnoremap <leader>sv :so $MYVIMRC<Cr>
+
+" Backspace goes to `alternate` file
+nnoremap <BS> <C-^>
+
 " }}}2
 " Search/replace {{{2
 
@@ -284,36 +304,9 @@ vnoremap S :s///<LEFT>
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 " }}}2
 
-" Select what was pasted
-noremap gV `[v`]
-
-" Select ALL
-nnoremap <leader>a ggVG
-
 " Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
-" }}}2
-" Buffer/File/Function/Outline navigation (CtrlP versus FZF) {{{2
-let s:prefer_fzf=1
-nnoremap <leader>b  :CtrlPBuffer<Cr>
-nnoremap <leader>p  :CtrlP<Cr>
-nnoremap <leader>ll :Lines<cr>
-nnoremap <leader>lb :BLines<cr>
-nnoremap <leader>m :Marks<cr>
-
-if s:prefer_fzf && !has('gui-running')
-    nnoremap <leader>b :Buffers<Cr>
-    nnoremap <leader>p :Files<Cr>
-endif
-
-" Funky (CtrlP for functions)
-nnoremap <leader>fu :CtrlPFunky<Cr>
-nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-" }}}2
-" Modify/source my VIMRC {{{2
-nnoremap <leader>ev :e $MYVIMRC<Cr>G
-nnoremap <leader>sv :so $MYVIMRC<Cr>
 " }}}2
 " Miscellany {{{2
 " Toggle certain functionality
@@ -321,9 +314,6 @@ nnoremap <leader>t :TagbarToggle<CR>
 nnoremap <leader>lt :LivedownToggle<cr>
 " -- hidden character visibility
 nmap <Leader>h :set list!<CR>
-
-" EX mode is a pain
-map q: :q
 
 " Format a paragraph
 nnoremap <leader>q gqip
@@ -333,32 +323,22 @@ nnoremap <F11> :Goyo<Cr>
 
 nnoremap nw :set wrap!<CR>
 
-nnoremap fmt :normal "ggVG="<Cr>
+" Easily delete buffers
+nnoremap <leader>c :ls<Cr>:bd 
+
+" Junegunn Easy-align
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign):w
 " }}}2
-" My Plugins - DayNight NONE
-" My Plugins - Scheduling {{{2
+" My Plugins {{{2
+" --- DayNight NONE
+" --- Scheduling
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}2
-" Easily delete buffers {{{2
-nnoremap <leader>c :ls<Cr>:bd 
 " }}}
-" Use arrows for resizing panes {{{2
-nnoremap <Up> :resize +5<cr>
-nnoremap <Down> :resize -5<cr>
-nnoremap <Left> :vertical resize -5<cr>
-nnoremap <Right> :vertical resize +5<cr>
-" }}}2
-" Backspace goes to `alternate` file {{{2
-nnoremap <BS> <C-^>
-" }}}2
-" CUSTOM COMMANDS {{{2
-command! CopyFilename let @+=expand("%")
-" }}}2
-" }}}
-" ========================================
 " PLUGINS / LANGUAGES {{{ 
-" ========================================
+
 " C/C++ {{{2
 augroup filetype_c
     autocmd!
@@ -509,9 +489,8 @@ let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
-" ========================================
 " FUNCTIONS {{{ 
-" ========================================
+
 " Custom fold {{{2
 function! ToggleFold()
     if &foldlevel < 10
@@ -597,24 +576,25 @@ function! MDToPDF()
 endfunction
 command! MDToPDF call MDToPDF()
 " }}}2
+" Custom commands {{{2
+command! CopyFilename let @+=expand("%")
+command! Wd write|bdelete
+" }}}2
 " }}}
-" ========================================
-" WINDOWS {{{ 
-" ========================================
+" Platform specific {{{ 
+
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
     let gitgutter_enabled=0
     cd ~\src\github.com\chrisdavison
 endif
-" }}}
-" ========================================
-" EXPERIMENTAL {{{ 
-" ========================================
-command! Wd write|bdelete
 
-set autoread
-set updatetime=1000
+if s:darwin && has('gui')
+    set macligatures
+endif
+" }}}
+" EXPERIMENTAL {{{ 
 
 augroup autoSaveAndRead
     autocmd!
@@ -625,15 +605,9 @@ augroup END
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 
 autocmd VimResized * wincmd= " equally resize splits on window resize
-if s:darwin && has('gui')
-    set macligatures
-endif
 
 if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
 endif
-
-let g:livedown_autorun=0  " Livedown 'follows' open markdown file
 " }}}
-" ========================================
