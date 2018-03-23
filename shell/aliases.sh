@@ -28,7 +28,7 @@ alias .5="cd ../../../../.."
 alias cbssh="cbf ~/.ssh/id_rsa.pub"
 
 # Python machine-learning environment
-alias datasci="source ~/.virtualenvs/datasci/bin/activate"
+alias datasci="source ~/.envs/datasci/bin/activate"
 
 # Nice git aliases
 alias g='git'
@@ -67,7 +67,6 @@ alias ME='cd ~/src/github.com/chrisdavison'
 alias CHURN='cd ~/src/github.com/etsteam/churning'
 
 alias nbx="jupyter nbconvert --execute --to notebook"
-alias ML='workon datasci'
 
 # Docker bollocks
 alias dpandoc="docker run -it --rm -v `pwd`:/source jagregory/pandoc"

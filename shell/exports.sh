@@ -30,8 +30,6 @@ export PATH=$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
 export TERM=xterm-256color;
 
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-export WORKON_HOME=~/.envs
-source /usr/local/bin/virtualenvwrapper.sh
 
 export CODE="$HOME/src/github.com/chrisdavison"
 export TEMPLATES="$CODE/ProjectTemplates"
