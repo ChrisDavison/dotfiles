@@ -1,4 +1,4 @@
-" vim: set foldmethod=marker foldlevel=2:
+" vim: set foldmethod=marker foldlevel=1:
 " Chris Davison's Vimrc
 
 " SETTINGS {{{ 
@@ -153,7 +153,7 @@ call plug#end()
 
 if has('gui_running')
     set encoding=utf-8
-    set guifont=Input:h18,Input_Mono:h18,Fira_Code:h18
+    set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
     
     " Disable menu bollocks
     set guioptions-=m
@@ -181,10 +181,11 @@ set bg=dark
 let g:themeswitch_day='paramount'
 let g:themeswitch_night='seoul256'
 if has('gui')
-    let g:themeswitch_day='paramount'
-    let g:themeswitch_night='molokai'
+    let g:themeswitch_day='solarized'
+    let g:themeswitch_night='solarized'
 endif
 execute 'colorscheme ' . g:themeswitch_night
+hi! link SignColumn LineNr
 " }}}
 " ABBREVIATIONS {{{ 
 
@@ -202,12 +203,8 @@ iabbrev @@ c.jr.davison@gmail.com
 iabbrev TD **TODO**
 iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
-iabbrev Q? **Q?** 
 iabbrev ACT **ACTION:**
 iabbrev ASM *Assume* :: 
-iabbrev T4 $\therefore$
-iabbrev t4 &there4;
-iabbrev IMPL $\implies$
 iabbrev invq ¿
 iabbrev *@ **email:**
 iabbrev EXP **experiment:**
@@ -242,6 +239,7 @@ iabbrev logicand ∧
 iabbrev logicor ∨
 iabbrev logicnot ¬
 iabbrev approxx ≈
+iabbrev there4 ∴
 " }}}
 " KEYBINDS {{{ 
 " Navigation {{{2
@@ -418,7 +416,7 @@ augroup filetype_miscellany
     autocmd FileType vim     set foldmethod=marker
     autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
     autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
-    autocmd BufEnter * hi! link SignColumn LineNr
+    autocmd ColorScheme * hi! link SignColumn LineNr
 augroup END
 " }}}2
 " Search (FZF / CtrlP / Ag) {{{2
@@ -581,7 +579,7 @@ command! CopyFilename let @+=expand("%")
 command! Wd write|bdelete
 " }}}2
 " }}}
-" Platform specific {{{ 
+" PLATFORM SPECIFIC {{{ 
 
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
