@@ -563,20 +563,33 @@ function! MDToPDF()
 endfunction
 command! MDToPDF call MDToPDF()
 " }}}2
-" Custom commands {{{2
-command! CopyFilename let @+=expand("%")
-command! Wd write|bdelete
+" Yank all matching lines to register A {{{2
+function! YankMatching()
+    let @a = ''
+    call inputsave()
+    let tag = input('Enter regex to match: ')
+    call inputrestore()
+    " Yanking to 'A' appends to the 'a' register
+    exec ':g/'.tag.'/y A'
+endfunction
+command! YankMatching call YankMatching()
+
+function! YankMatchingPreviousSearch()
+    let @a = ''
+    exec ':g//y A'
+endfunction
+command! YankPreviousSearch call YankMatchingPreviousSearch()
 " }}}2
 " }}}
 " PLATFORM SPECIFIC {{{ 
-
+" Windows
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
     let gitgutter_enabled=0
     cd ~\src\github.com\chrisdavison
 endif
-
+" Mac
 if s:darwin && has('gui')
     set macligatures
 endif
