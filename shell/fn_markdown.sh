@@ -1,6 +1,9 @@
 #! /usr/bin/env bash
 mdpreview() {
-    pandoc -s -c ~/.dotfiles/simple-pandoc-css.css --mathjax $1 > ~/.mdpreview.html && open ~/.mdpreview.html
+    opt=""
+    pandoc -s --standalone --mathjax -c ~/.dotfiles/css/github.css\
+        ~/.mdmetadata.yaml $1 > ~/.mdpreview.html
+    open ~/.mdpreview.html 
 }
 
 mdpreviewself() {
