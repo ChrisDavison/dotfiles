@@ -19,7 +19,7 @@ set encoding=utf-8
 scriptencoding utf-8
 set showcmd
 set wrap lbr
-let &showbreak = '...'
+let &showbreak = '└ '
 set breakindent
 set omnifunc=syntaxcomplete#Complete
 set number
@@ -124,10 +124,10 @@ Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mattn/webapi-vim'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'mxw/vim-jsx'                                " JSX syntax support
 Plug 'nvie/vim-flake8'                            " Lint with flake8
 Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
 Plug 'rking/ag.vim'                               " Support for TheSilverSearcher
-Plug 'tacahiroy/ctrlp-funky'                      " CtrlP through functions/tags
 Plug 'terryma/vim-expand-region'                  " Keybind to expand the scope of your selection
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
@@ -241,7 +241,7 @@ iabbrev logicnot ¬
 iabbrev approxx ≈
 iabbrev there4 ∴
 " }}}
-" KEYBINDS {{{ 
+" KEYBINDS & COMMANDS {{{ 
 " Navigation {{{2
 " Move splits/windows
 map <C-w><C-h> <C-w><S-h>
@@ -277,10 +277,6 @@ if s:prefer_fzf && !has('gui_running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
 endif
-
-" Funky (CtrlP for functions)
-nnoremap <leader>fu :CtrlPFunky<Cr>
-nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 
 " Modify/source my VIMRC
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
@@ -334,15 +330,16 @@ nmap ga <Plug>(EasyAlign):w
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}2
+" COMMANDS {{{2
+command! CopyFilename let @+=expand("%")
+command! Wd write|bdelete
+" }}}2
 " }}}
 " PLUGINS / LANGUAGES {{{ 
-
 " C/C++ {{{2
 augroup filetype_c
     autocmd!
-    autocmd FileType c       set foldmethod=syntax
-    autocmd FileType cpo     set foldmethod=syntax
-    autocmd FileType arduino set foldmethod=syntax
+    autocmd! FileType c,cpo,arduino set foldmethod=syntax
 augroup END
 " }}}2
 " Python {{{2
@@ -417,6 +414,8 @@ augroup filetype_miscellany
     autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
     autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
     autocmd ColorScheme * hi! link SignColumn LineNr
+    autocmd FileType javascript set filetype=javascript.jsx
+    autocmd FileType javascript,javascript.jsx set foldmethod=syntax
 augroup END
 " }}}2
 " Search (FZF / CtrlP / Ag) {{{2
@@ -488,7 +487,6 @@ let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
 " FUNCTIONS {{{ 
-
 " Custom fold {{{2
 function! ToggleFold()
     if &foldlevel < 10
@@ -520,15 +518,6 @@ endfunction
 set foldnestmax=99
 set foldtext=CustomFoldText()
 noremap zt :call ToggleFold()<CR>
-" }}}2
-" Open snippets for this filetype {{{2
-function! OpenScopesSnippets()
-    let ft = &filetype
-    let dr = expand('~/.vim/snippets/')
-    let fn = dr . ft . '.snippets'
-    execute "e " . fn
-endfunction
-nnoremap <leader>os mZ:call OpenScopesSnippets()<Cr>
 " }}}2
 " Markdown level, for folding {{{2
 " Function for markdown folding 
@@ -608,4 +597,5 @@ if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
 endif
+set t_ut=
 " }}}
