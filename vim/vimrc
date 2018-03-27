@@ -1,8 +1,6 @@
 " vim: set foldmethod=marker foldlevel=1:
-" Chris Davison's Vimrc
-
+" ChrisDavison's Vimrc
 " SETTINGS {{{ 
-
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
 
@@ -30,6 +28,8 @@ set nospell
 set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
+set foldnestmax=10
+set foldtext=CustomFoldText()
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread
 set updatetime=1000
@@ -79,15 +79,23 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
-" -- Statusbar
+" --- Statusbar
 set statusline=%<[%n]\ %F\ %m%r%y\ %{exists('g:loaded_fugitive')?fugitive#statusline():''}\ %=%-14.(%l,%c%V%)\ %P
+
+" --- Miscellany
+let g:netrw_list_hide = "*.swp,*.swo,*.aux"
+if has('persistent_undo')
+    set undodir=~/.undodir/
+    set undofile
+endif
+set t_ut=
 " }}}
 " PLUGIN INSTALL {{{ 
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'fatih/vim-go'                               " Syntax: Go
 Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
+Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'godlygeek/tabular'                          " Support for formatting tables
 Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
@@ -150,7 +158,6 @@ call plug#end()
 
 " }}}
 " APPEARANCE {{{ 
-
 if has('gui_running')
     set encoding=utf-8
     set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
@@ -171,15 +178,12 @@ else
        set t_Sf=[3%dm
        set t_Sb=[4%dm
     endif
-    if $TMUX != ""
-       set t_ut=
-    endif
 endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_day='paramount'
-let g:themeswitch_night='seoul256'
+let g:themeswitch_day='github'
+let g:themeswitch_night='Monokai'
 if has('gui')
     let g:themeswitch_day='solarized'
     let g:themeswitch_night='solarized'
@@ -188,7 +192,6 @@ execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
 " }}}
 " ABBREVIATIONS {{{ 
-
 " Command abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
@@ -241,8 +244,7 @@ iabbrev logicnot ¬
 iabbrev approxx ≈
 iabbrev there4 ∴
 " }}}
-" KEYBINDS & COMMANDS {{{ 
-" Navigation {{{2
+" KEYBINDS - Navigation {{{
 " Move splits/windows
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
@@ -261,9 +263,6 @@ vmap  <buffer> <silent> $ g$
 
 " Select what was pasted
 noremap gV `[v`]
-
-" Select ALL
-nnoremap <leader>a ggVG
 
 " Buffer/File/Function/Outline navigation (CtrlP versus FZF)
 let s:prefer_fzf=1
@@ -285,209 +284,125 @@ nnoremap <leader>sv :so $MYVIMRC<Cr>
 " Backspace goes to `alternate` file
 nnoremap <BS> <C-^>
 
-" }}}2
-" Search/replace {{{2
-
-" search something, then use 'S' to to a search-replace using that search.
+" }}}
+" KEYBIND - Miscellaneous {{{
 nmap S :%s///<LEFT>
-
-" highlight something, then use 'S' to use a search-replace with this highlight
 vnoremap S :s///<LEFT>
-
-" remove highlighting after searches
 nnoremap <silent> <leader>/ :nohlsearch<CR>
-" }}}2
 
 " Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
-" }}}2
-" Miscellany {{{2
-" Toggle certain functionality
+
 nnoremap <leader>t :TagbarToggle<CR>
 nnoremap <leader>lt :LivedownToggle<cr>
-" -- hidden character visibility
-nmap <Leader>h :set list!<CR>
-
-" Format a paragraph
-nnoremap <leader>q gqip
-
-" Easily toggle distraction free - Goyo
+nnoremap <Leader>h :set list!<CR>
 nnoremap <F11> :Goyo<Cr>
-
 nnoremap nw :set wrap!<CR>
-
-" Easily delete buffers
 nnoremap <leader>c :ls<Cr>:bd 
-
-" Junegunn Easy-align
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign):w
-" }}}2
-" My Plugins {{{2
-" --- DayNight NONE
-" --- Scheduling
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
-" }}}2
-" COMMANDS {{{2
-command! CopyFilename let @+=expand("%")
-command! Wd write|bdelete
-" }}}2
 " }}}
 " PLUGINS / LANGUAGES {{{ 
-" C/C++ {{{2
-augroup filetype_c
+augroup vimrc
     autocmd!
-    autocmd! FileType c,cpo,arduino set foldmethod=syntax
-augroup END
-" }}}2
-" Python {{{2
-" ALE - Asynchronous linting
-let g:ale_python_mypy_options = '--ignore-missing-imports'
-let g:ale_sign_error='✗'
-let g:ale_sign_warning='∎'
-
-let g:ale_fixers = {
-            \'python': ['add_blank_lines_for_python_control_statements',
-                       \'autopep8',
-                       \'isort'],
-\}
-let g:ale_fix_on_save = 1
-let g:ale_sign_column_always=1
-
-augroup filetype_py
-    autocmd!
+    autocmd FileType c set foldmethod=syntax
+    autocmd FileType cpo set foldmethod=syntax
+    autocmd FileType arduino set foldmethod=syntax
+    autocmd FileType python  set nofen
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
-    autocmd BufWritePre *.py :%s/\s\+$//e
-augroup END
-
-let g:pymode_python = 'python3'
-
-" Vim-slime - tmux & python
-let g:slime_target = "tmux"
-let g:slime_python_ipython = 1
-
-" }}}2
-" JSON {{{2
-augroup filetype_json
-    autocmd!
     autocmd FileType json    set tabstop=2
     autocmd FileType json    set softtabstop=2
     autocmd FileType json    set shiftwidth=2
-augroup END
-" }}}2
-" Go {{{2
-augroup filetype_go
-    autocmd!
     autocmd FileType go      set nofen
     autocmd FileType go      set foldmethod=syntax
-augroup END
-
-let g:go_fmt_command = "goimports"
-" }}}2
-" Markdown {{{2
-augroup markdown
-    autocmd!
     autocmd Filetype markdown setlocal conceallevel=2
     autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
     autocmd Filetype markdown setlocal nonumber
+    autocmd Filetype markdown setlocal foldlevelstart=1
+    autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
+    autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
-    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
-    autocmd BufEnter *.md setlocal foldmethod=expr
-    autocmd BufWritePre *.md :%s/\s\+$//e
-augroup END
-
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_follow_anchor = 1
-" }}}2
-" Miscellany {{{2
-augroup filetype_miscellany
-    autocmd!
+    autocmd BufWritePre *.md,*.py :%s/\s\+$//e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType vim     set foldmethod=marker
-    autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
-    autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
+    " autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
+    " autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
     autocmd ColorScheme * hi! link SignColumn LineNr
     autocmd FileType javascript set filetype=javascript.jsx
     autocmd FileType javascript,javascript.jsx set foldmethod=syntax
+    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
+    autocmd User GoyoEnter Limelight
+    autocmd User GoyoLeave Limelight!
+    autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
+    autocmd CursorHold * silent! checktime " Check for external changes to files
+    autocmd VimResized * wincmd= " equally resize splits on window resize
 augroup END
 " }}}2
-" Search (FZF / CtrlP / Ag) {{{2
+" ALE - Async lint engine
+let g:ale_sign_error='✗'
+let g:ale_sign_warning='∎'
+let g:ale_fix_on_save = 1
+let g:ale_sign_column_always=1
+" PYTHON
+let g:ale_python_mypy_options = '--ignore-missing-imports'
+let g:pymode_python = 'python3'
+let g:slime_target = "tmux"
+let g:slime_python_ipython = 1
+" GO
+let g:go_fmt_command = "goimports"
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_follow_anchor = 1
+" LATEX
+let g:tex_flavor = "latex"
+let g:vimtex_quickfix_ignore_all_warnings=1
+let g:vimtex_latexmk_continuous=0
+let g:vimtex_quickfix_mode=0
+let g:vimtex_indent_enabled=1
+let g:vimtex_fold_enabled=1
+" TABLES
+let g:table_mode_corner="|"
+let g:table_mode_corner_corner="|"
+let g:table_mode_header_fillchar="-"
+" ULTISNIPS
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
+" GOYO
+let g:goyo_width=100
+" EXTRA
+let b:javascript_fold=1
+let g:SuperTabDefaultCompletionType = "context"
+" }}}
+" FZF/CtrlP && Rg/Ag {{{
 " Use `rg` if available, fallback to `ag`
 let g:ctrlp_use_caching = 0
 if !s:haswin
     if executable('rg')
-      set grepprg=rg\ --vimgrep
-      let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
-
-      " --column: Show column number
-      " --line-number: Show line number
-      " --no-heading: Do not show file headings in results
-      " --fixed-strings: Search term as a literal string
-      " --ignore-case: Case insensitive search
-      " --no-ignore: Do not respect .gitignore, etc...
-      " --hidden: Search hidden files and folders
-      " --follow: Follow symlinks
-      " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-      " --color: Search color options
-
-      command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
-
-      nnoremap <Leader>g :Find<SPACE>
-      nnoremap <leader>F :Find<SPACE>
+        set grepprg=rg\ --vimgrep
+        let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
+        command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+        nnoremap <Leader>g :Find<SPACE>
+        nnoremap <leader>F :Find<SPACE>
     elseif executable('ag')
-      " Use ag over grep
-      set grepprg=ag\ --nogroup\ --nocolor
-      let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+        " Use ag over grep
+        set grepprg=ag\ --nogroup\ --nocolor
+        let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
   endif
 else
     let g:ctrlp_use_caching = 1
     let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files --oc --exclude-standard']
 endif
-
-
-" }}}2
-" Latex / Vimtex {{{2
-augroup filetype_latex
-    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
-augroup END
-let g:vimtex_quickfix_ignore_all_warnings=1
-let g:vimtex_latexmk_continuous=0
-let g:vimtex_quickfix_mode=0
-let g:tex_flavor = "latex"
-let g:vimtex_indent_enabled=1
-let g:vimtex_fold_enabled=1
-" }}}2
-" Tables {{{2
-let g:table_mode_corner="|"
-let g:table_mode_corner_corner="|"
-let g:table_mode_header_fillchar="-"
-" }}}2
-" UltiSnips {{{2
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpForwardTrigger="<c-z>"
-let g:UltiSnipsEditSplit="vertical"
-" }}}2
-" Goyo {{{2
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
-let g:goyo_width=100
-" }}}2
-" EXTRA {{{2
-let b:javascript_fold=1
-let g:SuperTabDefaultCompletionType = "context"
-" }}}2
 " }}}
-" FUNCTIONS {{{ 
-" Custom fold {{{2
+" FUNC - folding {{{
 function! ToggleFold()
     if &foldlevel < 10
         set foldlevel=99
@@ -515,12 +430,9 @@ function! CustomFoldText()
      let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr))
      return line . expansionString . foldSizeStr . foldLevelStr
 endfunction
-set foldnestmax=99
-set foldtext=CustomFoldText()
 noremap zt :call ToggleFold()<CR>
-" }}}2
-" Markdown level, for folding {{{2
-" Function for markdown folding 
+
+" Get the number of # in header to determine foldlevel for markdown
 function! MarkdownLevel()
     let h = matchstr(getline(v:lnum), '^#\+')
     if empty(h)
@@ -528,8 +440,25 @@ function! MarkdownLevel()
     endif
     return ">" . len(h)
 endfunction
-" }}}2
-" Pandoc Markdown reformatting {{{2
+" }}}
+" FUNC - Yank all matching lines to register A {{{
+function! YankMatching()
+    let @a = ''
+    call inputsave()
+    let tag = input('Enter regex to match: ')
+    call inputrestore()
+    " Yanking to 'A' appends to the 'a' register
+    exec ':g/'.tag.'/y A'
+endfunction
+command! YankMatching call YankMatching()
+
+function! YankMatchingPreviousSearch()
+    let @a = ''
+    exec ':g//y A'
+endfunction
+command! YankPreviousSearch call YankMatchingPreviousSearch()
+" }}}
+" FUNC - Pandoc Markdown reformatting {{{
 function! RunPandoc(extra, wrap, atx, reflink)
     silent !clear
     let format='markdown_github-hard_line_breaks+line_blocks+tex_math_dollars'
@@ -562,53 +491,23 @@ function! MDToPDF()
     execute "!" . cmd
 endfunction
 command! MDToPDF call MDToPDF()
-" }}}2
-" Yank all matching lines to register A {{{2
-function! YankMatching()
-    let @a = ''
-    call inputsave()
-    let tag = input('Enter regex to match: ')
-    call inputrestore()
-    " Yanking to 'A' appends to the 'a' register
-    exec ':g/'.tag.'/y A'
-endfunction
-command! YankMatching call YankMatching()
-
-function! YankMatchingPreviousSearch()
-    let @a = ''
-    exec ':g//y A'
-endfunction
-command! YankPreviousSearch call YankMatchingPreviousSearch()
-" }}}2
 " }}}
-" PLATFORM SPECIFIC {{{ 
-" Windows
+" FUNC - Miscellaneous {{{
+command! CopyFilename let @+=expand("%")
+command! Wd write|bdelete
+" }}}
+" PLATFORM - Windows {{{ 
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
     let gitgutter_enabled=0
     cd ~\src\github.com\chrisdavison
 endif
-" Mac
+" }}}
+" PLATFORM - Mac {{{
 if s:darwin && has('gui')
     set macligatures
 endif
 " }}}
 " EXPERIMENTAL {{{ 
-
-augroup autoSaveAndRead
-    autocmd!
-    autocmd TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd CursorHold * silent! checktime
-augroup END
-
-let g:netrw_list_hide = "*.swp,*.swo,*.aux"
-
-autocmd VimResized * wincmd= " equally resize splits on window resize
-
-if has('persistent_undo')
-    set undodir=~/.undodir/
-    set undofile
-endif
-set t_ut=
 " }}}
