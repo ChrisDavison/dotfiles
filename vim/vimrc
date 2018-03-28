@@ -1,8 +1,9 @@
 " vim: set foldmethod=marker foldlevel=1:
 " ChrisDavison's Vimrc
-" SETTINGS {{{ 
+" SETTINGS {{{
 " --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
+" Command abbreviations
 
 " --- Helper functions for environment, should they be needed elsewhere
 let s:haswin = has('win32') || has('win64')
@@ -34,7 +35,7 @@ set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread
 set updatetime=1000
 
-" --- Search options 
+" --- Search options
 set incsearch " Search as you type
 set gdefault " By default, replace all matches on a line (i.e. always s///g)
 set hlsearch " Highlight search results
@@ -43,7 +44,7 @@ set smartcase
 set magic
 set backspace=indent,eol,start
 
-" --- Various coding preferences 
+" --- Various coding preferences
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
@@ -57,18 +58,18 @@ set title
 set sidescrolloff=15
 set sidescroll=1
 
-" --- Put all temp files in one place 
+" --- Put all temp files in one place
 set backup
 set backupcopy=yes
 set backupdir=~/.backup,.
 set directory=~/.temp,.
 
-" --- Wildmenu config 
+" --- Wildmenu config
 set wildmenu
-set wildmode=list:longest
+set wildmode=list,longest,full
 
 """" Ignore certain files and directories in Wildmenu
-set wildignore=*.o,*.obj,*~ 
+set wildignore=*.o,*.obj,*~
 set wildignore+=*vim/backups*
 set wildignore+=*sass-cache*
 set wildignore+=*DS_Store*
@@ -90,7 +91,7 @@ if has('persistent_undo')
 endif
 set t_ut=
 " }}}
-" PLUGIN INSTALL {{{ 
+" PLUGIN INSTALL {{{
 call plug#begin('~/.vim/plugged')
 
 Plug 'fatih/vim-go'                               " Syntax: Go
@@ -157,11 +158,11 @@ Plug 'w0rp/ale'
 call plug#end()
 
 " }}}
-" APPEARANCE {{{ 
+" APPEARANCE {{{
 if has('gui_running')
     set encoding=utf-8
     set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
-    
+
     " Disable menu bollocks
     set guioptions-=m
     set guioptions-=T
@@ -191,7 +192,7 @@ endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
 " }}}
-" ABBREVIATIONS {{{ 
+" ABBREVIATIONS {{{
 " Command abbreviations
 cnoreabbrev E e
 cnoreabbrev W w
@@ -199,7 +200,7 @@ cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 cnoreabbrev Qa qa
-cnoreabbrev Bd bd 
+cnoreabbrev Bd bd
 
 " Shortcuts for utility inputs
 iabbrev @@ c.jr.davison@gmail.com
@@ -207,7 +208,7 @@ iabbrev TD **TODO**
 iabbrev EX **EXAMPLE:**
 iabbrev E: Explain:
 iabbrev ACT **ACTION:**
-iabbrev ASM *Assume* :: 
+iabbrev ASM *Assume* ::
 iabbrev invq ¿
 iabbrev *@ **email:**
 iabbrev EXP **experiment:**
@@ -299,13 +300,13 @@ nnoremap <leader>lt :LivedownToggle<cr>
 nnoremap <Leader>h :set list!<CR>
 nnoremap <F11> :Goyo<Cr>
 nnoremap nw :set wrap!<CR>
-nnoremap <leader>c :ls<Cr>:bd 
+nnoremap <leader>c :ls<Cr>:bd
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign):w
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}
-" PLUGINS / LANGUAGES {{{ 
+" PLUGINS / LANGUAGES {{{
 augroup vimrc
     autocmd!
     autocmd FileType c set foldmethod=syntax
@@ -483,20 +484,21 @@ command! MDTidyWrap call RunPandoc('', 1, 1, 0)
 command! MDTidyWrapRef call RunPandoc('', 1, 1, 1)
 nnoremap <silent> <leader>mdt :MDTidyRef<CR>
 
-" Convert current markdown file to PDF 
+" Convert current markdown file to PDF
 function! MDToPDF()
     silent !clear
     let outfn=expand('%:r') . '.pdf'
     let cmd = 'pandoc % -o ' . outfn
     execute "!" . cmd
 endfunction
-command! MDToPDF call MDToPDF()
+command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
 " }}}
 " FUNC - Miscellaneous {{{
-command! CopyFilename let @+=expand("%")
+command! CopyFilename let @+=expand("%:p") | :echo "Copied path of current file"
+command! CopyRelativeFilename let @+=expand("%") | :echo "Copied path of current file"
 command! Wd write|bdelete
 " }}}
-" PLATFORM - Windows {{{ 
+" PLATFORM - Windows {{{
 if s:haswin
     nnoremap <F10> :WToggleFullscreen<CR>
     autocmd GUIEnter * silent! WToggleClean
@@ -509,7 +511,7 @@ if s:darwin && has('gui')
     set macligatures
 endif
 " }}}
-" EXPERIMENTAL {{{ 
+" EXPERIMENTAL {{{
 command! Bpd bp|bd #
 let g:gitgutter_sign_added = '∙'
 let g:gitgutter_sign_modified = '∙'
@@ -517,8 +519,8 @@ let g:gitgutter_sign_removed = '∙'
 let g:gitgutter_sign_modified_removed = '∙'
 nnoremap <C-n> :bnext<Cr>
 nnoremap <C-p> :bprev<Cr>
-command! TEOL %s/\s\+$//
-command! CLEAN retab | TEOL
+command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
+command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 " }}}
