@@ -24,3 +24,4 @@ sourceOrMessage ~/.dotfiles/shell/func.sh
 
 sourceOrMessage ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
