@@ -16,8 +16,6 @@ fi
 
 # Session management
 alias c='clear'
-alias h='history'
-alias j='jobs -l'
 alias ..='cd ..'
 alias .2="cd ../.."
 alias .3="cd ../../.."
