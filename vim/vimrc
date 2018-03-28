@@ -523,4 +523,5 @@ command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
+command! Inbox :e ~/Dropbox/n/notes/__inbox.md | :echo "Editing inbox"
 " }}}
