@@ -153,6 +153,7 @@ Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
 Plug 'w0rp/ale'
+Plug 'gmoe/vim-espresso'
 
 call plug#end()
 
@@ -183,7 +184,7 @@ endif
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
 let g:themeswitch_day='github'
-let g:themeswitch_night='Monokai'
+let g:themeswitch_night='espresso'
 if has('gui')
     let g:themeswitch_day='solarized'
     let g:themeswitch_night='solarized'
