@@ -5,6 +5,9 @@ snippet task
 
 	## Context
 
+snippet tasklink
+	[Read more](./tasks/${1:filename}.md#Tasks)
+
 snippet abstract
 	# TITLE
 
@@ -15,14 +18,3 @@ snippet abstract
 	clearly state major contribution
 
 	2/3 sentences: sell details, major quantitative results etc.
-
-snippet LBR
-	`repeat('-', 80)`
-snippet -td
-	- **TODO** ${1:task}
-snippet $FR
-	$\frac{${1:num}}{${2:denom}}$
-snippet ASIDE
-	\&mdash;${1:ASIDE}\&mdash;
-snippet HT
-	\`#${1:hashtag}\`
