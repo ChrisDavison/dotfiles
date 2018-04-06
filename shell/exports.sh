@@ -22,6 +22,10 @@ export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export STACKBIN="$HOME/.local/bin"
 export RESEARCHFIGURES="$HOME/Dropbox/f/figures/"
 
+# Rust
+export DYLD_LIBRARY_PATH=${HOME}/.rustup/toolchains/stable-x86_64-apple-darwin/lib
+export RUST_SRC_PATH=${HOME}/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src
+
 export JOBSTATUS="$HOME/.jobstatus"
 
 export PATH=$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
