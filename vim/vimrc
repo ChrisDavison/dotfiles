@@ -94,6 +94,7 @@ set t_ut= " Fix issues with background color on some terminals
 call plug#begin('~/.vim/plugged')
 
 Plug 'fatih/vim-go'                               " Syntax: Go
+Plug 'davidhalter/jedi-vim'
 Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
 Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
@@ -134,6 +135,7 @@ Plug 'mattn/webapi-vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'mxw/vim-jsx'                                " JSX syntax support
 Plug 'nvie/vim-flake8'                            " Lint with flake8
+Plug 'Shougo/echodoc.vim'
 Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
 Plug 'rking/ag.vim'                               " Support for TheSilverSearcher
 Plug 'terryma/vim-expand-region'                  " Keybind to expand the scope of your selection
@@ -334,6 +336,10 @@ augroup vimrc
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
+    autocmd FileType rust nmap gd <Plug>(rust-def)
+    autocmd FileType rust nmap gs <Plug>(rust-def-split)
+    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <leader>gd <Plug>(rust-doc)
     autocmd FileType vim     set foldmethod=marker
     " autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
     " autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
@@ -392,7 +398,6 @@ if !s:haswin
         set grepprg=rg\ --vimgrep
         let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
         command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-        nnoremap <Leader>g :Find<SPACE>
         nnoremap <leader>F :Find<SPACE>
     elseif executable('ag')
         " Use ag over grep
@@ -405,13 +410,7 @@ else
 endif
 " }}}
 " FUNC - folding {{{
-function! ToggleFold()
-    if &foldlevel < 10
-        set foldlevel=99
-    else
-        set foldlevel=0
-    endif
-endfunction
+noremap <space> :normal zA<CR>
 
 function! CustomFoldText()
      "get first non-blank line
@@ -431,7 +430,6 @@ function! CustomFoldText()
      let expansionString = repeat(".", w - strwidth(foldSizeStr.line))
      return line . expansionString . foldSizeStr
 endfunction
-noremap zt :call ToggleFold()<CR>
 
 " Get the number of # in header to determine foldlevel for markdown
 function! MarkdownLevel()
@@ -534,8 +532,13 @@ nnoremap <C-n> :bnext<Cr>
 nnoremap <C-p> :bprev<Cr>
 command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
+command! REMcaretM %s///e | :echo "^M removed"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 command! Inbox :e ~/Dropbox/n/notes/__inbox.md | :echo "Editing inbox"
 set tags=./tags,tags;home
+let g:racer_cmd="/Users/davison/.cargo/bin/racer"
+let g:racer_experimental_completer=1
+let g:echodoc_enable_at_startup=1
+set cmdheight=2
 " }}}
