@@ -338,7 +338,7 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
-    autocmd BufWritePre * :%s///e
+    autocmd BufWritePre * :%s///e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType rust nmap gd <Plug>(rust-def)
@@ -398,22 +398,16 @@ let g:SuperTabDefaultCompletionType = "context"
 " FZF/CtrlP && Rg/Ag {{{
 " Use `rg` if available, fallback to `ag`
 let g:ctrlp_use_caching = 0
-if !s:haswin
-    if executable('rg')
-        set grepprg=rg\ --vimgrep
-        let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
-        command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-        nnoremap <leader>F :Find<SPACE>
-    elseif executable('ag')
-        " Use ag over grep
-        set grepprg=ag\ --nogroup\ --nocolor
-        let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-  endif
-else
-    let g:ctrlp_use_caching = 1
-    let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files --oc --exclude-standard']
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
+    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+    nnoremap <leader>F :Find<SPACE>
+elseif executable('ag')
+    " Use ag over grep
+    set grepprg=ag\ --nogroup\ --nocolor
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
-" }}}
 " FUNC - folding {{{
 noremap <space> :normal zA<CR>
 
@@ -539,7 +533,7 @@ nnoremap <C-n> :bnext<Cr>
 nnoremap <C-p> :bprev<Cr>
 command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
-command! REMcaretM %s///e | :echo "^M removed"
+command! REMcaretM %s///e | :echo "^M removed"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 command! Inbox :e ~/Dropbox/n/notes/__inbox.md | :echo "Editing inbox"
