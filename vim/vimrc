@@ -338,6 +338,7 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
+    autocmd BufWritePre * :%s///e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType rust nmap gd <Plug>(rust-def)
@@ -549,4 +550,26 @@ endif
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
 set cmdheight=2
+function! Notetaking()
+    let cur=expand("%:p")
+    if !filereadable(g:cd_notefile)
+        echo "Notefile " . g:cd_notefile . " doesn't exist"
+        return
+    endif
+    if (cur != g:cd_notefile)
+        normal mA
+        exec ":e " . g:cd_notefile
+        normal Go- 
+    else
+        normal `A
+    endif
+endfunction
+
+if s:haswin
+    let g:cd_notefile="e:\\Dropbox\\n\\notes\\__inbox.md"
+else
+    let g:cd_notefile="~/Dropbox/n/notes/__inbox.md"
+endif
+command! Notetaking :call Notetaking()
+nnoremap <leader>nt :call Notetaking()<CR>
 " }}}
