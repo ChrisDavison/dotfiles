@@ -27,6 +27,10 @@ set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
+if s:haswin
+    set shell=cmd.exe
+    set shellcmdflag=/c
+endif
 set foldenable " Don't fold by default
 set foldlevelstart=1
 set foldnestmax=10
@@ -515,6 +519,8 @@ if s:haswin
     autocmd GUIEnter * silent! WToggleClean
     let gitgutter_enabled=0
     cd ~\src\github.com\chrisdavison
+    set guifont=Fantasque_Sans_Mono:h16
+    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
 endif
 " }}}
 " PLATFORM - Mac {{{
@@ -537,7 +543,9 @@ nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 command! Inbox :e ~/Dropbox/n/notes/__inbox.md | :echo "Editing inbox"
 set tags=./tags,tags;home
-let g:racer_cmd="/Users/davison/.cargo/bin/racer"
+if !s:haswin
+    let g:racer_cmd="/Users/davison/.cargo/bin/racer"
+endif
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
 set cmdheight=2
