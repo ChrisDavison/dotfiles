@@ -38,6 +38,8 @@ set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
 set updatetime=1000 " Write a swap file after 1 second
+set cmdheight=2  " Useful for more info on some plugins
+set cursorline   " Highlight row the cursor is on
 
 " --- Search options
 set incsearch " Search as you type
@@ -338,7 +340,7 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
-    autocmd BufWritePre * :%s///e
+    autocmd BufWritePre *.md,*.py :%s///e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType rust nmap gd <Plug>(rust-def)
@@ -394,6 +396,17 @@ let g:goyo_width=100
 " EXTRA
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
+" RUST
+if !s:haswin
+    let g:racer_cmd="/Users/davison/.cargo/bin/racer"
+endif
+let g:racer_experimental_completer=1
+let g:echodoc_enable_at_startup=1
+" GITGUTTER
+let g:gitgutter_sign_added = '∙'
+let g:gitgutter_sign_modified = '∙'
+let g:gitgutter_sign_removed = '∙'
+let g:gitgutter_sign_modified_removed = '∙'
 " }}}
 " FZF/CtrlP && Rg/Ag {{{
 " Use `rg` if available, fallback to `ag`
@@ -408,6 +421,7 @@ elseif executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
+" }}}
 " FUNC - folding {{{
 noremap <space> :normal zA<CR>
 
@@ -523,30 +537,10 @@ if s:darwin && has('gui')
     set macligatures
 endif
 " }}}
-" EXPERIMENTAL {{{
-command! Bpd bp|bd #
-let g:gitgutter_sign_added = '∙'
-let g:gitgutter_sign_modified = '∙'
-let g:gitgutter_sign_removed = '∙'
-let g:gitgutter_sign_modified_removed = '∙'
-nnoremap <C-n> :bnext<Cr>
-nnoremap <C-p> :bprev<Cr>
-command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
-command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
-command! REMcaretM %s///e | :echo "^M removed"
-nnoremap ]l :ALENextWrap<CR>
-nnoremap [l :ALEPreviousWrap<CR>
-command! Inbox :e ~/Dropbox/n/notes/__inbox.md | :echo "Editing inbox"
-set tags=./tags,tags;home
-if !s:haswin
-    let g:racer_cmd="/Users/davison/.cargo/bin/racer"
-endif
-let g:racer_experimental_completer=1
-let g:echodoc_enable_at_startup=1
-set cmdheight=2
+" FUNC - NOTETAKING {{{
 function! Notetaking()
     let cur=expand("%:p")
-    if !filereadable(g:cd_notefile)
+    if !filereadable(g:cd_notefile) 
         echo "Notefile " . g:cd_notefile . " doesn't exist"
         return
     endif
@@ -562,8 +556,17 @@ endfunction
 if s:haswin
     let g:cd_notefile="e:\\Dropbox\\n\\notes\\__inbox.md"
 else
-    let g:cd_notefile="~/Dropbox/n/notes/__inbox.md"
+    let g:cd_notefile=$HOME . "/Dropbox/n/notes/__inbox.md"
 endif
 command! Notetaking :call Notetaking()
 nnoremap <leader>nt :call Notetaking()<CR>
+
+" }}}
+" EXPERIMENTAL {{{
+command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
+command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
+command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
+command! REMcaretM %s///e | :echo "^M removed"
+nnoremap ]l :ALENextWrap<CR>
+nnoremap [l :ALEPreviousWrap<CR>
 " }}}
