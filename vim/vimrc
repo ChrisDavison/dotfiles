@@ -540,23 +540,25 @@ endif
 " FUNC - NOTETAKING {{{
 function! Notetaking()
     let cur=expand("%:p")
-    if !filereadable(g:cd_notefile) 
-        echo "Notefile " . g:cd_notefile . " doesn't exist"
+    let filepath = g:cd_notedir . g:cd_notefile
+    if !filereadable(filepath) 
+        echo "Notefile " . filepath . " doesn't exist"
         return
     endif
-    if (cur != g:cd_notefile)
+    if (cur != filepath)
         normal mA
-        exec ":e " . g:cd_notefile
+        exec ":e " . filepath
         normal Go- 
     else
         normal `A
     endif
 endfunction
 
+let g:cd_notefile="__index.md"
 if s:haswin
-    let g:cd_notefile="e:\\Dropbox\\n\\notes\\__inbox.md"
+    let g:cd_notedir="e:\\Dropbox\\n\\notes\\"
 else
-    let g:cd_notefile=$HOME . "/Dropbox/n/notes/__inbox.md"
+    let g:cd_notedir=$HOME . "/Dropbox/n/notes/"
 endif
 command! Notetaking :call Notetaking()
 nnoremap <leader>nt :call Notetaking()<CR>
