@@ -2,6 +2,8 @@ sourceOrMessage() {
     [ -f $1 ] && source $1 || echo "No $1"
 }
 
+source ~/.cargo/env
+
 sourceOrMessage ~/.dotfiles/shell/aliases.sh
 sourceOrMessage ~/.dotfiles/shell/exports.sh
 
@@ -10,18 +12,20 @@ sourceOrMessage ~/.dotfiles/shell/setopt.sh
 sourceOrMessage ~/.dotfiles/shell/completion.sh
 sourceOrMessage ~/.dotfiles/shell/bindkeys.sh
 
-sourceOrMessage ~/.dotfiles/shell/fn_coloured_man.sh
-sourceOrMessage ~/.dotfiles/shell/fn_markdown.sh
-sourceOrMessage ~/.dotfiles/shell/fn_find.sh
-sourceOrMessage ~/.dotfiles/shell/fn_compression.sh
-sourceOrMessage ~/.dotfiles/shell/fn_csv_filter.sh
-sourceOrMessage ~/.dotfiles/shell/fn_ctrl_z.sh
-sourceOrMessage ~/.dotfiles/shell/fn_dated.sh
-sourceOrMessage ~/.dotfiles/shell/fn_headtail.sh
-sourceOrMessage ~/.dotfiles/shell/fn_git.sh
+sourceOrMessage ~/.dotfiles/shell/coloured_man.sh
+sourceOrMessage ~/.dotfiles/shell/markdown.sh
+sourceOrMessage ~/.dotfiles/shell/find.sh
+sourceOrMessage ~/.dotfiles/shell/compression.sh
+sourceOrMessage ~/.dotfiles/shell/csv_filter.sh
+sourceOrMessage ~/.dotfiles/shell/dated.sh
+sourceOrMessage ~/.dotfiles/shell/headtail.sh
+sourceOrMessage ~/.dotfiles/shell/git.sh
 sourceOrMessage ~/.dotfiles/shell/prompt.sh
 sourceOrMessage ~/.dotfiles/shell/func.sh
-
+sourceOrMessage ~/.dotfiles/shell/docker.sh
+sourceOrMessage ~/.dotfiles/shell/tmux.sh
+sourceOrMessage ~/.dotfiles/shell/logbook.sh
 sourceOrMessage ~/.fzf.zsh
+
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh

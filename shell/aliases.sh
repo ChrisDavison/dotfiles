@@ -28,36 +28,10 @@ alias cbssh="cbf ~/.ssh/id_rsa.pub"
 # Python machine-learning environment
 alias datasci="source ~/.envs/datasci/bin/activate"
 
-# Nice git aliases
-alias g='git'
-alias gap='git add -p'
-
-# Mixu git-run (gr) aliases...
-# For handling multiple git repos
-alias grst='gr status'
-alias grstv='gr status -v'
-alias grl="gr git --no-pager log --decorate --graph --oneline -n 3"
-
-alias dr='gr status | grep -E "behind|ahead|modified"'
-alias gitsync='gr git fetch --all'
-alias gitdown='gr git pull --rebase'
-
 # Utilities
 alias cl='catless'
 
-alias mdepub="pandoc -s -t epub"
 
-alias tma='tmux attach -d -t'
-alias tmuxhere='tmux new -s $(basename $(pwd))'
-alias mux="tmuxinator"
-
-nbconvclean() {
-    fn="${1}"
-    noIn=--"${2}"Exporter.exclude_input=True
-    noRaw=--"${2}"Exporter.exclude_raw=True
-    fmtLow=`echo $2 | tr /A-Z/ /a-z/`
-    jupyter nbconvert --to="$fmtLow" "$noIn" "$noRaw" $1
-}
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
 
@@ -67,12 +41,7 @@ alias CHURN='cd ~/src/github.com/etsteam/churning'
 alias nbx="jupyter nbconvert --execute --to notebook"
 
 # Docker bollocks
-alias dpandoc="docker run -it --rm -v `pwd`:/source jagregory/pandoc"
-alias dipy="docker run -it --rm -v `pwd`:/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython"
 alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
-
-function dkotlin (){
-    inp="$1"; shift;
-    out=$(extractFilenameNoExt $inp).jar
-    docker run -it --rm -v `pwd`:/home/ zenika/alpine-kotlin kotlinc /home/"$inp" -include-runtime -d /home/"$out"
+function lastmonday(){
+    echo date -v -monday +"%Y%m%d"
 }
