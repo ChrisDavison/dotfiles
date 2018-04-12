@@ -19,11 +19,3 @@ extract () {
         echo "'$1' is not a valid file"
     fi
 }
-
-mktar () {
-    tar -cvf "$1".tar.gz "${@:2}"
-}
-
-prevtar () {
-    tar -ztvf "$1"
-}

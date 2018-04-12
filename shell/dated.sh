@@ -4,11 +4,3 @@ epoch2date () {
     fmt='+%Y%m%d %H:%M:%S'
     date -r $epc $fmt
 }
-
-today () {
-    date +"%Y-%m-%d"
-}
-
-dir_today () {
-    mkdir output_`date +"%Y%m%s"`
-}
