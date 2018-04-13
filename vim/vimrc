@@ -511,7 +511,7 @@ command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
 " FUNC - Miscellaneous {{{
 function! CopyFilename(relative)
     if a:relative
-        let s:fn=expand("%")
+        let s:fn="./" . expand("%")
     else
         let s:fn=expand("%:p")
     endif
