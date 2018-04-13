@@ -32,6 +32,7 @@ export TERM=xterm-256color;
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
 export CODE="$HOME/src/github.com/chrisdavison"
+export CHURNBOOK="$HOME/src/github.com/etsteam/churning/notebooks/develop/chris_davison"
 export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
 export TASKDIR="$HOME/src/github.com/chrisdavison/logbook/tasks/"
