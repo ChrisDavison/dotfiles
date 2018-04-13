@@ -508,6 +508,16 @@ function! MDToPDF()
     execute "!" . cmd
 endfunction
 command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
+"
+" Convert current markdown file to PDF
+function! MDToEpub()
+    silent !clear
+    let outfn=expand('%:r') . '.epub'
+    let cmd = 'pandoc % -s --standalone -o ' . outfn
+    execute "!" . cmd
+endfunction
+command! MDToEpub call MDToEpub() | :echo "File converted to epub"
+
 " }}}
 " FUNC - Miscellaneous {{{
 function! CopyFilename(relative)
