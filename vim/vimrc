@@ -190,11 +190,11 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_day='github'
-let g:themeswitch_night='espresso'
+let g:themeswitch_day='paramount'
+let g:themeswitch_night='paramount'
 if has('gui')
-    let g:themeswitch_day='solarized'
-    let g:themeswitch_night='solarized'
+    let g:themeswitch_day='paramount'
+    let g:themeswitch_night='paramount'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
