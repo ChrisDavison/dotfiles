@@ -99,7 +99,6 @@ set t_ut= " Fix issues with background color on some terminals
 call plug#begin('~/.vim/plugged')
 
 Plug 'fatih/vim-go'                               " Syntax: Go
-Plug 'davidhalter/jedi-vim'
 Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
 Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
@@ -513,7 +512,7 @@ command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
 function! MDToEpub()
     silent !clear
     let outfn=expand('%:r') . '.epub'
-    let cmd = 'pandoc % -s --standalone -o ' . outfn
+    let cmd = 'pandoc % --epub-chapter-level=2 -s --standalone -o ' . outfn
     execute "!" . cmd
 endfunction
 command! MDToEpub call MDToEpub() | :echo "File converted to epub"
