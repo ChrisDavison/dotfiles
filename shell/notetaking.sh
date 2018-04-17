@@ -1,5 +1,5 @@
 export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
-export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/__external_brain.md"
+export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 noteadd(){
     if [ -e "$EXTERNAL_BRAIN" ]; then
         echo "- $(date +'`%Y%m%d_%H%M`') $1" >> "$EXTERNAL_BRAIN"
