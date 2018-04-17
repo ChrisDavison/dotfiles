@@ -158,6 +158,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/a.vim'
 Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
+Plug 'freitass/todo.txt-vim'
 Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
 
@@ -219,6 +220,7 @@ iabbrev invq ¿
 iabbrev *@ **email:**
 iabbrev EXP **experiment:**
 iabbrev HT `#`<left>
+iabbrev dbg **DEBUG**
 
 " Economics-specific abbreviations
 iabbrev gnss goods and services
@@ -570,8 +572,24 @@ if s:haswin
 else
     let g:cd_notedir=$HOME . "/Dropbox/n/notes/"
 endif
+let g:todofile=g:cd_notedir . "todo.txt"
+let g:donefile=g:cd_notedir . "done.txt"
 command! Notetaking :call Notetaking()
 nnoremap <leader>nt :call Notetaking()<CR>
+
+function! OpenTodo()
+    execute "e " .  g:todofile
+endfunction
+command! Todo :call OpenTodo()
+
+function! CopyToTodo()
+    normal! yy 
+    normal! mA
+    call OpenTodo()
+    normal! Gp
+    normal! `A
+endfunction
+command! CopyToTodo :call CopyToTodo()
 
 " }}}
 " EXPERIMENTAL {{{
