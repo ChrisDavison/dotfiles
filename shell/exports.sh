@@ -1,5 +1,4 @@
 # Exports for bash/zsh
-
 export EDITOR="vim";
 
 # Terminal history handling
@@ -12,7 +11,6 @@ export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
 export SAVEHIST=9000
 
 # Environment variables/path
-# export PATH="~/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin";
 export GOPATH="$HOME";
 export GOBIN="$HOME/bin";
 export TEXPATH="/usr/texbin";
@@ -21,8 +19,6 @@ export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export STACKBIN="$HOME/.local/bin"
 export RESEARCHFIGURES="$HOME/Dropbox/f/figures/"
-
-export JOBSTATUS="$HOME/.jobstatus"
 
 export PATH=$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
 
