@@ -4,3 +4,9 @@ epoch2date () {
     fmt='+%Y%m%d %H:%M:%S'
     date -r $epc $fmt
 }
+
+function lastmonday(){
+    echo date -v -monday +"%Y%m%d"
+}
+
+alias timenow='date +"%Y-%m-%d %H:%M:%S"'
