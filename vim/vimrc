@@ -550,37 +550,26 @@ if s:darwin && has('gui')
 endif
 " }}}
 " FUNC - NOTETAKING {{{
-function! Notetaking()
-    let cur=expand("%:p")
-    let filepath = g:cd_notedir . g:cd_notefile
-    if !filereadable(filepath) 
-        echo "Notefile " . filepath . " doesn't exist"
-        return
-    endif
-    if (cur != filepath)
-        normal mA
-        exec ":e " . filepath
-        normal Go- 
-    else
-        normal `A
-    endif
-endfunction
-
-let g:cd_notefile="__index.md"
 if s:haswin
-    let g:cd_notedir="e:\\Dropbox\\n\\notes\\"
+    let g:notedir="e:\\Dropbox\\n\\notes\\"
 else
-    let g:cd_notedir=$HOME . "/Dropbox/n/notes/"
+    let g:notedir=$HOME . "/Dropbox/n/notes/"
 endif
-let g:todofile=g:cd_notedir . "todo.txt"
-let g:donefile=g:cd_notedir . "done.txt"
-command! Notetaking :call Notetaking()
-nnoremap <leader>nt :call Notetaking()<CR>
+let g:notefile="capture.txt"
+let g:todofile=g:notedir . "todo.txt"
+let g:donefile=g:notedir . "done.txt"
+
+function! OpenCapture()
+    execute "e " .  g:notedir . "/" . g:notefile
+endfunction
+command! Capture :call OpenCapture()
+nnoremap <leader>cap :call OpenCapture<CR>
 
 function! OpenTodo()
     execute "e " .  g:todofile
 endfunction
 command! Todo :call OpenTodo()
+nnoremap <leader>td :call OpenTodo()<CR>
 
 function! CopyToTodo()
     normal! yy 
@@ -590,6 +579,7 @@ function! CopyToTodo()
     normal! `A
 endfunction
 command! CopyToTodo :call CopyToTodo()
+nnoremap <leader>ctt :call CopyToTodo()<CR>
 
 " }}}
 " EXPERIMENTAL {{{
