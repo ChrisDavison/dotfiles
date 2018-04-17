@@ -58,8 +58,7 @@
     plg = log --graph --author=c.jr.davison@gmail.com --pretty='format:%C(yellow)%h %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
     plgd = log --graph --author=c.jr.davison@gmail.com --pretty='format:%C(yellow)%h %C(green)%ar%C(reset) %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
     plgall = log --graph --pretty='format:%C(yellow)%h %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
-    plgdall = log --graph  --pretty='format:%C(yellow)%h %C(green)%ar%C(reset) %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
-    plgg = log --graph --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"
+    plgdall = log --graph  --pretty='format:%C(yellow)%h %C(green)%ar %C(red)(%an) %C(blue)%s %C(red)%d%C(reset)' 
 
 	ls = ls-files
 
