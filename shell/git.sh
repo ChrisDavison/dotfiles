@@ -1,14 +1,9 @@
 #! /usr/bin/env bash
 # Nice git aliases
 alias g='git'
-alias gap='git add -p'
 
 # Mixu git-run (gr) aliases...
 # For handling multiple git repos
-alias grst='gr status'
-alias grstv='gr status -v'
-alias grl="gr git --no-pager log --decorate --graph --oneline -n 3"
-
 alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
