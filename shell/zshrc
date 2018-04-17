@@ -25,6 +25,7 @@ sourceOrMessage ~/.dotfiles/shell/func.sh
 sourceOrMessage ~/.dotfiles/shell/docker.sh
 sourceOrMessage ~/.dotfiles/shell/tmux.sh
 sourceOrMessage ~/.dotfiles/shell/logbook.sh
+sourceOrMessage ~/.dotfiles/shell/notetaking.sh
 sourceOrMessage ~/.fzf.zsh
 
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
