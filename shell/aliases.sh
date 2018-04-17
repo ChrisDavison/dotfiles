@@ -17,10 +17,6 @@ fi
 # Session management
 alias c='clear'
 alias ..='cd ..'
-alias .2="cd ../.."
-alias .3="cd ../../.."
-alias .4="cd ../../../.."
-alias .5="cd ../../../../.."
 
 # Copy SSH public key
 alias cbssh="cbf ~/.ssh/id_rsa.pub"
@@ -30,7 +26,6 @@ alias datasci="source ~/.envs/datasci/bin/activate"
 
 # Utilities
 alias cl='catless'
-
 
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
@@ -42,6 +37,4 @@ alias nbx="jupyter nbconvert --execute --to notebook"
 
 # Docker bollocks
 alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
-function lastmonday(){
-    echo date -v -monday +"%Y%m%d"
-}
+
