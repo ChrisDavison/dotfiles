@@ -34,7 +34,7 @@ endif
 set foldenable " Don't fold by default
 set foldlevelstart=1
 set foldnestmax=10
-set foldtext=CustomFoldText() " Use a custom fold command below for fold text
+set foldtext=CustomFoldText2() " Use a custom fold command below for fold text
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
 set updatetime=1000 " Write a swap file after 1 second
@@ -444,6 +444,22 @@ function! CustomFoldText()
      let lineCount = line("$")
      let expansionString = repeat(".", w - strwidth(foldSizeStr.line))
      return line . expansionString . foldSizeStr
+endfunction
+
+function! CustomFoldText2()
+    let line = getline(v:foldstart)
+
+    let nucolwidth = &fdc + &number * &numberwidth
+    let windowwidth = winwidth(0) - nucolwidth - 3
+    let foldedlinecount = v:foldend - v:foldstart
+
+    " expand tabs into spaces
+    let onetab = strpart('          ', 0, &tabstop)
+    let line = substitute(line, '\t', onetab, 'g')
+
+    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
+    let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
+    return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . '…' . ' '
 endfunction
 
 " Get the number of # in header to determine foldlevel for markdown
