@@ -563,7 +563,7 @@ function! OpenCapture()
     execute "e " .  g:notedir . "/" . g:notefile
 endfunction
 command! Capture :call OpenCapture()
-nnoremap <leader>cap :call OpenCapture<CR>
+nnoremap <leader>cap :call OpenCapture()<CR>
 
 function! OpenTodo()
     execute "e " .  g:todofile
