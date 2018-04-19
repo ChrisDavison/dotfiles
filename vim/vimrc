@@ -287,13 +287,13 @@ noremap gV `[v`]
 let s:prefer_fzf=1
 nnoremap <leader>b  :CtrlPBuffer<Cr>
 nnoremap <leader>p  :CtrlP<Cr>
-nnoremap <leader>ll :Lines<cr>
-nnoremap <leader>lb :BLines<cr>
-nnoremap <leader>m :Marks<cr>
 
 if s:prefer_fzf && !has('gui_running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
+    nnoremap <leader>ll :Lines<cr>
+    nnoremap <leader>lb :BLines<cr>
+    nnoremap <leader>m :Marks<cr>
 endif
 
 " Modify/source my VIMRC
@@ -559,6 +559,36 @@ endfunction
 command! CopyFilename call CopyFilename(0)
 command! CopyRelativeFilename call CopyFilename(1)
 command! Wd write|bdelete
+" }}}
+" FUNC - Insert date/timestamp at point {{{
+function! InsertDateAtPoint()
+    read!date "+\%Y-\%m-\%d"
+    normal kJ
+endfunction
+
+function! InsertNamedDateAtPoint()
+    read!date "+\%Y-\%m-\%d - \%a"
+    normal kJ
+endfunction
+
+function! InsertTimestampAtPoint()
+    read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
+    normal kJ
+endfunction
+command! Today call InsertDateAtPoint()
+command! TodayNamed call InsertNamedDateAtPoint()
+command! TimeNow call InsertTimestampAtPoint()
+
+" }}}
+" FUNC - Insert logbook template {{{
+function! InsertLogbookHeader()
+    normal i# 
+    read!date "+\%Y-\%m-\%d - \%a"
+    normal kJ
+    normal o
+    normal o-   **today**: 
+endfunction
+command! Logbook call InsertLogbookHeader()
 " }}}
 " PLATFORM - Windows {{{
 if s:haswin
