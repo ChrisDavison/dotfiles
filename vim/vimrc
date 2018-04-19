@@ -38,7 +38,7 @@ set foldtext=CustomFoldText2() " Use a custom fold command below for fold text
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
 set updatetime=1000 " Write a swap file after 1 second
-set cmdheight=1  " Useful for more info on some plugins
+set cmdheight=2  " Useful for more info on some plugins
 
 " --- Search options
 set incsearch " Search as you type
@@ -642,7 +642,6 @@ nnoremap <leader>ctt :call CopyToTodo()<CR>
 command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
 command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
-command! REMcaretM %s///e | :echo "^M removed"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 " }}}
