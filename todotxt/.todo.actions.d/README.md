@@ -8,7 +8,7 @@ The original addons are:
 
 - [due](http://github.com/rebeccamorgan/due)
 - [graph](https://github.com/timpulver/todo.txt-graph)
-- contextview
+- [contextview](https://github.com/the1ts/todo.txt-plugins/tree/master/actions/contextview)
 - [nav](http://github.com/doegox/todo.txt-cli/blob/extras/todo.actions.d/nav)
 - [projectview](http://github.com/the1ts/todo.txt-plugins/blob/master/README.projects)
 - [repeat](https://github.com/drobertadams/todo.txt-cli-addons/tree/master/repeat)
