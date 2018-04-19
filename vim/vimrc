@@ -536,13 +536,14 @@ endfunction
 command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
 "
 " Convert current markdown file to PDF
-function! MDToEpub()
+function! MDToEpub(level)
     silent !clear
     let outfn=expand('%:r') . '.epub'
-    let cmd = 'pandoc % --epub-chapter-level=2 -s --standalone -o ' . outfn
+    let cmd = 'pandoc % --epub-chapter-level=' . a:level . ' -s --standalone -o ' . outfn
     execute "!" . cmd
 endfunction
-command! MDToEpub call MDToEpub() | :echo "File converted to epub"
+command! MDToEpub call MDToEpub(2) | :echo "File converted to epub"
+command! MDToEpub1 call MDToEpub(1) | :echo "File converted to epub"
 
 " }}}
 " FUNC - Miscellaneous {{{
