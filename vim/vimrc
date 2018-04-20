@@ -31,10 +31,6 @@ set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
-if s:haswin
-    set shell=cmd.exe
-    set shellcmdflag=/c
-endif
 set foldenable " Don't fold by default
 set foldlevelstart=1
 set foldnestmax=10
@@ -88,13 +84,16 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
+set splitbelow
+set splitright
+
 function! FugitiveStatusCD()
-    let fs=fugitive#statusline()
-    if fs != ''
-        return fs . ","
-    else
-        return ""
-    fi
+let fs=fugitive#statusline()
+if fs != ''
+    return fs . ","
+else
+    return ""
+fi
 endfunction
 
 " --- Statusbar
@@ -103,8 +102,8 @@ set statusline=%<\ %t\ %=%(%l/%L\|%c%),\ %{exists('g:loaded_fugitive')?FugitiveS
 " --- Miscellany
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 if has('persistent_undo')
-    set undodir=~/.undodir/
-    set undofile
+set undodir=~/.undodir/
+set undofile
 endif
 set t_ut= " Fix issues with background color on some terminals
 " }}}
@@ -129,6 +128,8 @@ if s:neovim
 Plug 'rbgrouleff/bclose.vim'
 endif
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
+Plug 'ChrisDavison/daynight.vim'                
+Plug 'ChrisDavison/yankmatching.vim'                
 Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'bps/vim-textobj-python'                     " Text objects for python
@@ -290,11 +291,7 @@ vmap  <buffer> <silent> $ g$
 " Select what was pasted
 noremap gV `[v`]
 
-" Buffer/File/Function/Outline navigation (CtrlP versus FZF)
-let s:prefer_fzf=1
-nnoremap <leader>b  :CtrlPBuffer<Cr>
-nnoremap <leader>p  :CtrlP<Cr>
-
+" Buffer/File/Function/Outline navigation
 if s:prefer_fzf && !has('gui_running')
     nnoremap <leader>b :Buffers<Cr>
     nnoremap <leader>p :Files<Cr>
@@ -424,18 +421,14 @@ let g:gitgutter_sign_modified = '∙'
 let g:gitgutter_sign_removed = '∙'
 let g:gitgutter_sign_modified_removed = '∙'
 " }}}
-" FZF/CtrlP && Rg/Ag {{{
+" FZF && Rg/Ag {{{
 " Use `rg` if available, fallback to `ag`
-let g:ctrlp_use_caching = 0
-if executable('rg')
+if s:hasripgrep
     set grepprg=rg\ --vimgrep
-    let g:ctrlp_user_command = 'rg %s --files --color=never --glob "!.git/*"'
-    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+    " let s:find_cmd=
+    command! -bang -nargs=* Find call fzf#vim#grep(
+    \    'rg --column  --no-heading -F --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
     nnoremap <leader>F :Find<SPACE>
-elseif executable('ag')
-    " Use ag over grep
-    set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 endif
 " }}}
 " FUNC - folding {{{
@@ -473,7 +466,7 @@ function! CustomFoldText2()
 
     let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
     let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
-    return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . '…' . ' '
+    return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . ' '
 endfunction
 
 " Get the number of # in header to determine foldlevel for markdown
@@ -595,39 +588,17 @@ function! InsertLogbookHeader()
 endfunction
 command! Logbook call InsertLogbookHeader()
 " }}}
-" PLATFORM - Windows {{{
-if s:haswin
-    nnoremap <F10> :WToggleFullscreen<CR>
-    autocmd GUIEnter * silent! WToggleClean
-    let gitgutter_enabled=0
-    cd ~\src\github.com\chrisdavison
-    set guifont=Fantasque_Sans_Mono:h16
-    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
-endif
-" }}}
-" PLATFORM - Mac {{{
-if s:darwin && has('gui')
-    set macligatures
-endif
-" }}}
 " FUNC - NOTETAKING {{{
-if s:haswin
-    let g:notedir="e:\\Dropbox\\n\\notes\\"
-else
-    let g:notedir=$HOME . "/Dropbox/n/notes/"
-endif
-let g:notefile="capture.txt"
-let g:todofile=g:notedir . "todo.txt"
-let g:donefile=g:notedir . "done.txt"
+let g:notedir=$HOME . "/Dropbox/n/notes/"
 
 function! OpenCapture()
-    execute "e " .  g:notedir . "/" . g:notefile
+    execute "e " .  g:notedir . "capture.txt"
 endfunction
 command! Capture :call OpenCapture()
 nnoremap <leader>cap :call OpenCapture()<CR>
 
 function! OpenTodo()
-    execute "e " .  g:todofile
+    execute "e " .  g:notedir . "todo.txt"
 endfunction
 command! Todo :call OpenTodo()
 nnoremap <leader>td :call OpenTodo()<CR>
@@ -666,14 +637,24 @@ nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 
 let g:ranger_map_keys=0
-if has('nvim')
-    tnoremap <C-h> <C-\><C-n><C-w>h
-    tnoremap <C-j> <C-\><C-n><C-w>j
-    tnoremap <C-k> <C-\><C-n><C-w>k
-    tnoremap <C-l> <C-\><C-n><C-w>l
-    nnoremap <C-h> <C-w>h
-    nnoremap <C-j> <C-w>j
-    nnoremap <C-k> <C-w>k
-    nnoremap <C-l> <C-w>l
+if s:neovim
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 endif
+
+function! GetSyntaxScope()
+let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
+let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
+let lo="lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+echo hi . " " . trans . " " . lo
+endfunction
+command! CurrentSyntax call GetSyntaxScope()
+
+chdir ~/working/notes
 " }}}
