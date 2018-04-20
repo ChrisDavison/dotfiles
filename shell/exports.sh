@@ -1,5 +1,6 @@
 # Exports for bash/zsh
 export EDITOR="vim";
+[ -x `which nvim` ] && export EDITOR="nvim";
 
 # Terminal history handling
 export HISTCONTROL=ignoreboth:erasedups;
