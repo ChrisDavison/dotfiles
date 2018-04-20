@@ -9,6 +9,9 @@ let mapleader="\\"
 let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
 let s:has_256co=$TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+let s:prefer_fzf=1
+let s:hasripgrep=executable('rg')
+let s:neovim=has('nvim')
 
 " --- Some useful settings that need documented
 set nocompatible " Don't force compability with vi
@@ -122,14 +125,13 @@ Plug 'jalvesaq/Nvim-R'                            " Language: R
 Plug 'shime/vim-livedown'                         " Markdown preview
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
 Plug 'francoiscabrol/ranger.vim'
-if has('nvim')
-    Plug 'rbgrouleff/bclose.vim'
+if s:neovim
+Plug 'rbgrouleff/bclose.vim'
 endif
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
 Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'bps/vim-textobj-python'                     " Text objects for python
-Plug 'ctrlpvim/ctrlp.vim'                         " CtrlP for navigation
 Plug 'dahu/vim-fanfingtastic'                     " Make 'F' work across newlines
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'easymotion/vim-easymotion'                  " Easily navigate to any character on screen
@@ -413,9 +415,7 @@ let g:goyo_width=100
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
 " RUST
-if !s:haswin
-    let g:racer_cmd="/Users/davison/.cargo/bin/racer"
-endif
+let g:racer_cmd="/Users/davison/.cargo/bin/racer"
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
 " GITGUTTER
@@ -641,7 +641,22 @@ function! CopyToTodo()
 endfunction
 command! CopyToTodo :call CopyToTodo()
 nnoremap <leader>ctt :call CopyToTodo()<CR>
-
+" }}}
+" PLATFORM - Windows {{{
+if s:haswin
+    set shell=cmd.exe
+    set shellcmdflag=/c
+    set guifont=Fantasque_Sans_Mono:h16
+    let gitgutter_enabled=0
+    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
+    let g:notedir="e:\\Dropbox\\n\\notes\\"
+    cd ~\working
+endif
+" }}}
+" PLATFORM - Mac {{{
+if s:darwin && has('gui')
+set macligatures
+endif
 " }}}
 " EXPERIMENTAL {{{
 command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
