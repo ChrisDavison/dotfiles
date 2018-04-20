@@ -120,6 +120,10 @@ Plug 'udalov/kotlin-vim'                          " Language: Kotlin
 Plug 'jalvesaq/Nvim-R'                            " Language: R
 Plug 'shime/vim-livedown'                         " Markdown preview
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
+Plug 'francoiscabrol/ranger.vim'
+if has('nvim')
+    Plug 'rbgrouleff/bclose.vim'
+endif
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
 Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -199,11 +203,11 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_day='paramount'
-let g:themeswitch_night='paramount'
+let g:themeswitch_day='github'
+let g:themeswitch_night='espresso'
 if has('gui')
-    let g:themeswitch_day='paramount'
-    let g:themeswitch_night='paramount'
+    let g:themeswitch_day='github'
+    let g:themeswitch_night='espresso'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
@@ -644,4 +648,6 @@ command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
+
+let g:ranger_map_keys=0
 " }}}
