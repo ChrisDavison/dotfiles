@@ -75,7 +75,7 @@ class Colors(object):
 
     def __getattr__(self,key):
         if key not in CCODES.keys():
-            raise AttributeError, "Colors object has no attribute '%s'" % key
+            raise AttributeError("Colors object has no attribute '%s'" % key)
         else:
             if self.disabled:
                 return lambda x: x
@@ -149,7 +149,7 @@ def main(directory, cutoffDays = 7):
 
     # find out max value
     max = 0
-    for key, value in dic.iteritems():
+    for key, value in dic.items():
         if value > max:
             max = value
 
@@ -160,7 +160,7 @@ def main(directory, cutoffDays = 7):
 
     # display graph
     print()
-    for key, value in orderedDic.iteritems():
+    for key, value in orderedDic.items():
         print_blocks(key, value, step)
     print()
 
