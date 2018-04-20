@@ -5,8 +5,14 @@ epoch2date () {
     date -r $epc $fmt
 }
 
-function lastmonday(){
-    echo date -v -monday +"%Y%m%d"
+lastmonday(){
+    date -v -monday +"%Y%m%d"
 }
 
-alias timenow='date +"%Y-%m-%d %H:%M:%S"'
+timenow(){
+    date +"%Y-%m-%d %H:%M:%S"
+}
+
+nextsunday(){
+    $(date -v +sunday -v +7d +"%Y-%m-%d")
+}
