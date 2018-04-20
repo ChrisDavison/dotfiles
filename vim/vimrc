@@ -478,27 +478,6 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" FUNC - Yank all matching lines to register A {{{
-function! YankMatching()
-    let @a = ''
-    exec "normal mA"
-    call inputsave()
-    let tag = input('Enter regex to match: ')
-    call inputrestore()
-    " Yanking to 'A' appends to the 'a' register
-    exec ':g/'.tag.'/y A'
-    exec "normal 'A"
-endfunction
-command! YankMatching call YankMatching()
-
-function! YankMatchingPreviousSearch()
-    let @a = ''
-    exec "normal mA"
-    exec ':g//y A'
-    exec "normal 'A"
-endfunction
-command! YankPreviousSearch call YankMatchingPreviousSearch()
-" }}}
 " FUNC - Pandoc Markdown reformatting {{{
 function! RunPandoc(extra, wrap, atx, reflink)
     silent !clear
