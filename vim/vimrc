@@ -5,9 +5,10 @@
 let mapleader="\\"
 " Command abbreviations
 
-" --- Helper functions for environment, should they be needed elsewhere
+" --- Helper variables for environment, should they be needed elsewhere
 let s:haswin = has('win32') || has('win64')
 let s:darwin = has('mac')
+let s:has_256co=$TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
 
 " --- Some useful settings that need documented
 set nocompatible " Don't force compability with vi
@@ -191,7 +192,7 @@ if has('gui_running')
     set guioptions-=L
     set guioptions-=l
 else
-    if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    if s:has_256co
        set t_Co=256
     else
        colorscheme default
