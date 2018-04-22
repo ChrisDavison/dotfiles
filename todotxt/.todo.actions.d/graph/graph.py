@@ -26,7 +26,7 @@ import os
 import re
 import collections
 
-TICK_CHAR = '■'
+TICK_CHAR = '.'
 DEFAULT_THRESHOLD = 5 # grey bar < DEFAULT_THRESHOLD >= green bar
 WIDTH = 35 # Graph width
 DONE = "done.txt"
