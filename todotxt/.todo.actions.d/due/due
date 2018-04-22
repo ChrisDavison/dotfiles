@@ -9,9 +9,8 @@ shift
     echo "      default behaviour generates a list tasks due today or overdue"
     echo "      Optionally, also show tasks due in next n days."
     echo ""
-  exit 0
 }
-
+    
 [ "$action" = "due" ] && {
      python $(dirname $0)/due.py "$TODO_FILE" $flag
 }

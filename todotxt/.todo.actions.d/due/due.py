@@ -16,6 +16,48 @@ import sys
 from datetime import datetime, timedelta
 import re
 
+
+date_rx = re.compile(r'due:\d{4}-\d{2}-\d{2}')
+
+
+def get_tasks_with_dates(filename):
+    lines = open(filename, 'r').read().split('\n')
+    lines_with_matches = []
+    for i, l in enumerate(lines):
+        m = date_rx.search(l)
+        if m:
+            date_from_line = datetime.strptime(m.group()[4:], "%Y-%m-%d")
+            lines_with_matches.append((date_from_line, i+1, l))
+    return lines_with_matches
+
+
+def split_tasks_by_date(tasks, future_days=0):
+    d_today = datetime.today()
+    overdue = set(filter(lambda x: x[0] < d_today, tasks))
+    today = set(filter(lambda x: x[0] == d_today, tasks))
+
+    d_tomorrow = datetime.today() + timedelta(days=1)
+    tomorrow = set(filter(lambda x: x[0] == d_tomorrow, tasks))
+
+    d_future = datetime.today() + timedelta(days=future_days)
+    future = set(filter(lambda x: x[0] < d_future, tasks))
+
+    only_future = []
+    if future_days == 0:
+        only_future = list(future - tomorrow - today - overdue)
+    overdue = sorted(list(overdue), key=lambda x: x[0])
+    return overdue, list(today), list(tomorrow), only_future
+
+
+def print_tasklist(tasklist, message):
+    if tasklist:
+        print("=" * 20)
+        print(message)
+        print("=" * 20)
+        for _, i, l in tasklist:
+            print("{:3s} {}".format(str(i), l))
+
+
 def main(todo_file, future_days=0):
     # Prepare lists to store tasks
     overdue         = list()
@@ -25,60 +67,12 @@ def main(todo_file, future_days=0):
     tasks_with_date = list()
 
     # Open todo.txt file
-    with open(todo_file, 'r') as f:
-        content = f.readlines()
-        date = datetime.today()
-
-        # Loop through content and look for due dates, assuming the key due:
-        # is used and standard date format
-        for i, task in enumerate(content):
-            match = re.search(r'due:\d{4}-\d{2}-\d{2}', task)
-
-            if match is not None:
-                date = datetime.strptime(match.group()[4:], '%Y-%m-%d').date()
-                tasks_with_date.append((i, task, date))
-
-        # Sort tasks that match due: regex by date
-        sorted_tasks = sorted(tasks_with_date, key=lambda tup: tup[2])
-
-        # Append to relevant lists for output
-        for task in sorted_tasks:
-            # Add matching tasks to list with line number
-            if task[2] < datetime.today().date():
-                overdue.append(str(task[0]+1).zfill(2) + " " + task[1])
-            elif task[2] == datetime.today().date():
-                due_today.append(str(task[0]+1).zfill(2) + " " + task[1])
-            elif task[2] == datetime.today().date() + timedelta(days=1):
-                due_tmr.append(str(task[0]+1).zfill(2) + " " + task[1])
-            elif task[2] < datetime.today().date() + \
-                    timedelta(days=future_days + 1):
-                due_future.append(str(task[0]+1).zfill(2) + " " + task[1])
-
-    # Print to console
-    if len(overdue) > 0:
-        print("===============================")
-        print("Overdue tasks:"                 )
-        print("===============================")
-        for task in overdue:
-            print(task, end='')
-    if len(due_today) > 0:
-        print("\n===============================")
-        print(  "Tasks due today:"               )
-        print(  "===============================")
-        for task in due_today:
-            print(task, end='')
-    if len(due_tmr) > 0:
-        print("\n===============================")
-        print(  "Tasks due tomorrow:"            )
-        print(  "===============================")
-        for task in due_tmr:
-            print(task, end='')
-    if len(due_future) > 0:
-        print("\n===============================")
-        print(  "Tasks due in the following " + str(future_days - 1) + " days:")
-        print(  "===============================")
-        for task in due_future:
-            print(task, end='')
+    tasks = get_tasks_with_dates(todo_file)
+    overdue, today, tomorrow, future = split_tasks_by_date(tasks)
+    print_tasklist(overdue, "OVERDUE")
+    print_tasklist(today, "Tasks due today")
+    print_tasklist(tomorrow, "Tasks due tomorrow")
+    print_tasklist(future, "Tasks due in next {} days".format(future_days))
 
 
 if __name__ == '__main__':
