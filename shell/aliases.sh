@@ -38,3 +38,5 @@ alias nbx="jupyter nbconvert --execute --to notebook"
 # Docker bollocks
 alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 
+# todo.txt
+alias t="todo.sh"
