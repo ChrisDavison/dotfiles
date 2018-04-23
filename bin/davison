@@ -46,9 +46,12 @@ shift
 }
 
 case "$command" in
-    printbefore) ;;
-    printafter) ;;
-    printbetween) ;;
+    printbefore)
+        awk -v date=$1 '$0 ~ "^"date{exit} {print $0}' $2 ;;
+    printafter)
+        awk -v date=$1 '$0 ~ "^"date{start=1} start==1{print $0}' $2 ;;
+    printbetween)
+        awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3 ;;
     extract) 
         if [ -f $1 ] ; then
             case $1 in
