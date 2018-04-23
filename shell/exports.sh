@@ -34,3 +34,6 @@ export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
 export TASKDIR="$HOME/src/github.com/chrisdavison/logbook/tasks/"
 export RX_mdlink="\[.*\]\(.*\)|\[.*\]: .*"
+
+export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
+export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
