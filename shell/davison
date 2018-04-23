@@ -140,5 +140,25 @@ case "$command" in
             commit|c) echo "commiting todays logbook" ;;
         esac
     ;;
+    md|markdown) 
+        opt="$1"
+        case "$opt" in
+            tidy)
+                fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+                pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1 ;;
+            tidynoref)
+                fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
+                pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1 ;;
+            pdf)
+                outfn="$1"
+                title="$2"
+                pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in ;;
+            html)
+                fn=.$(extractFilenameNoExt $1).html
+                [ -e $fn ] && rm $fn
+                pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn ;;
+            preview) ;;
+        esac
+    ;;
 esac
 exit $?
