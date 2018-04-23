@@ -40,3 +40,11 @@ alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 
 # todo.txt
 alias t="todo.sh"
+
+# Git multirepo assistance
+alias dr='gr status | grep -E "behind|ahead|modified"'
+alias gitsync='gr git fetch --all'
+alias gitdown='gr git pull --rebase'
+
+alias tma='tmux attach -d -t'
+alias tmuxhere='tmux new -s $(basename $(pwd))'
