@@ -71,7 +71,7 @@ case "$command" in
     epoch) date -r $1 +"%Y%m%d %H:%M:%S" ;;
     lastmonday) date -v -monday +"%Y-%m-%d"    ;;
     timenow) date +"%Y-%m-%d %H:%M:%S" ;;
-    today) date +"%Y-%m-%d" ;;
+    today) date +%F ;;
     nextsunday) date -v +sunday -v +7d +%F ;;
     catless)
         height=$(tput lines)
