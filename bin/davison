@@ -156,7 +156,7 @@ case "$command" in
         awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
         tail -n 1 $1 | awk -F $delim '{ print $1 }' ;;
     logbook|lb)
-        opt="$1"
+        opt="$1"; shift
         logbook_today=$(date +"%Y/%Y-%m-%d--%a.md")
         lb=$LOGBOOK_DIR$logbook_today
         case "$opt" in 
@@ -171,10 +171,16 @@ case "$command" in
                 fi
                 davison catless "$LOGBOOK_DIR$yr$prev"
                 ;;
-            commit|c) 
+            commit|c)
+                msg="$1"
                 pushd $LOGBOOK_DIR
                 git add $logbook_today
-                git commit -m "Log $(date +%F)" ;;
+                if [ "$msg" = "" ]; then
+                    git commit -m "Log $(date +%F)"
+                else
+                    git commit -m "Log $msg"
+                fi 
+                popd ;;
             *)
                 echo "usage: $(basename $0) logbook edit|view|commit" ;;
         esac ;;
