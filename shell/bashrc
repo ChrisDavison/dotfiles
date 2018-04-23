@@ -1,96 +1,159 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
+[ -z "$PS1" ] && return
 
-source ~/.dotfiles/shell/exports.sh
-
-shopt -s histappend
-shopt -s checkwinsize
+shopt -s histappend;
+shopt -s checkwinsize;
 shopt -s nocaseglob;
 shopt -s histappend;
 shopt -s cdspell;
-shopt -s globstar
+shopt -s globstar;
+set -o vi
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+# Terminal history handling
+export HISTCONTROL=ignoreboth:erasedups;
+export HISTSIZE=100000
+export HISTFILE=~/.history
+export HISTFILESIZE=200000
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
+export SAVEHIST=9000
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+# ==============================
+#        DIRECTORIES etc
+# ==============================
+# Environment variables/path
+export GOPATH="$HOME";
+export GOBIN="$HOME/bin";
+export HOMEBIN="$GOBIN"
+export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
+export RESEARCHFIGURES="$HOME/../Dropbox/f/figures/"
+export PATH=$GOBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$PATH;
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+# Export various directories useful for mu work
+export CODE="$HOME/src/github.com/chrisdavison"
+export CHURNBOOK="$HOME/src/github.com/etsteam/churning/notebooks/develop/chris_davison"
+export TEMPLATES="$CODE/ProjectTemplates"
+export CHURNING_DATA_DIR="$HOME/.data/"
+export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
+export TASKDIR="$LOGBOOK_DIR/tasks/"
+
+# 256 color terminal
+export TERM=xterm-256color;
+
+# Variables representing GTD/ZTD files
+export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
+export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
+export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
+
+# ===================================
+#       SOURCE INSTALLED SCRIPTS
+# ===================================
+sourceOrErrorMessage(){
+    [ -f "$1" ] && source "$1" || echo "$1 doesn't exist"
+}
+# sourceOrErrorMessage ~/.cargo/env
+# sourceOrErrorMessage ~/.fzf.zsh
+# export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+# sourceOrErrorMessage /usr/local/etc/profile.d/autojump.sh
+
+
+function MDTidy() {
+    if [ "$1" = 1 ]; then
+        wrap='--columns=80'
     else
-	color_prompt=
+        wrap='--wrap=none'
     fi
-fi
+    shift
+    if [ "$1" = 1 ]; then
+        ref='--reference-links'
+    else
+        ref=''
+    fi
+    shift
+    to='markdown_github-hard_line_breaks+line_blocks+tex_math_dollars-shortcut_reference_links'
+    extra='-s --atx-headers'
+    pandoc -t ${to} ${extra} ${ref} ${wrap} $@
+}
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+alias mdtidy='MDTidy 0 0'
+alias mdtidyref='MDTidy 0 1'
+alias mdtidywrap='MDTidy 1 0'
+alias mdtidywrapref='MDTidy 1 1'
+
+alias dkmnt='docker run -it --rm -v /c/Users/user01/home:/ehome'
+alias dpandoc='docker run -it --rm -v /c/Users/user01/notes:/source jagregory/pandoc'
+
+# Directory listing aliases
+ver=$(ls --version | egrep -o "GNU")
+if [ -n "$ver" ]; then
+    alias ll='ls -lFh --group-directories-first --color=auto'
+    alias la='ls -AlFh --group-directories-first --color=auto'
+    alias ls='ls -CF --group-directories-first --color=auto'
+    alias l='ls -CF --group-directories-first --color=auto'
+elif [ -x "$(command -v gls)" ]; then
+    alias ll='gls -lFh --group-directories-first --color=auto'
+    alias la='gls -AlFh --group-directories-first --color=auto'
+    alias ls='gls -CF --group-directories-first --color=auto'
+    alias l='gls -CF --group-directories-first --color=auto'
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto --group-directories-first'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias ll='ls -GlFh'
+    alias la='ls -GAlFh'
+    alias ls='ls -GCF'
+    alias l='ls -GCF'
 fi
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+# ==============================
+#         FROM ZSHRC
+# ==============================
+alias c='clear'
+alias t="todo.sh -@"
+alias tw="todo.sh -d ~/.todo/config-work -@"
+alias d="davison"
+alias gitsync="gr git fetch --all"
+alias gitdown="gr git pull --rebase"
+alias gst="gr status"
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+# Make ripgrep Smart-case search by default
+alias rg='rg -S'
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
+export TASKDIR="$LOGBOOK_DIR/tasks/"
+
+# Variables representing GTD/ZTD files
+export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
+export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
+export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
+
+#----------------------------------------------------------------------------#
+# Bash text colour specification:  \e[<STYLE>;<COLOUR>m
+# (Note: \e = \033 (oct) = \x1b (hex) = 27 (dec) = "Escape")
+# Styles:  0=normal, 1=bold, 2=dimmed, 4=underlined, 7=highlighted
+# Colours: 31=red, 32=green, 33=yellow, 34=blue, 35=purple, 36=cyan, 37=white
+#----------------------------------------------------------------------------#
+export PROMPT_COMMAND=prompt_cmd
+prompt_cmd(){
+    history -a
+    history -c
+    history -r
+    local ex=$?
+    local col="\e[0;32m"
+    if [ "$ex" -gt 0 ]; then
+        col="\e[0;31m" 
+    fi
+    PS1="\w $col>>\e[0m \e[1;37m" 
+}
+
+# ==============================
+#  Find resource-heavy commands
+# ==============================
+alias memHogsTop='top -l 1 -o rsize | head -20'
+alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+alias topForever='top -l 9999999 -s 10 -o cpu'
+alias ttop="top -R -F -s 10 -o rsize"
+
+# Networking
+alias myip='curl ip.appspot.com'
+
+cd
