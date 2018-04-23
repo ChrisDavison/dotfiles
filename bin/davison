@@ -138,12 +138,8 @@ case "$command" in
         awk '{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN" | tail -n1 ;;
     noteview|nv)
         arg="$1"
-        post=cat
-        if [ -n "$arg" ]; then
-            post="egrep $arg"
-        fi
         if [ -e "$EXTERNAL_BRAIN" ]; then
-            cat "$EXTERNAL_BRAIN" | ${post}
+            awk -v rx=$1 '$0 ~ rx{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN"
         else
             echo "No notes.  Need to create $EXTERNAL_BRAIN"
         fi ;;
