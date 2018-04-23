@@ -112,7 +112,16 @@ sourceOrErrorMessage() {
 }
 sourceOrErrorMessage ~/.dotfiles/shell/setopt.sh      # from zanshin
 sourceOrErrorMessage ~/.dotfiles/shell/completion.sh  # from zanshin
-sourceOrErrorMessage ~/.dotfiles/shell/prompt.sh
+
+# ===================================
+#                 PROMPT
+# ===================================
+local prompt_string=">>"
+
+# Make prompt_string red if the previous command failed.
+local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
+
+PROMPT="${return_status} %{%F{reset}%}"
 
 # ===================================
 #              KEY BINDING
