@@ -43,6 +43,7 @@ alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 
 # todo.txt
 alias t="todo.sh"
+alias tw="todo.sh -d ~/.todo/config-work"
 
 # Git multirepo assistance
 alias g='git'
