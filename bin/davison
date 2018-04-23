@@ -2,7 +2,7 @@
 command=$1
 shift
 
-[ "$command" = "" ] && {
+[ -n "$command" ] && {
     echo "Chris Davison's utilities"
     echo "usage: $(basename $0) command args..."
     echo ""
