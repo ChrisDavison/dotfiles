@@ -1,9 +1,3 @@
-sourceOrMessage() {
-    [ -f $1 ] && source $1 || echo "No $1"
-}
-
-source ~/.cargo/env
-
 # ===================================
 #                ALIASES
 # ===================================
@@ -108,6 +102,9 @@ export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 # ===================================
 #         SOURCE CUSTOM SCRIPTS 
 # ===================================
+sourceOrMessage() {
+    [ -f $1 ] && source $1 || echo "No $1"
+}
 # New stuff, from zanshin
 sourceOrMessage ~/.dotfiles/shell/setopt.sh
 sourceOrMessage ~/.dotfiles/shell/completion.sh
@@ -115,8 +112,11 @@ sourceOrMessage ~/.dotfiles/shell/bindkeys.sh
 
 sourceOrMessage ~/.dotfiles/shell/csv_filter.sh
 sourceOrMessage ~/.dotfiles/shell/prompt.sh
-sourceOrMessage ~/.dotfiles/shell/docker.sh
 sourceOrMessage ~/.fzf.zsh
 
+# ===================================
+#       SOURCE INSTALLED SCRIPTS 
+# ===================================
+source ~/.cargo/env
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
