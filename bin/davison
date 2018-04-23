@@ -174,12 +174,18 @@ case "$command" in
                 fi
                 davison catless "$LOGBOOK_DIR$yr$prev"
                 ;;
+            diff|d)
+                pushd $LOGBOOK_DIR
+                git diff $logbook_today
+                popd ;;
             commit|c)
                 msg="$1"
                 pushd $LOGBOOK_DIR
                 git add $logbook_today
                 if [ "$msg" = "" ]; then
                     git commit -m "Log $(date +%F)"
+                elif [ "$msg" = "i" ]; then
+                    git commit
                 else
                     git commit -m "Log $msg"
                 fi 
