@@ -172,5 +172,7 @@ case "$command" in
         cairosvg "$1" -o "$1".ps
         ps2eps "$1".ps -f "$1".eps
         ps2pdf -dEPSCrop "$1".eps ;;
+    ff) find ./ -iname "*$1*" -type "f" ;;
+    fd) find ./ -iname "*$1*" -type "d" ;;
 esac
 exit $?
