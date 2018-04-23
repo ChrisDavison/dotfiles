@@ -61,7 +61,7 @@ alias d="davison"
 # ===================================
 # Exports for bash/zsh
 export EDITOR="vim";
-[ -x `which nvim` ] && export EDITOR="nvim";
+[ -x $(which nvim) ] && export EDITOR="nvim";
 
 # Terminal history handling
 export HISTCONTROL=ignoreboth:erasedups;
@@ -104,23 +104,38 @@ export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 
 # ===================================
-#         SOURCE CUSTOM SCRIPTS 
+#         SOURCE CUSTOM SCRIPTS
 # ===================================
-sourceOrMessage() {
+sourceOrErrorMessage() {
     [ -f $1 ] && source $1 || echo "No $1"
 }
-# New stuff, from zanshin
-sourceOrMessage ~/.dotfiles/shell/setopt.sh
-sourceOrMessage ~/.dotfiles/shell/completion.sh
-sourceOrMessage ~/.dotfiles/shell/bindkeys.sh
-
-sourceOrMessage ~/.dotfiles/shell/csv_filter.sh
-sourceOrMessage ~/.dotfiles/shell/prompt.sh
-sourceOrMessage ~/.fzf.zsh
+sourceOrErrorMessage ~/.dotfiles/shell/setopt.sh      # from zanshin
+sourceOrErrorMessage ~/.dotfiles/shell/completion.sh  # from zanshin
+sourceOrErrorMessage ~/.dotfiles/shell/prompt.sh
 
 # ===================================
-#       SOURCE INSTALLED SCRIPTS 
+#              KEY BINDING
 # ===================================
-source ~/.cargo/env
+# To see the key combo you want to use just do:
+# cat > /dev/null
+# And press it
+
+bindkey "^K"      kill-whole-line                      # ctrl-k
+bindkey "^R"      history-incremental-search-backward  # ctrl-r
+bindkey "^A"      beginning-of-line                    # ctrl-a
+bindkey "^E"      end-of-line                          # ctrl-e
+bindkey "[B"      history-search-forward               # down arrow
+bindkey "[A"      history-search-backward              # up arrow
+bindkey "^D"      delete-char                          # ctrl-d
+bindkey "^F"      forward-char                         # ctrl-f
+bindkey "^B"      backward-char                        # ctrl-b
+bindkey -v   # Default to standard vi bindings, regardless of editor string
+
+
+# ===================================
+#       SOURCE INSTALLED SCRIPTS
+# ===================================
+sourceOrErrorMessage ~/.cargo/env
+sourceOrErrorMessage ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+sourceOrErrorMessage /usr/local/etc/profile.d/autojump.sh
