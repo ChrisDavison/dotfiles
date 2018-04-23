@@ -162,6 +162,15 @@ case "$command" in
         case "$opt" in 
             edit|e) $EDITOR "$lb" ;;
             view|v) [ -e "$lb" ] && davison catless "$lb" || echo "No logbook entry today" ;;
+            previous|p)
+                yr=$(date +"%Y/")
+                if [ -e "$lb" ]; then
+                    prev=$(ls -l1 $LOGBOOK_DIR$yr | tail -n2 | head -n 1)
+                else
+                    prev=$(ls -l1 $LOGBOOK_DIR$yr | tail -n1)
+                fi
+                davison catless "$LOGBOOK_DIR$yr$prev"
+                ;;
             commit|c) 
                 pushd $LOGBOOK_DIR
                 git add $logbook_today
