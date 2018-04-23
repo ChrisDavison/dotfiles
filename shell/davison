@@ -167,5 +167,10 @@ case "$command" in
         touch README.md
         git add README.md
         git commit -m "Initial Commit" ;;
+    eps2pdf) ps2pdf -dEPSCrop "$1" ;;
+    svg2eps)
+        cairosvg "$1" -o "$1".ps
+        ps2eps "$1".ps -f "$1".eps
+        ps2pdf -dEPSCrop "$1".eps ;;
 esac
 exit $?
