@@ -178,6 +178,7 @@ Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
+Plug 'BurningEther/iron.nvim'
 
 call plug#end()
 
