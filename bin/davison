@@ -129,11 +129,13 @@ case "$command" in
         echo "../"$(basename $2)"/"$3 | pbcopy
         mv $1 $fn ;;
     noteadd|na)
+        msg="$(date +'%Y%m%d') $1" 
         if [ -e "$EXTERNAL_BRAIN" ]; then
-            echo "$(date +'%Y%m%d') $1" >> "$EXTERNAL_BRAIN"
+            echo "$msg" >> "$EXTERNAL_BRAIN"
         else
-            echo "$(date +'%Y%m%d') $1" > "$EXTERNAL_BRAIN"
-        fi ;;
+            echo "$msg" > "$EXTERNAL_BRAIN"
+        fi
+        awk '{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN" | tail -n1 ;;
     noteview|nv)
         arg="$1"
         post=cat
