@@ -18,9 +18,9 @@ if ! [[ "$1" =~ ^[0-9]+$ ]]; then
 fi
 
 URL=$(sed "$1!d" "$TODO_FILE"|grep -E -o "([a-z]*)://[^ ]+")
-if [ "$URL" = "" ]; then
+if [ -n "$URL" ]; then
     LINE=$(sed "$1!d" "$TODO_FILE")
-    if [ "$LINE" = "" ]; then
+    if [ -n "$LINE" ]; then
         echo "Error, no item #$1 found!"
     else
         echo "Error, no URL seen in item #$1!"
