@@ -145,6 +145,18 @@ case "$command" in
         fi ;;
     noteclear|nc) 
         [ -e "$EXTERNAL_BRAIN" ] && rm "$EXTERNAL_BRAIN" && touch "$EXTERNAL_BRAIN" ;;
+    notedelete|nd) 
+        arg="$1"
+        if [ -e "$EXTERNAL_BRAIN" ]; then
+            if [ -n "$arg" ]; then
+                sed -i'' "$arg""d" "$EXTERNAL_BRAIN"
+            else
+                echo "Need to pass ITEM#"
+            fi
+        else
+            echo "No notes.  Need to create $EXTERNAL_BRAIN"
+        fi
+        ;;
     notefile) echo "$EXTERNAL_BRAIN" ;;
     headtail|ht)
         if [ $# -lt 1 ]; then
