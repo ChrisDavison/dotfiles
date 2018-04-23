@@ -28,12 +28,16 @@ export TERM=xterm-256color;
 
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
+# Export various directories useful for mu work
 export CODE="$HOME/src/github.com/chrisdavison"
 export CHURNBOOK="$HOME/src/github.com/etsteam/churning/notebooks/develop/chris_davison"
 export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
-export TASKDIR="$HOME/src/github.com/chrisdavison/logbook/tasks/"
+export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
+export TASKDIR="$LOGBOOK_DIR/tasks/"
 export RX_mdlink="\[.*\]\(.*\)|\[.*\]: .*"
 
+# Variables representing GTD/ZTD files
 export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
+export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
