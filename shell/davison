@@ -72,15 +72,13 @@ case "$command" in
         year=$2
         title="$(slugify "$3")"
         ext=$4
-        echo "$year--$authors--$title.$ext"
-        ;;
+        echo "$year--$authors--$title.$ext" ;;
     myip)
         ifconfig lo0 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "lo0       : " $2}'
         ifconfig en0 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en0 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
         ifconfig en0 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en0 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}'
         ifconfig en1 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en1 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
-        ifconfig en1 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en1 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}'
-        ;;
+        ifconfig en1 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en1 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}' ;;
     ppath)
         echo $PATH | tr ":" "\n" | \
         awk "{ sub(\"/usr\",   \"$fg_no_bold[green]/usr$reset_color\"); \
@@ -101,8 +99,7 @@ case "$command" in
         local fn
         fn=$2"/"$3
         echo "../"$(basename $2)"/"$3 | pbcopy
-        mv $1 $fn
-        ;;
+        mv $1 $fn ;;
     noteadd|na)
         if [ -e "$EXTERNAL_BRAIN" ]; then
             echo "$(date +'%Y%m%d') $1" >> "$EXTERNAL_BRAIN"
@@ -130,16 +127,13 @@ case "$command" in
             delim=$2
         fi
         awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
-        tail -n 1 $1 | awk -F $delim '{ print $1 }'
-        ;;
+        tail -n 1 $1 | awk -F $delim '{ print $1 }' ;;
     logbook)
         opt="$1"
-        case "$opt" in
-            edit|e) echo "editing todays logbook" ;;
+        case "$opt" in edit|e) echo "editing todays logbook" ;;
             view|v) echo "viewing todays logbook" ;;
             commit|c) echo "commiting todays logbook" ;;
-        esac
-    ;;
+        esac ;;
     md|markdown) 
         opt="$1"
         case "$opt" in
@@ -158,7 +152,20 @@ case "$command" in
                 [ -e $fn ] && rm $fn
                 pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn ;;
             preview) ;;
-        esac
-    ;;
+        esac ;;
+    glog) 
+       opt="$1"
+       shift
+       case "$opt" in
+           between) git plgdall --after="$1" --before="$2" ;;
+           since) git plgdall --after="$1" ;;
+       esac ;;
+    gitinit)
+        git init
+        touch .gitignore
+        echo ".gitignore" > .gitignore
+        touch README.md
+        git add README.md
+        git commit -m "Initial Commit" ;;
 esac
 exit $?
