@@ -2,7 +2,7 @@
 command=$1
 shift
 
-[ -n "$command" ] && {
+[ ! -n "$command" ] && {
     echo "Chris Davison's utilities"
     echo "usage: $(basename $0) command args..."
     echo ""
@@ -34,7 +34,6 @@ shift
     echo "    headtail|ht"
     echo "    logbook               Deal with logbook entries.  Subcommands edit|e,view|v,commit|c"
     echo "    md|markdown"
-    echo "    glog"
     echo "    gitinit"
     echo "    eps2pdf"
     echo "    svg2eps"
@@ -135,9 +134,14 @@ case "$command" in
         else
             echo "$(date +'%Y%m%d') $1" > "$EXTERNAL_BRAIN"
         fi ;;
-    noteview|nv) 
+    noteview|nv)
+        arg="$1"
+        post=cat
+        if [ -n "$arg" ]; then
+            post="egrep $arg"
+        fi
         if [ -e "$EXTERNAL_BRAIN" ]; then
-            cat "$EXTERNAL_BRAIN"
+            cat "$EXTERNAL_BRAIN" | ${post}
         else
             echo "No notes.  Need to create $EXTERNAL_BRAIN"
         fi ;;
@@ -213,13 +217,6 @@ case "$command" in
             *)
                 echo "usage: $(basename $0) markdown tidy|tidynoref|pdf|html|preview" ;;
         esac ;;
-    glog) 
-       opt="$1"
-       shift
-       case "$opt" in
-           between) git plgdall --after="$1" --before="$2" ;;
-           since) git plgdall --after="$1" ;;
-       esac ;;
     gitinit)
         git init
         touch .gitignore
@@ -252,7 +249,3 @@ case "$command" in
         ;;
 esac
 exit $?
-
-
-
-
