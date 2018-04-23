@@ -45,12 +45,16 @@ alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 alias t="todo.sh"
 
 # Git multirepo assistance
+alias g='git'
 alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 
 alias tma='tmux attach -d -t'
 alias tmuxhere='tmux new -s $(basename $(pwd))'
+
+# Alais to my custom multi-util
+alias d="davison"
 
 # ===================================
 #                EXPORTS
