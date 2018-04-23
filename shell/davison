@@ -118,5 +118,27 @@ case "$command" in
     noteclear|nc) 
         [ -e "$EXTERNAL_BRAIN" ] && rm "$EXTERNAL_BRAIN" && touch "$EXTERNAL_BRAIN" ;;
     notefile) echo "$EXTERNAL_BRAIN" ;;
+    headtail|ht)
+        if [ $# -lt 1 ]; then
+            echo "Usage: ht FILE [DELIMITER=' ']"
+            return -1
+        fi
+        if [ $# -eq 1 ]; then 
+            delim=' '
+        fi
+        if [ $# -ge 2 ]; then 
+            delim=$2
+        fi
+        awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
+        tail -n 1 $1 | awk -F $delim '{ print $1 }'
+        ;;
+    logbook)
+        opt="$1"
+        case "$opt" in
+            edit|e) echo "editing todays logbook" ;;
+            view|v) echo "viewing todays logbook" ;;
+            commit|c) echo "commiting todays logbook" ;;
+        esac
+    ;;
 esac
 exit $?
