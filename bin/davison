@@ -203,6 +203,24 @@ case "$command" in
                     git commit -m "Log $msg"
                 fi 
                 popd ;;
+            history|h)
+                step="$1"
+                if [ ! -n "$step" ]; then
+                    step=7
+                fi
+                target=$(date -v"-$step""d" +"%F--%a.md")
+                lb_yr_dir=$LOGBOOK_DIR$(date +"%Y/")
+                echo "" > ~/.logbook_history
+                for f in $lb_yr_dir*; do
+                    base=$(basename $f)
+                    if [ "$base" \> "$target" ]; then
+                        cat "$f" >> ~/.logbook_history
+                    fi
+                done
+                pandoc ~/.logbook_history -f gfm --mathjax --standalone -o ~/.logbook_history.epub 2&>1 /dev/null
+                echo "Created ~/.logbook_history.epub with last $step days logbooks"
+                [ -f "~/.logbook_history" ] && rm ~/.logbook_history
+                ;;
             *)
                 echo "usage: $(basename $0) logbook edit|view|commit" ;;
         esac ;;
@@ -214,7 +232,7 @@ case "$command" in
                 pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1 ;;
             tidynoref)
                 fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-                pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1 ;;
+                pandoc -s --atx-headers --normalize -t $fmt --columns=80 $1 -o $1 ;;
             pdf)
                 outfn="$1"
                 title="$2"
@@ -223,7 +241,7 @@ case "$command" in
                 fn=.$(extractFilenameNoExt $1).html
                 [ -e $fn ] && rm $fn
                 pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn ;;
-            preview) ;;
+            preview) echo "davison markdown preview - Not implemented" ;;
             *)
                 echo "usage: $(basename $0) markdown tidy|tidynoref|pdf|html|preview" ;;
         esac ;;
