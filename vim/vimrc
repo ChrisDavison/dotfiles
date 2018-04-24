@@ -650,6 +650,8 @@ nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>setfiletype<Space>
 
+inoremap timehm<Tab> <C-R>=strftime("**%H:%M**")<CR><C-R>E
+
 function! YankToScratch()
     let @a=""
     call inputsave()
