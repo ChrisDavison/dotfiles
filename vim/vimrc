@@ -553,10 +553,14 @@ function! InsertTimestampAtPoint()
     read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
     normal kJ
 endfunction
+function! InsertTimeAtPoint()
+    read!date "+\%H:\%M"
+    normal kJ
+endfunction
 command! Today call InsertDateAtPoint()
 command! TodayNamed call InsertNamedDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
-
+command! TimeShort call InsertTimeAtPoint()
 " }}}
 " FUNC - Insert logbook template {{{
 function! InsertLogbookHeader()
