@@ -57,6 +57,12 @@ alias tmuxhere='tmux new -s $(basename $(pwd))'
 # Alais to my custom multi-util
 alias d="davison"
 
+alias memHogsTop='top -l 1 -o rsize | head -20'
+alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+alias topForever='top -l 9999999 -s 10 -o cpu'
+alias ttop="top -R -F -s 10 -o rsize"
+
 # ===================================
 #                EXPORTS
 # ===================================
@@ -116,12 +122,13 @@ sourceOrErrorMessage ~/.dotfiles/shell/completion.sh  # from zanshin
 # ===================================
 #                 PROMPT
 # ===================================
-local prompt_string=">>"
+local prompt_string="⌁"
 
 # Make prompt_string red if the previous command failed.
 local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
 
-PROMPT="${return_status} %{%F{reset}%}"
+PROMPT="%~ ${return_status} %{%F{reset}%}"
+RPROMPT="%D{%F}"
 
 # ===================================
 #              KEY BINDING
