@@ -649,4 +649,20 @@ nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>setfiletype<Space>
+
+function! YankToScratch()
+    let @a=""
+    call inputsave()
+    let tag=input('Enter regex to search: ')
+    call inputrestore()
+    exec ":g/".tag."/y A"
+    new
+    set buftype=nofile
+    set bufhidden=hide
+    set noswapfile
+    set buflisted
+    put A
+    normal ggdj
+endfunction
+command! YankToScratch call YankToScratch()<CR>
 " }}}
