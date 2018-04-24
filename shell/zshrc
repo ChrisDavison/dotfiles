@@ -62,6 +62,7 @@ alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
 alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
 alias topForever='top -l 9999999 -s 10 -o cpu'
 alias ttop="top -R -F -s 10 -o rsize"
+alias rm='rm -i'
 
 # ===================================
 #                EXPORTS
