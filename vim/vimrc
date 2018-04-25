@@ -658,11 +658,7 @@ function! YankToScratch()
     let tag=input('Enter regex to search: ')
     call inputrestore()
     exec ":g/".tag."/y A"
-    new
-    set buftype=nofile
-    set bufhidden=hide
-    set noswapfile
-    set buflisted
+    new|set buftype=nofile bufhidden=hide noswapfile buflisted
     put A
     normal ggdj
 endfunction
