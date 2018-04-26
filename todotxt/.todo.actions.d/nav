@@ -17,8 +17,10 @@ if ! [[ "$1" =~ ^[0-9]+$ ]]; then
     usage
 fi
 
-URL=$(sed "$1!d" "$TODO_FILE"|grep -E -o "([a-z]*)://[^ ]+")
-if [ -n "$URL" ]; then
+
+
+URL=$(sed "$1!d" "$TODO_FILE" | egrep -o "([a-z]*)://[^ ]+")
+if [ ! -n "$URL" ]; then
     LINE=$(sed "$1!d" "$TODO_FILE")
     if [ -n "$LINE" ]; then
         echo "Error, no item #$1 found!"
