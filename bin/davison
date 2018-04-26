@@ -4,7 +4,7 @@ shift
 
 [ ! -n "$command" ] && {
     echo "Chris Davison's utilities"
-    echo "usage: $(basename $0) command args..."
+    echo "usage: $(basename "$0") command args..."
     echo ""
     echo "Available commands"
     echo ""
@@ -45,54 +45,54 @@ shift
 
 case "$command" in
     printbefore)
-        awk -v date=$1 '$0 ~ "^"date{exit} {print $0}' $2 ;;
+        awk -v date="$1" '$0 ~ "^"date{exit} {print $0}' "$2" ;;
     printafter)
-        awk -v date=$1 '$0 ~ "^"date{start=1} start==1{print $0}' $2 ;;
+        awk -v date="$1" '$0 ~ "^"date{start=1} start==1{print $0}' "$2" ;;
     printbetween)
-        awk -v date1=$1 -v date2=$2 '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' $3 ;;
+        awk -v date1="$1" -v date2="$2" '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' "$3" ;;
     extract) 
-        if [ -f $1 ] ; then
-            case $1 in
-                *.tar.bz2)   tar xjf $1     ;;
-                *.tar.gz)    tar xzf $1     ;;
-                *.bz2)       bunzip2 $1     ;;
-                *.rar)       unrar e $1     ;;
-                *.gz)        gunzip $1      ;;
-                *.tar)       tar xf $1      ;;
-                *.tbz2)      tar xjf $1     ;;
-                *.tgz)       tar xzf $1     ;;
-                *.zip)       unzip $1       ;;
-                *.Z)         uncompress $1  ;;
-                *.7z)        7z x $1        ;;
-                *)     echo "'$1' cannot be extracted via $(basename $0) extract" ;;
+        if [ -f "$1" ] ; then
+            case "$1" in
+                *.tar.bz2)   tar xjf "$1"     ;;
+                *.tar.gz)    tar xzf "$1"     ;;
+                *.bz2)       bunzip2 "$1"     ;;
+                *.rar)       unrar e "$1"     ;;
+                *.gz)        gunzip "$1"      ;;
+                *.tar)       tar xf "$1"      ;;
+                *.tbz2)      tar xjf "$1"     ;;
+                *.tgz)       tar xzf "$1"     ;;
+                *.zip)       unzip "$1"       ;;
+                *.Z)         uncompress "$1"  ;;
+                *.7z)        7z x "$1"        ;;
+                *)     echo "'$1' cannot be extracted via $(basename "$0") extract" ;;
             esac
         else
             echo "'$1' is not a valid file"
         fi ;;
-    epoch) date -r $1 +"%Y%m%d %H:%M:%S" ;;
+    epoch) date -r "$1" +"%Y%m%d %H:%M:%S" ;;
     lastmonday) date -v -monday +"%Y-%m-%d"    ;;
     timenow) date +"%Y-%m-%d %H:%M:%S" ;;
     today) date +%F ;;
     nextsunday) date -v +sunday -v +7d +%F ;;
     catless)
         height=$(tput lines)
-        fileheight=$(wc -l $1 | awk '{print $1}')
+        fileheight=$(wc -l "$1" | awk '{print $1}')
         if [[ $height -gt $fileheight ]]
         then
-            cat $1
+            cat "$1"
         else
-            less $1
+            less "$1"
         fi ;;
-    mans) man $1 | grep -iC2 --color=always $2 | less ;;
+    mans) man "$1" | grep -iC2 --color=always "$2" | less ;;
     remspace) rename 's/\s+/_/g' "$1" ;;
     filenameNoExt)
         filename=$(basename "$1")
         file_no_ext="${filename%.*}"
-        echo $file_no_ext ;;
+        echo "$file_no_ext" ;;
     running) ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}' ;;
     uuidrecord) 
         id="$(uuid)"
-        echo $id > ~/.lastuuid
+        echo "$id" > ~/.lastuuid
         cat ~/.lastuuid ;;
     uuidlast) [ -f ~/.lastuuid ] && cat ~/.lastuuid ;;
     literatureTitle)
@@ -108,7 +108,7 @@ case "$command" in
         ifconfig en1 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en1 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
         ifconfig en1 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en1 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}' ;;
     ppath)
-        echo $PATH | tr ":" "\n" | \
+        echo "$PATH" | tr ":" "\\n" | \
         awk "{ sub(\"/usr\",   \"$fg_no_bold[green]/usr$reset_color\"); \
              sub(\"/bin\",   \"$fg_no_bold[blue]/bin$reset_color\"); \
              sub(\"/opt\",   \"$fg_no_bold[cyan]/opt$reset_color\"); \
@@ -116,18 +116,17 @@ case "$command" in
              sub(\"/local\", \"$fg_no_bold[yellow]/local$reset_color\"); \
              print }" ;;
     moveNamedScreenshot)
-        if ! [ -d $2 ]; then
+        if ! [ -d "$2" ]; then
             echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
-            return -2
+            return 2
         fi
-        if ! [ -f $1 ]; then
+        if ! [ -f "$1" ]; then
           echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
-          return -1
+          return 1
         fi
-        local fn
         fn=$2"/"$3
-        echo "../"$(basename $2)"/"$3 | pbcopy
-        mv $1 $fn ;;
+        echo "../""$(basename "$2")""/""$3" | pbcopy
+        mv "$1" "$fn" ;;
     noteadd|na)
         msg="$(date +'%Y%m%d') $1" 
         if [ -e "$EXTERNAL_BRAIN" ]; then
@@ -139,7 +138,7 @@ case "$command" in
     noteview|nv)
         arg="$1"
         if [ -e "$EXTERNAL_BRAIN" ]; then
-            awk -v rx=$1 '$0 ~ rx{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN"
+            awk -v rx="$1" '$0 ~ rx{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN"
         else
             echo "No notes.  Need to create $EXTERNAL_BRAIN"
         fi ;;
@@ -161,7 +160,7 @@ case "$command" in
     headtail|ht)
         if [ $# -lt 1 ]; then
             echo "Usage: ht FILE [DELIMITER=' ']"
-            return -1
+            return 1
         fi
         if [ $# -eq 1 ]; then 
             delim=' '
@@ -169,8 +168,8 @@ case "$command" in
         if [ $# -ge 2 ]; then 
             delim=$2
         fi
-        awk -F $delim 'NR == 2 { printf $1; exit }' $1 && echo -n " till "
-        tail -n 1 $1 | awk -F $delim '{ print $1 }' ;;
+        awk -F "$delim" 'NR == 2 { printf $1; exit }' "$1" && echo -n " till "
+        tail -n 1 "$1" | awk -F "$delim" '{ print "$1" }' ;;
     logbook|lb)
         opt="$1"; shift
         logbook_today=$(date +"%Y/%Y-%m-%d--%a.md")
@@ -181,20 +180,20 @@ case "$command" in
             previous|p)
                 yr=$(date +"%Y/")
                 if [ -e "$lb" ]; then
-                    prev=$(ls -l1 $LOGBOOK_DIR$yr | tail -n2 | head -n 1)
+                    prev=$(find "$LOGBOOK_DIR$yr" | sort | tail -n2 | head -n 1)
                 else
-                    prev=$(ls -l1 $LOGBOOK_DIR$yr | tail -n1)
+                    prev=$(find "$LOGBOOK_DIR$yr" | sort | tail -n1)
                 fi
-                davison catless "$LOGBOOK_DIR$yr$prev"
+                davison catless "$prev"
                 ;;
             diff|d)
-                pushd $LOGBOOK_DIR
-                git diff $logbook_today
-                popd ;;
+                pushd "$LOGBOOK_DIR" || exit
+                git diff "$logbook_today"
+                popd || exit ;;
             commit|c)
                 msg="$1"
-                pushd $LOGBOOK_DIR
-                git add $logbook_today
+                pushd "$LOGBOOK_DIR" || exit
+                git add "$logbook_today"
                 if [ "$msg" = "" ]; then
                     git commit -m "Log $(date +%F)"
                 elif [ "$msg" = "i" ]; then
@@ -202,7 +201,7 @@ case "$command" in
                 else
                     git commit -m "Log $msg"
                 fi 
-                popd ;;
+                popd || exit ;;
             history|h)
                 step="$1"
                 if [ ! -n "$step" ]; then
@@ -212,38 +211,40 @@ case "$command" in
                 lb_yr_dir=$LOGBOOK_DIR$(date +"%Y/")
                 echo "" > ~/.logbook_history
                 for f in $lb_yr_dir*; do
-                    base=$(basename $f)
+                    base="$(basename "$f")"
                     if [ "$base" \> "$target" ]; then
                         cat "$f" >> ~/.logbook_history
                     fi
                 done
                 pandoc ~/.logbook_history -f gfm --mathjax --standalone -o ~/.logbook_history.epub 2&>1 /dev/null
                 echo "Created ~/.logbook_history.epub with last $step days logbooks"
-                [ -f "~/.logbook_history" ] && rm ~/.logbook_history
+                [ -f "$HOME/.logbook_history" ] && rm ~/.logbook_history
                 ;;
             *)
-                echo "usage: $(basename $0) logbook edit|view|commit" ;;
+                base=$(basename "$0")
+                echo "usage: '$base' logbook edit|view|commit" ;;
         esac ;;
     md|markdown) 
         opt="$1"
         case "$opt" in
             tidy)
                 fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-                pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links $1 -o $1 ;;
+                pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links "$1" -o "$1" ;;
             tidynoref)
                 fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-                pandoc -s --atx-headers --normalize -t $fmt --columns=80 $1 -o $1 ;;
+                pandoc -s --atx-headers --normalize -t $fmt --columns=80 "$1" -o "$1" ;;
             pdf)
                 outfn="$1"
                 title="$2"
-                pandoc ${@:3:$#} -o $outfn -S --toc --toc-depth=2 -V title=$title -V documentclass=report -V geometry:margin=1in ;;
+                pandoc "${@:3:$#}" -o "$outfn" -S --toc --toc-depth=2 -V title="$title" -V documentclass=report -V geometry:margin=1in ;;
             html)
-                fn=.$(extractFilenameNoExt $1).html
-                [ -e $fn ] && rm $fn
-                pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax $1 > $fn ;;
+                fn=.$(extractFilenameNoExt "$1").html
+                [ -e "$fn" ] && rm "$fn"
+                pandoc -s -c ~/.dotfiles/github-markdown.css --self-contained --mathjax "$1" > "$fn" ;;
             preview) echo "davison markdown preview - Not implemented" ;;
             *)
-                echo "usage: $(basename $0) markdown tidy|tidynoref|pdf|html|preview" ;;
+                base=$(basename "$0")
+                echo "usage: $base markdown tidy|tidynoref|pdf|html|preview" ;;
         esac ;;
     gitinit)
         git init
@@ -264,11 +265,11 @@ case "$command" in
        case "$opt" in
            kotlin) 
               inp="$1"; shift;
-              out=$(davison filenameNoExt $inp).jar
-              docker run -it --rm -v `pwd`:/home/ zenika/alpine-kotlin kotlinc /home/"$inp" -include-runtime -d /home/"$out" ;;
-            pandoc) docker run -it --rm -v `pwd`:/source jagregory/pandoc ;;
+              out=$(davison filenameNoExt "$inp").jar
+              docker run -it --rm -v "$(pwd)":/home/ zenika/alpine-kotlin kotlinc /home/"$inp" -include-runtime -d /home/"$out" ;;
+            pandoc) docker run -it --rm -v "$(pwd)":/source jagregory/pandoc ;;
             ipy|py|python)
-               docker run -it --rm -v `pwd`:/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython ;;
+               docker run -it --rm -v "$(pwd)":/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython ;;
        esac ;;
     *) 
         echo "Unknown command: $command" 
