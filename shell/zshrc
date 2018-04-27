@@ -129,7 +129,6 @@ local prompt_string="⌁"
 local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
 
 PROMPT="%~ ${return_status} %{%F{reset}%}"
-RPROMPT="%D{%F}"
 
 # ===================================
 #              KEY BINDING
