@@ -110,22 +110,30 @@ set t_ut= " Fix issues with background color on some terminals
 " PLUGIN INSTALL {{{
 call plug#begin('~/.vim/plugged')
 
-Plug 'fatih/vim-go'                               " Syntax: Go
-Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
+" Testing VIM POLYGLOT
+let s:use_polyglot=1
+if s:use_polyglot
+    Plug 'prurigro/vim-polyglot-darkcloud'
+else
+    Plug 'fatih/vim-go'                               " Syntax: Go
+    Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
+    Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
+    Plug 'leafgarland/typescript-vim'                 " Language: Typescript
+    Plug 'lervag/vimtex'                              " Syntax: Latex
+endif
+Plug 'udalov/kotlin-vim'                          " Language: Kotlin
+Plug 'mxw/vim-jsx'                                " JSX syntax support
+
 Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'godlygeek/tabular'                          " Support for formatting tables
-Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
 Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
 Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
-Plug 'leafgarland/typescript-vim'                 " Language: Typescript
-Plug 'udalov/kotlin-vim'                          " Language: Kotlin
-Plug 'jalvesaq/Nvim-R'                            " Language: R
 Plug 'shime/vim-livedown'                         " Markdown preview
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
 Plug 'francoiscabrol/ranger.vim'
 if s:neovim
-Plug 'rbgrouleff/bclose.vim'
+    Plug 'rbgrouleff/bclose.vim'
 endif
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
 Plug 'ChrisDavison/daynight.vim'                
@@ -149,12 +157,10 @@ Plug 'junegunn/rainbow_parentheses.vim'           " Different colours for each p
 Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'
-Plug 'lervag/vimtex'                              " Syntax: Latex
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mattn/webapi-vim'
 Plug 'michaeljsmith/vim-indent-object'
-Plug 'mxw/vim-jsx'                                " JSX syntax support
 Plug 'nvie/vim-flake8'                            " Lint with flake8
 Plug 'Shougo/echodoc.vim'
 Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
