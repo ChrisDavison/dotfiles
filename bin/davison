@@ -108,13 +108,7 @@ case "$command" in
         ifconfig en1 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en1 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
         ifconfig en1 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en1 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}' ;;
     ppath)
-        echo "$PATH" | tr ":" "\\n" | \
-        awk "{ sub(\"/usr\",   \"$fg_no_bold[green]/usr$reset_color\"); \
-             sub(\"/bin\",   \"$fg_no_bold[blue]/bin$reset_color\"); \
-             sub(\"/opt\",   \"$fg_no_bold[cyan]/opt$reset_color\"); \
-             sub(\"/sbin\",  \"$fg_no_bold[magenta]/sbin$reset_color\"); \
-             sub(\"/local\", \"$fg_no_bold[yellow]/local$reset_color\"); \
-             print }" ;;
+        echo "$PATH" | tr ":" "\\n" ;;
     moveNamedScreenshot)
         if ! [ -d "$2" ]; then
             echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
@@ -244,7 +238,13 @@ case "$command" in
             preview) echo "davison markdown preview - Not implemented" ;;
             *)
                 base=$(basename "$0")
-                echo "usage: $base markdown tidy|tidynoref|pdf|html|preview" ;;
+                echo "usage: $base markdown tidy|tidynoref|pdf|html|preview" 
+                echo ""
+                echo "    tidy: no hard line breaks, reference links, math"
+                echo "    tidynoref: no hard line breaks, math"
+                echo "    pdf: pdf with table of contents, standalone, narrow margin"
+                echo "    html: "
+                ;;
         esac ;;
     gitinit)
         git init
@@ -273,6 +273,14 @@ case "$command" in
             elixir)
                 inp="$1"; shift;
                 docker run -it --rm -v "$(pwd)":/home/ elixir:latest iex "$inp" ;;
+            help|h|usage) 
+                echo "davison docker <command>"
+                echo ""
+                echo "    kotlin: compile and jar, with runtime, your kotlin file"
+                echo "    pandoc: run the passed command, with current dir mounted"
+                echo "    elixir: run iex with whatever input is given"
+                echo "    python: launch an ipython shell with tensorflow/ml environment"
+                ;;
        esac ;;
     *) 
         echo "Unknown command: $command" 
