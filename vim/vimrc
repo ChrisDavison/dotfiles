@@ -34,7 +34,7 @@ set shell=/bin/zsh
 set foldenable " Don't fold by default
 set foldlevelstart=1
 set foldnestmax=10
-set foldtext=CustomFoldText2() " Use a custom fold command below for fold text
+set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
 set updatetime=1000 " Write a swap file after 1 second
@@ -222,6 +222,7 @@ if has('gui')
 endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
+hi! link htmlItalic Comment
 " }}}
 " ABBREVIATIONS {{{
 " Command abbreviations
@@ -379,6 +380,7 @@ augroup vimrc
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
+    autocmd BufRead * call FollowSymlink() | call SetProjectRoot()
 augroup END
 " }}}2
 " ALE - Async lint engine
@@ -429,7 +431,6 @@ let g:gitgutter_sign_removed = '∙'
 let g:gitgutter_sign_modified_removed = '∙'
 " }}}
 " FZF && Rg/Ag {{{
-" Use `rg` if available, fallback to `ag`
 if s:hasripgrep
     set grepprg=rg\ --vimgrep
     " let s:find_cmd=
@@ -442,25 +443,6 @@ endif
 noremap <space> :normal zA<CR>
 
 function! CustomFoldText()
-     "get first non-blank line
-     let fs = v:foldstart
-     while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
-     endwhile
-     if fs > v:foldend
-         let line = getline(v:foldstart)
-     else
-         let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
-     endif
-
-     let w = winwidth(0) - &foldcolumn - (&number ? 6 : 0)
-     let foldSize = 1 + v:foldend - v:foldstart
-     let foldSizeStr = "| " . foldSize . " (" . v:foldlevel . ")"
-     let lineCount = line("$")
-     let expansionString = repeat(".", w - strwidth(foldSizeStr.line))
-     return line . expansionString . foldSizeStr
-endfunction
-
-function! CustomFoldText2()
     let line = getline(v:foldstart)
 
     let nucolwidth = &fdc + &number * &numberwidth
@@ -568,16 +550,6 @@ command! TodayNamed call InsertNamedDateAtPoint()
 command! TimeNow call InsertTimestampAtPoint()
 command! TimeShort call InsertTimeAtPoint()
 " }}}
-" FUNC - Insert logbook template {{{
-function! InsertLogbookHeader()
-    normal i# 
-    read!date "+\%Y-\%m-\%d - \%a"
-    normal kJ
-    normal o
-    normal o-   **today**: 
-endfunction
-command! Logbook call InsertLogbookHeader()
-" }}}
 " FUNC - NOTETAKING {{{
 let g:notedir=$HOME . "/Dropbox/n/notes/"
 
@@ -667,4 +639,21 @@ function! YankToScratch()
     normal ggdj
 endfunction
 command! YankToScratch call YankToScratch()<CR>
+
+function! FollowSymlink()
+    let current_file = expand("%p")
+    if getftype(current_file) == "link"
+        let actual_file = resolve(current_file)
+        silent! execute 'file ' . actual_file
+    endif
+endfunction
+
+function! SetProjectRoot()
+    lcd %:p:h
+    let git_dir = system("git rev-parse --show-toplevel")
+    let is_not_git_dir = matchstr(git_dir, "^fatal:.*")
+    if empty(is_not_git_dir)
+        lcd `=git_dir`
+    endif
+endfunction
 " }}}
