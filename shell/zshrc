@@ -68,8 +68,7 @@ alias rm='rm -i'
 #                EXPORTS
 # ===================================
 # Exports for bash/zsh
-export EDITOR="vim";
-[ -x $(which nvim) ] && export EDITOR="nvim";
+[[ -x /usr/local/bin/nvim ]] && export EDITOR="nvim" || export EDITOR="vim"
 
 # Terminal history handling
 export HISTCONTROL=ignoreboth:erasedups;
