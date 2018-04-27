@@ -552,28 +552,16 @@ command! TimeShort call InsertTimeAtPoint()
 " }}}
 " FUNC - NOTETAKING {{{
 let g:notedir=$HOME . "/Dropbox/n/notes/"
+let g:notefile=g:notedir . "capture.txt"
+let g:todofile=g:notedir . "todo.txt"
+let g:donefile=g:notedir . "done.txt"
 
-function! OpenCapture()
-    execute "e " .  g:notedir . "capture.txt"
+function! OpenFilename(fn)
+    execute "e " .  a:fn
 endfunction
-command! Capture :call OpenCapture()
-nnoremap <leader>cap :call OpenCapture()<CR>
-
-function! OpenTodo()
-    execute "e " .  g:notedir . "todo.txt"
-endfunction
-command! Todo :call OpenTodo()
-nnoremap <leader>td :call OpenTodo()<CR>
-
-function! CopyToTodo()
-    normal! yy 
-    normal! mA
-    call OpenTodo()
-    normal! Gp
-    normal! `A
-endfunction
-command! CopyToTodo :call CopyToTodo()
-nnoremap <leader>ctt :call CopyToTodo()<CR>
+nnoremap <leader>cap :call OpenFilename(g:notefile)<CR>
+nnoremap <leader>td :call OpenFilename(g:todofile)<CR>
+nnoremap <leader>dn :call OpenFilename(g:donefile)<CR>
 " }}}
 " PLATFORM - Windows {{{
 if s:haswin
@@ -584,11 +572,6 @@ if s:haswin
     let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
     let g:notedir="e:\\Dropbox\\n\\notes\\"
     cd ~\working
-endif
-" }}}
-" PLATFORM - Mac {{{
-if s:darwin && has('gui')
-set macligatures
 endif
 " }}}
 " EXPERIMENTAL {{{
@@ -611,15 +594,14 @@ nnoremap <C-l> <C-w>l
 endif
 
 function! GetSyntaxScope()
-let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
-let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
-let lo="lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
-echo hi . " " . trans . " " . lo
+    let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
+    let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
+    let lo="lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+    echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
 
 chdir ~/working/notes
-command! -bar -nargs=1 -complete=file E :exe "edit ".substitute(<q-args>,'\(.*\):\(\d\+\):\=$','+\2 \1','')
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 nnoremap <silent>  == :Scratch<CR>
