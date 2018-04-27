@@ -29,6 +29,7 @@ alias datasci="source ~/.envs/datasci/bin/activate"
 
 # Utilities
 alias cl='catless'
+alias less='less -R'
 
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
