@@ -182,7 +182,16 @@ case "$command" in
                 ;;
             diff|d)
                 pushd "$LOGBOOK_DIR" || exit
-                git diff "$logbook_today"
+                git ls-files --error-unmatch "$logbook_today" > /dev/null 2>&1
+                if [[ $? -gt 0 ]]; then
+                    cat "$logbook_today"
+                    echo ""
+                    echo "====================================="
+                    echo "        NOT ADDED TO REPO YET        "
+                    echo "====================================="
+                else
+                    git diff "$logbook_today"
+                fi
                 popd || exit ;;
             commit|c)
                 msg="$1"
@@ -210,7 +219,7 @@ case "$command" in
                         cat "$f" >> ~/.logbook_history
                     fi
                 done
-                pandoc ~/.logbook_history -f gfm --mathjax --standalone -o ~/.logbook_history.epub 2&>1 /dev/null
+                pandoc ~/.logbook_history -f gfm --mathjax --standalone -o ~/.logbook_history.epub
                 echo "Created ~/.logbook_history.epub with last $step days logbooks"
                 [ -f "$HOME/.logbook_history" ] && rm ~/.logbook_history
                 ;;
