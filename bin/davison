@@ -270,6 +270,9 @@ case "$command" in
             pandoc) docker run -it --rm -v "$(pwd)":/source jagregory/pandoc ;;
             ipy|py|python)
                docker run -it --rm -v "$(pwd)":/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython ;;
+            elixir)
+                inp="$1"; shift;
+                docker run -it --rm -v "$(pwd)":/home/ elixir:latest iex "$inp" ;;
        esac ;;
     *) 
         echo "Unknown command: $command" 
