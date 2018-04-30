@@ -27,8 +27,8 @@ set breakindent " Indent after soft-breaking a line
 set omnifunc=syntaxcomplete#Complete
 set number " Line numbers
 set iskeyword=a-z,A-Z,_,.,39
-set viminfo='10,<50,s10,%,h,n~/.viminfo
 set nohidden
+set viminfo='10,<50,s10,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
 set foldenable " Don't fold by default
