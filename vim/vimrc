@@ -27,8 +27,8 @@ set breakindent " Indent after soft-breaking a line
 set omnifunc=syntaxcomplete#Complete
 set number " Line numbers
 set iskeyword=a-z,A-Z,_,.,39
-set hidden
 set viminfo='10,<50,s10,%,h,n~/.viminfo
+set nohidden
 set nospell
 set shell=/bin/zsh
 set foldenable " Don't fold by default
@@ -61,6 +61,16 @@ set nrformats=
 set title
 set sidescrolloff=15
 set sidescroll=1
+set autoindent
+set complete-=i
+set smarttab
+set nrformats-=octal
+set ruler
+if v:version > 703 || v:version == 703 && has("patch451")
+    set formatoptions+=j
+endif
+set history=1000
+set tabpagemax=50
 
 " --- Put all temp files in one place
 set backup
@@ -428,6 +438,10 @@ let g:gitgutter_sign_added = '∙'
 let g:gitgutter_sign_modified = '∙'
 let g:gitgutter_sign_removed = '∙'
 let g:gitgutter_sign_modified_removed = '∙'
+
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
 " }}}
 " FZF && Rg/Ag {{{
 if s:hasripgrep
