@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+cmd="$1"; shift;
+case "$cmd" in
+    add|a)
+        msg="$(date +'%Y%m%d') $1" 
+        touch "$EXTERNAL_BRAIN"
+        echo "$msg" >> "$EXTERNAL_BRAIN"
+        awk '{printf "%-2s %s\n", NR, $0}' < "$EXTERNAL_BRAIN" | tail -n1 ;;
+    view|v) 
+        if [ -e "$EXTERNAL_BRAIN" ]; then
+            grep "$1" "$EXTERNAL_BRAIN"
+        else
+            echo "No notes.  Need to create $EXTERNAL_BRAIN"
+        fi ;;
+    clear|c) 
+        if [[ -e "$EXTERNAL_BRAIN" ]]; then
+            rm "$EXTERNAL_BRAIN"
+        fi
+        touch "$EXTERNAL_BRAIN"
+        ;;
+    delete|d) 
+        if [ -e "$EXTERNAL_BRAIN" ]; then
+            if [ -n "$1" ]; then
+                sed -i'' "$1""d" "$EXTERNAL_BRAIN"
+            else
+                echo "Need to pass ITEM#"
+            fi
+        else
+            echo "No notes.  Need to create $EXTERNAL_BRAIN"
+        fi
+        ;;
+    file|f) echo "$EXTERNAL_BRAIN" ;;
+esac
