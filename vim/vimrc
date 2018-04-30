@@ -353,7 +353,6 @@ augroup vimrc
     autocmd FileType go      set foldmethod=syntax
     autocmd Filetype markdown setlocal conceallevel=2
     autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
-    autocmd Filetype markdown setlocal nonumber
     autocmd Filetype markdown setlocal foldlevelstart=1
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
