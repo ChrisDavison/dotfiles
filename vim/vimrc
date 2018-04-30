@@ -1,19 +1,7 @@
 " vim: set foldmethod=marker foldlevel=1:
 " ChrisDavison's Vimrc
-" SETTINGS {{{
-" --- Leader at the top to be obvious and easy to modify
 let mapleader="\\"
-" Command abbreviations
-
-" --- Helper variables for environment, should they be needed elsewhere
-let s:haswin = has('win32') || has('win64')
-let s:darwin = has('mac')
-let s:has_256co=$TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-let s:prefer_fzf=1
-let s:hasripgrep=executable('rg')
-let s:neovim=has('nvim')
-
-" --- Some useful settings that need documented
+" SETTINGS {{{
 set nocompatible " Don't force compability with vi
 set autochdir    " cd to the directory of the currently edited file
 syntax on
@@ -57,7 +45,6 @@ set expandtab " Convert tabs to spaces
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw _while_ exeecuting macros
 set laststatus=2
-set nrformats=
 set title
 set sidescrolloff=15
 set sidescroll=1
@@ -85,6 +72,7 @@ set wildmode=list:longest,full
 """" Ignore certain files and directories in Wildmenu
 set wildignore=*.o,*.obj,*~
 set wildignore+=*vim/backups*
+set wildignore+=node_modules/**
 set wildignore+=*sass-cache*
 set wildignore+=*DS_Store*
 set wildignore+=vendor/rails/**
@@ -94,16 +82,17 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
+" By default, split to the right and below, rather than left or up
 set splitbelow
 set splitright
 
 function! FugitiveStatusCD()
-let fs=fugitive#statusline()
-if fs != ''
-    return fs . ","
-else
-    return ""
-fi
+    let fs=fugitive#statusline()
+    if fs != ''
+        return fs . ","
+    else
+        return ""
+    fi
 endfunction
 
 " --- Statusbar
@@ -112,9 +101,9 @@ set statusline=%<\ %t\ %=%(%l/%L\|%c%),\ %{exists('g:loaded_fugitive')?FugitiveS
 " --- Miscellany
 let g:netrw_list_hide = "*.swp,*.swo,*.aux"
 if has('persistent_undo')
-set undodir=~/.undodir/
-set undofile
-endif
+    set undodir=~/.undodir/
+    set undofile
+    endif
 set t_ut= " Fix issues with background color on some terminals
 " }}}
 " PLUGIN INSTALL {{{
@@ -122,18 +111,9 @@ call plug#begin('~/.vim/plugged')
 
 " Testing VIM POLYGLOT
 let s:use_polyglot=1
-if s:use_polyglot
-    Plug 'prurigro/vim-polyglot-darkcloud'
-else
-    Plug 'fatih/vim-go'                               " Syntax: Go
-    Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
-    Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
-    Plug 'leafgarland/typescript-vim'                 " Language: Typescript
-    Plug 'lervag/vimtex'                              " Syntax: Latex
-endif
+Plug 'prurigro/vim-polyglot-darkcloud'
 Plug 'udalov/kotlin-vim'                          " Language: Kotlin
 Plug 'mxw/vim-jsx'                                " JSX syntax support
-
 Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'godlygeek/tabular'                          " Support for formatting tables
@@ -141,10 +121,6 @@ Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
 Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
 Plug 'shime/vim-livedown'                         " Markdown preview
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
-Plug 'francoiscabrol/ranger.vim'
-if s:neovim
-    Plug 'rbgrouleff/bclose.vim'
-endif
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
 Plug 'ChrisDavison/daynight.vim'                
 Plug 'ChrisDavison/yankmatching.vim'                
@@ -194,10 +170,13 @@ Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
-Plug 'BurningEther/iron.nvim'
+
+if has('nvim')
+    Plug 'BurningEther/iron.nvim'
+    Plug 'rbgrouleff/bclose.vim'
+endif
 
 call plug#end()
-
 " }}}
 " APPEARANCE {{{
 if has('gui_running')
@@ -212,6 +191,9 @@ if has('gui_running')
     set guioptions-=L
     set guioptions-=l
 else
+    let s:has_256co=$TERM == "xterm-256color" || 
+                \ $TERM == "screen-256color" || 
+                \ $COLORTERM == "gnome-terminal"
     if s:has_256co
        set t_Co=256
     else
@@ -309,14 +291,12 @@ vmap  <buffer> <silent> $ g$
 " Select what was pasted
 noremap gV `[v`]
 
-" Buffer/File/Function/Outline navigation
-if s:prefer_fzf && !has('gui_running')
-    nnoremap <leader>b :Buffers<Cr>
-    nnoremap <leader>p :Files<Cr>
-    nnoremap <leader>ll :Lines<cr>
-    nnoremap <leader>lb :BLines<cr>
-    nnoremap <leader>m :Marks<cr>
-endif
+" Buffer/File/Function/Outline navigation using FZF
+nnoremap <leader>b :Buffers<Cr>
+nnoremap <leader>p :Files<Cr>
+nnoremap <leader>ll :Lines<cr>
+nnoremap <leader>lb :BLines<cr>
+nnoremap <leader>m :Marks<cr>
 
 " Modify/source my VIMRC
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
@@ -324,6 +304,18 @@ nnoremap <leader>sv :so $MYVIMRC<Cr>
 
 " Backspace goes to `alternate` file
 nnoremap <BS> <C-^>
+
+" From/to Neovim terminals
+if has('nvim')
+    tnoremap <C-h> <C-\><C-n><C-w>h
+    tnoremap <C-j> <C-\><C-n><C-w>j
+    tnoremap <C-k> <C-\><C-n><C-w>k
+    tnoremap <C-l> <C-\><C-n><C-w>l
+    nnoremap <C-h> <C-w>h
+    nnoremap <C-j> <C-w>j
+    nnoremap <C-k> <C-w>k
+    nnoremap <C-l> <C-w>l
+endif
 
 " }}}
 " KEYBIND - Miscellaneous {{{
@@ -391,7 +383,7 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
     autocmd BufRead * call FollowSymlink() | call SetProjectRoot()
 augroup END
-" }}}2
+
 " ALE - Async lint engine
 let g:ale_sign_error='✗'
 let g:ale_sign_warning='∎'
@@ -444,7 +436,7 @@ if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
 endif
 " }}}
 " FZF && Rg/Ag {{{
-if s:hasripgrep
+if executable('rg')
     set grepprg=rg\ --vimgrep
     " let s:find_cmd=
     command! -bang -nargs=* Find call fzf#vim#grep(
@@ -576,8 +568,17 @@ nnoremap <leader>cap :call OpenFilename(g:notefile)<CR>
 nnoremap <leader>td :call OpenFilename(g:todofile)<CR>
 nnoremap <leader>dn :call OpenFilename(g:donefile)<CR>
 " }}}
+" Scratch buffers {{{
+command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
+command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
+nnoremap <silent>  == :Scratch<CR>
+nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap           =f :Scratch<Bar>setfiletype<Space>
+" }}}
 " PLATFORM - Windows {{{
-if s:haswin
+if has('win32') || has('win64')
     set shell=cmd.exe
     set shellcmdflag=/c
     set guifont=Fantasque_Sans_Mono:h16
@@ -594,18 +595,6 @@ command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 
-let g:ranger_map_keys=0
-if s:neovim
-tnoremap <C-h> <C-\><C-n><C-w>h
-tnoremap <C-j> <C-\><C-n><C-w>j
-tnoremap <C-k> <C-\><C-n><C-w>k
-tnoremap <C-l> <C-\><C-n><C-w>l
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-endif
-
 function! GetSyntaxScope()
     let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
     let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
@@ -613,15 +602,6 @@ function! GetSyntaxScope()
     echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
-
-chdir ~/working/notes
-command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
-command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
-nnoremap <silent>  == :Scratch<CR>
-nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap           =f :Scratch<Bar>setfiletype<Space>
 
 function! YankToScratch()
     let @a=""
