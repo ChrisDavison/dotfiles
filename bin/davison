@@ -54,7 +54,7 @@ case "$command" in
             between)
                 awk -v date1="$1" -v date2="$2" '$0 ~ "^"date1{start=1} $0 ~ "^"date2{exit} start==1{print $0}' "$3" ;;
         esac ;;
-    extract) 
+    extract)
         if [ -f "$1" ] ; then
             case "$1" in
                 *.tar.bz2)   tar xjf "$1"     ;;
@@ -146,10 +146,10 @@ case "$command" in
         ps2pdf -dEPSCrop "$1".eps ;;
     ff) find ./ -iname "*$1*" -type "f" ;;
     fd) find ./ -iname "*$1*" -type "d" ;;
-    docker) 
+    docker)
        opt="$1"; shift;
        case "$opt" in
-           kotlin) 
+           kotlin)
               inp="$1"; shift;
               out=$(davison filenameNoExt "$inp").jar
               docker run -it --rm -v "$(pwd)":/home/ zenika/alpine-kotlin kotlinc /home/"$inp" -include-runtime -d /home/"$out" ;;
@@ -159,7 +159,7 @@ case "$command" in
             elixir)
                 inp="$1"; shift;
                 docker run -it --rm -v "$(pwd)":/home/ elixir:latest iex "$inp" ;;
-            help|h|usage) 
+            help|h|usage)
                 echo "davison docker <command>"
                 echo ""
                 echo "    kotlin: compile and jar, with runtime, your kotlin file"
@@ -168,8 +168,19 @@ case "$command" in
                 echo "    python: launch an ipython shell with tensorflow/ml environment"
                 ;;
        esac ;;
-    *) 
-        echo "Unknown command: $command" 
+    todo)
+        cmd="$1"
+        case "$cmd" in
+            watch) watch -c -n10 -t "echo 'TODOS' && todo.sh -+ -@ lsp -+gam" ;;
+            xp)
+                days="$2"
+                [ ! -n "$days" ] && days=3
+                watch -n10 -t "todo.sh xp -o $days"
+                ;;
+        esac
+        ;;
+    *)
+        echo "Unknown command: $command"
         echo ""
         davison
         ;;
