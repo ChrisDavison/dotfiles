@@ -140,10 +140,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'                          " Distraction free mode
 Plug 'junegunn/limelight.vim'                     " Typewriter mode for distraction free
 Plug 'junegunn/rainbow_parentheses.vim'           " Different colours for each paren pair
-Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'
-Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'mattn/webapi-vim'
 Plug 'michaeljsmith/vim-indent-object'
@@ -170,6 +168,7 @@ Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
+Plug 'ludovicchabant/vim-gutentags'
 
 if has('nvim')
     Plug 'BurningEther/iron.nvim'
@@ -271,7 +270,7 @@ iabbrev logicnot ¬
 iabbrev approxx ≈
 iabbrev there4 ∴
 " }}}
-" KEYBINDS - Navigation {{{
+" KEYBINDS {{{
 " Move splits/windows
 map <C-w><C-h> <C-w><S-h>
 map <C-w><C-j> <C-w><S-j>
@@ -317,24 +316,23 @@ if has('nvim')
     nnoremap <C-l> <C-w>l
 endif
 
-" }}}
-" KEYBIND - Miscellaneous {{{
+" Easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
-nnoremap <silent> <leader>/ :nohlsearch<CR>
+
+" Remove search highlighting
+nnoremap <silent> <C-L> :nohlsearch<CR>
 
 " Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
 
-nnoremap <leader>t :TagbarToggle<CR>
+nnoremap <leader>t :Tags<CR>
 nnoremap <leader>lt :LivedownToggle<cr>
 nnoremap <Leader>h :set list!<CR>
 nnoremap <F11> :Goyo<Cr>
 nnoremap nw :set wrap!<CR>
 nnoremap <leader>c :ls<Cr>:bd
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign):w
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 " }}}
@@ -631,4 +629,6 @@ function! SetProjectRoot()
         lcd `=git_dir`
     endif
 endfunction
+
+set tags=./tags,tags
 " }}}
