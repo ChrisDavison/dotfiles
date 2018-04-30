@@ -227,3 +227,5 @@ alias ttop="top -R -F -s 10 -o rsize"
 alias myip='curl ip.appspot.com'
 
 cd
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
