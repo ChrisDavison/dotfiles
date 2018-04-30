@@ -111,6 +111,11 @@ export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
 export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 
+choose_vim() {
+    $EDITOR -S $(find ~/Dropbox/v/vim -name "*.vim" -type f | fzf)
+}
+alias cv='choose_vim'
+
 # ===================================
 #         SOURCE CUSTOM SCRIPTS
 # ===================================
@@ -128,7 +133,7 @@ local prompt_string="⌁"
 # Make prompt_string red if the previous command failed.
 local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
 
-PROMPT="%~ ${return_status} %{%F{reset}%}"
+PROMPT="%{%F{blue}%}%~ ${return_status} %{%F{reset}%}"
 
 # ===================================
 #              KEY BINDING
