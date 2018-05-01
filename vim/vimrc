@@ -109,11 +109,18 @@ set t_ut= " Fix issues with background color on some terminals
 " PLUGIN INSTALL {{{
 call plug#begin('~/.vim/plugged')
 
-" Testing VIM POLYGLOT
-let s:use_polyglot=1
-Plug 'prurigro/vim-polyglot-darkcloud'
+" Individual languages
+Plug 'fatih/vim-go'                               " Syntax: Go
+Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
+Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
+Plug 'leafgarland/typescript-vim'                 " Language: Typescript
+Plug 'lervag/vimtex'                              " Syntax: Latex
 Plug 'udalov/kotlin-vim'                          " Language: Kotlin
 Plug 'mxw/vim-jsx'                                " JSX syntax support
+Plug 'wting/rust.vim'                                " JSX syntax support
+Plug 'zah/nim.vim'
+Plug 'elixir-editors/vim-elixir'
+
 Plug 'airblade/vim-gitgutter'
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'godlygeek/tabular'                          " Support for formatting tables
@@ -658,5 +665,5 @@ function! s:tags()
 endfunction
 
 command! Tags call s:tags()
-
+let perl_fold = 1
 " }}}
