@@ -164,9 +164,10 @@ case "$command" in
             pandoc) docker run -it --rm -v "$(pwd)":/source jagregory/pandoc ;;
             ipy|py|python)
                docker run -it --rm -v "$(pwd)":/home/jovyan/work/ jupyter/tensorflow-notebook start.sh ipython ;;
+            iex)
+                docker run -it --rm -v "$(pwd)":/home/ elixir:latest iex "$1" ;;
             elixir)
-                inp="$1"; shift;
-                docker run -it --rm -v "$(pwd)":/home/ elixir:latest iex "$inp" ;;
+                docker run -it --rm -v "$(pwd)":/home/ elixir:latest sh ;;
             help|h|usage)
                 echo "davison docker <command>"
                 echo ""
