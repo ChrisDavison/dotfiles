@@ -180,7 +180,10 @@ case "$command" in
     todo)
         cmd="$1"
         case "$cmd" in
-            watch) watch -c -n10 -t "echo 'TODOS' && todo.sh -+ -@ lsp -+gam" ;;
+            watch) watch -c -n10 -t "echo 'TODOS' && todo.sh -@ lsp" ;;
+            work) watch -c -n10 -t "echo 'TODOS' && todo.sh lsp -+gam -+read -+podc -@home" ;;
+            graph) watch -c -n10 -t "echo 'TODOS COMPLETED' && todo.sh graph" ;;
+            due) watch -c -n10 -t "echo 'TODOS DUE' && todo.sh due" ;;
             xp)
                 days="$2"
                 [ ! -n "$days" ] && days=3
