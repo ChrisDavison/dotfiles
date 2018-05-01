@@ -120,6 +120,7 @@
     unpublish = "!git push origin :$(git branch-name)"
     in = log --pretty=oneline --abbrev-commit --graph ..@{u}
     fin = !git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}
+	ctags = !.git/hooks/ctags
 
 [push]
 	default = simple
@@ -145,3 +146,5 @@
 	ff = false
 [core]
 	excludesfiles = /Users/davison/.global_ignore
+[init]
+	templatedir = ~/.git_template
