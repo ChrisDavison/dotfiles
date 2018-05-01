@@ -52,7 +52,7 @@ alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 
-alias tma='tmux attach -d -t'
+alias tma='tmux attach -d -t $(tmux list-sessions | fzf | cut -d: -f1)'
 alias tmuxhere='tmux new -s $(basename $(pwd))'
 
 # Alais to my custom multi-util
