@@ -346,6 +346,7 @@ augroup vimrc
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
+    autocmd FileType python  set iskeyword=a-z,A-Z,_
     autocmd FileType json    set tabstop=2
     autocmd FileType json    set softtabstop=2
     autocmd FileType json    set shiftwidth=2
@@ -383,8 +384,8 @@ augroup vimrc
 augroup END
 
 " ALE - Async lint engine
-let g:ale_sign_error='✗'
-let g:ale_sign_warning='∎'
+let g:ale_sign_error='▪'
+let g:ale_sign_warning='▫'
 let g:ale_fix_on_save = 1
 let g:ale_sign_column_always=1
 hi clear ALEErrorSign
@@ -396,6 +397,7 @@ let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
 " GO
 let g:go_fmt_command = "goimports"
+" Markdown
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_follow_anchor = 1
 " LATEX
