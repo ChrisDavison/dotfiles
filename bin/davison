@@ -128,7 +128,7 @@ case "$command" in
         fn=$2"/"$3
         echo "../""$(basename "$2")""/""$3" | pbcopy
         mv "$1" "$fn" ;;
-    note|n) davison-note "$@" ;;
+    note|n) note.pl "$@" ;;
     headtail|ht) headtail "$@" ;;
     logbook|lb) davison-logbook "$@" ;;
     md|markdown) davison-markdown "$@" ;;
