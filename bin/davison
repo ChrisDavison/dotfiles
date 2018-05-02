@@ -129,15 +129,7 @@ case "$command" in
         echo "../""$(basename "$2")""/""$3" | pbcopy
         mv "$1" "$fn" ;;
     note|n) davison-note "$@" ;;
-    headtail|ht)
-        if [ $# -lt 1 ]; then
-            echo "Usage: ht FILE [DELIMITER=' ']"
-            return 1
-        fi
-        [[ $# -eq 1 ]] && delim=' '
-        [[ $# -ge 2 ]] && delim="$2"
-        awk -F "$delim" 'NR == 2 { printf $1; exit }' "$1" && echo -n " till "
-        tail -n 1 "$1" | awk -F "$delim" '{ print "$1" }' ;;
+    headtail|ht) headtail "$@" ;;
     logbook|lb) davison-logbook "$@" ;;
     md|markdown) davison-markdown "$@" ;;
     gitinit)
