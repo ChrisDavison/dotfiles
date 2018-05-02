@@ -19,8 +19,6 @@ set viminfo='10,<50,s10,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
 set foldenable
-set foldlevelstart=1
-set foldnestmax=10
 set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
@@ -346,22 +344,13 @@ nnoremap <leader>d :ScheduleDone<Cr>
 " PLUGINS / LANGUAGES {{{
 augroup vimrc
     autocmd!
-    autocmd FileType c set foldmethod=syntax
-    autocmd FileType cpo set foldmethod=syntax
-    autocmd FileType arduino set foldmethod=syntax
-    autocmd FileType python  set nofen
+    autocmd FileType c,cpo,arduino set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
-    autocmd FileType json    set tabstop=2
-    autocmd FileType json    set softtabstop=2
-    autocmd FileType json    set shiftwidth=2
-    autocmd FileType go      set nofen
     autocmd FileType go      set foldmethod=syntax
     autocmd Filetype markdown setlocal conceallevel=2
-    autocmd Filetype markdown setlocal breakindentopt=shift:4,sbr
-    autocmd Filetype markdown setlocal foldlevelstart=1
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
@@ -376,8 +365,6 @@ augroup vimrc
     autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
     autocmd FileType rust nmap <leader>gd <Plug>(rust-doc)
     autocmd FileType vim     set foldmethod=marker
-    " autocmd BufEnter * hi vimOper cterm=NONE ctermbg=NONE
-    " autocmd BufEnter * hi vimOper guibg=NONE guifg=NONE
     autocmd ColorScheme * hi! link SignColumn LineNr
     autocmd FileType javascript set filetype=javascript.jsx
     autocmd FileType javascript,javascript.jsx set foldmethod=syntax
@@ -387,7 +374,6 @@ augroup vimrc
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
-    autocmd BufRead * call FollowSymlink() | call SetProjectRoot()
 augroup END
 
 " ALE - Async lint engine
