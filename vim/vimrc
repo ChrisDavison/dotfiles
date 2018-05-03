@@ -122,7 +122,6 @@ Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 " My Plugins
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
-Plug 'ChrisDavison/daynight.vim'                  " Toggle between defined light and dark themes
 Plug 'ChrisDavison/yankmatching.vim'                
 
 " Utility
@@ -198,11 +197,11 @@ endif
 
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_day='github'
-let g:themeswitch_night='espresso'
+let g:themeswitch_day='paramount'
+let g:themeswitch_night='jellybeans'
 if has('gui')
-    let g:themeswitch_day='github'
-    let g:themeswitch_night='espresso'
+    let g:themeswitch_day='paramount'
+    let g:themeswitch_night='jellybeans'
 endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
@@ -284,7 +283,7 @@ vmap  <buffer> <silent> $ g$
 noremap gV `[v`]
 
 " Buffer/File/Function/Outline navigation using FZF
-nnoremap <leader>b :Buffers<Cr>
+nnoremap <leader>bb :Buffers<Cr>
 nnoremap <leader>p :Files<Cr>
 nnoremap <leader>ll :Lines<cr>
 nnoremap <leader>lb :BLines<cr>
@@ -346,8 +345,7 @@ augroup vimrc
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
-    autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
-    autocmd BufEnter *.md setlocal foldmethod=expr
+    autocmd BufReadPost *.md setlocal foldmethod=expr
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
     autocmd BufWritePre *.md,*.py :%s///e
     autocmd FileType make    set noexpandtab
@@ -561,7 +559,7 @@ nnoremap <silent>  == :Scratch<CR>
 nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap           =f :Scratch<Bar>setfiletype<Space>
+nnoremap           =f :Scratch<Bar>set filetype<Space>
 " }}}
 " PLATFORM - Windows {{{
 if has('win32') || has('win64')
@@ -571,7 +569,6 @@ if has('win32') || has('win64')
     let gitgutter_enabled=0
     let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
     let g:notedir="e:\\Dropbox\\n\\notes\\"
-    cd ~\working
 endif
 " }}}
 " EXPERIMENTAL {{{
@@ -588,35 +585,6 @@ function! GetSyntaxScope()
     echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
-
-function! YankToScratch()
-    let @a=""
-    call inputsave()
-    let tag=input('Enter regex to search: ')
-    call inputrestore()
-    exec ":g/".tag."/y A"
-    new|set buftype=nofile bufhidden=hide noswapfile buflisted
-    put A
-    normal ggdj
-endfunction
-command! YankToScratch call YankToScratch()<CR>
-
-function! FollowSymlink()
-    let current_file = expand("%p")
-    if getftype(current_file) == "link"
-        let actual_file = resolve(current_file)
-        silent! execute 'file ' . actual_file
-    endif
-endfunction
-
-function! SetProjectRoot()
-    lcd %:p:h
-    let git_dir = system("git rev-parse --show-toplevel")
-    let is_not_git_dir = matchstr(git_dir, "^fatal:.*")
-    if empty(is_not_git_dir)
-        lcd `=git_dir`
-    endif
-endfunction
 
 function! s:tags_sink(line)
   let parts = split(a:line, '\t\zs')
