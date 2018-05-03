@@ -7,7 +7,6 @@ use Git::Repository;
 use experimental qw/smartmatch/;
 use File::Basename;
 use DateTime::Format::Strptime qw();
-use autodie;
 
 my $p = DateTime::Format::Strptime->new(pattern => "%F", on_error => 'croak');
 my $logbook = logbook_entry();
@@ -17,12 +16,12 @@ my @files = glob( "$dir*.md" );
 main();
 
 sub main {
-    my $cmd = $ARGV[0];
+    my $cmd = shift @ARGV;
     for ($cmd) {
         when (/edit|e/)     { edit() or die; }
         when (/view|v/)     { view() or die; }
-        when (/commit|c/)   { commit() or die; }
-        when (/history|h/)  { history() or die; }
+        when (/commit|c/)   { commit(@ARGV) or die; }
+        when (/history|h/)  { history(@ARGV) or die; }
         when (/previous|p/) { previous() or die; }
         default             { usage() }
     }
@@ -94,7 +93,7 @@ sub datetime_from_filename {
 }
 
 sub history {
-    my $step = $_[0] // 7;
+    my $step = shift @_ // 7;
     my $delta = DateTime::Duration->new( days => $step );
     my $today = time_today();
     my $target = $today - $delta;
