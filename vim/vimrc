@@ -111,32 +111,33 @@ call plug#begin('~/.vim/plugged')
 Plug 'fatih/vim-go'                               " Syntax: Go
 Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
 Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
-Plug 'leafgarland/typescript-vim'                 " Language: Typescript
+Plug 'leafgarland/typescript-vim'                 " Syntax: Typescript
 Plug 'lervag/vimtex'                              " Syntax: Latex
-Plug 'udalov/kotlin-vim'                          " Language: Kotlin
-Plug 'mxw/vim-jsx'                                " JSX syntax support
-Plug 'wting/rust.vim'                                " JSX syntax support
-Plug 'zah/nim.vim'
-Plug 'elixir-editors/vim-elixir'
-
-Plug 'airblade/vim-gitgutter'
+Plug 'udalov/kotlin-vim'                          " Syntax: Kotlin
+Plug 'mxw/vim-jsx'                                " Syntax: JSX
+Plug 'wting/rust.vim'                             " Syntax: Rust
+Plug 'elixir-editors/vim-elixir'                  " Syntax: Elixir
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
-Plug 'godlygeek/tabular'                          " Support for formatting tables
-Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
-Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
-Plug 'shime/vim-livedown'                         " Markdown preview
+
+" My Plugins
 Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
 Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
-Plug 'ChrisDavison/daynight.vim'                
+Plug 'ChrisDavison/daynight.vim'                  " Toggle between defined light and dark themes
 Plug 'ChrisDavison/yankmatching.vim'                
+
+" Utility
+Plug 'airblade/vim-gitgutter'                     " Add symbol to gutter to show git changes
+Plug 'godlygeek/tabular'                          " Support for formatting tables
+Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
 Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'bps/vim-textobj-python'                     " Text objects for python
 Plug 'dahu/vim-fanfingtastic'                     " Make 'F' work across newlines
-Plug 'dhruvasagar/vim-table-mode'
+Plug 'dhruvasagar/vim-table-mode'                 " Format tables
 Plug 'easymotion/vim-easymotion'                  " Easily navigate to any character on screen
-Plug 'ervandew/supertab'
+Plug 'ervandew/supertab'                          " Use <Tab> for all insertions
 Plug 'garbas/vim-snipmate'
+Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
 Plug 'guns/vim-sexp'
 Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
@@ -144,13 +145,8 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'                          " Distraction free mode
 Plug 'junegunn/limelight.vim'                     " Typewriter mode for distraction free
-Plug 'junegunn/rainbow_parentheses.vim'           " Different colours for each paren pair
 Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
-Plug 'kkoenig/wimproved.vim'
-Plug 'mattn/emmet-vim'
-Plug 'mattn/webapi-vim'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'nvie/vim-flake8'                            " Lint with flake8
+Plug 'kkoenig/wimproved.vim'                      " Better experience on windows (fullscreen)
 Plug 'Shougo/echodoc.vim'
 Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
 Plug 'rking/ag.vim'                               " Support for TheSilverSearcher
@@ -167,17 +163,10 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'vim-scripts/a.vim'
-Plug 'vim-scripts/utl.vim'
 Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
-
-if has('nvim')
-    Plug 'BurningEther/iron.nvim'
-    Plug 'rbgrouleff/bclose.vim'
-endif
 
 call plug#end()
 " }}}
@@ -344,7 +333,9 @@ nnoremap <leader>d :ScheduleDone<Cr>
 " PLUGINS / LANGUAGES {{{
 augroup vimrc
     autocmd!
-    autocmd FileType c,cpo,arduino set foldmethod=syntax
+    autocmd FileType c set foldmethod=syntax
+    autocmd Filetype cpo set foldmethod=syntax
+    autocmd Filetype arduino set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
@@ -356,6 +347,7 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd Filetype markdown nnoremap <leader>t :Toc<CR>
+    autocmd BufEnter *.md setlocal foldmethod=expr
     autocmd BufWritePre *.md,*.py :%s/\s\+$//e
     autocmd BufWritePre *.md,*.py :%s///e
     autocmd FileType make    set noexpandtab
@@ -391,6 +383,7 @@ let g:slime_python_ipython = 1
 " GO
 let g:go_fmt_command = "goimports"
 " Markdown
+let g:vim_markdown_folding_disabled = 0
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_follow_anchor = 1
 " LATEX
