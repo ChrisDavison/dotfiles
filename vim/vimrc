@@ -125,6 +125,7 @@ Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE 
 Plug 'ChrisDavison/yankmatching.vim'                
 
 " Utility
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'                     " Add symbol to gutter to show git changes
 Plug 'godlygeek/tabular'                          " Support for formatting tables
 Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
@@ -556,10 +557,10 @@ nnoremap <leader>dn :call OpenFilename(g:donefile)<CR>
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 nnoremap <silent>  == :Scratch<CR>
-nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap           =f :Scratch<Bar>set filetype<Space>
+nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
+nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
+nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
+nnoremap           =f :Scratch<Bar>ALEDisable<Bar>set filetype=
 " }}}
 " PLATFORM - Windows {{{
 if has('win32') || has('win64')
@@ -605,7 +606,7 @@ function! s:tags()
 
   call fzf#run({
   \ 'source':  'cat '.join(map(tagfiles(), 'fnamemodify(v:val, ":S")')).
-  \            '| grep -v -a ^!',
+ \            '| grep -v -a ^!',
   \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
   \ 'down':    '40%',
   \ 'sink':    function('s:tags_sink')})
