@@ -54,6 +54,7 @@ case "$opt" in
             cat "$f" >> ~/.logbook_history
         done
         pandoc ~/.logbook_history -f gfm --mathjax --standalone -M title="Logbook - $first till $last" -o ~/.logbook_history.epub
+        pandoc ~/.logbook_history -f gfm --mathjax --standalone -M title="Logbook - $first till $last" -o ~/.logbook_history.html --toc --toc-depth=2 -c ~/.dotfiles/css/github.css
         echo "Created ~/.logbook_history.epub with last $step logbook entries - $first till $last"
         [[ -f "$HOME/.logbook_history" ]] && rm "$HOME/.logbook_history"
         ;;
