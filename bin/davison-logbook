@@ -46,17 +46,14 @@ case "$opt" in
         fi
         lb_yr_dir=$LOGBOOK_DIR$(date +"%Y")
         echo "" > ~/.logbook_history
-        first_fn=$(find "$lb_yr_dir" -name "*.md" | tail -n$step | head -n1)
-        last_fn=$(find "$lb_yr_dir" -name "*.md" | tail -n1)
-        first=$(basename "$first_fn")
-        last=$(basename "$last_fn")
+        first=$(basename "$(find "$lb_yr_dir" -name "*.md" | tail -n1)")
+        last=$(basename "$(find "$lb_yr_dir" -name "*.md" | tail -n$step | head -n1)")
         for f in $(find "$lb_yr_dir" -name "*.md" | tail -n$step); do
             cat "$f" >> ~/.logbook_history
         done
         pandoc ~/.logbook_history -f gfm --mathjax --standalone -M title="Logbook - $first till $last" -o ~/.logbook_history.epub
         pandoc ~/.logbook_history -f gfm --mathjax --standalone -M title="Logbook - $first till $last" -o ~/.logbook_history.html --toc --toc-depth=2 -c ~/.dotfiles/css/github.css
-        echo "Created ~/.logbook_history.epub with last $step logbook entries - $first till $last"
-        [[ -f "$HOME/.logbook_history" ]] && rm "$HOME/.logbook_history"
+        [[ -f "$HOME/.logbook_history" ]] && rm "$HOME/.logbook_history" || echo "Couldn't remove logbook history"
         ;;
     *)
         base=$(basename "$0")
