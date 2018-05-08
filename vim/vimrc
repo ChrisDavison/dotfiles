@@ -484,64 +484,18 @@ command! MDTidyRef call RunPandoc('', 0, 1, 1)
 command! MDTidyWrap call RunPandoc('', 1, 1, 0)
 command! MDTidyWrapRef call RunPandoc('', 1, 1, 1)
 nnoremap <silent> <leader>mdt :MDTidyRef<CR>
-
-" Convert current markdown file to PDF
-function! MDToPDF()
-    silent !clear
-    let outfn=expand('%:r') . '.pdf'
-    let cmd = 'pandoc % -o ' . outfn
-    execute "!" . cmd
-endfunction
-command! MDToPDF call MDToPDF() | :echo "File converted to pdf"
-"
-" Convert current markdown file to PDF
-function! MDToEpub(level)
-    silent !clear
-    let outfn=expand('%:r') . '.epub'
-    let cmd = 'pandoc % --epub-chapter-level=' . a:level . ' -s --standalone -o ' . outfn
-    execute "!" . cmd
-endfunction
-command! MDToEpub call MDToEpub(2) | :echo "File converted to epub"
-command! MDToEpub1 call MDToEpub(1) | :echo "File converted to epub"
-
 " }}}
-" FUNC - Miscellaneous {{{
-function! CopyFilename(relative)
-    if a:relative
-        let s:fn="./" . expand("%")
-    else
-        let s:fn=expand("%:p")
-    endif
-    let @+=s:fn
-    echo "Copied path: " . s:fn
-endfunction
-command! CopyFilename call CopyFilename(0)
-command! CopyRelativeFilename call CopyFilename(1)
+" Miscellaneous functions and commands {{{
+command! CopyFilename exec "@+=expand(\"%\")"
+command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
-" }}}
-" FUNC - Insert date/timestamp at point {{{
-function! InsertDateAtPoint()
-    read!date "+\%Y-\%m-\%d"
-    normal kJ
-endfunction
-
-function! InsertNamedDateAtPoint()
-    read!date "+\%Y-\%m-\%d - \%a"
-    normal kJ
-endfunction
-
-function! InsertTimestampAtPoint()
-    read!date "+\%Y-\%m-\%d \%H:\%M:\%S"
-    normal kJ
-endfunction
-function! InsertTimeAtPoint()
-    read!date "+\%H:\%M"
-    normal kJ
-endfunction
-command! Today call InsertDateAtPoint()
-command! TodayNamed call InsertNamedDateAtPoint()
-command! TimeNow call InsertTimestampAtPoint()
-command! TimeShort call InsertTimeAtPoint()
+command! Today exec 'put=strftime(\"%Y-%m-%d\")'
+command! TodayNamed exec 'put=strftime(\"%Y-%m-%d - %a\")'
+command! TimeNow exec 'put=strftime(\"%Y-%m-%d %H:%M:%S\")'
+command! TimeShort exec 'put=strftime(\"**%H:%M**\")'
+command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
+command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
+command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 " }}}
 " FUNC - NOTETAKING {{{
 let g:notedir=$HOME . "/Dropbox/n/notes/"
@@ -576,9 +530,6 @@ if has('win32') || has('win64')
 endif
 " }}}
 " EXPERIMENTAL {{{
-command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
-command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
-command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 nnoremap ]l :ALENextWrap<CR>
 nnoremap [l :ALEPreviousWrap<CR>
 
