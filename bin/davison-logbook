@@ -44,18 +44,18 @@ case "$opt" in
         if [ ! -n "$step" ]; then
             step=7
         fi
-        target=$(date -v"-$step""d" +"%F--%a.md")
-        lb_yr_dir=$LOGBOOK_DIR$(date +"%Y/")
+        lb_yr_dir=$LOGBOOK_DIR$(date +"%Y")
         echo "" > ~/.logbook_history
-        for f in $lb_yr_dir*; do
-            base="$(basename "$f")"
-            if [ "$base" \> "$target" ]; then
-                cat "$f" >> ~/.logbook_history
-            fi
+        first_fn=$(find "$lb_yr_dir" -name "*.md" | tail -n$step | head -n1)
+        last_fn=$(find "$lb_yr_dir" -name "*.md" | tail -n1)
+        first=$(basename "$first_fn")
+        last=$(basename "$last_fn")
+        for f in $(find "$lb_yr_dir" -name "*.md" | tail -n$step); do
+            cat "$f" >> ~/.logbook_history
         done
-        pandoc ~/.logbook_history -f gfm --mathjax --standalone -o ~/.logbook_history.epub
-        echo "Created ~/.logbook_history.epub with last $step days logbooks"
-        [ -f "$HOME/.logbook_history" ] && rm ~/.logbook_history
+        pandoc ~/.logbook_history -f gfm --mathjax --standalone -M title="Logbook - $first till $last" -o ~/.logbook_history.epub
+        echo "Created ~/.logbook_history.epub with last $step logbook entries - $first till $last"
+        [[ -f "$HOME/.logbook_history" ]] && rm "$HOME/.logbook_history"
         ;;
     *)
         base=$(basename "$0")
