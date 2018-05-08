@@ -92,12 +92,13 @@ export SAVEHIST=9000
 # ==============================
 #        DIRECTORIES etc
 # ==============================
+[[ -x /usr/local/bin/nvim ]] && export EDITOR="nvim" || export EDITOR="vim"
 # Environment variables/path
 export GOPATH="$HOME";
 export GOBIN="$HOME/bin";
 export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
-export RESEARCHFIGURES="$HOME/../Dropbox/f/figures/"
+export RESEARCHFIGURES="$HOME/Dropbox/f/figures/"
 export PATH=$GOBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$PATH;
 
 # Export various directories useful for mu work
@@ -107,6 +108,7 @@ export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
 export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
 export TASKDIR="$LOGBOOK_DIR/tasks/"
+export TASKSDIR=("$LOGBOOK_DIR/tasks/" "$HOME/Dropbox/t/tasks")
 
 # 256 color terminal
 export TERM=xterm-256color;
@@ -122,13 +124,10 @@ export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 sourceOrErrorMessage(){
     [ -f "$1" ] && source "$1" || echo "$1 doesn't exist"
 }
-# sourceOrErrorMessage ~/.cargo/env
-# sourceOrErrorMessage ~/.fzf.zsh
-# export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
-# sourceOrErrorMessage /usr/local/etc/profile.d/autojump.sh
+sourceOrErrorMessage /usr/local/etc/profile.d/autojump.sh
 
 
-function MDTidy() {
+MDTidy() {
     if [ "$1" = 1 ]; then
         wrap='--columns=80'
     else
@@ -146,6 +145,7 @@ function MDTidy() {
     pandoc -t ${to} ${extra} ${ref} ${wrap} $@
 }
 
+alias g="git"
 alias mdtidy='MDTidy 0 0'
 alias mdtidyref='MDTidy 0 1'
 alias mdtidywrap='MDTidy 1 0'
@@ -155,23 +155,18 @@ alias dkmnt='docker run -it --rm -v /c/Users/user01/home:/ehome'
 alias dpandoc='docker run -it --rm -v /c/Users/user01/notes:/source jagregory/pandoc'
 
 # Directory listing aliases
-ver=$(ls --version | egrep -o "GNU")
-if [ -n "$ver" ]; then
-    alias ll='ls -lFh --group-directories-first --color=auto'
-    alias la='ls -AlFh --group-directories-first --color=auto'
-    alias ls='ls -CF --group-directories-first --color=auto'
-    alias l='ls -CF --group-directories-first --color=auto'
-elif [ -x "$(command -v gls)" ]; then
-    alias ll='gls -lFh --group-directories-first --color=auto'
-    alias la='gls -AlFh --group-directories-first --color=auto'
-    alias ls='gls -CF --group-directories-first --color=auto'
-    alias l='gls -CF --group-directories-first --color=auto'
-else
+# ver=$(ls --version | egrep -o "GNU")
+# if [ -n "$ver" ]; then
+#     echo "Using GNU ls"
+#     alias ll='gls -lFh --group-directories-first --color=auto'
+#     alias la='gls -AlFh --group-directories-first --color=auto'
+#     alias l='gls -CF --group-directories-first --color=auto'
+# else
+    echo "Using standard OSX ls"
     alias ll='ls -GlFh'
     alias la='ls -GAlFh'
-    alias ls='ls -GCF'
     alias l='ls -GCF'
-fi
+# fi
 
 # ==============================
 #         FROM ZSHRC
@@ -183,6 +178,7 @@ alias d="davison"
 alias gitsync="gr git fetch --all"
 alias gitdown="gr git pull --rebase"
 alias gst="gr status"
+alias dr="gr status | rg 'ahead|behind|modified'"
 
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
@@ -194,6 +190,7 @@ export TASKDIR="$LOGBOOK_DIR/tasks/"
 export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
 export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
+export TASKPATHS=("$HOME/Dropbox/t/tasks")
 
 #----------------------------------------------------------------------------#
 # Bash text colour specification:  \e[<STYLE>;<COLOUR>m
@@ -211,7 +208,7 @@ prompt_cmd(){
     if [ "$ex" -gt 0 ]; then
         col="\e[0;31m" 
     fi
-    PS1="\w $col>>\e[0m \e[1;37m" 
+    PS1="\e[0;37m\w $col>>\e[0m \e[1;37m" 
 }
 
 # ==============================
@@ -226,6 +223,17 @@ alias ttop="top -R -F -s 10 -o rsize"
 # Networking
 alias myip='curl ip.appspot.com'
 
-cd
+choose_vim() {
+    $EDITOR -S $(find ~/Dropbox/v/vim -name "*.vim" -type f | fzf)
+}
+alias cv='choose_vim'
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+source ~/.cargo/env
+
+PATH="/Users/davison/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/Users/davison/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/Users/davison/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/Users/davison/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
