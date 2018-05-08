@@ -355,6 +355,7 @@ augroup vimrc
     autocmd FileType rust nmap gs <Plug>(rust-def-split)
     autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
     autocmd FileType rust nmap <leader>gd <Plug>(rust-doc)
+    autocmd BufEnter *scratch* ALEDisable
     autocmd FileType vim     set foldmethod=marker
     autocmd ColorScheme * hi! link SignColumn LineNr
     autocmd FileType javascript set filetype=javascript.jsx
