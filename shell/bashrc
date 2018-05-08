@@ -151,9 +151,6 @@ alias mdtidyref='MDTidy 0 1'
 alias mdtidywrap='MDTidy 1 0'
 alias mdtidywrapref='MDTidy 1 1'
 
-alias dkmnt='docker run -it --rm -v /c/Users/user01/home:/ehome'
-alias dpandoc='docker run -it --rm -v /c/Users/user01/notes:/source jagregory/pandoc'
-
 # Directory listing aliases
 # ver=$(ls --version | egrep -o "GNU")
 # if [ -n "$ver" ]; then
@@ -179,6 +176,10 @@ alias gitsync="gr git fetch --all"
 alias gitdown="gr git pull --rebase"
 alias gst="gr status"
 alias dr="gr status | rg 'ahead|behind|modified'"
+alias dkmnt='docker run -it --rm -v /c/Users/user01/home:/ehome'
+alias dpandoc='docker run -it --rm -v /c/Users/user01/notes:/source jagregory/pandoc'
+alias tma='tmux attach -d -t $(tmux list-sessions | fzf | cut -d: -f1)'
+alias tmuxhere='tmux new -s $(basename $(pwd))'
 
 # Make ripgrep Smart-case search by default
 alias rg='rg -S'
