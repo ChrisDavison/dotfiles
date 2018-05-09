@@ -16,7 +16,7 @@ my @files = glob( "$dir*.md" );
 main();
 
 sub main {
-    my $cmd = shift @ARGV;
+    my $cmd = shift @ARGV // "";
     for ($cmd) {
         when (/edit|e/)     { edit() or die; }
         when (/view|v/)     { view() or die; }
@@ -29,6 +29,14 @@ sub main {
 
 sub usage {
     say "usage: $0 CMD [OPTIONS]";
+    say "";
+    say "Commands";
+    say "    e,edit";
+    say "    v,view";
+    say "    c,commit";
+    say "    h,history";
+    say "    p,previous";
+    exit 1;
 }
 
 sub logbook_entry {
@@ -39,29 +47,31 @@ sub logbook_entry {
     my @abbr = qw/Mon Tue Wed Thu Fri Sat Sun/;
     my $day  = $time[3];
     $day = "0" . $day if $day < 10;
-    my $wday = $abbr[ $time[6] ];
+    my $wday = $abbr[ $time[6]-1 ];
     my $dir  = $ENV{"LOGBOOK_DIR"};
     return "$dir$year/$year-$mon-$day--$wday.md";
 }
 
 sub edit {
     die ("No \$EDITOR defined") unless $ENV{"EDITOR"};
-    system( ( $ENV{"EDITOR"}, $logbook ) )
+    system( ( $ENV{"EDITOR"}, $logbook ) ) == 0
       or die("Failed to edit logbook");
+    exit 1;
 }
 
 sub view {
     if (-e $logbook) {
-        system( ( "less", $logbook ) );
+        system( ( "less", $logbook ) ) == 0 or die("Failed to view logbook");
     } else {
         say "No logbook entry today";
     }
+    exit 1;
 }
 
 sub previous {
     my $n = (-e $logbook) ? 1 : 0;
     my $prev = $files[$#files-$n];
-    system( ("less", $prev) ) or die("Failed to view previous logbooks");
+    system( ("less", $prev) ) == 0 or die("Failed to view previous logbooks");
 }
 
 sub commit {
@@ -94,32 +104,24 @@ sub datetime_from_filename {
 
 sub history {
     my $step = shift @_ // 7;
-    my $delta = DateTime::Duration->new( days => $step );
-    my $today = time_today();
-    my $target = $today - $delta;
-    my @filename_datetimes = map { datetime_from_filename($_) } @files;
     my $fn_out = "$ENV{HOME}/.logbook_history";
+    unlink $fn_out;
     open( my $fh_history, '>', $fn_out);
-    for (@files){
-        if (datetime_from_filename($_) >= $target) {
-            open (my $hist_file, '<', $_);
-            my @contents = <$hist_file>;
-            close( $hist_file );
-            say $fh_history @contents;
-        }
+    for (@files[$#files-$step..$#files]){
+        open (my $hist_file, '<', $_);
+        my @contents = <$hist_file>;
+        close( $hist_file );
+        say $fh_history @contents;
     }
     close $fh_history;
-    system( 
-        "pandoc",
-        $fn_out,
-        "-f",
-        "gfm",
-        "--mathjax",
-        "--standalone",
-        "-o",
-        "$ENV{'HOME'}/log_history.epub",
-        "-M",
-        "title=logbook"
-    );
-    say "Created $fn_out.epub with last $step days logbooks";
+    my @pd_cmd = ("pandoc", $fn_out, "-f", "gfm", "--mathjax", "-M", "title=logbook", "--standalone", "-o");
+    my @cmd_epub = @pd_cmd;
+    my @cmd_html = @pd_cmd;
+    push @cmd_epub, ("$fn_out.epub");
+    push @cmd_html, ("$fn_out.html", "--toc", "--toc-depth=2");
+    my $css_fn = "$ENV{HOME}/.dotfiles/css/github.css";
+    push(@cmd_html, ("-c", $css_fn)) if -e $css_fn;
+    system( @cmd_epub ) == 0 or die("Failed to create epub");
+    system( @cmd_html ) == 0 or die("Failed to create html");
+    exit 1;
 }
