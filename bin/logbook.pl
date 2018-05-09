@@ -7,6 +7,7 @@ use Git::Repository;
 use experimental qw/smartmatch/;
 use File::Basename;
 use DateTime::Format::Strptime qw();
+use Cwd;
 
 my $p = DateTime::Format::Strptime->new(pattern => "%F", on_error => 'croak');
 my $logbook = logbook_entry();
@@ -114,14 +115,18 @@ sub history {
         say $fh_history @contents;
     }
     close $fh_history;
-    my @pd_cmd = ("pandoc", $fn_out, "-f", "gfm", "--mathjax", "-M", "title=logbook", "--standalone", "-o");
+    my @pd_cmd = ("pandoc", $fn_out, "-f", "gfm", "--mathjax", 
+        "-M", "title=logbook", "--standalone", "--self-contained", "-o");
     my @cmd_epub = @pd_cmd;
     my @cmd_html = @pd_cmd;
     push @cmd_epub, ("$fn_out.epub");
     push @cmd_html, ("$fn_out.html", "--toc", "--toc-depth=2");
     my $css_fn = "$ENV{HOME}/.dotfiles/css/github.css";
     push(@cmd_html, ("-c", $css_fn)) if -e $css_fn;
+    my $curdir = cwd;
+    chdir $dir;
     system( @cmd_epub ) == 0 or die("Failed to create epub");
     system( @cmd_html ) == 0 or die("Failed to create html");
+    chdir $curdir;
     exit 1;
 }
