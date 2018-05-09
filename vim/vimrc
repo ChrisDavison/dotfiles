@@ -299,6 +299,16 @@ vnoremap S :s///<LEFT>
 " Remove search highlighting
 nnoremap <silent> <C-L> :nohlsearch<CR>
 
+function! ToggleConceal()
+    if &conceallevel == 2
+        set conceallevel=0
+    else
+        set conceallevel=2
+    endif
+endfunction
+command! ToggleConceal call ToggleConceal()
+nnoremap <silent> <C-y> :ToggleConceal<CR>
+
 " Indent/De-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
@@ -331,7 +341,7 @@ augroup vimrc
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
     autocmd FileType go      set foldmethod=syntax
-    autocmd Filetype markdown setlocal conceallevel=2
+    autocmd Filetype markdown set conceallevel=2
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
