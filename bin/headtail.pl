@@ -21,6 +21,7 @@ sub main {
     my $lenLongestStr = length ($#rows . "");
     printf "%$lenLongestStr"."d: %s\n", $rownum0, $row0;
     printf "%$lenLongestStr"."d: %s\n", $#rows, $rowN;
+    1;
 }
 
 sub lines_from_file {
