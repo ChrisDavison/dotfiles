@@ -220,28 +220,11 @@ cnoreabbrev Bd bd
 
 " Shortcuts for utility inputs
 iabbrev @@ c.jr.davison@gmail.com
-iabbrev TD **TODO**
-iabbrev EX **EXAMPLE:**
-iabbrev E: Explain:
-iabbrev ACT **ACTION:**
-iabbrev ASM *Assume* ::
-iabbrev invq ¿
-iabbrev *@ **email:**
-iabbrev EXP **experiment:**
-iabbrev HT `#`<left>
-iabbrev dbg **DEBUG**
-
-" Economics-specific abbreviations
-iabbrev gnss goods and services
-iabbrev gns good and service
-iabbrev eqb equilibrium
-iabbrev govt government
-
-" HTML codes
-iabbrev ndash –
-iabbrev mdash —
 
 " Unicode symbols
+iabbrev invq ¿
+iabbrev ndash –
+iabbrev mdash —
 iabbrev rarr →
 iabbrev larr ←
 iabbrev lrarr ⇔
@@ -329,6 +312,13 @@ nnoremap nw :set wrap!<CR>
 nnoremap <leader>c :ls<Cr>:bd
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
+
+" ALE - Async linting
+nnoremap ]l :ALENextWrap<CR>
+nnoremap [l :ALEPreviousWrap<CR>
+
+" Fold with space
+noremap <space> :normal zA<CR>
 " }}}
 " PLUGINS / LANGUAGES {{{
 augroup vimrc
@@ -380,6 +370,7 @@ let g:ale_python_mypy_options = '--ignore-missing-imports'
 let g:pymode_python = 'python3'
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
+let g:slime_paste_file=tempname()
 " GO
 let g:go_fmt_command = "goimports"
 " Markdown
@@ -433,8 +424,6 @@ if executable('rg')
 endif
 " }}}
 " FUNC - folding {{{
-noremap <space> :normal zA<CR>
-
 function! CustomFoldText()
     let line = getline(v:foldstart)
 
@@ -530,8 +519,6 @@ if has('win32') || has('win64')
 endif
 " }}}
 " EXPERIMENTAL {{{
-nnoremap ]l :ALENextWrap<CR>
-nnoremap [l :ALEPreviousWrap<CR>
 
 function! GetSyntaxScope()
     let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
@@ -540,31 +527,4 @@ function! GetSyntaxScope()
     echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
-
-function! s:tags_sink(line)
-  let parts = split(a:line, '\t\zs')
-  let excmd = matchstr(parts[2:], '^.*\ze;"\t')
-  execute 'silent e' parts[1][:-2]
-  let [magic, &magic] = [&magic, 0]
-  execute excmd
-  let &magic = magic
-endfunction
-
-function! s:tags()
-  if empty(tagfiles())
-    echohl WarningMsg
-    echom 'Preparing tags'
-    echohl None
-    call system('ctags -R')
-  endif
-
-  call fzf#run({
-  \ 'source':  'cat '.join(map(tagfiles(), 'fnamemodify(v:val, ":S")')).
- \            '| grep -v -a ^!',
-  \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
-  \ 'down':    '40%',
-  \ 'sink':    function('s:tags_sink')})
-endfunction
-
-command! Tags call s:tags()
 " }}}
