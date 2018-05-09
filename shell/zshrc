@@ -110,6 +110,7 @@ export RX_mdlink="\[.*\]\(.*\)|\[.*\]: .*"
 export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
 export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
+export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
 
 choose_vim() {
     $EDITOR -S $(find ~/Dropbox/v/vim -name "*.vim" -type f | fzf)
