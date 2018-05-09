@@ -1,77 +1,63 @@
 #!/usr/bin/env perl
 
-use 5.24.0;
 use strict;
 use warnings;
 use Switch;
-use File::Touch;
+use 5.24.0;
 use POSIX qw/strftime/;
 
-my $filename = $ENV{"EXTERNAL_BRAIN"};
+my $dir = $ENV{"CAPTUREDIR"};
+
+$SIG{INT} = \&save_to_file;
+
+my @lines = ();
 
 sub main {
     my $cmd = $ARGV[0] // "";
     my @args = @ARGV[1..$#ARGV];
     switch ($cmd) {
-        case /add|a/    { add(@args) or die }
-        case /view|v/   { view(@args) or die }
-        case /clear|c/  { clear(@args) or die }
-        case /delete|d/ { del(@args) or die }
-        else            { usage(@args) }
+        case /list|l/ { list() or die }
+        case /del|d/  { del(@args) or die }
+        case /view|v/ { view(@args) or die }
+        case /h|help|u|usage/ { usage() or die }
+        case /add|a/  { take_note() or die }
+        else          { take_note() }
     }
+    1;
 }
 
 sub usage {
-    say "usage: $0 CMD [options]";
-    say;
-    say "Options";
+    say "usage: $0 [CMD] [options]";
+    say "";
+    say "Commands:";
     say "    v,view             View all notes";
-    say "    c,clear            Clear all notes";
-    say "    a,add NOTE         Add a note";
+    say "    l,list             List notes";
+    say "    a,add              Add a note (DEFAULT command)";
     say "    d,delete ITEM#     Delete a note";
+    say "";
+    say "While adding notes, Ctrl-C saves and exits";
+    1;
 }
 
-sub add {
-    my $date = strftime("%Y%m%d", gmtime);
-    my $msg = join(' ',@_);
-    open( my $fh, '>>', $filename);
-    say $fh "$date $msg";
-    say "$date $msg";
-    return 1;
-}
-
-sub view {
-    die ("No capture file defined") unless (-e $filename);
-    my @lines = read_file();
-    my $i = 1;
-    for (@lines) {
-        printf "%3d %s", $i, $_;
-        $i += 1;
+sub take_note {
+    say "Taking note";
+    say "Ctrl-C to save and exit, Ctrl-D to exit without saving";
+    say "";
+    while (<>) {
+        push @lines, $_;
     }
-    return 1;
-}
-
-sub clear {
-    unlink($filename);
-    open( my $fh, '>', $filename);
-    close $fh;
-    say "$filename cleared";
-    return 1;
+    1;
 }
 
 sub del {
-    my $itemnum = $_[0];
-    my @lines = read_file();
-    die ("Invalid ITEM# $itemnum") unless ($itemnum > 0 && $itemnum-1 <= $#lines);
-    my $deleting = $lines[$itemnum-1];
-    chomp $deleting;
-    splice(@lines, $itemnum-1, 1);
-    my $response = unbuffered_prompt("Delete: $deleting? (y|n) ");
-    return if ($response =~ /n|N/ );
-    open( my $fh, '>', $filename);
-    print $fh @lines;
-    close $fh;
-    return 1;
+    my $item = shift @_;
+    my @files = glob( "$dir*" );
+    die ("Bad ITEM#") unless (0 < $item and $item-1 <= $#files);
+    my $del_line = $files[$item-1];
+    my $response = unbuffered_prompt("Delete '$del_line'? (y|n)");
+    return 1 if ($response =~ /n|N/);
+    unlink($del_line);
+    1;
 }
 
 sub unbuffered_prompt {
@@ -83,11 +69,42 @@ sub unbuffered_prompt {
     return $response;
 }
 
-sub read_file {
-    open( my $fh, '<', $filename);
-    my @lines = <$fh>;
-    close $fh;
-    return @lines;
+sub list {
+    my @files = glob( "$dir*" );
+    my $i = 1;
+    for (@files) {
+        printf "%3d %s\n", $i, $_;
+        $i += 1;
+    }
+    1;
 }
 
-main();
+sub save_to_file {
+    my $date = strftime("%Y-%m-%d", gmtime);
+    my $first = $lines[0];
+    die ("No content to write to file") unless $#lines > 0;
+    chomp $first;
+    $first =~ s/[^a-z0-9A-Z]/-/g;
+    $first =~ s/-+$//g;
+    $first = lc $first;
+    my $title = "$date--$first.txt";
+    my $filename = $dir . $title;
+    shift @lines;
+    say $filename;
+    open ( my $fh, '>', $filename );
+    print $fh $_ for @lines;
+    close $fh;
+    exit 0;
+}
+
+sub view {
+    my $item = shift @_;
+    my @files = glob( "$dir*" );
+    die ("Bad ITEM#") unless (0 < $item and $item-1 <= $#files);
+    open( my $fh, '<', $files[$item-1] );
+    print for <$fh>;
+    close $fh;
+    1;
+}
+
+main;
