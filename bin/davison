@@ -52,6 +52,7 @@ shift
 }
 
 case "$command" in
+    hash|animalhash) animalhash ;;
     print|p)
         cmd="$1"; shift;
         case "$cmd" in
@@ -128,9 +129,9 @@ case "$command" in
         fn=$2"/"$3
         echo "../""$(basename "$2")""/""$3" | pbcopy
         mv "$1" "$fn" ;;
-    note|n) note.pl "$@" ;;
+    note|n) note "$@" ;;
     headtail|ht) headtail "$@" ;;
-    logbook|lb) davison-logbook "$@" ;;
+    logbook|lb) logbook "$@" ;;
     md|markdown) davison-markdown "$@" ;;
     gitinit)
         git init
