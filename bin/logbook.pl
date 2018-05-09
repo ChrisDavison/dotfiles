@@ -22,7 +22,11 @@ sub main {
         when (/edit|e/)     { edit() or die; }
         when (/view|v/)     { view() or die; }
         when (/commit|c/)   { commit(@ARGV) or die; }
-        when (/history|h/)  { history(@ARGV) or die; }
+        when (/history|h/)  { 
+            write_history(@ARGV) or die; 
+            create_epub();
+            create_html();
+        }
         when (/previous|p/) { previous() or die; }
         default             { usage() }
     }
@@ -103,11 +107,11 @@ sub datetime_from_filename {
     return $p->parse_datetime($parsed_filename);
 }
 
-sub history {
+sub write_history {
     my $step = shift @_ // 7;
-    my $fn_out = "$ENV{HOME}/.logbook_history";
-    unlink $fn_out;
-    open( my $fh_history, '>', $fn_out);
+    my $fn = "$ENV{HOME}/.logbook_history";
+    unlink $fn;
+    open( my $fh_history, '>', $fn);
     for (@files[$#files-$step..$#files]){
         open (my $hist_file, '<', $_);
         my @contents = <$hist_file>;
@@ -115,18 +119,33 @@ sub history {
         say $fh_history @contents;
     }
     close $fh_history;
-    my @pd_cmd = ("pandoc", $fn_out, "-f", "gfm", "--mathjax", 
-        "-M", "title=logbook", "--standalone", "--self-contained", "-o");
-    my @cmd_epub = @pd_cmd;
-    my @cmd_html = @pd_cmd;
-    push @cmd_epub, ("$fn_out.epub");
-    push @cmd_html, ("$fn_out.html", "--toc", "--toc-depth=2");
-    my $css_fn = "$ENV{HOME}/.dotfiles/css/github.css";
-    push(@cmd_html, ("-c", $css_fn)) if -e $css_fn;
+    1;
+}
+
+sub create_epub {
+    my @lines = shift @_;
+    my $fn = "$ENV{HOME}/.logbook_history";
+    my $fn_out = "$fn.epub";
+    my @cmd = ("pandoc", $fn, "-f", "gfm", "--mathjax", "-M", "title=logbook", 
+        "--standalone", "--self-contained", "-o", $fn_out);
     my $curdir = cwd;
     chdir $dir;
-    system( @cmd_epub ) == 0 or die("Failed to create epub");
-    system( @cmd_html ) == 0 or die("Failed to create html");
+    system ( @cmd ) == 0 or die("Failed to create epub");
     chdir $curdir;
-    exit 1;
+    1;
+}
+
+sub create_html {
+    my @lines = shift @_;
+    my $fn = "$ENV{HOME}/.logbook_history";
+    my $fn_out = "$fn.html";
+    my @cmd = ("pandoc", $fn, "-f", "gfm", "--mathjax", "-M", "title=logbook", 
+        "--standalone", "--self-contained", "-o", $fn_out, "--toc", "--toc-depth=2");
+    my $css_fn = "$ENV{HOME}/.dotfiles/css/github.css";
+    push( @cmd, ("-c", $css_fn) ) if -e $css_fn;
+    my $curdir = cwd;
+    chdir $dir;
+    system ( @cmd ) == 0 or die("Failed to create html");
+    chdir $curdir;
+    1;
 }
