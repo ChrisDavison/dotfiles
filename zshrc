@@ -124,8 +124,8 @@ alias cv='choose_vim'
 sourceOrErrorMessage() {
     [ -f $1 ] && source $1 || echo "No $1"
 }
-sourceOrErrorMessage ~/.dotfiles/shell/setopt.sh      # from zanshin
-sourceOrErrorMessage ~/.dotfiles/shell/completion.sh  # from zanshin
+sourceOrErrorMessage ~/.dotfiles/setopt.sh      # from zanshin
+sourceOrErrorMessage ~/.dotfiles/completion.sh  # from zanshin
 
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
