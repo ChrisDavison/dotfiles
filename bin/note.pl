@@ -16,7 +16,7 @@ sub main {
     my $cmd = $ARGV[0] // "";
     my @args = @ARGV[1..$#ARGV];
     switch ($cmd) {
-        case /list|l/ { list() or die }
+        case /list|l/ { list(@args) or die }
         case /del|d/  { del(@args) or die }
         case /view|v/ { view(@args) or die }
         case /h|help|u|usage/ { usage() or die }
@@ -70,9 +70,11 @@ sub unbuffered_prompt {
 }
 
 sub list {
+    my $filter = shift @_;
     my @files = glob( "$dir*" );
     my $i = 1;
-    for (@files) {
+    my @matching = grep { /$filter/ } @files;
+    for (@matching) {
         printf "%3d %s\n", $i, $_;
         $i += 1;
     }
