@@ -9,32 +9,50 @@ use Data::Dumper;
 
 main();
 
+sub get_plot_path {
+    my $config = "$ENV{HOME}/.rplotrc";
+    open( my $f_config, '<', $config);
+    my @lines = <$f_config>;
+    close $f_config;
+    return $lines[0];
+}
+
 sub main {
-    my $path = '~/Dropbox/f/figures/representative-plots';
-    $path =~ s/~/$ENV{HOME}/g;
+    my $path = get_plot_path();
     my $ref_filename = "$path/reference.md";
     unlink( $ref_filename ) if (-e $ref_filename);
     my @plotdirs = glob( "$path/*" );
     open( my $f_ref, '>', $ref_filename );
-    for (@plotdirs) {
-        my $plotname = $_;
-        $plotname =~ s/$path\///g;
-        say $plotname;
+    for (@plotdirs) {    
         my $curdir = cwd;
         chdir $_;
-        my @files = glob( "$_/*" );
-        my @img_files = grep { /png|jpg|jpeg|gif|pdf/ } @files;
-        my @code_files = grep { /py/ } @files;
-        my @data_files = grep { /csv/ } @files;
-        
-        say $f_ref "# $plotname\n";
-        append_images({ DIR => $path, FH=>$f_ref, FILES=>\@img_files });
-        append_code({ FH=>$f_ref, FILES=>\@code_files});
-        append_data_heads({ FH=>$f_ref, FILES=>\@data_files});
-        
+        add_representative_plot_to_reference({
+            PLOTNAME=>$_, 
+            FH=>$f_ref,
+            PATH=>$path
+        });    
         chdir $curdir;
     }
     close $f_ref;
+}
+
+sub add_representative_plot_to_reference {
+    my ($args) = shift @_;
+    my $plotname = $args->{PLOTNAME};
+    my $fh = $args->{FH};
+    my $path = $args->{PATH};
+    $plotname =~ s/$path\///g;
+    say $plotname;
+    my @files = glob( "$plotname/*" );
+    my @img_files = grep { /png|jpg|jpeg|gif|pdf/ } @files;
+    my @code_files = grep { /py/ } @files;
+    my @data_files = grep { /csv/ } @files;
+    
+    say $fh "# $plotname\n";
+    append_images({ FH=>$fh, FILES=>\@img_files, DIR => $path });
+    append_code({ FH=>$fh, FILES=>\@code_files});
+    append_data_heads({ FH=>$fh, FILES=>\@data_files});
+    1;
 }
 
 sub append_images {
