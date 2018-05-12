@@ -17,7 +17,6 @@
 	added = green bold
 	changed = yellow bold
 	untracked = red bold
-
 [alias]
     sync = "!git co master && git pb"
 
@@ -114,34 +113,16 @@
 
     branch-name = "!git rev-parse --abbrev-ref HEAD"
 
-    # Push the current branch to origin/<branch>
+    # Push branch to/remove branch from remoteorigin/<branch>
     publish = "!git push -u origin $(git branch-name)"
-    # Delete the remote version of the current branch
     unpublish = "!git push origin :$(git branch-name)"
+
+    # List unpushed commits
     in = log --pretty=oneline --abbrev-commit --graph ..@{u}
     fin = !git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}
 	ctags = !.git/hooks/ctags
-
 [push]
 	default = simple
-[diff "jupyternotebook"]
-	command = git-nbdiffdriver diff
-[merge "jupyternotebook"]
-	driver = git-nbmergedriver merge %O %A %B %L %P
-	name = jupyter notebook merge driver
-[difftool "nbdime"]
-	cmd = git-nbdifftool diff \"$LOCAL\" \"$REMOTE\"
-[difftool]
-	prompt = false
-[mergetool "nbdime"]
-	cmd = git-nbmergetool merge \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
-[mergetool]
-	prompt = false
-[filter "lfs"]
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
 [merge]
 	ff = false
 [core]
