@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
-opt="$1"
+opt="$1"; shift;
 case "$opt" in
     tidy)
         fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-        pandoc -s --atx-headers --normalize -t $fmt --columns=80 --reference-links "$1" -o "$1" ;;
+        pandoc -s --atx-headers -t $fmt --wrap=None --reference-links "$1" -o "$1" ;;
     tidynoref)
         fmt="markdown_github-hard_line_breaks+yaml_metadata_block+tex_math_dollars+line_blocks"
-        pandoc -s --atx-headers --normalize -t $fmt --columns=80 "$1" -o "$1" ;;
+        pandoc -s --atx-headers -t $fmt --wrap=None "$1" -o "$1" ;;
     pdf)
         outfn="$1"
         title="$2"
