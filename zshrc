@@ -43,10 +43,6 @@ alias nbx="jupyter nbconvert --execute --to notebook"
 # Docker bollocks
 alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 
-# todo.txt
-alias t="todo.sh"
-alias tw="todo.sh -d ~/.todo/config-work"
-
 # Git multirepo assistance
 alias g='git'
 alias dr='gr status | grep -E "behind|ahead|modified"'
@@ -108,8 +104,6 @@ export TASKDIR="$LOGBOOK_DIR/tasks/"
 export RX_mdlink="\[.*\]\(.*\)|\[.*\]: .*"
 
 # Variables representing GTD/ZTD files
-export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
-export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
 
