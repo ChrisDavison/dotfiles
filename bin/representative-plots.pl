@@ -14,7 +14,10 @@ sub get_plot_path {
     open( my $f_config, '<', $config);
     my @lines = <$f_config>;
     close $f_config;
-    return $lines[0];
+    my $dir = $lines[0];
+    chomp $dir;
+    $dir =~ s/~/$ENV{HOME}/g;
+    return $dir;
 }
 
 sub main {
@@ -22,6 +25,7 @@ sub main {
     my $ref_filename = "$path/reference.md";
     unlink( $ref_filename ) if (-e $ref_filename);
     my @plotdirs = glob( "$path/*" );
+    @plotdirs = grep { !/TODO/ } @plotdirs;
     open( my $f_ref, '>', $ref_filename );
     for (@plotdirs) {    
         my $curdir = cwd;
@@ -34,6 +38,40 @@ sub main {
         chdir $curdir;
     }
     close $f_ref;
+    create_reference_docs({
+        FN_REF => $ref_filename,
+        PATH => $path,
+    });
+}
+
+sub create_reference_docs(){
+    my ($args) = shift @_;
+    my $ref_filename = $args->{FN_REF};
+    my $path = $args->{PATH};
+    my $curdir = cwd;
+    chdir $path;
+    my @cmd = (
+        "pandoc",
+        $ref_filename,
+        "--standalone",
+        "--self-contained",
+        "-s",
+        "-M",
+        "title=plots",
+    );
+    my @cmd_html = @cmd;
+    my @cmd_epub = @cmd;
+    my @cmd_pdf = @cmd;
+    push @cmd_html, ("-c", "$ENV{HOME}/.dotfiles/css/github.css",
+        "-o", "$ENV{HOME}/.test.html");
+    push @cmd_epub, ("-o", "$ENV{HOME}/.test.epub");
+    push @cmd_pdf, ("-o", "$ENV{HOME}/.test.pdf",
+        "-V", "geometry:margin=1in");
+    system( @cmd_html );
+    system( @cmd_pdf );
+    system( @cmd_epub );
+    chdir $curdir;
+    1;
 }
 
 sub add_representative_plot_to_reference {
@@ -41,8 +79,8 @@ sub add_representative_plot_to_reference {
     my $plotname = $args->{PLOTNAME};
     my $fh = $args->{FH};
     my $path = $args->{PATH};
-    $plotname =~ s/$path\///g;
-    say $plotname;
+    my $shortplotname = $plotname;
+    $shortplotname =~ s/$path\///g;
     my @files = glob( "$plotname/*" );
     my @img_files = grep { /png|jpg|jpeg|gif|pdf/ } @files;
     my @code_files = grep { /py/ } @files;
