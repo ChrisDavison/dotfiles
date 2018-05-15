@@ -25,26 +25,33 @@ sub main {
     my $ref_filename = "$path/reference.md";
     unlink( $ref_filename ) if (-e $ref_filename);
     my @plotdirs = glob( "$path/*" );
-    @plotdirs = grep { !/TODO/ } @plotdirs;
+    @plotdirs = grep { !/TODO|README/ } @plotdirs;
     open( my $f_ref, '>', $ref_filename );
+    add_metadata_to_reference({ PATH=>$path, FH=>$f_ref });
     for (@plotdirs) {    
         my $curdir = cwd;
         chdir $_;
-        add_representative_plot_to_reference({
-            PLOTNAME=>$_, 
-            FH=>$f_ref,
-            PATH=>$path
-        });    
+        add_plot_to_reference({ PLOTNAME=>$_, FH=>$f_ref, PATH=>$path });    
         chdir $curdir;
     }
     close $f_ref;
-    create_reference_docs({
-        FN_REF => $ref_filename,
-        PATH => $path,
-    });
+    create_reference_docs({ FN_REF => $ref_filename, PATH => $path });
 }
 
-sub create_reference_docs(){
+sub add_metadata_to_reference {
+    my ($args) = shift @_;
+    my $path = $args->{PATH};
+    my $fh_ref = $args->{FH};
+
+    open( my $f_readme, '<', "$path/README.md" );
+    my @readme = <$f_readme>;
+    close $f_readme;
+    say $fh_ref $_ for @readme;
+    say $fh_ref "\n";
+    1;
+}
+
+sub create_reference_docs {
     my ($args) = shift @_;
     my $ref_filename = $args->{FN_REF};
     my $path = $args->{PATH};
@@ -56,8 +63,6 @@ sub create_reference_docs(){
         "--standalone",
         "--self-contained",
         "-s",
-        "-M",
-        "title=plots",
     );
     my @cmd_html = @cmd;
     my @cmd_epub = @cmd;
@@ -74,7 +79,7 @@ sub create_reference_docs(){
     1;
 }
 
-sub add_representative_plot_to_reference {
+sub add_plot_to_reference {
     my ($args) = shift @_;
     my $plotname = $args->{PLOTNAME};
     my $fh = $args->{FH};
@@ -86,10 +91,10 @@ sub add_representative_plot_to_reference {
     my @code_files = grep { /py/ } @files;
     my @data_files = grep { /csv/ } @files;
     
-    say $fh "# $plotname\n";
+    say $fh "# $shortplotname\n";
     append_images({ FH=>$fh, FILES=>\@img_files, DIR => $path });
-    append_code({ FH=>$fh, FILES=>\@code_files});
-    append_data_heads({ FH=>$fh, FILES=>\@data_files});
+    append_code({ FH=>$fh, FILES=>\@code_files, DIR=> $path});
+    append_data_heads({ FH=>$fh, FILES=>\@data_files, DIR=> $path});
     1;
 }
 
@@ -112,11 +117,13 @@ sub append_code {
     my ($args) = @_;
     my $f_ref = $args->{FH};
     my @files = @{$args->{FILES}};
+    my $path = $args->{DIR};
     say $f_ref "\n## Code";
     for my $codefile (@files) {
         open( my $f_code, '<', $codefile );
         my @lines = <$f_code>;
         $codefile =~ s/\n//g;
+        $codefile =~ s/$path\///g;
         say $f_ref "\nFrom: $codefile";
         say $f_ref "\n```python";
         print $f_ref $_ for @lines;
@@ -130,10 +137,12 @@ sub append_data_heads {
     my ($args) = @_;
     my $fh = $args->{FH};
     my @files = @{$args->{FILES}};
+    my $path = $args->{DIR};
     say $fh "\n## Data\n";
     for my $file (@files) {
         open( my $datfile, '<', $file );
         my @lines = <$datfile>;
+        $file =~ s/$path\///g;
         say $fh "\n\`$file\`\n";
         for my $line (@lines[0..5]) {
             chomp $line;
