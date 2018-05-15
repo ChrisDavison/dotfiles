@@ -290,3 +290,5 @@ cap(){
 # Bash completions, from homebrew
 [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
+
+eval "$(pipenv --completion)"
