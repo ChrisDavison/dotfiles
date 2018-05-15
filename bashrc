@@ -114,8 +114,6 @@ export TASKSDIR=("$LOGBOOK_DIR/tasks/" "$HOME/Dropbox/t/tasks")
 export TERM=xterm-256color;
 
 # Variables representing GTD/ZTD files
-export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
-export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 
 # ===================================
@@ -169,8 +167,6 @@ alias mdtidywrapref='MDTidy 1 1'
 #         FROM ZSHRC
 # ==============================
 alias c='clear'
-alias t="todo.sh -@"
-alias tw="todo.sh -d ~/.todo/config-work -@"
 alias d="davison"
 alias gitsync="gr git fetch --all"
 alias gitdown="gr git pull --rebase"
@@ -188,8 +184,6 @@ export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
 export TASKDIR="$LOGBOOK_DIR/tasks/"
 
 # Variables representing GTD/ZTD files
-export TODOFILE="$HOME/Dropbox/n/notes/todo.txt"
-export DONEFILE="$HOME/Dropbox/n/notes/done.txt"
 export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
 export TASKPATHS=("$HOME/Dropbox/t/tasks" "$HOME/src/github.com/chrisdavison/logbook/tasks")
 
