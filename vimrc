@@ -20,6 +20,7 @@ set nospell
 set shell=/bin/zsh
 set foldenable
 set foldtext=CustomFoldText() " Use a custom fold command below for fold text
+set foldlevelstart=10
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
 set autoread " Automatically update buffer if file changed externally
 set updatetime=1000 " Write a swap file after 1 second
@@ -171,39 +172,21 @@ Plug 'gmoe/vim-espresso'
 call plug#end()
 " }}}
 " APPEARANCE {{{
-if has('gui_running')
-    set encoding=utf-8
-    set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
-
-    " Disable menu bollocks
-    set guioptions-=m
-    set guioptions-=T
-    set guioptions-=r
-    set guioptions-=R
-    set guioptions-=L
-    set guioptions-=l
+let s:has_256co=$TERM == "xterm-256color" || 
+            \ $TERM == "screen-256color" || 
+            \ $COLORTERM == "gnome-terminal"
+if s:has_256co
+   set t_Co=256
 else
-    let s:has_256co=$TERM == "xterm-256color" || 
-                \ $TERM == "screen-256color" || 
-                \ $COLORTERM == "gnome-terminal"
-    if s:has_256co
-       set t_Co=256
-    else
-       colorscheme default
-       set t_Co=8
-       set t_Sf=[3%dm
-       set t_Sb=[4%dm
-    endif
+   colorscheme default
+   set t_Co=8
+   set t_Sf=[3%dm
+   set t_Sb=[4%dm
 endif
-
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
 let g:themeswitch_day='paramount'
 let g:themeswitch_night='jellybeans'
-if has('gui')
-    let g:themeswitch_day='paramount'
-    let g:themeswitch_night='jellybeans'
-endif
 execute 'colorscheme ' . g:themeswitch_night
 hi! link SignColumn LineNr
 hi! link htmlItalic Comment
@@ -495,19 +478,6 @@ command! TimeShort exec 'put=strftime(\"**%H:%M**\")'
 command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
 command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
-" }}}
-" FUNC - NOTETAKING {{{
-let g:notedir=$HOME . "/Dropbox/n/notes/"
-let g:notefile=g:notedir . "capture.txt"
-let g:todofile=g:notedir . "todo.txt"
-let g:donefile=g:notedir . "done.txt"
-
-function! OpenFilename(fn)
-    execute "e " .  a:fn
-endfunction
-nnoremap <leader>cap :call OpenFilename(g:notefile)<CR>
-nnoremap <leader>td :call OpenFilename(g:todofile)<CR>
-nnoremap <leader>dn :call OpenFilename(g:donefile)<CR>
 " }}}
 " Scratch buffers {{{
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
