@@ -128,8 +128,6 @@ case "$command" in
         fn=$2"/"$3
         echo "../""$(basename "$2")""/""$3" | pbcopy
         mv "$1" "$fn" ;;
-    logbook|lb) logbook "$@" ;;
-    md|markdown) davison-markdown "$@" ;;
     gitinit)
         git init
         touch .gitignore
