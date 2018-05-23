@@ -70,61 +70,20 @@ div div, section section {
     margin-left: 2em;
 }
 
-p {}
-
 blockquote { 
     font-style: italic;
 }
-
-li { }
 
 li > p
 {
     margin-top: 1em;
 }
 
-ul
-{
-}
-
-ul li
-{
-}
-
-ol
-{
-}
-
-ol li
-{
-}
-
-hr {}
-
-
-
-sub
-{
-}
-
-sup
-{
-}
-
-em
-{
-}
 
 em > em
 {
     font-style: normal;
 }
-
-strong
-{
-}
-
-
 
 a
 {
@@ -185,11 +144,6 @@ div.figure
     font-style: italic;
 }
 
-p.caption
-{
-
-}
-
 
 
 pre, code 
@@ -230,10 +184,6 @@ pre
     }
 }
 
-code
-{
-}
-
 p > code, li > code
 {
 
@@ -246,31 +196,6 @@ li > p code
 
     padding: 2px;
 }
-
-
-
-span.math
-{
-
-}
-
-div.math
-{
-}
-
-span.LaTeX
-{
-} 
-
-eq
-{
-} 
-
-
-
-/*  A clean textbook-like style with horizontal lines above and below and under 
-    the header. Rows highlight on hover to help scanning the table on screen.
-*/
 
 table
 {
@@ -291,26 +216,10 @@ thead
     background-color: #eee;
 }
 
-tr.header
-{
-} 
-
-tbody
-{
-}
-
-
-
-tr  {
-}
 tr.odd:hover, tr.even:hover
 {
     background-color: #eee;
 }
-
-
-tr.odd {}
-tr.even {}
 
 td, th
 { 
@@ -325,10 +234,6 @@ td, th
 th 
 {
     font-weight: bold; 
-}
-
-tfoot
-{
 }
 
 caption 
@@ -379,9 +284,6 @@ a.footnote, a.footnoteRef {
     vertical-align: text-top;
 }
 
-a[href^="#fnref"], a.reversefootnote
-{
-}
 
 @media print
 {
@@ -390,14 +292,6 @@ a[href^="#fnref"], a.reversefootnote
 
         display: none;
     }
-}
-
-div.footnotes
-{
-}
-
-div.footnotes li[id^="fn"]
-{
 }
 
 /* You can class stuff as "noprint" to not print. 
