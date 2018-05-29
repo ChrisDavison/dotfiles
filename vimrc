@@ -324,7 +324,7 @@ augroup vimrc
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
     autocmd FileType go      set foldmethod=syntax
-    autocmd Filetype markdown set conceallevel=2
+    autocmd Filetype markdown set conceallevel=0
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
