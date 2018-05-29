@@ -281,6 +281,11 @@ cap(){
     echo "$msg" | awk "NR>1{print}" > "$filename"
 }
 
+as_md_anchor(){
+    input="$1"
+    echo "{#$1}"
+}
+
 # Bash completions, from homebrew
 [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
