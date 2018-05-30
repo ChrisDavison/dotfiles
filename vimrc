@@ -442,31 +442,6 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" FUNC - Pandoc Markdown reformatting {{{
-function! RunPandoc(extra, wrap, atx, reflink)
-    silent !clear
-    let format='markdown_github-hard_line_breaks+line_blocks+tex_math_dollars'
-    let format = format . '+yaml_metadata_block-shortcut_reference_links'
-    let cmd = 'pandoc % -o % -t ' . format . ' ' . a:extra
-    if a:reflink
-        let cmd = cmd . ' --reference-links'
-    endif
-    if a:atx
-        let cmd = cmd . ' --atx-headers'
-    endif
-    if a:wrap
-        let cmd = cmd . ' --columns=80'
-    else
-        let cmd = cmd . ' --wrap=none'
-    endif
-    execute "!" . cmd
-endfunction
-command! MDTidy call RunPandoc('', 0, 1, 0)
-command! MDTidyRef call RunPandoc('', 0, 1, 1)
-command! MDTidyWrap call RunPandoc('', 1, 1, 0)
-command! MDTidyWrapRef call RunPandoc('', 1, 1, 1)
-nnoremap <silent> <leader>mdt :MDTidyRef<CR>
-" }}}
 " Miscellaneous functions and commands {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
@@ -499,7 +474,6 @@ if has('win32') || has('win64')
 endif
 " }}}
 " EXPERIMENTAL {{{
-
 function! GetSyntaxScope()
     let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
     let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
