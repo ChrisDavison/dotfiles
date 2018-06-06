@@ -108,7 +108,8 @@ export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
 export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
 
 choose_vim() {
-    $EDITOR -S $(find ~/Dropbox/v/vim -name "*.vim" -type f | fzf)
+    selected=$(find ~/Dropbox/v/vim -name "*.vim" -type f | fzf)
+    [[ -n "$selected" ]] && $EDITOR -S "$selected"
 }
 alias cv='choose_vim'
 
