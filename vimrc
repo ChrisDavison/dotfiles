@@ -166,7 +166,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
-Plug 'w0rp/ale'
 Plug 'gmoe/vim-espresso'
 
 call plug#end()
@@ -306,10 +305,6 @@ nnoremap <leader>c :ls<Cr>:bd
 nnoremap <leader>r :RotateScheduleWord<Cr>
 nnoremap <leader>d :ScheduleDone<Cr>
 
-" ALE - Async linting
-nnoremap ]l :ALENextWrap<CR>
-nnoremap [l :ALEPreviousWrap<CR>
-
 " Fold with space
 noremap <space> :normal zA<CR>
 " }}}
@@ -338,7 +333,6 @@ augroup vimrc
     autocmd FileType rust nmap gs <Plug>(rust-def-split)
     autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
     autocmd FileType rust nmap <leader>gd <Plug>(rust-doc)
-    autocmd BufEnter *scratch* ALEDisable
     autocmd FileType vim     set foldmethod=marker
     autocmd ColorScheme * hi! link SignColumn LineNr
     autocmd FileType javascript set filetype=javascript.jsx
@@ -351,15 +345,7 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
 augroup END
 
-" ALE - Async lint engine
-let g:ale_sign_error='▪'
-let g:ale_sign_warning='▫'
-let g:ale_fix_on_save = 1
-let g:ale_sign_column_always=1
-hi clear ALEErrorSign
-hi clear ALEWarningSign
 " PYTHON
-let g:ale_python_mypy_options = '--ignore-missing-imports'
 let g:pymode_python = 'python3'
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
@@ -458,10 +444,10 @@ command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 nnoremap <silent>  == :Scratch<CR>
-nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
-nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
-nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>ALEDisable<Bar>filetype detect<CR>
-nnoremap           =f :Scratch<Bar>ALEDisable<Bar>set filetype=
+nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
+nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
 " PLATFORM - Windows {{{
 if has('win32') || has('win64')
