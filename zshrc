@@ -122,6 +122,18 @@ sourceOrErrorMessage() {
 sourceOrErrorMessage ~/.dotfiles/setopt.sh      # from zanshin
 sourceOrErrorMessage ~/.dotfiles/completion.sh  # from zanshin
 
+export projecthashfile=~/src/github.com/chrisdavison/logbook/hashes.yml
+
+projecthash(){
+    entry="`animalhash`: $@"
+    echo "$entry" >> "$projecthashfile"
+    echo "$entry"
+}
+
+findprojecthash(){
+    cat $projecthashfile | rg $1
+}
+
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 
@@ -170,6 +182,6 @@ PERL_MB_OPT="--install_base \"/Users/davison/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
 
 as_md_anchor(){
-    input="$1"
-    echo "{#$1}"
+    input="$@"
+    echo "{#$(slugify $@)}"
 }
