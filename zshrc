@@ -49,6 +49,14 @@ alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 
+gg(){
+    git grep -a -i "$1"
+}
+
+gga(){
+    git grep -a -i "$1" $(git rev-list --all)
+}
+
 alias tma='tmux attach -d -t $(tmux list-sessions | fzf | cut -d: -f1)'
 alias tmuxhere='tmux new -s $(basename $(pwd))'
 
@@ -145,8 +153,10 @@ local prompt_string="⌁"
 # Make prompt_string red if the previous command failed.
 local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
 
-# PROMPT="%{%F{blue}%}%~ ${return_status} %{%F{reset}%}"
-PS1="%{%F{green}%}[%T] %B%m%b:%c%# %{%F{reset}%}"
+NEWLINE=$'\n'
+MEANDDIR="(%n@%m:%~)"
+PROMPTTIME="[20%D %t]"
+PROMPT="%{%F{green}%}${PROMPTTIME} ${MEANDDIR}${NEWLINE}# %F{reset}%}"
 
 # ===================================
 #              KEY BINDING
