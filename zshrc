@@ -195,3 +195,13 @@ as_md_anchor(){
     input="$@"
     echo "{#$(slugify $@)}"
 }
+
+catcopydelnext(){
+    nextfile=$(ls -1 | head -n1)
+    echo "$nextfile"
+    if [ -n "$nextfile" ]; then
+        echo "$nextfile"
+        cat "$nextfile" | pbcopy
+        rm -f "$nextfile"
+    fi
+}
