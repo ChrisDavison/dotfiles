@@ -59,7 +59,16 @@ gga(){
     git grep -a -i "$1" $(git rev-list --all)
 }
 
-alias tma='tmux attach -d -t $(tmux list-sessions | fzf | cut -d: -f1)'
+
+choose_tmux_session() {
+    if tmux list-sessions 2&>1 >> /dev/null ; then
+        selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
+        [[ -n "$selected" ]] && tmux attach -d -t "$selected"
+    else
+        echo "No tmux sessions running."
+    fi
+}
+alias tma=choose_tmux_session
 alias tmuxhere='tmux new -s $(basename $(pwd))'
 
 # Alais to my custom multi-util
