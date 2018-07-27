@@ -46,10 +46,8 @@ alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
 # Git multirepo assistance
 alias g='git'
 alias dr='gr status | grep -E "behind|ahead|modified"'
-alias gitsync='gr @priority git fetch --all'
-alias gitdown='gr @priority git pull --rebase'
-alias gitsyncall'gr git fetch --all'
-alias gitdownall='gr @all git pull --rebase'
+alias gitsync='gr git fetch --all'
+alias gitdown='gr git pull --rebase'
 
 gg(){
     git grep -a -i "$1"
