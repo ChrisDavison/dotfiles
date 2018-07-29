@@ -120,11 +120,6 @@ Plug 'wting/rust.vim'                             " Syntax: Rust
 Plug 'elixir-editors/vim-elixir'                  " Syntax: Elixir
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 
-" My Plugins
-Plug 'ChrisDavison/daynight.vim'                  " Toggle between dark and light themes
-Plug 'ChrisDavison/scheduling.vim'                " Org-mode like TODO/WIP/DONE rotation
-Plug 'ChrisDavison/yankmatching.vim'                
-
 " Utility
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'                     " Add symbol to gutter to show git changes
@@ -467,4 +462,74 @@ function! GetSyntaxScope()
     echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
+
+" YankMatching {{{2
+function! YankMatching()
+    let @a = ''
+    exec "normal mA"
+    call inputsave()
+    let tag = input('Enter regex to match: ')
+    call inputrestore()
+    " Yanking to 'A' appends to the 'a' register
+    exec ':g/'.tag.'/y A'
+    exec "normal 'A"
+    let @+=@a
+endfunction
+
+function! YankMatchingPreviousSearch()
+    let @a = ''
+    exec "normal mA"
+    exec ':g//y A'
+    exec "normal 'A"
+    let @+=@a
+endfunction
+
+" Command assignments:
+command! YankMatching call YankMatching()
+command! YankPreviousSearch call YankMatchingPreviousSearch()
+" }}}2
+" Scheduling {{{2
+let g:scheduling_words = [ 'TODO' , 'WIP' , 'DONE', 'CANCELLED' ]
+
+function! RotateWord()
+    let N = len(g:scheduling_words)
+    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
+    let idx = index(g:scheduling_words, cur)
+    if idx >= 0
+        let next = g:scheduling_words[(idx+1) % N]
+        let cmd = "ciW**" . next . "**"
+        execute "normal " . cmd
+    endif
+endfunction
+
+function! ScheduleDone()
+    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
+    let idx = index(g:scheduling_words, cur)
+    if idx >= 0
+        let cmd = "ciW**DONE**"
+        execute "normal " . cmd
+    endif
+endfunction
+
+command! RotateScheduleWord call RotateWord()
+command! ScheduleDone call ScheduleDone()
+" }}}2
+" DayNight {{{2
+function! DayTheme()
+    if exists("g:themeswitch_day")
+        execute 'colorscheme ' g:themeswitch_day
+        set bg=light
+    endif
+endfunction
+
+function! NightTheme()
+    if exists("g:themeswitch_night")
+        execute 'colorscheme ' g:themeswitch_night
+        set bg=dark
+    endif
+endfunction
+
+command! DayTheme call DayTheme()
+command! NightTheme call NightTheme()
+" }}}2
 " }}}
