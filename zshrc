@@ -69,16 +69,6 @@ choose_tmux_session() {
 alias tma=choose_tmux_session
 alias tmuxhere='tmux new -s $(basename $(pwd))'
 
-# Alais to my custom multi-util
-alias d="davison"
-
-alias memHogsTop='top -l 1 -o rsize | head -20'
-alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
-alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
-alias topForever='top -l 9999999 -s 10 -o cpu'
-alias ttop="top -R -F -s 10 -o rsize"
-alias rm='rm -i'
-
 # ===================================
 #                EXPORTS
 # ===================================
@@ -112,17 +102,8 @@ export TERM=xterm-256color;
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
 # Export various directories useful for mu work
-export CODE="$HOME/src/github.com/chrisdavison"
-export CHURNBOOK="$HOME/src/github.com/etsteam/churning/notebooks/develop/chris_davison"
-export TEMPLATES="$CODE/ProjectTemplates"
 export CHURNING_DATA_DIR="$HOME/.data/"
 export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
-export TASKDIR="$LOGBOOK_DIR/tasks/"
-export RX_mdlink="\[.*\]\(.*\)|\[.*\]: .*"
-
-# Variables representing GTD/ZTD files
-export EXTERNAL_BRAIN="$HOME/Dropbox/n/notes/capture.txt"
-export CAPTUREDIR="$HOME/Dropbox/n/notes/_dump/"
 
 choose_vim() {
     selected=$(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$1")
@@ -138,18 +119,6 @@ sourceOrErrorMessage() {
 }
 sourceOrErrorMessage ~/.dotfiles/setopt.sh      # from zanshin
 sourceOrErrorMessage ~/.dotfiles/completion.sh  # from zanshin
-
-export projecthashfile=~/src/github.com/chrisdavison/logbook/hashes.yml
-
-projecthash(){
-    entry="`animalhash`: $@"
-    echo "$entry" >> "$projecthashfile"
-    echo "$entry"
-}
-
-findprojecthash(){
-    cat $projecthashfile | rg $1
-}
 
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
@@ -203,14 +172,4 @@ PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
 as_md_anchor(){
     input="$@"
     echo "{#$(slugify $@)}"
-}
-
-catcopydelnext(){
-    nextfile=$(ls -1 | head -n1)
-    echo "$nextfile"
-    if [ -n "$nextfile" ]; then
-        echo "$nextfile"
-        cat "$nextfile" | pbcopy
-        rm -f "$nextfile"
-    fi
 }
