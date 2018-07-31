@@ -172,3 +172,4 @@ as_md_anchor(){
     input="$@"
     echo "{#$(slugify $@)}"
 }
+export PATH="/usr/local/opt/node@8/bin:$PATH"
