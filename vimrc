@@ -431,7 +431,7 @@ command! Today exec 'put=strftime(\"%Y-%m-%d\")'
 command! TodayNamed exec 'put=strftime(\"%Y-%m-%d - %a\")'
 command! TimeNow exec 'put=strftime(\"%Y-%m-%d %H:%M:%S\")'
 command! TimeShort exec 'put=strftime(\"**%H:%M**\")'
-command! Bpd bp|bd # | :echo "Buffer deleted and showing previous"
+command! Bd bp|bd # | :echo "Buffer deleted and showing previous"
 command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
 command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
 " }}}
