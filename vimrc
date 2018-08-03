@@ -193,7 +193,6 @@ cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 cnoreabbrev Qa qa
-cnoreabbrev Bd bd
 
 " Shortcuts for utility inputs
 iabbrev @@ c.jr.davison@gmail.com
