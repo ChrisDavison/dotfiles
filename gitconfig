@@ -1,8 +1,10 @@
 [user]
-  name = Chris Davison
+	name = Christopher Davison
   email = c.jr.davison@gmail.com
 [alias]
 	co = checkout
+[advice]
+    ignoreHook = false
 [color "branch"]
   current = yellow bold
   local = green bold
@@ -52,13 +54,7 @@
 	dc = diff -w --cached
     ignored = ls-files --others
 
-	l = log --oneline
-    lg = log --stat --decorate
-    plg = log --graph --author=c.jr.davison@gmail.com --pretty='format:%C(yellow)%h %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
-    plgd = log --graph --author=c.jr.davison@gmail.com --pretty='format:%C(yellow)%h %C(green)%ar%C(reset) %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
-    plgall = log --graph --pretty='format:%C(yellow)%h %C(blue)%s%C(reset) %C(red)%d%C(reset)' 
-    plgdall = log --graph  --pretty='format:%C(yellow)%h %C(green)%ar %C(red)(%an) %C(blue)%s %C(red)%d%C(reset)' 
-
+    l = log --all --decorate --oneline --graph
 	ls = ls-files
 
     mff = merge
