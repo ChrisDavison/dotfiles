@@ -48,6 +48,7 @@ alias g='git'
 alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
+alias git-root='cd $(git rev-parse --show-toplevel)'
 
 gg(){
     git grep -a -i "$1"
