@@ -3,7 +3,7 @@
 let mapleader="\\"
 " SETTINGS {{{
 set nocompatible " Don't force compability with vi
-set autochdir    " cd to the directory of the currently edited file
+" set autochdir    " cd to the directory of the currently edited file
 syntax on
 filetype plugin indent on
 set encoding=utf-8
