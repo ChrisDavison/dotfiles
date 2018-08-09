@@ -162,6 +162,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'gmoe/vim-espresso'
+Plug 'dracula/vim', {'as': 'dracula'}
 
 call plug#end()
 " }}}
@@ -179,9 +180,7 @@ else
 endif
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-let g:themeswitch_day='paramount'
-let g:themeswitch_night='jellybeans'
-execute 'colorscheme ' . g:themeswitch_night
+colorscheme dracula
 hi! link SignColumn LineNr
 hi! link htmlItalic Comment
 " }}}
