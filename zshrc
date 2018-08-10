@@ -93,8 +93,9 @@ export NODEPATH="/usr/local/lib/node_modules";
 export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
 export RESEARCHFIGURES="$HOME/Dropbox/work/figures/"
+export JULIAPATH="/Applications/Julia-1.0.app/Contents/Resources/julia/bin/"
 
-export PATH=$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
+export PATH=$JULIAPATH:$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
 
 # 256 color terminal
 export TERM=xterm-256color;
