@@ -2,10 +2,6 @@ setopt correctall
 # ===================================
 #                ALIASES
 # ===================================
-# Aliases for bash, zsh etc
-
-# Directory listing aliases
-
 if [ -x "$(command -v gls)" ]; then
     alias ll='gls -lFh --group-directories-first --color=auto'
     alias la='gls -AlFh --group-directories-first --color=auto'
@@ -18,37 +14,18 @@ else
     alias l='ls -GCF'
 fi
 
-# Session management
 alias c='clear'
-alias ..='cd ..'
-
-# Copy SSH public key
-alias cbssh="cbf ~/.ssh/id_rsa.pub"
-
-# Python machine-learning environment
-alias datasci="source ~/.envs/datasci/bin/activate"
-
-# Utilities
+alias datasci="source ~/.envs/datasci/bin/activate"     # Source my common python environment
 alias cl='catless'
-alias less='less -R'
-
-# Make ripgrep Smart-case search by default
-alias rg='rg -S'
-
-alias ME='cd ~/src/github.com/chrisdavison'
-alias CHURN='cd ~/src/github.com/etsteam/churning'
-
+alias less='less -R'    # Use color codes in 'less'
+alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias nbx="jupyter nbconvert --execute --to notebook"
-
-# Docker bollocks
-alias batrem='pmset -g batt | rg -o "\d+:\d+ remaining"'
-
-# Git multirepo assistance
 alias g='git'
 alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 alias git-root='cd $(git rev-parse --show-toplevel)'
+alias datetime="date +'%F %T'"
 
 gg(){
     git grep -a -i "$1"
@@ -58,6 +35,11 @@ gga(){
     git grep -a -i "$1" $(git rev-list --all)
 }
 
+choose_vim() {
+    selected=$(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$1")
+    [[ -n "$selected" ]] && $EDITOR -S "$selected"
+}
+alias cv='choose_vim'
 
 choose_tmux_session() {
     if tmux list-sessions 2>&1 >> /dev/null ; then
@@ -68,7 +50,6 @@ choose_tmux_session() {
     fi
 }
 alias tma=choose_tmux_session
-alias tmuxhere='tmux new -s $(basename $(pwd))'
 
 # ===================================
 #                EXPORTS
@@ -106,11 +87,6 @@ export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 export CHURNING_DATA_DIR="$HOME/.data/"
 export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
 
-choose_vim() {
-    selected=$(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$1")
-    [[ -n "$selected" ]] && $EDITOR -S "$selected"
-}
-alias cv='choose_vim'
 
 # ===================================
 #         SOURCE CUSTOM SCRIPTS
@@ -133,9 +109,10 @@ local prompt_string="⌁"
 local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
 
 NEWLINE=$'\n'
-MEANDDIR="(%n@%m:%~)"
-PROMPTTIME="[20%D %t]"
-PROMPT="%{%F{green}%}${PROMPTTIME} ${MEANDDIR}${NEWLINE}# %F{reset}%}"
+PROMPTDIR="%~"
+NAMEANDHOST="(%n@%m)"
+PROMPTCHAR="∷"
+PROMPT="%{%F{green}%}${PROMPTDIR} ${PROMPTCHAR} %F{reset}%}"
 
 # ===================================
 #              KEY BINDING
@@ -170,8 +147,4 @@ PERL_LOCAL_LIB_ROOT="/Users/davison/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LI
 PERL_MB_OPT="--install_base \"/Users/davison/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/davison/perl5"; export PERL_MM_OPT;
 
-as_md_anchor(){
-    input="$@"
-    echo "{#$(slugify $@)}"
-}
 export PATH="/usr/local/opt/node@8/bin:$PATH"
