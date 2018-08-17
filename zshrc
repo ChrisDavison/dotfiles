@@ -103,12 +103,6 @@ zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 # ===================================
 #                 PROMPT
 # ===================================
-local prompt_string="⌁"
-
-# Make prompt_string red if the previous command failed.
-local return_status="%(?:%{%F{green}%}$prompt_string:%{%F{red}%}$prompt_string)"
-
-NEWLINE=$'\n'
 PROMPTDIR="%~"
 NAMEANDHOST="(%n@%m)"
 PROMPTCHAR="∷"
