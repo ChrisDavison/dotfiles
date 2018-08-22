@@ -114,10 +114,8 @@ Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
 Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
 Plug 'leafgarland/typescript-vim'                 " Syntax: Typescript
 Plug 'lervag/vimtex'                              " Syntax: Latex
-Plug 'udalov/kotlin-vim'                          " Syntax: Kotlin
 Plug 'mxw/vim-jsx'                                " Syntax: JSX
 Plug 'wting/rust.vim'                             " Syntax: Rust
-Plug 'elixir-editors/vim-elixir'                  " Syntax: Elixir
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 
 " Utility
@@ -134,13 +132,10 @@ Plug 'easymotion/vim-easymotion'                  " Easily navigate to any chara
 Plug 'ervandew/supertab'                          " Use <Tab> for all insertions
 Plug 'garbas/vim-snipmate'
 Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
-Plug 'guns/vim-sexp'
 Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/goyo.vim'                          " Distraction free mode
-Plug 'junegunn/limelight.vim'                     " Typewriter mode for distraction free
 Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'                      " Better experience on windows (fullscreen)
 Plug 'Shougo/echodoc.vim'
@@ -154,14 +149,12 @@ Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'                         " Better git integration with vim
 Plug 'tpope/vim-obsession'                        " Better session management with vim
 Plug 'tpope/vim-sensible'                         " Sensible defaults
-Plug 'tpope/vim-sexp-mappings-for-regular-people' " Better Sexp mappings
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'freitass/todo.txt-vim'
-Plug 'gmoe/vim-espresso'
+Plug 'JuliaEditorSupport/julia-vim'
 Plug 'dracula/vim', {'as': 'dracula'}
 
 call plug#end()
@@ -184,42 +177,13 @@ colorscheme dracula
 hi! link SignColumn LineNr
 hi! link htmlItalic Comment
 " }}}
-" ABBREVIATIONS {{{
-" Command abbreviations
+" COMMAND ABBREVIATIONS {{{
 cnoreabbrev E e
 cnoreabbrev W w
 cnoreabbrev WQ wq
 cnoreabbrev Q q
 cnoreabbrev QA qa
 cnoreabbrev Qa qa
-
-" Shortcuts for utility inputs
-iabbrev @@ c.jr.davison@gmail.com
-
-" Unicode symbols
-iabbrev invq ¿
-iabbrev ndash –
-iabbrev mdash —
-iabbrev rarr →
-iabbrev larr ←
-iabbrev lrarr ⇔
-iabbrev implarr ⇒
-iabbrev forall ∀
-iabbrev pardif ∂
-iabbrev thereexists ∃
-iabbrev notexists ∄
-iabbrev memberof ∈
-iabbrev notmemberof ∉
-iabbrev endproof ∎
-iabbrev summ ∑
-iabbrev prodd ∏
-iabbrev isequal ≡
-iabbrev logicint ⋂
-iabbrev logicand ∧
-iabbrev logicor ∨
-iabbrev logicnot ¬
-iabbrev approxx ≈
-iabbrev there4 ∴
 " }}}
 " KEYBINDS {{{
 " Move splits/windows
@@ -292,11 +256,7 @@ nnoremap <leader>t :Tags<CR>
 nnoremap <leader>bt :BTags<CR>
 nnoremap <leader>lt :LivedownToggle<cr>
 nnoremap <Leader>h :set list!<CR>
-nnoremap <F11> :Goyo<Cr>
 nnoremap nw :set wrap!<CR>
-nnoremap <leader>c :ls<Cr>:bd
-nnoremap <leader>r :RotateScheduleWord<Cr>
-nnoremap <leader>d :ScheduleDone<Cr>
 
 " Fold with space
 noremap <space> :normal zA<CR>
@@ -318,8 +278,6 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd BufReadPost *.md setlocal foldmethod=expr
-    autocmd BufWritePre *.md,*.py :%s/\s\+$//e
-    autocmd BufWritePre *.md,*.py :%s///e
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
     autocmd FileType rust nmap gd <Plug>(rust-def)
@@ -331,8 +289,6 @@ augroup vimrc
     autocmd FileType javascript set filetype=javascript.jsx
     autocmd FileType javascript,javascript.jsx set foldmethod=syntax
     autocmd BufNewFile,BufReadPost *.tex set filetype=tex
-    autocmd User GoyoEnter Limelight
-    autocmd User GoyoLeave Limelight!
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
@@ -365,8 +321,6 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
-" GOYO
-let g:goyo_width=100
 " EXTRA
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
@@ -449,7 +403,7 @@ if has('win32') || has('win64')
     set guifont=Fantasque_Sans_Mono:h16
     let gitgutter_enabled=0
     let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
-    let g:notedir="e:\\Dropbox\\n\\notes\\"
+    cd e:\\home\\src\\github.com\\chrisdavison
 endif
 " }}}
 " EXPERIMENTAL {{{
