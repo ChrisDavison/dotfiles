@@ -117,6 +117,7 @@ Plug 'lervag/vimtex'                              " Syntax: Latex
 Plug 'mxw/vim-jsx'                                " Syntax: JSX
 Plug 'wting/rust.vim'                             " Syntax: Rust
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
+Plug 'JuliaEditorSupport/julia-vim'
 
 " Utility
 Plug 'christoomey/vim-tmux-navigator'
@@ -154,7 +155,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'JuliaEditorSupport/julia-vim'
 Plug 'dracula/vim', {'as': 'dracula'}
 
 call plug#end()
