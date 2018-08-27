@@ -219,18 +219,6 @@ nnoremap <leader>sv :so $MYVIMRC<Cr>
 " Backspace goes to `alternate` file
 nnoremap <BS> <C-^>
 
-" From/to Neovim terminals
-if has('nvim')
-    tnoremap <C-h> <C-\><C-n><C-w>h
-    tnoremap <C-j> <C-\><C-n><C-w>j
-    tnoremap <C-k> <C-\><C-n><C-w>k
-    tnoremap <C-l> <C-\><C-n><C-w>l
-    nnoremap <C-h> <C-w>h
-    nnoremap <C-j> <C-w>j
-    nnoremap <C-k> <C-w>k
-    nnoremap <C-l> <C-w>l
-endif
-
 " Easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
