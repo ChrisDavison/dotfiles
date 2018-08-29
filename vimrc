@@ -280,6 +280,7 @@ augroup vimrc
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
+	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 augroup END
 
 " PYTHON
