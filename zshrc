@@ -26,6 +26,7 @@ alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 alias git-root='cd $(git rev-parse --show-toplevel)'
 alias datetime="date +'%F %T'"
+alias vi='mvim -v'
 
 gg(){
     git grep -a -i "$1"
@@ -105,7 +106,7 @@ zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 # ===================================
 PROMPTDIR="%~"
 NAMEANDHOST="(%n@%m)"
-PROMPTCHAR="∷"
+PROMPTCHAR="."
 PROMPT="%{%F{green}%}${PROMPTDIR} ${PROMPTCHAR} %F{reset}%}"
 
 # ===================================
