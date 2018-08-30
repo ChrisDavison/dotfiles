@@ -3,7 +3,7 @@
 let mapleader="\\"
 " SETTINGS {{{
 set nocompatible " Don't force compability with vi
-" set autochdir    " cd to the directory of the currently edited file
+set autochdir    " cd to the directory of the currently edited file
 syntax on
 filetype plugin indent on
 set encoding=utf-8
@@ -124,6 +124,7 @@ Plug 'mxw/vim-jsx'                                " Syntax: JSX
 Plug 'wting/rust.vim'                             " Syntax: Rust
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'JuliaEditorSupport/julia-vim'
+Plug 'timothycrosley/isort'
 
 " Utility
 Plug 'christoomey/vim-tmux-navigator'
@@ -162,6 +163,9 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'dracula/vim', {'as': 'dracula'}
+Plug 'Shougo/deoplete.nvim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
 
 call plug#end()
 " }}}
@@ -265,6 +269,7 @@ augroup vimrc
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
+    autocmd FileType python  nnoremap <LocalLeader>i :!isort %<cr><cr>
     autocmd FileType go      set foldmethod=syntax
     autocmd Filetype markdown set conceallevel=0
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
@@ -288,6 +293,8 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
 	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 augroup END
+
+let g:deoplete#enable_at_startup=1
 
 " PYTHON
 let g:pymode_python = 'python3'
