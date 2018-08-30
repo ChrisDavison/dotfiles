@@ -19,6 +19,12 @@ set viminfo='10,<50,s10,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
 set foldenable
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=R
+set guioptions-=T
+set guioptions-=m
 set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set foldlevelstart=10
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
