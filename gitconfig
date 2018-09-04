@@ -1,122 +1,8 @@
 [user]
 	name = Christopher Davison
-  email = c.jr.davison@gmail.com
-[alias]
-	co = checkout
+    email = c.jr.davison@gmail.com
 [advice]
     ignoreHook = false
-[color "branch"]
-  current = yellow bold
-  local = green bold
-  remote = cyan bold
-[color "diff"]
-	meta = yellow bold
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
-[color "status"]
-	added = green bold
-	changed = yellow bold
-	untracked = red bold
-[alias]
-    sync = "!git co master && git pb"
-
-	a = add --all
- 
-    branches = branch -a
-    tags = tag
-    stashes = stash list
-
-    unadd = reset -q HEAD -- 
-    discard = checkout -- 
-    uncommit = reset --mixed HEAD~ 
-    precommit = diff --cached --diff-algorithm=minimal -w 
-
-	b = branch
-	ba = branch -a
-	bd = branch -d
-	br = branch -r
-    bdm = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
-
-	c = commit
-	ca = commit -a
-	cm = commit -m
-	cam = commit -am
-	amend = commit --amend
-    aamend = commit -a --amend
-
-    co = checkout
-    cob = checkout -b
-
-	d = diff -w
-    dp = diff --word-diff
-	dc = diff -w --cached
-    ignored = ls-files --others
-
-    l = log --all --decorate --oneline --graph
-	ls = ls-files
-
-    mff = merge
-	m = merge --no-ff
-
-    pr = prune -v
-
-	ps = push
-	pl = pull
-	pb = pull --rebase --prune
-
-    rb = rebase
-    rbc = rebase --continue
-
-    undo = reset HEAD~1 --mixed
-
-    s = status -s
-    st = status -s
-	sb = status -s -b
-    stb = status -s -b
-
-	sa = stash apply
-	sc = stash clear
-	sd = stash drop
-	sl = stash list
-	sp = stash pop
-	ss = stash save
-	sw = stash show
-
-    # Don't reset --hard HEAD (incase there was a good bit of code
-    # amongst the crap)
-    # instead, save an unreachable commit.
-    # Can later be applied via searching `git reflog`
-    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT $(date)' && git reset HEAD~1 --hard
-    
-    # Ask git to either not follow, or follow, tracked files
-	assume = update-index --assume-unchanged
-	unassume = update-index --no-assume-unchanged
-	assumed = "!git ls-files -v | grep ^h | cut -c 3-"
-	unassumeall = !git assumed | xargs git update-index --no-assume-unchanged
-	assumeall = "!git st -s | awk {'print $2'} | xargs git assume"
-
-    unpushed = log --branches --not --remotes
-
-    # Checkout either local (ours) or remote (theirs) version of files
-	ours = "!f() { git checkout --ours $@ && git add $@; }; f"
-	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
-
-	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
-
-    la = "!git config -l | grep alias | cut -c 7-"
-
-    branch-name = "!git rev-parse --abbrev-ref HEAD"
-
-    # Push branch to/remove branch from remoteorigin/<branch>
-    publish = "!git push -u origin $(git branch-name)"
-    unpublish = "!git push origin :$(git branch-name)"
-
-    # List unpushed commits
-    in = log --pretty=oneline --abbrev-commit --graph ..@{u}
-    fin = !git fetch && git log --pretty=oneline --abbrev-commit --graph ..@{u}
-	ctags = !.git/hooks/ctags
 [push]
 	default = simple
 [merge]
@@ -125,3 +11,39 @@
 	excludesfiles = /Users/davison/.global_ignore
 [init]
 	templatedir = ~/.git_template
+[alias]
+    sync = "!git co master && git pb"
+	add-all = add --all 
+	amend = commit --amend
+    co = checkout
+	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
+	l = log --all --decorate --oneline --graph
+	pb = pull --rebase --prune
+	# Handling the staging area
+    unstage = reset -q HEAD -- 
+    discard = checkout --
+	word-diff = diff -w --word-diff
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+    aliases = "!git config -l | grep alias | cut -c 7-"
+	ctags = !.git/hooks/ctags
+	rb = rebase
+	#============================================================= 
+	# Repo 'metadata'
+	branch-name = "!git rev-parse --abbrev-ref HEAD"
+    ignored = ls-files --others
+	untracked = ls-files --others
+	tracked = ls-files
+	stat = status -s -b --show-stash
+	unpushed = log --branches --not --remotes
+	branches = branch -a
+    tags = tag
+    stashes = stash list
+	#=============================================================
+    # Handling conflicts
+	# Checkout OUR (local) or THEIR (remote) version of a file
+	ours = "!f() { git checkout --ours $@ && git add $@; }; f"
+	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+	#=============================================================
+    # Push branch to/remove branch from remoteorigin/<branch>
+    publish = "!git push -u origin $(git branch-name)"
+    unpublish = "!git push origin :$(git branch-name)"
