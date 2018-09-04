@@ -12,41 +12,15 @@ shift
     echo "    printafter            print a csv with datecolumn 0 after a certain date"
     echo "    printbetween          print a csv with datecolumn 0 between dates"
     echo "    extract               generic archive extractor"
-    echo "    epoch                 convert seconds-since-epoch to readable"
-    echo "    lastmonday            datetime of last monday"
-    echo "    timenow               datetime now"
-    echo "    nextsunday            datetime of next sunday"
     echo "    catless               either cat or less, depending on terminal size"
     echo "    mans"
-    echo "    remspace              remove spaces from passed string"
-    echo "    filenameNoExt         get filename without its extension"
     echo "    running               list running jobs"
     echo "    uuidrecord            generate and record a uuid"
     echo "    uuidlast              return the last recorded uuid"
-    echo "    literatureTitle"
     echo "    myip"
-    echo "    ppath"
-    echo "    moveNamedScreenshot"
-    echo "    note                  Enabling ubiquitous capture"
-    echo "        add|a                 Add a note"
-    echo "        view|v                View all notes"
-    echo "        clear|c               Clear notes"
-    echo "        file|f                Print the filename of the ntoefile"
     echo "    headtail|ht"
-    echo "    logbook               Deal with logbook entries."
-    echo "        edit|e                Edit the current logbook entry"
-    echo "        view|v                View the current logbook entry"
-    echo "        previous|p            View the previous logbook entry"
-    echo "        diff|d                Show git diff, or cached diff, of current"
-    echo "        commit|c              Commit any current changes"
-    echo "        history|h             View log entries between dates"
-    echo "    md|markdown"
-    echo "        <various subcommands>"
-    echo "    gitinit"
     echo "    eps2pdf"
     echo "    svg2eps"
-    echo "    ff"
-    echo "    fd"
     echo "    docker"
     exit
 }
@@ -81,11 +55,6 @@ case "$command" in
         else
             echo "'$1' is not a valid file"
         fi ;;
-    epoch) date -r "$1" +"%Y%m%d %H:%M:%S" ;;
-    lastmonday) date -v -monday +"%Y-%m-%d"    ;;
-    timenow) date +"%Y-%m-%d %H:%M:%S" ;;
-    today) date +%F ;;
-    nextsunday) date -v +sunday -v +7d +%F ;;
     catless)
         height=$(tput lines)
         fileheight=$(wc -l "$1" | awk '{print $1}')
@@ -95,51 +64,9 @@ case "$command" in
             less "$1"
         fi ;;
     mans) man "$1" | grep -iC2 --color=always "$2" | less ;;
-    remspace) rename 's/\s+/_/g' "$1" ;;
-    filenameNoExt)
-        filename=$(basename "$1")
-        file_no_ext="${filename%.*}"
-        echo "$file_no_ext" ;;
     running) ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}' ;;
     uuidrecord) echo "$(uuid)" > ~/.lastuuid && cat ~/.lastuuid ;;
     uuidlast) [ -f ~/.lastuuid ] && cat ~/.lastuuid ;;
-    literatureTitle)
-        authors="$(slugify "$1")"
-        year=$2
-        title="$(slugify "$3")"
-        ext=$4
-        echo "$year--$authors--$title.$ext" ;;
-    myip)
-        ifconfig lo0 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "lo0       : " $2}'
-        ifconfig en0 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en0 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
-        ifconfig en0 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en0 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}'
-        ifconfig en1 | grep 'inet ' | sed -e 's/:/ /' | awk '{print "en1 (IPv4): " $2 " " $3 " " $4 " " $5 " " $6}'
-        ifconfig en1 | grep 'inet6 ' | sed -e 's/ / /' | awk '{print "en1 (IPv6): " $2 " " $3 " " $4 " " $5 " " $6}' ;;
-    ppath) echo "$PATH" | tr ":" "\\n" ;;
-    moveNamedScreenshot)
-        if ! [ -d "$2" ]; then
-            echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
-            return 2
-        fi
-        if ! [ -f "$1" ]; then
-          echo "Usage: MoveNamedScreenshot <FILE> <TARGET DIR> <NEW NAME>"
-          return 1
-        fi
-        fn=$2"/"$3
-        echo "../""$(basename "$2")""/""$3" | pbcopy
-        mv "$1" "$fn" ;;
-    gitinit)
-        git init
-        touch .gitignore
-        echo ".gitignore" > .gitignore
-        touch README.md
-        git add README.md
-        git commit -m "Initial Commit" ;;
-    eps2pdf) ps2pdf -dEPSCrop "$1" ;;
-    svg2eps)
-        cairosvg "$1" -o "$1".ps
-        ps2eps "$1".ps -f "$1".eps
-        ps2pdf -dEPSCrop "$1".eps ;;
     docker)
        opt="$1"; shift;
        case "$opt" in
