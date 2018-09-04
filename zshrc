@@ -27,6 +27,7 @@ alias gitdown='gr git pull --rebase'
 alias git-root='cd $(git rev-parse --show-toplevel)'
 alias datetime="date +'%F %T'"
 alias vi='mvim -v'
+alias running=ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
 
 gg(){
     git grep -a -i "$1"
