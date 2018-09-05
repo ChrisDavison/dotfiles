@@ -13,7 +13,8 @@
 	templatedir = ~/.git_template
 [alias]
     sync = "!git co master && git pb"
-	add-all = add --all 
+    a = add --all
+    c = commit
 	amend = commit --amend
     co = checkout
 	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
@@ -22,6 +23,7 @@
 	# Handling the staging area
     unstage = reset -q HEAD -- 
     discard = checkout --
+	d = diff -w --word-diff
 	word-diff = diff -w --word-diff
 	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
     aliases = "!git config -l | grep alias | cut -c 7-"
@@ -33,7 +35,7 @@
     ignored = ls-files --others
 	untracked = ls-files --others
 	tracked = ls-files
-	stat = status -s -b --show-stash
+	s = status -s -b --show-stash
 	unpushed = log --branches --not --remotes
 	branches = branch -a
     tags = tag
