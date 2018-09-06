@@ -18,7 +18,6 @@ alias dr='gr status | grep -E "behind|ahead|modified"'
 alias gitsync='gr git fetch --all'
 alias gitdown='gr git pull --rebase'
 alias git-root='cd $(git rev-parse --show-toplevel)'
-alias datetime="date +'%F %T'"
 alias vi='mvim -v'
 
 # KEY BINDING =============================================
@@ -35,25 +34,17 @@ bindkey -v   # Default to standard vi bindings, regardless of editor string
 
 
 # FUNCTIONS ===============================================
-running(){
-    ps | tr -s " " | cut -d' ' -f 3- | awk 'NR>1{print}'
-}
-
-gg(){
-    git grep -a -i "$1"
-}
-
-gga(){
-    git grep -a -i "$1" $(git rev-list --all)
-}
-
 cv() {
-    selected=$(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$1")
-    [[ -n "$selected" ]] && $EDITOR -S "$selected"
+    if [ -d ~/.vim-sessions ]; then
+        selected=$(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$1")
+        [[ -n "$selected" ]] && $EDITOR -S "$selected"
+    else
+        echo "Couldn't find ~/.vim-sessions folder"
+    fi
 }
 
 choose_tmux_session() {
-    if tmux list-sessions 2>&1 >> /dev/null ; then
+    if tmux list-sessions 2>&1 > /dev/null ; then
         selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
         [[ -n "$selected" ]] && tmux attach -d -t "$selected"
     else
@@ -65,27 +56,28 @@ alias tma=choose_tmux_session
 # EXPORTS ================= ===============================
 export EDITOR="vim"
 # Terminal history handling ===============================
-export HISTCONTROL=ignoreboth:erasedups;
-export HISTSIZE=32768;
+export HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=32768
 export HISTFILE=~/.zsh_history
-export HISTFILESIZE=$HISTSIZE;
-export HISTFILESIZE=2000;
-export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help";
-export SAVEHIST=9000
+export HISTFILESIZE=$HISTSIZE
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
+export SAVEHIST=$HISTSIZE
 
 # PATH  ===================================================
-export GOPATH="$HOME";
-export GOBIN="$HOME/bin";
-export TEXPATH="/usr/texbin";
-export NODEPATH="/usr/local/lib/node_modules";
+export GOPATH="$HOME"
+export GOBIN="$HOME/bin"
+export TEXPATH="/usr/texbin"
+export NODEPATH="/usr/local/lib/node_modules"
 export HOMEBIN="$GOBIN"
 export MULTIRUSTBIN="$HOME/.multirust/toolchains/nightly/cargo/bin"
-export RESEARCHFIGURES="$HOME/Dropbox/work/figures/"
 export JULIAPATH="/Applications/Julia-1.0.app/Contents/Resources/julia/bin/"
 export PATH=$JULIAPATH:$GOBIN:$TEXBIN:$NODEPATH:$HOMEBIN:$MULTIRUSTBIN:$STACKBIN:$PATH;
 
 export TERM=xterm-256color;
+
 export LOGBOOK_DIR="$HOME/src/github.com/chrisdavison/logbook/"
+export RESEARCHFIGURES="$HOME/Dropbox/work/figures/"
+
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 # SOURCE EXTERNAL STUFF ===================================
