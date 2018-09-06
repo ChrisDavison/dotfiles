@@ -162,10 +162,16 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'Shougo/deoplete.nvim'
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
+
+" Themes
+Plug 'dracula/vim', {'as': 'dracula'}
+Plug 'nielsmadan/harlequin'
+Plug 'nanotech/jellybeans.vim'
+Plug 'owickstrom/vim-colors-paramount'
+Plug 'junegunn/seoul256.vim'
 
 call plug#end()
 " }}}
