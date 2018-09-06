@@ -91,9 +91,6 @@ a
     text-decoration: none;
     color: rgb(0,0,200);
 }
-a:before{
-    content: '» ';
-}
 
 @media screen
 {
