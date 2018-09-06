@@ -9,8 +9,6 @@
 	ff = false
 [core]
 	excludesfiles = /Users/davison/.global_ignore
-[init]
-	templatedir = ~/.git_template
 [alias]
     sync = "!git co master && git pb"
     a = add --all
