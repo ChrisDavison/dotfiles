@@ -21,8 +21,8 @@ linkOrError(){
     fi
 }
 linkOrError ".zshenv"
-linkOrError ".vimrc"
 linkOrError ".sqliterc"
 linkOrError ".tmux.conf"
 linkOrError ".gitconfig"
-vi +PlugInstall +PlugUpdate +PlugUpgrade
+vi +PlugInstall +qall
+linkOrError ".vimrc"
