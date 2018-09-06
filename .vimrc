@@ -19,12 +19,6 @@ set viminfo='10,<50,s10,h,n~/.viminfo
 set nospell
 set shell=/bin/zsh
 set foldenable
-set guioptions-=l
-set guioptions-=L
-set guioptions-=r
-set guioptions-=R
-set guioptions-=T
-set guioptions-=m
 set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set foldlevelstart=10
 set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
@@ -112,6 +106,12 @@ if has('persistent_undo')
 set t_ut= " Fix issues with background color on some terminals
 " }}}
 " PLUGIN INSTALL {{{
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 " Individual languages
@@ -162,10 +162,16 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'Shougo/deoplete.nvim'
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
+
+" Themes
+Plug 'dracula/vim', {'as': 'dracula'}
+Plug 'nielsmadan/harlequin'
+Plug 'nanotech/jellybeans.vim'
+Plug 'owickstrom/vim-colors-paramount'
+Plug 'junegunn/seoul256.vim'
 
 call plug#end()
 " }}}
@@ -184,6 +190,17 @@ endif
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
 colorscheme dracula
+
+if has('gui-running')
+    set guioptions-=l
+    set guioptions-=L
+    set guioptions-=r
+    set guioptions-=R
+    set guioptions-=T
+    set guioptions-=m
+    set encoding=utf-8
+    set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
+endif
 hi! link SignColumn LineNr
 hi! link htmlItalic Comment
 " }}}
@@ -405,7 +422,7 @@ if has('win32') || has('win64')
     set guifont=Fantasque_Sans_Mono:h16
     let gitgutter_enabled=0
     let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
-    cd e:\home\src\github.com\chrisdavison
+    cd e:\\home\\src\\github.com\\chrisdavison
 endif
 " }}}
 " EXPERIMENTAL {{{
