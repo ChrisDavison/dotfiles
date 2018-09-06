@@ -33,7 +33,7 @@
     ignored = ls-files --others
 	untracked = ls-files --others
 	tracked = ls-files
-	s = status -s -b --show-stash
+	s = status -s -b
 	unpushed = log --branches --not --remotes
 	branches = branch -a
     tags = tag
