@@ -189,7 +189,7 @@ else
 endif
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-colorscheme dracula
+silent! colorscheme dracula
 
 if has('gui-running')
     set guioptions-=l
