@@ -76,7 +76,7 @@ blockquote {
 
 li > p
 {
-    margin-top: 1em;
+    margin: 0;
 }
 
 
