@@ -10,7 +10,6 @@ else
     alias l='ls -GCF'
 fi
 
-alias datasci="source ~/.envs/datasci/bin/activate"     # Source my common python environment
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias g='git'
