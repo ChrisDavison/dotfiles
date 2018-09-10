@@ -14,9 +14,6 @@ alias datasci="source ~/.envs/datasci/bin/activate"     # Source my common pytho
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias g='git'
-alias dr='gr status | grep -E "behind|ahead|modified"'
-alias gitsync='gr git fetch --all'
-alias gitdown='gr git pull --rebase'
 alias git-root='cd $(git rev-parse --show-toplevel)'
 alias vi='mvim -v'
 
