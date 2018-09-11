@@ -39,6 +39,16 @@ cv() {
     fi
 }
 
+venv() {
+    if [ -d ~/.envs ]; then
+        selected=$(find ~/.envs -name "activate" -type f | fzf -q "$1")
+        [[ -n "$selected" ]] && source "$selected"
+    else
+        echo "Couldn't find ~/.envs folder"
+    fi
+}
+
+
 choose_tmux_session() {
     if tmux list-sessions 2>&1 > /dev/null ; then
         selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
