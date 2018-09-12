@@ -162,7 +162,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'Shougo/deoplete.nvim'
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
 
@@ -189,7 +188,7 @@ else
 endif
 " Variables for theme switching using my custom plugin daynight.vim
 set bg=dark
-silent! colorscheme paramount
+silent! colorscheme dracula
 
 if has('gui-running')
     set guioptions-=l
@@ -279,6 +278,7 @@ noremap <space> :normal zA<CR>
 " PLUGINS / LANGUAGES {{{
 augroup vimrc
     autocmd!
+    autocmd BufEnter *.fish set filetype=sh
     autocmd FileType c set foldmethod=syntax
     autocmd Filetype cpo set foldmethod=syntax
     autocmd Filetype arduino set foldmethod=syntax
