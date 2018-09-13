@@ -4,7 +4,14 @@ set --export SHELL /usr/local/bin/fish
 set --export EDITOR "vi"
 set -e fish_greeting
 
+set --export GOPATH $HOME
+set --export GOBIN $HOME/bin
+
 set PATH ~/.fzf/bin $PATH
+set PATH /usr/local/lib/node_modules $PATH
+set PATH $GOBIN $PATH
+set PATH $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin $PATH
+set PATH /Applications/Julia-1.0.app/Contents/Resources/julia/bin/ $PATH
 
 if [ -f /usr/local/share/autojump/autojump.fish ]
     source /usr/local/share/autojump/autojump.fish
@@ -12,19 +19,19 @@ end
 
 eval (pipenv --completion)
 
-alias rg="rg -S"
-alias vi="mvim -v"
 alias tma=choose_tmux_session
-alias g=git
 
-set --export GOPATH $HOME
-set --export GOBIN $HOME/bin
-set --export TEXPATH /usr/texbin
-set --export NODEPATH /usr/local/lib/node_modules
-set --export HOMEBIN $GOBIN
-set --export MULTIRUSTBIN $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
-set --export JULIAPATH /Applications/Julia-1.0.app/Contents/Resources/julia/bin/
-set PATH $JULIAPATH $GOBIN $TEXBIN $NODEPATH $HOMEBIN $MULTIRUSTBIN $STACKBIN $PATH
+function rg
+    command rg -S $argv
+end
+
+function vi
+    command mvim -v $argv
+end
+
+function g
+    command git $argv
+end
 
 set --export LOGBOOK_DIR $HOME/src/github.com/chrisdavison/logbook
-set --export LOGBOOK_DIR $HOME/Dropbox/work/figures
+set --export RESEARCHFIGURES $HOME/Dropbox/work/figures
