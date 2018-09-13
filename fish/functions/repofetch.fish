@@ -1,4 +1,4 @@
-function repos_fetch
+function repofetch
 	for repo in ~/devel/*
         pushd $repo
         set_color --bold magenta; echo -n "Fetching:" 

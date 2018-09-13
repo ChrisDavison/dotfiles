@@ -1,4 +1,4 @@
-function repos_stat
+function repostat
 	for repo in ~/devel/*
         pushd $repo
         set_color --bold magenta; echo -n "Status of" 
