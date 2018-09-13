@@ -125,6 +125,7 @@ Plug 'wting/rust.vim'                             " Syntax: Rust
 Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'timothycrosley/isort'
+Plug 'dag/vim-fish'
 
 " Utility
 Plug 'christoomey/vim-tmux-navigator'
@@ -278,7 +279,6 @@ noremap <space> :normal zA<CR>
 " PLUGINS / LANGUAGES {{{
 augroup vimrc
     autocmd!
-    autocmd BufEnter *.fish set filetype=sh
     autocmd FileType c set foldmethod=syntax
     autocmd Filetype cpo set foldmethod=syntax
     autocmd Filetype arduino set foldmethod=syntax
