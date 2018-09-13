@@ -1,0 +1,1 @@
+/Users/davison/.local/share/omf/themes/metro/fish_prompt.fish
