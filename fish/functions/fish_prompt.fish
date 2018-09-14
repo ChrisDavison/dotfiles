@@ -1,1 +1,1 @@
-/Users/davison/.local/share/omf/themes/metro/fish_prompt.fish
+/Users/davison/.local/share/omf/themes/krisleech/fish_prompt.fish
