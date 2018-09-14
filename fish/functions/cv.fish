@@ -1,6 +1,6 @@
 function cv --description "Choose a vim session"
     if [ -d ~/.vim-sessions ]
-        set -l selected=(find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$argv[1]")
+        set -l selected (find ~/.vim-sessions -name "*.vim" -type f | fzf -q "$argv[1]")
         if [ -n "$selected" ]
             $EDITOR -S "$selected"
         end
