@@ -15,9 +15,15 @@ set omnifunc=syntaxcomplete#Complete
 set number " Line numbers
 set iskeyword=a-z,A-Z,_,.,39
 set nohidden
-set viminfo='10,<50,s10,h,n~/.viminfo
+let haswin=has('win32') || has('win64')
+if haswin
+    set shell=cmd.exe
+    set shellcmdflag=/c
+else
+    set viminfo='10,<50,s10,h,n~/.viminfo
+    set shell=/bin/zsh
+endif
 set nospell
-set shell=/bin/zsh
 set foldenable
 set foldtext=CustomFoldText() " Use a custom fold command below for fold text
 set foldlevelstart=10
@@ -200,6 +206,9 @@ if has('gui-running')
     set guioptions-=m
     set encoding=utf-8
     set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
+    if haswin
+        set guifont=Fantasque_Sans_Mono:h16
+    endif
 endif
 hi! link SignColumn LineNr
 hi! link htmlItalic Comment
@@ -345,6 +354,9 @@ let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
 " RUST
 let g:racer_cmd="/Users/davison/.cargo/bin/racer"
+if haswin
+    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
+endif
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
 " GITGUTTER
@@ -352,6 +364,9 @@ let g:gitgutter_sign_added = '∙'
 let g:gitgutter_sign_modified = '∙'
 let g:gitgutter_sign_removed = '∙'
 let g:gitgutter_sign_modified_removed = '∙'
+if haswin
+    let gitgutter_enabled=0
+endif
 " Perl
 let perl_fold = 1
 " Matching
@@ -415,16 +430,6 @@ nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
-" PLATFORM - Windows {{{
-if has('win32') || has('win64')
-    set shell=cmd.exe
-    set shellcmdflag=/c
-    set guifont=Fantasque_Sans_Mono:h16
-    let gitgutter_enabled=0
-    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
-    cd e:\\home\\src\\github.com\\chrisdavison
-endif
-" }}}
 " EXPERIMENTAL {{{
 function! GetSyntaxScope()
     let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
@@ -434,3 +439,6 @@ function! GetSyntaxScope()
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
 " }}}
+if haswin
+    cd e:\\home\\devel
+endif
