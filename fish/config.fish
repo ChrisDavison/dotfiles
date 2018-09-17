@@ -1,3 +1,6 @@
+if [ -z "$TMUX" ]
+    tmux attach -t default; or tmux new -s default
+end
 set -x -g TERM "xterm-256color"
 
 set --export SHELL /usr/local/bin/fish
