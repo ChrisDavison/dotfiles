@@ -30,6 +30,7 @@ set cmdheight=2  " Useful for more info on some plugins
 " --- Search options
 set gdefault " By default, replace all matches on a line (i.e. always s///g)
 set hlsearch " Highlight search results
+set ignorecase
 set smartcase
 
 " --- Various coding preferences
