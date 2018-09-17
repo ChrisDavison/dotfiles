@@ -1,90 +1,56 @@
-" vim: set foldmethod=marker foldlevel=1:
-" ChrisDavison's Vimrc
+" chrisDavison's vim config
 let mapleader="\\"
-" SETTINGS {{{
-set nocompatible " Don't force compability with vi
-set autochdir    " cd to the directory of the currently edited file
+" settings {{{
+" If 'set' commands appear missing, it's because I'm using tpope/vim-sensible
+execute pathogen#infect()
 syntax on
 filetype plugin indent on
-set encoding=utf-8
-scriptencoding utf-8
-set showcmd " SHow a currently active command in the bottom line of vim
+
+set nocompatible " Don't force compability with vi
+set autochdir    " cd to the directory of the currently edited file
 set wrap lbr
 let &showbreak = '└ '
 set omnifunc=syntaxcomplete#Complete
 set number " Line numbers
 set iskeyword=a-z,A-Z,_,.,39
-set nohidden
+set hidden
 let haswin=has('win32') || has('win64')
 if haswin
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    set viminfo='10,<50,s10,h,n~/.viminfo
     set shell=/bin/zsh
 endif
 set nospell
 set foldenable
-set foldtext=CustomFoldText() " Use a custom fold command below for fold text
-set foldlevelstart=10
-set listchars=tab:▸\ ,trail:·,extends:❯,precedes:❮,nbsp:×,eol:¬
-set autoread " Automatically update buffer if file changed externally
+set foldlevelstart=0
 set updatetime=1000 " Write a swap file after 1 second
 set cmdheight=2  " Useful for more info on some plugins
-set tags=./tags,tags
 
 " --- Search options
-set incsearch " Search as you type
 set gdefault " By default, replace all matches on a line (i.e. always s///g)
 set hlsearch " Highlight search results
-set ignorecase
 set smartcase
-set magic
-set backspace=indent,eol,start
 
 " --- Various coding preferences
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab " Convert tabs to spaces
-set smarttab   " Using <BS> at the start of a line deletes <shiftwidth> spaces
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw _while_ exeecuting macros
-set laststatus=2  " Always show a status line
 set title         " Show filename as window title
-set sidescrolloff=15
 set sidescroll=1
-set autoindent    " New lines match the indent of previous line
-set complete-=i
-set nrformats-=octal
-set ruler       " Show cursor row,column position (if statusline not set)
-if v:version > 703 || v:version == 703 && has("patch451")
-    set formatoptions+=j  " Remove comment char when joining lines
-endif
-set history=1000
-set tabpagemax=50
 
 " --- Put all temp files in one place
 set backup
 set backupcopy=yes
-set backupdir=~/.backup,.
+set backupdir=~/.temp,.
 set directory=~/.temp,.
 
 " --- Wildmenu config
-set wildmenu
 set wildmode=list:longest,full
-
-"""" Ignore certain files and directories in Wildmenu
-set wildignore=*.o,*.obj,*~
-set wildignore+=*vim/backups*
-set wildignore+=node_modules/**
-set wildignore+=*sass-cache*
 set wildignore+=*DS_Store*
-set wildignore+=vendor/rails/**
-set wildignore+=vendor/cache/**
-set wildignore+=*.gem
-set wildignore+=log/**
-set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
 " By default, split to the right and below, rather than left or up
@@ -100,7 +66,6 @@ function! FugitiveStatusCD()
     fi
 endfunction
 
-" --- Statusbar
 set statusline=%<\ %t\ %=%(%l/%L\|%c%),\ %{exists('g:loaded_fugitive')?FugitiveStatusCD():''}\ %Y\ 
 
 " --- Miscellany
@@ -110,109 +75,60 @@ if has('persistent_undo')
     set undofile
     endif
 set t_ut= " Fix issues with background color on some terminals
-" }}}
-" PLUGIN INSTALL {{{
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+
+" FZF && Rg/Ag {{{2
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+    " let s:find_cmd=
+    command! -bang -nargs=* Find call fzf#vim#grep(
+    \    'rg --column  --no-heading -F --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+    nnoremap <leader>F :Find<SPACE>
 endif
-call plug#begin('~/.vim/plugged')
-" Individual languages {{{2
-Plug 'fatih/vim-go'                               " Syntax: Go
-Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
-Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
-Plug 'leafgarland/typescript-vim'                 " Syntax: Typescript
-Plug 'lervag/vimtex'                              " Syntax: Latex
-Plug 'mxw/vim-jsx'                                " Syntax: JSX
 " }}}2
-" Utility {{{2
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'airblade/vim-gitgutter'                     " Add symbol to gutter to show git changes
-Plug 'godlygeek/tabular'                          " Support for formatting tables
-Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'bps/vim-textobj-python'                     " Text objects for python
-Plug 'dahu/vim-fanfingtastic'                     " Make 'F' work across newlines
-Plug 'dhruvasagar/vim-table-mode'                 " Format tables
-Plug 'easymotion/vim-easymotion'                  " Easily navigate to any character on screen
-Plug 'ervandew/supertab'                          " Use <Tab> for all insertions
-Plug 'garbas/vim-snipmate'
-Plug 'honza/vim-snippets'
-Plug 'jpalardy/vim-slime'
-Plug 'junegunn/fzf.vim'
-Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
-Plug 'kkoenig/wimproved.vim'                      " Better experience on windows (fullscreen)
-Plug 'Shougo/echodoc.vim'
-Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
-Plug 'terryma/vim-expand-region'                  " Keybind to expand the scope of your selection
-Plug 'tomtom/tlib_vim'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-fugitive'                         " Better git integration with vim
-Plug 'tpope/vim-obsession'                        " Better session management with vim
-Plug 'tpope/vim-sensible'                         " Sensible defaults
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'
-Plug 'wellle/targets.vim'
-Plug 'w0rp/ale'
-Plug 'Valloric/YouCompleteMe'
-Plug 'google/yapf'
-" }}}2
-" Themes {{{2
-Plug 'dracula/vim', {'as': 'dracula'}
-Plug 'nielsmadan/harlequin'
-Plug 'nanotech/jellybeans.vim'
-Plug 'owickstrom/vim-colors-paramount'
-Plug 'junegunn/seoul256.vim'
-" }}}2
-call plug#end()
 " }}}
-" APPEARANCE {{{
+" appearance {{{
 set t_Co=256
 set bg=dark
 silent! colorscheme dracula
-if has('gui-running')
+if has('gui_running')
     set guioptions-=l
     set guioptions-=L
     set guioptions-=r
     set guioptions-=R
     set guioptions-=T
     set guioptions-=m
-    set encoding=utf-8
     set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
     if haswin
-        set guifont=Fantasque_Sans_Mono:h16
+        set guifont=Fantasque\ Sans\ Mono:h14
     endif
 endif
 " }}}
-" KEYBINDS {{{
-" Move by VISUAL lines {{{2
+" keybinds {{{
+" move by visual lines {{{2
 vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
 " }}}2
-" Buffer/File/Function/Outline navigation using FZF {{{2
+" buffer/file/function/outline navigation using FZF {{{2
 nnoremap <leader>bb :Buffers<Cr>
 nnoremap <leader>p :Files<Cr>
 nnoremap <leader>ll :Lines<cr>
 nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
 " }}}2
-" Modify/source my VIMRC {{{2
+" modify/source my vimrc {{{2
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
 " }}}2
-" Backspace goes to `alternate` file {{{2
+" backspace goes to `alternate` file {{{2
 nnoremap <BS> <C-^>
 " }}}2
-" Easily search/replace using last search {{{2
+" easily search/replace using last search {{{2
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
 " }}}2
-" Toggle 'conceal' mode {{{2
+" toggle 'conceal' mode {{{2
 function! ToggleConceal()
     if &conceallevel == 2
         set conceallevel=0
@@ -223,22 +139,22 @@ endfunction
 command! ToggleConceal call ToggleConceal()
 nnoremap <silent> <C-y> :ToggleConceal<CR>
 " }}}2
-" Indent/De-dent visual selection {{{2
+" indent/de-dent visual selection {{{2
 vnoremap < <gv
 vnoremap > >gv
 " }}}2
-" Uncategorised bindings {{{2
+" uncategorised bindings {{{2
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>bt :BTags<CR>
 nnoremap <Leader>h :set list!<CR>
 nnoremap nw :set wrap!<CR>
 " }}}2
-" Fold with space {{{2
+" fold with space {{{2
 noremap <space> :normal zA<CR>
 " }}}2
 " }}}
-" PLUGINS / LANGUAGES {{{
-" Autocommands {{{2
+" plugins / languages {{{
+" autocommands {{{2
 augroup vimrc
     autocmd!
     autocmd FileType c set foldmethod=syntax
@@ -274,45 +190,41 @@ augroup vimrc
 	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 augroup END
 " }}}2
-" Specific language config {{{2
-" PYTHON
+" specific language config {{{2
+" python
 let g:pymode_python = 'python3'
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
 let g:slime_paste_file=tempname()
-" GO
+" go
 let g:go_fmt_command = "goimports"
-" Markdown
+" markdown
 let g:vim_markdown_folding_disabled = 0
 let g:vim_markdown_toc_autofit = 1
 let g:vim_markdown_follow_anchor = 1
-" LATEX
+" latex
 let g:tex_flavor = "latex"
 let g:vimtex_quickfix_ignore_all_warnings=1
 let g:vimtex_latexmk_continuous=0
 let g:vimtex_quickfix_mode=0
 let g:vimtex_indent_enabled=1
 let g:vimtex_fold_enabled=1
-" TABLES
+" tables
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
-" ULTISNIPS
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpForwardTrigger="<c-z>"
-let g:UltiSnipsEditSplit="vertical"
-" EXTRA
-let b:javascript_fold=1
-let g:SuperTabDefaultCompletionType = "context"
-" RUST
+" rust
 let g:racer_cmd="/Users/davison/.cargo/bin/racer"
 if haswin
     let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
 endif
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
-" GITGUTTER
+" extra
+let b:javascript_fold=1
+let g:SuperTabDefaultCompletionType = "context"
+let perl_fold = 1
+" gitgutter
 let g:gitgutter_sign_added = '∙'
 let g:gitgutter_sign_modified = '∙'
 let g:gitgutter_sign_removed = '∙'
@@ -320,45 +232,13 @@ let g:gitgutter_sign_modified_removed = '∙'
 if haswin
     let gitgutter_enabled=0
 endif
-" Perl
-let perl_fold = 1
-" Matching
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
-endif
-" Linting
+" linting
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter=0
 let g:ale_set_quickfix=1
 " }}}2
 " }}}
-" FZF && Rg/Ag {{{
-if executable('rg')
-    set grepprg=rg\ --vimgrep
-    " let s:find_cmd=
-    command! -bang -nargs=* Find call fzf#vim#grep(
-    \    'rg --column  --no-heading -F --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-    nnoremap <leader>F :Find<SPACE>
-endif
-" }}}
-" FUNC - folding {{{
-function! CustomFoldText()
-    let line = getline(v:foldstart)
-
-    let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 3
-    let foldedlinecount = v:foldend - v:foldstart
-
-    " expand tabs into spaces
-    let onetab = strpart('          ', 0, &tabstop)
-    let line = substitute(line, '\t', onetab, 'g')
-
-    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
-    return line . repeat(" ",fillcharcount) . foldedlinecount . ' '
-endfunction
-
-" Get the number of # in header to determine foldlevel for markdown
+" custom folding for markdown headers {{{
 function! MarkdownLevel()
     let h = matchstr(getline(v:lnum), '^#\+')
     if empty(h)
@@ -367,7 +247,7 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" Scratch buffers {{{
+" scratch buffers {{{
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 nnoremap <silent>  == :Scratch<CR>
@@ -376,11 +256,11 @@ nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
-" Miscellaneous/experimental {{{
+" miscellaneous/experimental {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 if haswin
-    cd e:\\home\\devel
-endif
+    cd ~
+end
 " }}}
