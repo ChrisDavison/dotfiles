@@ -104,7 +104,7 @@ endfunction
 set statusline=%<\ %t\ %=%(%l/%L\|%c%),\ %{exists('g:loaded_fugitive')?FugitiveStatusCD():''}\ %Y\ 
 
 " --- Miscellany
-let g:netrw_list_hide = "*.swp,*.swo,*.aux"
+let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
 if has('persistent_undo')
     set undodir=~/.undodir/
     set undofile
@@ -117,27 +117,19 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-
 call plug#begin('~/.vim/plugged')
-
-" Individual languages
+" Individual languages {{{2
 Plug 'fatih/vim-go'                               " Syntax: Go
 Plug 'pangloss/vim-javascript'                    " Syntax: Javascript
 Plug 'plasticboy/vim-markdown'                    " Syntax: Markdown
 Plug 'leafgarland/typescript-vim'                 " Syntax: Typescript
 Plug 'lervag/vimtex'                              " Syntax: Latex
 Plug 'mxw/vim-jsx'                                " Syntax: JSX
-Plug 'wting/rust.vim'                             " Syntax: Rust
-Plug 'racer-rust/vim-racer'                       " Support for Rust & Racer
-Plug 'JuliaEditorSupport/julia-vim'
-Plug 'timothycrosley/isort'
-Plug 'dag/vim-fish'
-
-" Utility
+" }}}2
+" Utility {{{2
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'airblade/vim-gitgutter'                     " Add symbol to gutter to show git changes
 Plug 'godlygeek/tabular'                          " Support for formatting tables
-Plug 'ekalinin/Dockerfile.vim'                    " Syntax: Docker
 Plug 'Konfekt/FastFold'                           " Refreshing folds only on save, or fold-usage
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'bps/vim-textobj-python'                     " Text objects for python
@@ -146,60 +138,41 @@ Plug 'dhruvasagar/vim-table-mode'                 " Format tables
 Plug 'easymotion/vim-easymotion'                  " Easily navigate to any character on screen
 Plug 'ervandew/supertab'                          " Use <Tab> for all insertions
 Plug 'garbas/vim-snipmate'
-Plug 'rbonvall/snipmate-snippets-bib'             " Snippets for bibtex files
 Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user'                      " Custom text objects ('verbs')
 Plug 'kkoenig/wimproved.vim'                      " Better experience on windows (fullscreen)
 Plug 'Shougo/echodoc.vim'
 Plug 'paulhybryant/vim-textobj-path'              " Text object for paths
-Plug 'rking/ag.vim'                               " Support for TheSilverSearcher
 Plug 'terryma/vim-expand-region'                  " Keybind to expand the scope of your selection
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'                         " Better git integration with vim
 Plug 'tpope/vim-obsession'                        " Better session management with vim
 Plug 'tpope/vim-sensible'                         " Sensible defaults
-Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'w0rp/ale'
 Plug 'Valloric/YouCompleteMe'
 Plug 'google/yapf'
-
-" Themes
+" }}}2
+" Themes {{{2
 Plug 'dracula/vim', {'as': 'dracula'}
 Plug 'nielsmadan/harlequin'
 Plug 'nanotech/jellybeans.vim'
 Plug 'owickstrom/vim-colors-paramount'
 Plug 'junegunn/seoul256.vim'
-
+" }}}2
 call plug#end()
 " }}}
 " APPEARANCE {{{
-let s:has_256co=$TERM == "xterm-256color" || 
-            \ $TERM == "screen-256color" || 
-            \ $COLORTERM == "gnome-terminal"
-if s:has_256co
-   set t_Co=256
-else
-   colorscheme default
-   set t_Co=8
-   set t_Sf=[3%dm
-   set t_Sb=[4%dm
-endif
-" Variables for theme switching using my custom plugin daynight.vim
+set t_Co=256
 set bg=dark
 silent! colorscheme dracula
-
 if has('gui-running')
     set guioptions-=l
     set guioptions-=L
@@ -213,58 +186,33 @@ if has('gui-running')
         set guifont=Fantasque_Sans_Mono:h16
     endif
 endif
-hi! link SignColumn LineNr
-hi! link htmlItalic Comment
-" }}}
-" COMMAND ABBREVIATIONS {{{
-cnoreabbrev E e
-cnoreabbrev W w
-cnoreabbrev WQ wq
-cnoreabbrev Q q
-cnoreabbrev QA qa
-cnoreabbrev Qa qa
 " }}}
 " KEYBINDS {{{
-" Move splits/windows
-map <C-w><C-h> <C-w><S-h>
-map <C-w><C-j> <C-w><S-j>
-map <C-w><C-k> <C-w><S-k>
-map <C-w><C-l> <C-w><S-l>
-
-" Move by VISUAL lines
-nnoremap  <buffer> <silent> <C-k> gk
-nnoremap  <buffer> <silent> <C-j> gj
-nnoremap  <buffer> <silent> 0 g0
-nnoremap  <buffer> <silent> <C-$> g$
+" Move by VISUAL lines {{{2
 vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
-
-" Select what was pasted
-noremap gV `[v`]
-
-" Buffer/File/Function/Outline navigation using FZF
+" }}}2
+" Buffer/File/Function/Outline navigation using FZF {{{2
 nnoremap <leader>bb :Buffers<Cr>
 nnoremap <leader>p :Files<Cr>
 nnoremap <leader>ll :Lines<cr>
 nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
-
-" Modify/source my VIMRC
+" }}}2
+" Modify/source my VIMRC {{{2
 nnoremap <leader>ev :e $MYVIMRC<Cr>G
 nnoremap <leader>sv :so $MYVIMRC<Cr>
-
-" Backspace goes to `alternate` file
+" }}}2
+" Backspace goes to `alternate` file {{{2
 nnoremap <BS> <C-^>
-
-" Easily search/replace using last search
+" }}}2
+" Easily search/replace using last search {{{2
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
-
-" Remove search highlighting
-nnoremap <silent> <C-L> :nohlsearch<CR>
-
+" }}}2
+" Toggle 'conceal' mode {{{2
 function! ToggleConceal()
     if &conceallevel == 2
         set conceallevel=0
@@ -274,21 +222,23 @@ function! ToggleConceal()
 endfunction
 command! ToggleConceal call ToggleConceal()
 nnoremap <silent> <C-y> :ToggleConceal<CR>
-
-" Indent/De-dent visual selection
+" }}}2
+" Indent/De-dent visual selection {{{2
 vnoremap < <gv
 vnoremap > >gv
-
+" }}}2
+" Uncategorised bindings {{{2
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>bt :BTags<CR>
-nnoremap <leader>lt :LivedownToggle<cr>
 nnoremap <Leader>h :set list!<CR>
 nnoremap nw :set wrap!<CR>
-
-" Fold with space
+" }}}2
+" Fold with space {{{2
 noremap <space> :normal zA<CR>
+" }}}2
 " }}}
 " PLUGINS / LANGUAGES {{{
+" Autocommands {{{2
 augroup vimrc
     autocmd!
     autocmd FileType c set foldmethod=syntax
@@ -323,7 +273,8 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
 	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 augroup END
-
+" }}}2
+" Specific language config {{{2
 " PYTHON
 let g:pymode_python = 'python3'
 let g:slime_target = "tmux"
@@ -379,6 +330,7 @@ endif
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter=0
 let g:ale_set_quickfix=1
+" }}}2
 " }}}
 " FZF && Rg/Ag {{{
 if executable('rg')
@@ -415,18 +367,6 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" Miscellaneous functions and commands {{{
-command! CopyFilename exec "@+=expand(\"%\")"
-command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
-command! Wd write|bdelete
-command! Today exec 'put=strftime(\"%Y-%m-%d\")'
-command! TodayNamed exec 'put=strftime(\"%Y-%m-%d - %a\")'
-command! TimeNow exec 'put=strftime(\"%Y-%m-%d %H:%M:%S\")'
-command! TimeShort exec 'put=strftime(\"**%H:%M**\")'
-command! Bd bp|bd # | :echo "Buffer deleted and showing previous"
-command! TEOL %s/\s\+$//e | :echo "EOL cleaned"
-command! CLEAN retab | TEOL | :echo "Retabbed and EOL cleaned"
-" }}}
 " Scratch buffers {{{
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
@@ -436,23 +376,11 @@ nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
-" EXPERIMENTAL {{{
-function! GetSyntaxScope()
-    let hi="hi<" . synIDattr(synID(line("."),col("."),1),"name") . '>'
-    let trans="trans<" . synIDattr(synID(line("."),col("."),0),"name") . ">"
-    let lo="lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
-    echo hi . " " . trans . " " . lo
-endfunction
-command! CurrentSyntax call GetSyntaxScope()
+" Miscellaneous/experimental {{{
+command! CopyFilename exec "@+=expand(\"%\")"
+command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
+command! Wd write|bdelete
 if haswin
     cd e:\\home\\devel
 endif
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-    project_base_dir = os.environ['VIRTUAL_ENV']
-    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-    execfile(activate_this, dict(__file__=activate_this))
-EOF
 " }}}
