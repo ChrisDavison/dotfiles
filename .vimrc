@@ -171,6 +171,9 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'roxma/nvim-yarp'
 Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'w0rp/ale'
+Plug 'Valloric/YouCompleteMe'
+Plug 'google/yapf'
 
 " Themes
 Plug 'dracula/vim', {'as': 'dracula'}
@@ -296,6 +299,7 @@ augroup vimrc
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
     autocmd FileType python  nnoremap <LocalLeader>i :!isort %<cr><cr>
+    autocmd FileType python  nnoremap <LocalLeader>= :0,$!yapf<CR>
     autocmd FileType go      set foldmethod=syntax
     autocmd Filetype markdown set conceallevel=0
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
@@ -319,8 +323,6 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
 	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 augroup END
-
-let g:deoplete#enable_at_startup=1
 
 " PYTHON
 let g:pymode_python = 'python3'
@@ -373,6 +375,10 @@ let perl_fold = 1
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
+" Linting
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter=0
+let g:ale_set_quickfix=1
 " }}}
 " FZF && Rg/Ag {{{
 if executable('rg')
@@ -438,7 +444,7 @@ function! GetSyntaxScope()
     echo hi . " " . trans . " " . lo
 endfunction
 command! CurrentSyntax call GetSyntaxScope()
-" }}}
 if haswin
     cd e:\\home\\devel
 endif
+" }}}
