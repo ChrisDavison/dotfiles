@@ -36,3 +36,5 @@ end
 
 set --export LOGBOOK_DIR $HOME/src/github.com/chrisdavison/logbook
 set --export RESEARCHFIGURES $HOME/Dropbox/work/figures
+
+fish_vi_key_bindings
