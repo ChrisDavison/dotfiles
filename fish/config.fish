@@ -11,6 +11,7 @@ set PATH ~/.fzf/bin $PATH
 set PATH /usr/local/lib/node_modules $PATH
 set PATH $GOBIN $PATH
 set PATH $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin $PATH
+set PATH /Users/davison/Library/Python/3.7/bin/ $PATH
 set PATH /Applications/Julia-1.0.app/Contents/Resources/julia/bin/ $PATH
 
 if [ -f /usr/local/share/autojump/autojump.fish ]
