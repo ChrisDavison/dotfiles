@@ -72,7 +72,6 @@ clone_to_bundle tpope/vim-unimpaired
 clone_to_bundle tpope/vim-vinegar
 clone_to_bundle wellle/targets.vim
 clone_to_bundle w0rp/ale
-clone_to_bundle Valloric/YouCompleteMe
 clone_to_bundle google/yapf
 # }}} 
 # Themes {{{
