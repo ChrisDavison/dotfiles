@@ -10,7 +10,7 @@ set -e fish_greeting
 set --export GOPATH $HOME
 set --export GOBIN $HOME/bin
 
-set PATH ~/.fzf/bin $PATH
+set PATH ~/.vim/bundle/fzf/bin $PATH
 set PATH /usr/local/lib/node_modules $PATH
 set PATH $GOBIN $PATH
 set PATH $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin $PATH
