@@ -81,3 +81,7 @@ clone_to_bundle nanotech/jellybeans.vim
 clone_to_bundle owickstrom/vim-colors-paramount
 clone_to_bundle junegunn/seoul256.vim
 # }}}
+
+# Install FZF
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf
+~/.vim/bundle/fzf/install --all
