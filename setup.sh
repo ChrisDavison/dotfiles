@@ -6,8 +6,8 @@ fi
 linkOrError(){
     target=~/"$1"
     origin="${DIR}/$1"
-    if [ -f ${target} ]; then
-        echo "${target} already exists. May need deletion & linking."
+    if [[ -f ${target} ]]; then
+        echo "$1 exists. May need deletion & linking."
     else
         ln -s ${origin} ${target}
     fi
@@ -22,16 +22,19 @@ linkOrError ".vimrc"
 curl --create-dirs -sSLo ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 clone_to_bundle() {
     repo="$1"
-    if [[ "$OSTYPE" == "msys" ]]; then
+    if [ "$OSTYPE" = "msys" ]; then
 	    vimdir="vimfiles"
     else
         vimdir=".vim"
     fi
-    if [[ ! -d ~/"$vimdir"/bundle ]]; then
+    if [ ! -d ~/"$vimdir"/bundle ]; then
         mkdir -p ~/"$vimdir"/bundle
     fi
     # echo $(echo "$repo" | sed -e "s/\//-/")
-    git clone git@github.com:"$repo" ~/"$vimdir"/bundle/$(echo "$repo" | sed -e "s/\//-/") &
+    target=~/"$vimdir"/bundle/$(echo "$repo" | sed -e "s_/_-_")
+    if [ ! -d "$target" ]; then
+        git clone git@github.com:"$repo" "$target" > /dev/null &
+    fi
 }
 # Individual languages {{{
 clone_to_bundle fatih/vim-go
@@ -83,5 +86,9 @@ clone_to_bundle junegunn/seoul256.vim
 # }}}
 
 # Install FZF
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf
+if [ ! -d "$HOME/.vim/bundle/fzf" ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf
+else
+    echo "FZF already cloned"
+fi
 ~/.vim/bundle/fzf/install --all
