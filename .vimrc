@@ -105,6 +105,10 @@ if has('gui_running')
 endif
 " }}}
 " keybinds {{{
+" command abbreviatons {{{2
+cnoreabbrev W w
+cnoreabbrev Qa qa
+" }}}2
 " move by visual lines {{{2
 vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
@@ -221,6 +225,13 @@ if haswin
 endif
 let g:racer_experimental_completer=1
 let g:echodoc_enable_at_startup=1
+if executable('rls')
+    au User lsp_setup call lsp#register_server({
+                \ 'name': 'rls',
+                \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
+                \ 'whitelist': ['rust'],
+                \})
+endif
 " extra
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
