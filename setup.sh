@@ -33,7 +33,7 @@ clone_to_bundle() {
     # echo $(echo "$repo" | sed -e "s/\//-/")
     target=~/"$vimdir"/bundle/$(echo "$repo" | sed -e "s_/_-_")
     if [ ! -d "$target" ]; then
-        git clone git@github.com:"$repo" "$target" > /dev/null &
+        git clone git@github.com:"$repo" "$target" > /dev/null
     fi
 }
 # Individual languages {{{
@@ -43,6 +43,7 @@ clone_to_bundle plasticboy/vim-markdown
 clone_to_bundle leafgarland/typescript-vim
 clone_to_bundle lervag/vimtex
 clone_to_bundle mxw/vim-jsx
+clone_to_bundle rust-lang/rust.vim
 # }}}
 # Utility {{{
 clone_to_bundle christoomey/vim-tmux-navigator
@@ -76,6 +77,11 @@ clone_to_bundle tpope/vim-vinegar
 clone_to_bundle wellle/targets.vim
 clone_to_bundle w0rp/ale
 clone_to_bundle google/yapf
+clone_to_bundle mattn/webapi-vim
+clone_to_bundle prabirshrestha/async.vim
+clone_to_bundle prabirshrestha/vim-lsp
+clone_to_bundle prabirshrestha/asyncomplete.vim
+clone_to_bundle prabirshrestha/asyncomplete-lsp.vim
 # }}} 
 # Themes {{{
 clone_to_bundle dracula/vim
