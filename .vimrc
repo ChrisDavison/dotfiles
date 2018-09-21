@@ -285,7 +285,15 @@ function! s:last_logbook()
     let fn=split(files, '\n')[-1]
     exec "edit ".fn
 endfunction
-command! LB call s:last_logbook()
+command! LBprevious call s:last_logbook()
+
+function! s:logbook_time()
+    let t=localtime()
+    let mydir=$LOGBOOK_DIR
+    let fn=mydir."/".strftime("%Y-%m-%d--%a.md", t)
+    exec "edit ".fn
+endfunction
+command! LBtoday call s:logbook_time()
 
 if haswin
     cd ~
