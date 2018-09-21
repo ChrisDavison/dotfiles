@@ -19,7 +19,11 @@ if haswin
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    set shell=/bin/zsh
+    if executable('/usr/local/bin/zsh')
+        set shell=/usr/local/bin/zsh
+    else
+        set shell=/bin/zsh
+    endif
 endif
 set nospell
 set foldenable
@@ -90,7 +94,7 @@ endif
 " appearance {{{
 set t_Co=256
 set bg=dark
-silent! colorscheme dracula
+silent! colorscheme seoul256
 if has('gui_running')
     set guioptions-=l
     set guioptions-=L
@@ -98,7 +102,7 @@ if has('gui_running')
     set guioptions-=R
     set guioptions-=T
     set guioptions-=m
-    set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
+    set guifont=Iosevka:h14
     if haswin
         set guifont=Fantasque\ Sans\ Mono:h14
     endif
@@ -177,6 +181,8 @@ augroup vimrc
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
+    autocmd Filetype markdown set textwidth=80
+    autocmd Filetype markdown set formatoptions+=t
     autocmd BufReadPost *.md setlocal foldmethod=expr
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
@@ -272,6 +278,23 @@ nnoremap           =f :Scratch<Bar>set filetype=
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
+command! Bd bp|bd #
+
+function! s:last_logbook()
+    let files=globpath('$LOGBOOK_DIR', '20*.md')
+    let fn=split(files, '\n')[-1]
+    exec "edit ".fn
+endfunction
+command! LBprevious call s:last_logbook()
+
+function! s:logbook_time()
+    let t=localtime()
+    let mydir=$LOGBOOK_DIR
+    let fn=mydir."/".strftime("%Y-%m-%d--%a.md", t)
+    exec "edit ".fn
+endfunction
+command! LBtoday call s:logbook_time()
+
 if haswin
     cd ~
 end
