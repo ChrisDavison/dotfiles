@@ -278,6 +278,7 @@ nnoremap           =f :Scratch<Bar>set filetype=
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
+command! Bd bp|bd #
 if haswin
     cd ~
 end
