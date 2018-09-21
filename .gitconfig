@@ -47,3 +47,5 @@
     # Push branch to/remove branch from remoteorigin/<branch>
     publish = "!git push -u origin $(git branch-name)"
     unpublish = "!git push origin :$(git branch-name)"
+[diff]
+	submodule = log
