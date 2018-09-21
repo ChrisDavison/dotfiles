@@ -279,6 +279,14 @@ command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
+
+function! s:last_logbook()
+    let files=globpath('$LOGBOOK_DIR', '20*.md')
+    let fn=split(files, '\n')[-1]
+    exec "edit ".fn
+endfunction
+command! LB call s:last_logbook()
+
 if haswin
     cd ~
 end
