@@ -1,1 +1,0 @@
-/Users/davison/.local/share/omf/themes/krisleech/fish_prompt.fish

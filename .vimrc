@@ -19,8 +19,8 @@ if haswin
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    if executable('/usr/local/bin/fish')
-        set shell=/usr/local/bin/fish
+    if executable('/usr/local/bin/zsh')
+        set shell=/usr/local/bin/zsh
     else
         set shell=/bin/zsh
     endif

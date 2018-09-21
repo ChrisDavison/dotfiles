@@ -1,0 +1,4 @@
+PROMPTDIR="%~"
+NAMEANDHOST="(%n@%m)"
+PROMPTCHAR="."
+PROMPT="%{%F{green}%}${PROMPTDIR} ${PROMPTCHAR} %F{reset}%}"
