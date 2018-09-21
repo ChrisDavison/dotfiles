@@ -89,6 +89,9 @@ clone_to_bundle nielsmadan/harlequin
 clone_to_bundle nanotech/jellybeans.vim
 clone_to_bundle owickstrom/vim-colors-paramount
 clone_to_bundle junegunn/seoul256.vim
+clone_to_bundle gosukiwi/vim-atom-dark
+clone_to_bundle morhetz/gruvbox
+clone_to_bundle sickill/vim-monokai
 # }}}
 
 # Install FZF
