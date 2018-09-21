@@ -19,7 +19,11 @@ if haswin
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    set shell=/bin/zsh
+    if executable('/usr/local/bin/fish')
+        set shell=/usr/local/bin/fish
+    else
+        set shell=/bin/zsh
+    endif
 endif
 set nospell
 set foldenable
@@ -90,7 +94,7 @@ endif
 " appearance {{{
 set t_Co=256
 set bg=dark
-silent! colorscheme dracula
+silent! colorscheme seoul256
 if has('gui_running')
     set guioptions-=l
     set guioptions-=L
@@ -98,7 +102,7 @@ if has('gui_running')
     set guioptions-=R
     set guioptions-=T
     set guioptions-=m
-    set guifont=InputMono\ ExLight:h24,monofur:h24,Fira_Code:h22,Input:h18,Input_Mono:h18,Fira_Code:h18
+    set guifont=Iosevka:h14
     if haswin
         set guifont=Fantasque\ Sans\ Mono:h14
     endif
