@@ -181,6 +181,8 @@ augroup vimrc
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
+    autocmd Filetype markdown set textwidth=80
+    autocmd Filetype markdown set formatoptions+=t
     autocmd BufReadPost *.md setlocal foldmethod=expr
     autocmd FileType make    set noexpandtab
     autocmd FileType rust    set foldmethod=syntax
