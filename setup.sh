@@ -1,16 +1,17 @@
 DIR="$1"
-if [[ "$DIR" == "" ]]; then
+if [ "$DIR" = "" ]; then
     echo "Must pass dotfiles directory"
+    exit
 fi
 
 linkOrError(){
-    target=~/"$1"
+    target="$HOME"/"$1"
     origin="${DIR}/$1"
-    if [[ -f ${target} ]]; then
-        echo "$1 exists. May need deletion & linking."
-    else
-        ln -s ${origin} ${target}
+    if [ -f "${target}" ]; then
+        echo "Replacing ${target}"
+        rm "${target}"
     fi
+    ln -s "${origin}" "${target}"
 }
 linkOrError ".zshenv"
 linkOrError ".sqliterc"
@@ -99,5 +100,7 @@ if [ ! -d "$HOME/.vim/bundle/fzf" ]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf
 else
     echo "FZF already cloned"
+    cd ~/.vim/bundle/fzf
+    git pull --rebase > /dev/null
 fi
-~/.vim/bundle/fzf/install --all
+~/.vim/bundle/fzf/install --all > /dev/null

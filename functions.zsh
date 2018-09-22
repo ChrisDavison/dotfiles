@@ -78,3 +78,14 @@ repostat() {
         popd >> /dev/null
     done
 }
+
+newgit() {
+    dir="$1"
+    mkdir "$dir"
+    cd "$dir"
+    git init
+    echo "# $dir" >> README.md
+    git add README.md
+    git commit -m "Initial commit"
+    git status
+}
