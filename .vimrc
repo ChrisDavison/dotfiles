@@ -1,5 +1,5 @@
 " chrisDavison's vim config
-let mapleader="\\"
+let mapleader=" "
 " settings {{{
 " If 'set' commands appear missing, it's because I'm using tpope/vim-sensible
 execute pathogen#infect()
