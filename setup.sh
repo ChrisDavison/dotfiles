@@ -77,7 +77,6 @@ clone_to_bundle tpope/vim-unimpaired
 clone_to_bundle tpope/vim-vinegar
 clone_to_bundle wellle/targets.vim
 clone_to_bundle w0rp/ale
-clone_to_bundle google/yapf
 clone_to_bundle mattn/webapi-vim
 clone_to_bundle prabirshrestha/async.vim
 clone_to_bundle prabirshrestha/vim-lsp
@@ -93,6 +92,7 @@ clone_to_bundle junegunn/seoul256.vim
 clone_to_bundle gosukiwi/vim-atom-dark
 clone_to_bundle morhetz/gruvbox
 clone_to_bundle sickill/vim-monokai
+clone_to_bundle colepeters/spacemacs-theme.vim
 # }}}
 
 # Install FZF

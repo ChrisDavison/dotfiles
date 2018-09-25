@@ -109,35 +109,36 @@ if has('gui_running')
 endif
 " }}}
 " keybinds {{{
-" command abbreviatons {{{2
+" command abbreviatons
 cnoreabbrev W w
 cnoreabbrev Qa qa
-" }}}2
-" move by visual lines {{{2
+" move by visual lines
 vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
-" }}}2
-" buffer/file/function/outline navigation using FZF {{{2
+" indent/de-dent visual selection
+vnoremap < <gv
+vnoremap > >gv
+" Mostly stuff from FZF for navigating buffers
 nnoremap <leader>bb :Buffers<Cr>
 nnoremap <leader>p :Files<Cr>
 nnoremap <leader>ll :Lines<cr>
 nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
-" }}}2
-" modify/source my vimrc {{{2
-nnoremap <leader>ev :e $MYVIMRC<Cr>G
-nnoremap <leader>sv :so $MYVIMRC<Cr>
-" }}}2
-" backspace goes to `alternate` file {{{2
-nnoremap <BS> <C-^>
-" }}}2
-" easily search/replace using last search {{{2
+nnoremap <leader>t :Tags<CR>
+nnoremap <leader>bt :BTags<CR>
+" easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
-" }}}2
-" toggle 'conceal' mode {{{2
+" Easily edit my vim config
+nnoremap <leader>ev :e $MYVIMRC<Cr>G
+nnoremap <leader>sv :so $MYVIMRC<Cr>
+" OTHER stuff
+nnoremap <Leader>h :set list!<CR>
+nnoremap nw :set wrap!<CR>
+nnoremap <BS> <C-^>
+" toggle 'conceal' mode
 function! ToggleConceal()
     if &conceallevel == 2
         set conceallevel=0
@@ -147,35 +148,16 @@ function! ToggleConceal()
 endfunction
 command! ToggleConceal call ToggleConceal()
 nnoremap <silent> <C-y> :ToggleConceal<CR>
-" }}}2
-" indent/de-dent visual selection {{{2
-vnoremap < <gv
-vnoremap > >gv
-" }}}2
-" uncategorised bindings {{{2
-nnoremap <leader>t :Tags<CR>
-nnoremap <leader>bt :BTags<CR>
-nnoremap <Leader>h :set list!<CR>
-nnoremap nw :set wrap!<CR>
-" }}}2
-" fold with space {{{2
-noremap <space> :normal zA<CR>
-" }}}2
 " }}}
 " plugins / languages {{{
 " autocommands {{{2
 augroup vimrc
     autocmd!
-    autocmd FileType c set foldmethod=syntax
-    autocmd Filetype cpo set foldmethod=syntax
-    autocmd Filetype arduino set foldmethod=syntax
+    autocmd FileType c,cpp,arduino,go,rust,javascript set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
     autocmd FileType python  set tabstop=4
     autocmd FileType python  set softtabstop=4
     autocmd FileType python  set iskeyword=a-z,A-Z,_
-    autocmd FileType python  nnoremap <LocalLeader>i :!isort %<cr><cr>
-    autocmd FileType python  nnoremap <LocalLeader>= :0,$!yapf<CR>
-    autocmd FileType go      set foldmethod=syntax
     autocmd Filetype markdown set conceallevel=0
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
@@ -183,17 +165,11 @@ augroup vimrc
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd BufReadPost *.md setlocal foldmethod=expr
     autocmd FileType make    set noexpandtab
-    autocmd FileType rust    set foldmethod=syntax
-    autocmd FileType rust nmap gd <Plug>(rust-def)
-    autocmd FileType rust nmap gs <Plug>(rust-def-split)
-    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
-    autocmd FileType rust nmap <leader>gd <Plug>(rust-doc)
     autocmd FileType vim     set foldmethod=marker
     autocmd ColorScheme * hi! link SignColumn LineNr
     autocmd FileType javascript set filetype=javascript.jsx
-    autocmd FileType javascript,javascript.jsx set foldmethod=syntax
     autocmd BufNewFile,BufReadPost *.tex set filetype=tex
-    autocmd TextChanged,InsertLeave,FocusLost * silent! wall " Write files on focus lost
+    autocmd TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
 	autocmd BufWinEnter *.py,*.go,*.rs,*.cpp,*.c,*.js let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
@@ -222,13 +198,7 @@ let g:vimtex_fold_enabled=1
 let g:table_mode_corner="|"
 let g:table_mode_corner_corner="|"
 let g:table_mode_header_fillchar="-"
-" rust
-let g:racer_cmd="/Users/davison/.cargo/bin/racer"
-if haswin
-    let g:racer_cmd="c:\\Users\\user01\\.cargo\\bin\\racer.exe"
-endif
-let g:racer_experimental_completer=1
-let g:echodoc_enable_at_startup=1
+" Rust
 if executable('rls')
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'rls',
