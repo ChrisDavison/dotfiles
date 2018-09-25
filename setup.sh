@@ -3,7 +3,7 @@ if [ "$DIR" = "" ]; then
     echo "Must pass dotfiles directory"
     exit
 fi
-
+# Prepare symlinks {{{
 linkOrError(){
     target="$HOME"/"$1"
     origin="${DIR}/$1"
@@ -18,8 +18,8 @@ linkOrError ".sqliterc"
 linkOrError ".tmux.conf"
 linkOrError ".gitconfig"
 linkOrError ".vimrc"
-
-# Clone vim plugins, using pathogen method
+# }}}
+# Clone vim plugins, using pathogen method {{{
 curl --create-dirs -sSLo ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 clone_to_bundle() {
     repo="$1"
@@ -37,17 +37,15 @@ clone_to_bundle() {
         git clone git@github.com:"$repo" "$target" > /dev/null
     fi
 }
-# Individual languages {{{
+# Individual languages {{{2
 clone_to_bundle fatih/vim-go
 clone_to_bundle pangloss/vim-javascript
-clone_to_bundle plasticboy/vim-markdown
 clone_to_bundle leafgarland/typescript-vim
-clone_to_bundle lervag/vimtex
 clone_to_bundle mxw/vim-jsx
+clone_to_bundle lervag/vimtex
 clone_to_bundle rust-lang/rust.vim
-# }}}
-# Utility {{{
-clone_to_bundle christoomey/vim-tmux-navigator
+# }}}2
+# Utility {{{2
 clone_to_bundle airblade/vim-gitgutter
 clone_to_bundle godlygeek/tabular
 clone_to_bundle Konfekt/FastFold
@@ -65,10 +63,8 @@ clone_to_bundle kana/vim-textobj-user
 clone_to_bundle kkoenig/wimproved.vim
 clone_to_bundle Shougo/echodoc.vim
 clone_to_bundle paulhybryant/vim-textobj-path
-clone_to_bundle terryma/vim-expand-region
 clone_to_bundle tomtom/tlib_vim
 clone_to_bundle tpope/vim-commentary
-clone_to_bundle tpope/vim-dispatch
 clone_to_bundle tpope/vim-fugitive
 clone_to_bundle tpope/vim-obsession
 clone_to_bundle tpope/vim-sensible
@@ -82,20 +78,19 @@ clone_to_bundle prabirshrestha/async.vim
 clone_to_bundle prabirshrestha/vim-lsp
 clone_to_bundle prabirshrestha/asyncomplete.vim
 clone_to_bundle prabirshrestha/asyncomplete-lsp.vim
-# }}} 
-# Themes {{{
+# }}}2
+# Themes {{{2
 clone_to_bundle dracula/vim
 clone_to_bundle nielsmadan/harlequin
 clone_to_bundle nanotech/jellybeans.vim
 clone_to_bundle owickstrom/vim-colors-paramount
 clone_to_bundle junegunn/seoul256.vim
-clone_to_bundle gosukiwi/vim-atom-dark
 clone_to_bundle morhetz/gruvbox
 clone_to_bundle sickill/vim-monokai
 clone_to_bundle colepeters/spacemacs-theme.vim
-# }}}
-
-# Install FZF
+# }}}2
+# }}} 
+# Install FZF {{{
 if [ ! -d "$HOME/.vim/bundle/fzf" ]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf
 else
@@ -104,3 +99,4 @@ else
     git pull --rebase > /dev/null
 fi
 ~/.vim/bundle/fzf/install --all > /dev/null
+# }}}
