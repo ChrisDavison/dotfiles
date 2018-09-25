@@ -134,13 +134,6 @@ if executable('rls')
 endif
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
-let g:gitgutter_sign_added = '∙'
-let g:gitgutter_sign_modified = '∙'
-let g:gitgutter_sign_removed = '∙'
-let g:gitgutter_sign_modified_removed = '∙'
-if has('win32')
-    let gitgutter_enabled=0
-endif
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_enter=1
 let g:ale_set_quickfix=1
