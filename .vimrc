@@ -94,7 +94,7 @@ if has('gui_running')
     set guioptions-=R
     set guioptions-=T
     set guioptions-=m
-    set guifont=Iosevka:h14
+    set guifont=Iosevka:h16
     if haswin
         set guifont=Fantasque\ Sans\ Mono:h14
     endif
@@ -227,11 +227,7 @@ endfunction
 " }}}
 " scratch buffers {{{
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
-command! -bar -nargs=? -bang SScratch :silent new<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
 nnoremap <silent>  == :Scratch<CR>
-nnoremap <silent>  =" :Scratch<Bar>put<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =* :Scratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
-nnoremap <silent>  =p :SScratch<Bar>put *<Bar>1delete _<Bar>filetype detect<CR>
 nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
 " miscellaneous/experimental {{{
