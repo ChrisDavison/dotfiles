@@ -251,7 +251,5 @@ function! s:logbook_time()
 endfunction
 command! LBtoday call s:logbook_time()
 
-if haswin
-    cd ~
-end
+cd ~/devel
 " }}}
