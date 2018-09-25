@@ -62,16 +62,8 @@ set wildignore+=*.png,*.jpg,*.gif
 set splitbelow
 set splitright
 
-function! FugitiveStatusCD()
-    let fs=fugitive#statusline()
-    if fs != ''
-        return fs . ","
-    else
-        return ""
-    fi
-endfunction
-
-set statusline=%<\ %t\ %=%(%l/%L\|%c%),\ %{exists('g:loaded_fugitive')?FugitiveStatusCD():''}\ %Y\ 
+set laststatus=2
+set statusline=\ (%n)\ %F%=\ %m\ %Y\ 
 
 " --- Miscellany
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
