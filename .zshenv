@@ -20,7 +20,7 @@ unsetopt extended_history
 
 export DOTFILES="$HOME/devel/dotfiles"
 export TERM=xterm-256color
-export EDITOR="mvim"
+export EDITOR="vim"
 export LOGBOOK_DIR="$HOME/devel/logbook"
 export RESEARCHFIGURES="$HOME/Dropbox/work/figures"
 

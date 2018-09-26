@@ -77,10 +77,6 @@ clone_to_bundle tpope/vim-vinegar
 clone_to_bundle wellle/targets.vim
 clone_to_bundle w0rp/ale
 clone_to_bundle mattn/webapi-vim
-clone_to_bundle prabirshrestha/async.vim
-clone_to_bundle prabirshrestha/vim-lsp
-clone_to_bundle prabirshrestha/asyncomplete.vim
-clone_to_bundle prabirshrestha/asyncomplete-lsp.vim
 # }}}2
 # Themes {{{2
 clone_to_bundle dracula/vim

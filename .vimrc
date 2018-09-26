@@ -26,7 +26,7 @@ set nospell
 set foldenable foldlevelstart=0
 set updatetime=1000 " Write a swap file after 1 second
 set cmdheight=2  " Useful for more info on some plugins
-set colorcolumn=100 " Put a bar at column 100
+set colorcolumn=0 " No color bar (have a toggle command defined below)
 set hlsearch " Highlight search results
 set ignorecase " Ignore case when searching
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab " Use 4spaces as tabs
@@ -54,10 +54,7 @@ set bg=dark
 silent! colorscheme gruvbox
 if has('gui_running')
     set guioptions=
-    set guifont=Iosevka:h16
-    if has('win32')
-        set guifont=Hack:h14
-    endif
+    set guifont=Hack:h16
 endif
 " }}}
 " keybinds {{{
@@ -99,6 +96,14 @@ function! ToggleConceal()
     endif
 endfunction
 nnoremap <silent> <C-y> :call ToggleConceal()<CR>
+function! s:ToggleColorcolumn()
+    if &colorcolumn > 0
+        set colorcolumn=0
+    else
+        set colorcolumn=100
+    endif
+endfunction
+command! ToggleColorColumn call s:ToggleColorcolumn()
 " }}}
 " plugins / languages {{{
 augroup vimrc
@@ -183,3 +188,4 @@ command! LBprevious call s:last_logbook()
 command! LBtoday call s:logbook_today()
 " }}}
 cd ~/devel
+let g:deoplete#enable_at_startup = 1
