@@ -21,22 +21,25 @@ linkOrError ".vimrc"
 # }}}
 # Clone vim plugins, using pathogen method {{{
 curl --create-dirs -sSLo ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+if [ "$OSTYPE" = "msys" ]; then
+    vimdir="vimfiles"
+else
+    vimdir=".vim"
+fi
 clone_to_bundle() {
     repo="$1"
-    if [ "$OSTYPE" = "msys" ]; then
-	    vimdir="vimfiles"
-    else
-        vimdir=".vim"
-    fi
-    if [ ! -d ~/"$vimdir"/bundle ]; then
+        if [ ! -d ~/"$vimdir"/bundle ]; then
         mkdir -p ~/"$vimdir"/bundle
     fi
-    # echo $(echo "$repo" | sed -e "s/\//-/")
-    target=~/"$vimdir"/bundle/$(echo "$repo" | sed -e "s_/_-_")
+    shortname=$(echo "$repo" | sed -e "s_/_-_")
+    echo "$shortname" >> ~/.vim-plugins
+    target=~/"$vimdir"/bundle/$shortname
     if [ ! -d "$target" ]; then
         git clone git@github.com:"$repo" "$target" > /dev/null
     fi
 }
+[ -f ~/.vim-plugins ] && rm ~/.vim-plugins
+touch ~/.vim-plugins
 # Individual languages {{{2
 clone_to_bundle fatih/vim-go
 clone_to_bundle pangloss/vim-javascript
@@ -81,13 +84,9 @@ clone_to_bundle prabirshrestha/asyncomplete-lsp.vim
 # }}}2
 # Themes {{{2
 clone_to_bundle dracula/vim
-clone_to_bundle nielsmadan/harlequin
-clone_to_bundle nanotech/jellybeans.vim
 clone_to_bundle owickstrom/vim-colors-paramount
 clone_to_bundle junegunn/seoul256.vim
 clone_to_bundle morhetz/gruvbox
-clone_to_bundle sickill/vim-monokai
-clone_to_bundle colepeters/spacemacs-theme.vim
 # }}}2
 # }}} 
 # Install FZF {{{
@@ -100,3 +99,9 @@ else
 fi
 ~/.vim/bundle/fzf/install --all > /dev/null
 # }}}
+
+echo "Plugins not tracked (may need deleted)"
+ls -1 ~/$vimdir/bundle | sort > ~/.vim-plugins-installed
+cat ~/.vim-plugins | sort >> ~/.vim-plugins-sorted
+diff ~/.vim-plugins-sorted ~/.vim-plugins-installed
+rm ~/.vim-plugins-sorted ~/.vim-plugins-installed ~/.vim-plugins
