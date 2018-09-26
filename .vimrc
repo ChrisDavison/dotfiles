@@ -51,7 +51,7 @@ let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\
 " appearance {{{
 set t_Co=256
 set bg=dark
-silent! colorscheme spacemacs-theme
+silent! colorscheme gruvbox
 if has('gui_running')
     set guioptions=
     set guifont=Iosevka:h16
