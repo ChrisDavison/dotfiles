@@ -89,3 +89,13 @@ newgit() {
     git commit -m "Initial commit"
     git status
 }
+
+capture(){
+    args="$@"
+    d=$(date +"%F %T")
+    if [ -f "$CAPTUREFILE" ]; then
+        echo "- $d $args" >> "$CAPTUREFILE"
+    else
+        echo "Capturefile not defined"
+    fi
+}
