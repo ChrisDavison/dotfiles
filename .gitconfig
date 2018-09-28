@@ -49,3 +49,5 @@
     unpublish = "!git push origin :$(git branch-name)"
 [diff]
 	submodule = log
+[status]
+	submodulesummary = 1
