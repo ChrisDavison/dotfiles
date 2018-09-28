@@ -45,38 +45,42 @@ md() {
     open /tmp/md.html
 }
 
-repofetch() {
-    for repo in ~/devel/*; do
-        pushd "$repo" >> /dev/null
-        echo "$repo"
-        git fetch --all
+_for_each_repo() {
+    pushd "$HOME" >> /dev/null
+    for repo in $HOME/devel/*; do
+        if [ ! -d "$repo" ]; then
+            continue
+        fi
+        cd "$repo"
+        echo "Running $@ on $repo"
+        $@
         echo
-        popd >> /dev/null
     done
+    popd
 }
 
-repofunc() {
-    for repo in ~/devel/*; do
-        pushd "$repo" >> /dev/null
-        echo "Running $@ on $repo"
-        git $@
-        echo
-        popd >> /dev/null
-    done
+repofetch() { _for_each_repo git fetch --all }
+
+repofunc() { _for_each_repo git "$@"
 }
 
 repostat() {
-    for repo in ~/devel/*; do
-        pushd "$repo" >> /dev/null
-
+    [ ! $(pwd) = "$HOME" ] && pushd "$HOME" >> /dev/null
+    echo "Unchanged repos will not be displayed"
+    echo "-------------------------------------"
+    for repo in $HOME/devel/*; do
+        if [ ! -d "$repo" ]; then
+            continue
+        fi
+        cd "$repo"
         git status -s -b > ~/.stat
         if [[ $(cat ~/.stat | wc -l) -gt 1 ]] || [[ $(cat ~/.stat | grep -E -e "ahead|behind" | wc -l) -gt 0 ]]; then
-            echo "$repo"
+            echo "$(basename $repo)"
             cat ~/.stat
-            echo "===================="
+            echo "....................................."
         fi
-        popd >> /dev/null
     done
+    popd
 }
 
 newgit() {
