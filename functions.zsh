@@ -83,6 +83,26 @@ repostat() {
     popd
 }
 
+repobstat() {
+    [ ! $(pwd) = "$HOME" ] && pushd "$HOME" >> /dev/null
+    echo "Unchanged repos will not be displayed"
+    echo "-------------------------------------"
+    for repo in $HOME/devel/*; do
+        if [ ! -d "$repo" ]; then
+            continue
+        fi
+        cd "$repo"
+        git branchstatus > ~/.stat
+        if [[ $(cat ~/.stat | grep -E -e "ahead|behind|modified|untracked" | wc -l) -gt 0 ]]; then
+            echo "+++ $(basename $repo)"
+            cat ~/.stat
+            echo "....................................."
+        fi
+    done
+    popd
+    
+}
+
 newgit() {
     dir="$1"
     mkdir "$dir"
