@@ -22,7 +22,7 @@ export DOTFILES="$HOME/devel/dotfiles"
 export TERM=xterm-256color
 export EDITOR="vim"
 export LOGBOOK_DIR="$HOME/devel/logbook"
-export RESEARCHFIGURES="$HOME/Dropbox/work/figures"
+export RESEARCHFIGURES="$HOME/Dropbox/work/outputs"
 
 export GOPATH="$HOME"
 export GOBIN="$GOPATH/bin"
