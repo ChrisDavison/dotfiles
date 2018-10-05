@@ -40,6 +40,7 @@ _append_to_path $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
 _append_to_path /Users/davison/Library/Python/3.7/bin/
 _append_to_path /Applications/Julia-1.0.app/Contents/Resources/julia/bin/
 _append_to_path ~/devel/scripts/
+_append_to_path ~/.cargo/bin/
 
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
