@@ -59,49 +59,7 @@ _for_each_repo() {
     popd
 }
 
-repofetch() { _for_each_repo git fetch --all }
-
-repofunc() { _for_each_repo git "$@"
-}
-
-repostat() {
-    [ ! $(pwd) = "$HOME" ] && pushd "$HOME" >> /dev/null
-    echo "Unchanged repos will not be displayed"
-    echo "-------------------------------------"
-    for repo in $HOME/devel/*; do
-        if [ ! -d "$repo" ]; then
-            continue
-        fi
-        cd "$repo"
-        git status -s -b > ~/.stat
-        if [[ $(cat ~/.stat | wc -l) -gt 1 ]] || [[ $(cat ~/.stat | grep -E -e "ahead|behind" | wc -l) -gt 0 ]]; then
-            echo "$(basename $repo)"
-            cat ~/.stat
-            echo "....................................."
-        fi
-    done
-    popd
-}
-
-repobstat() {
-    [ ! $(pwd) = "$HOME" ] && pushd "$HOME" >> /dev/null
-    echo "Unchanged repos will not be displayed"
-    echo "-------------------------------------"
-    for repo in $HOME/devel/*; do
-        if [ ! -d "$repo" ]; then
-            continue
-        fi
-        cd "$repo"
-        git branchstatus > ~/.stat
-        if [[ $(cat ~/.stat | grep -E -e "ahead|behind|modified|untracked" | wc -l) -gt 0 ]]; then
-            echo "+++ $(basename $repo)"
-            cat ~/.stat
-            echo "....................................."
-        fi
-    done
-    popd
-    
-}
+repofunc() { _for_each_repo git "$@" }
 
 newgit() {
     dir="$1"
