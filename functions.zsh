@@ -61,6 +61,10 @@ _for_each_repo() {
 
 repofunc() { _for_each_repo git "$@" }
 
+copy_to_bin() {
+    cp "$1" ~/bin/$(noext $1)
+}
+
 newgit() {
     dir="$1"
     mkdir "$dir"
