@@ -9,7 +9,7 @@ set nocompatible
 set autochdir
 set wrap lbr
 let &showbreak = '└ '
-set number relativenumber
+set number norelativenumber
 set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
 set hidden
 if has('win32')
