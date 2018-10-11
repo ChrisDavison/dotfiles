@@ -1,4 +1,9 @@
-if [ -x "$(command -v gls)" ]; then
+if [ -x "$(command -v exa)" ]; then
+    alias ls="exa --group-directories-first"
+    alias ll="exa --group-directories-first --long"
+    alias la="exa --group-directories-first -a --long"
+    alias lt="exa --tree -L 2"
+elif [ -x "$(command -v gls)" ]; then
     alias ll='gls -lFh --group-directories-first --color=auto'
     alias la='gls -AlFh --group-directories-first --color=auto'
     alias ls='gls -CF --group-directories-first --color=auto'

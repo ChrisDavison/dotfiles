@@ -10,10 +10,10 @@
 [core]
 	excludesfiles = /Users/davison/.global_ignore
 [alias]
-    sync = "!git co master && git pb"
     a = add --all
-    c = commit
-	amend = commit --amend
+	br = branch
+	c = commit
+    ci = commit
     co = checkout
 	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
 	l = log --all --decorate --oneline --graph
@@ -23,13 +23,12 @@
     discard = checkout --
 	d = diff -w
 	dw = diff -w --word-diff
-	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
     aliases = "!git config -l | grep alias | cut -c 7-"
 	ctags = !.git/hooks/ctags
 	rb = rebase
 	#============================================================= 
 	# Repo 'metadata'
-	branch-name = "!git rev-parse --abbrev-ref HEAD"
+	branch-name = rev-parse --abbrev-ref HEAD
     ignored = ls-files --others
 	untracked = ls-files --others
 	tracked = ls-files
@@ -46,7 +45,7 @@
 	#=============================================================
     # Push branch to/remove branch from remoteorigin/<branch>
     publish = "!git push -u origin $(git branch-name)"
-    unpublish = "!git push origin :$(git branch-name)"
+    nuke = "!git push origin :$(git branch-name)"
 [diff]
 	submodule = log
 [status]
