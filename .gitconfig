@@ -51,3 +51,5 @@
 	submodule = log
 [status]
 	submodulesummary = 1
+[help]
+	autocorrect = 5
