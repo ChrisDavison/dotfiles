@@ -9,12 +9,12 @@ set --export CAPTUREFILE $HOME/Dropbox/.capture
 set --export LOGBOOK_DIR $HOME/src/github.com/chrisdavison/logbook
 set --export RESEARCHFIGURES $HOME/Dropbox/work/figures
 
-set PATH ~/.vim/bundle/fzf/bin $PATH
-set PATH /usr/local/lib/node_modules $PATH
-set PATH $GOBIN $PATH
-set PATH $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin $PATH
-set PATH /Users/davison/Library/Python/3.7/bin/ $PATH
-set PATH /Users/davison/.cargo/bin $PATH
+append_to_path ~/.vim/bundle/fzf/bin
+append_to_path /usr/local/lib/node_modules
+append_to_path $GOBIN
+append_to_path $HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
+append_to_path /Users/davison/Library/Python/3.7/bin/
+append_to_path /Users/davison/.cargo/bin
 
 if [ -f /usr/local/share/autojump/autojump.fish ]
     source /usr/local/share/autojump/autojump.fish
