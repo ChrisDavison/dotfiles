@@ -1,4 +1,4 @@
 function tma
-    choose_tmux_session $args
+    choose_tmux_session $argv
 end
 
