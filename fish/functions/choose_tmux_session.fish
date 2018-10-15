@@ -4,3 +4,4 @@ function choose_tmux_session --description "Choose a tmux session"
         tmux attach -d -t "$selected"
     end
 end
+
