@@ -15,7 +15,6 @@
 	c = commit
     co = checkout
 	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
-	bclean = "!f() { git checkout ${1-master} && git branch --merged ${1-master} | grep -v ' ${1-master}$' | xargs git-branch -d; }; f"
 	l = log --all --decorate --oneline --graph
 	pb = pull --rebase --prune
 	# Handling the staging area
@@ -25,7 +24,6 @@
 	dw = diff -w --word-diff
     aliases = "!git config -l | grep alias | cut -c 7-"
 	rb = rebase
-	fdone = "!f(){ git checkout ${1-master} && git pb && git bclean ${1-master}; }; f"
 	feature = "!f() { [ -z $1 ] && echo 'Give a feature name' && exit; b=$1; git checkout master; git pb; git checkout -b "feature/$b" master; }; f"
 	features = "!git branches | grep feature"
 	fix = "!f() { [ -z $1 ] && echo 'Give a fix name' && exit; b=$1; git checkout master; git pb; git checkout -b "fix/$b" master; }; f"
