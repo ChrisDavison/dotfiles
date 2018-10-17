@@ -26,10 +26,10 @@
     aliases = "!git config -l | grep alias | cut -c 7-"
 	rb = rebase
 	fdone = "!f(){ git checkout ${1-master} && git pb && git bclean ${1-master}; }; f"
-	feature = "!f() { b=$1; git checkout master; git pb; git checkout -b 'feature/$b' master; }; f"
+	feature = "!f() { [ -z $1 ] && echo 'Give a feature name' && exit; b=$1; git checkout master; git pb; git checkout -b "feature/$b" master; }; f"
 	features = "!git branches | grep feature"
-	fix = "!f() { b=$1; git checkout master; git pb; git checkout -b 'fix/$b' master; }; f"
-	fixes = "!git branches | grep fixes"
+	fix = "!f() { [ -z $1 ] && echo 'Give a fix name' && exit; b=$1; git checkout master; git pb; git checkout -b "fix/$b" master; }; f"
+	fixes = "!git branches | grep fix"
 	#=============================================================
 	# Repo 'metadata'
 	branch-name = rev-parse --abbrev-ref HEAD
