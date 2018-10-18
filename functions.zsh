@@ -83,7 +83,3 @@ capture(){
         echo "Capturefile not defined"
     fi
 }
-
-git-root(){
-    cd $(git rev-parse --show-toplevel)
-}

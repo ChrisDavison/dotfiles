@@ -46,9 +46,9 @@ _append_to_path ~/devel/scripts/
 _append_to_path ~/.cargo/bin/
 _append_to_path $HOME/bin
 _append_to_path /usr/local/miniconda3/bin
-if [ -f /usr/local/share/autojump/autojump.fish ]
-    source /usr/local/share/autojump/autojump.fish
-end
+if [ -f /usr/local/share/autojump/autojump ]; then
+    source /usr/local/share/autojump/autojump
+fi
 
 
 sourceOrError() {
@@ -62,7 +62,8 @@ sourceOrError "$DOTFILES/bindings.zsh"
 sourceOrError ~/.fzf.zsh
 sourceOrError ~/.cargo/env
 sourceOrError /usr/local/etc/profile.d/autojump.sh
-if [ -x $(which pipenv) ]; then
-    eval (pipenv --completion)
+if [ -x pipenv ]; then
+    eval $(pipenv --completion)
 fi
 
+typeset -aU path
