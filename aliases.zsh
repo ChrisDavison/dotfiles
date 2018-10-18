@@ -23,4 +23,5 @@ alias vi='mvim -v'
 
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
-
+alias env="source .env/bin/activate"
+alias denv=deactivate
