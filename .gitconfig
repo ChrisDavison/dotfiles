@@ -14,6 +14,7 @@
 	b = branch
 	c = commit
     co = checkout
+	ca = "!f(){ git add --all; git commit $@; }; f"
 	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
 	l = log --all --decorate --oneline --graph
 	pb = pull --rebase --prune
@@ -24,9 +25,7 @@
 	dw = diff -w --word-diff
     aliases = "!git config -l | grep alias | cut -c 7-"
 	rb = rebase
-	feature = "!f() { [ -z $1 ] && echo 'Give a feature name' && exit; b=$1; git checkout master; git pb; git checkout -b "feature/$b" master; }; f"
 	features = "!git branches | grep feature"
-	fix = "!f() { [ -z $1 ] && echo 'Give a fix name' && exit; b=$1; git checkout master; git pb; git checkout -b "fix/$b" master; }; f"
 	fixes = "!git branches | grep fix"
 	#=============================================================
 	# Repo 'metadata'
@@ -47,7 +46,7 @@
 	#=============================================================
     # Push branch to/remove branch from remoteorigin/<branch>
     publish = "!git push -u origin $(git branch-name)"
-    nuke = "!git push origin :$(git branch-name)"
+	nuke = "!git push origin :$(git branch-name)"
 [diff]
 	submodule = log
 [status]
