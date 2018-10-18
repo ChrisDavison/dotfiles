@@ -59,8 +59,6 @@ _for_each_repo() {
     popd
 }
 
-repofunc() { _for_each_repo git "$@" }
-
 copy_to_bin() {
     cp "$1" ~/bin/$(noext $1)
 }
@@ -84,4 +82,8 @@ capture(){
     else
         echo "Capturefile not defined"
     fi
+}
+
+git-root(){
+    cd $(git rev-parse --show-toplevel)
 }

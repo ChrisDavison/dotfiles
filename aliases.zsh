@@ -21,6 +21,6 @@ alias g='git'
 alias git-root='cd $(git rev-parse --show-toplevel)'
 alias vi='mvim -v'
 
-
 alias tma=choose_tmux_session
+alias ipython="ipython --pprint --no-banner"
 

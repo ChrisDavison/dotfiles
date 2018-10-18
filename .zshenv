@@ -26,6 +26,9 @@ export RESEARCHFIGURES="$HOME/Dropbox/work/outputs"
 
 export GOPATH="$HOME"
 export GOBIN="$GOPATH/bin"
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+export CAPTUREFILE=$HOME/Dropbox/.capture
+export RESEARCHFIGURES=$HOME/Dropbox/work/figures
 
 # Add various directories to path
 _append_to_path() {
@@ -41,8 +44,12 @@ _append_to_path /Users/davison/Library/Python/3.7/bin/
 _append_to_path /Applications/Julia-1.0.app/Contents/Resources/julia/bin/
 _append_to_path ~/devel/scripts/
 _append_to_path ~/.cargo/bin/
+_append_to_path $HOME/bin
+_append_to_path /usr/local/miniconda3/bin
+if [ -f /usr/local/share/autojump/autojump.fish ]
+    source /usr/local/share/autojump/autojump.fish
+end
 
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 sourceOrError() {
     [ -f $1 ] && source $1 || echo "No $1"
@@ -55,3 +62,7 @@ sourceOrError "$DOTFILES/bindings.zsh"
 sourceOrError ~/.fzf.zsh
 sourceOrError ~/.cargo/env
 sourceOrError /usr/local/etc/profile.d/autojump.sh
+if [ -x $(which pipenv) ]; then
+    eval (pipenv --completion)
+fi
+
