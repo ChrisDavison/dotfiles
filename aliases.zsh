@@ -17,8 +17,9 @@ fi
 
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
-alias g='git'
-alias git-root='cd $(git rev-parse --show-toplevel)'
+alias git='hub'
+alias g='hub'
+alias git-root='cd $(hub rev-parse --show-toplevel)'
 alias vi='mvim -v'
 
 alias tma=choose_tmux_session

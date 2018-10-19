@@ -83,3 +83,15 @@ capture(){
         echo "Capturefile not defined"
     fi
 }
+
+cd() {
+    if [[ -d ./.env ]]; then
+        deactivate
+    fi
+
+    builtin cd $1
+
+    if [[ -d ./.env ]]; then
+        . ./.env/bin/activate
+    fi
+}
