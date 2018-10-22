@@ -85,13 +85,13 @@ capture(){
 }
 
 cd() {
-    root=./
-    if [[ -d $root/.env ]]; then
+    if [[ $(which deactivate | wc -l) -gt 5 ]]; then
         deactivate
     fi
 
     builtin cd $1
 
+    root=.
     # If we jump deep inside a git dir, look for an env from the root of the repo
     if git rev-parse --git-dir > /dev/null 2>&1; then
         root=$(git rev-parse --show-toplevel)
