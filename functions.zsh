@@ -16,6 +16,10 @@ venv() {
     fi
 }
 
+envv() {
+    find $(git rev-parse --show-toplevel) -regex ".*activate$"
+}
+
 choose_tmux_session() {
     if tmux list-sessions 2>&1 > /dev/null ; then
         selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
@@ -33,16 +37,6 @@ mcd() {
     fi
     mkdir -p "$1"
     cd "$1"
-}
-
-md() {
-    # Preview a markdown file
-    if [ ! -n "$1" ]; then
-        echo "Must pass file as argument"
-        return
-    fi
-    pandoc --from gfm --to html "$1" > /tmp/md.html
-    open /tmp/md.html
 }
 
 _for_each_repo() {
@@ -84,20 +78,3 @@ capture(){
     fi
 }
 
-cd() {
-    if [[ $(which deactivate | wc -l) -gt 5 ]]; then
-        deactivate
-    fi
-
-    builtin cd $1
-
-    root=.
-    # If we jump deep inside a git dir, look for an env from the root of the repo
-    if git rev-parse --git-dir > /dev/null 2>&1; then
-        root=$(git rev-parse --show-toplevel)
-    fi
-
-    if [[ -d $root/.env ]]; then
-        . $root/.env/bin/activate
-    fi
-}
