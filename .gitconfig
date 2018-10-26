@@ -53,3 +53,5 @@
 	submodulesummary = 1
 [help]
 	autocorrect = 5
+[rebase]
+	autosquash = true
