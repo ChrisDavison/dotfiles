@@ -52,6 +52,14 @@ path+=$HOME/.cargo/bin/
 path+=$HOME/bin
 path+=/usr/local/miniconda3/bin
 
+# sourceOrError "$DOTFILES/prompt.zsh"
+source "$DOTFILES/functions.zsh"
+source "$DOTFILES/aliases.zsh"
+source "$DOTFILES/bindings.zsh"
+source "$DOTFILES/fzf.sh"
+
+typeset -aU path
+
 if [[ -f "$HOME/.fzf.zsh" ]]; then
     source $HOME/.fzf.zsh
 else
@@ -70,15 +78,7 @@ else
     echo "No autojump to source"
 fi
 
-
 if [ -x pipenv ]; then
     eval $(pipenv --completion)
 fi
 
-# sourceOrError "$DOTFILES/prompt.zsh"
-source "$DOTFILES/functions.zsh"
-source "$DOTFILES/aliases.zsh"
-source "$DOTFILES/bindings.zsh"
-source "$DOTFILES/fzf.sh"
-
-typeset -aU path
