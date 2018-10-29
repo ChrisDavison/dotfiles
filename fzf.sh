@@ -35,3 +35,13 @@ vg() { # FZF through grep results, and open (multiple, using tab) files in vim
      vim $file
   fi
 }
+
+bm(){ # Jump to 'bookmark' directories (dirs in ~/.bm)
+    cd $(cat ~/.bm | sed "s/#.*//g" | sed '/^\s*$/d' | fzf -1 -q "$1")
+}
+
+add_bm(){
+    echo $(pwd) >> ~/.bm
+    cat ~/.bm | sort | uniq > ~/.bm.bak
+    mv ~/.bm.bak ~/.bm
+}
