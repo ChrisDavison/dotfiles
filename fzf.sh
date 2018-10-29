@@ -2,7 +2,11 @@ fbr() { # FZF through git branches
     local branches branch
     branches=$(git branch -vv)
     branch=$(echo "$branches" | fzf +m)
-    git checkout $(echo "$branch" | awk {'print $1}' | sed "s/.* //")
+    if [[ -n "$branch" ]]; then
+        git checkout $(echo "$branch" | awk {'print $1}' | sed "s/.* //")
+    else
+        echo "No branch given"
+    fi
 }
 
 fco() { # FZF through branches and tags
