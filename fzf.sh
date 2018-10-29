@@ -45,7 +45,11 @@ vg() { # FZF through grep results, and open (multiple, using tab) files in vim
 }
 
 bm(){ # Jump to 'bookmark' directories (dirs in ~/.bm)
-    cd $(cat ~/.bm | sed "s/#.*//g" | sed '/^\s*$/d' | fzf -1 -q "$1")
+    local selected
+    selected=$(cat ~/.bm | sed "s/#.*//g" | sed '/^\s*$/d' | fzf -1 -q "$1")
+    if [[ -n $selected ]]; then
+        cd $selected
+    fi
 }
 
 add_bm(){
