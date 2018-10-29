@@ -1,4 +1,4 @@
-cv() {
+cv() { # Choose a Vim session
     if [ -d ~/.vim-sessions ]; then
         selected=$(fd . ~/.vim-sessions | fzf -q "$1")
         [[ -n "$selected" ]] && $EDITOR -S "$selected"
@@ -7,7 +7,7 @@ cv() {
     fi
 }
 
-venv() {
+venv() { # Choose a python env in ~/.envs
     if [ -d ~/.envs ]; then
         selected=$(fd "\bactivate$" ~/.envs | fzf -q "$1")
         [[ -n "$selected" ]] && source "$selected"
@@ -16,7 +16,7 @@ venv() {
     fi
 }
 
-envv() {
+envv() { # Activate a virtual env from the root of this git repo
     find $(git rev-parse --show-toplevel) -regex ".*activate$"
 }
 
@@ -29,7 +29,7 @@ choose_tmux_session() {
     fi
 }
 
-mcd() {
+mcd() { # Make a directory, then switch to it
     # Make, and switch to, a directory
     if [ ! -n "$1" ]; then
         echo "Must pass directory as argument"
@@ -53,11 +53,15 @@ _for_each_repo() {
     popd
 }
 
-copy_to_bin() {
+copy_to_bin() { # Copy a file to ~/bin, without file extension
     cp "$1" ~/bin/$(noext $1)
 }
 
-newgit() {
+link_to_bin() {
+    ln -s "$1" ~/bin/$(noext $1)
+}
+
+newgit() { # Create a new project (touching readme and init commit)
     dir="$1"
     mkdir "$dir"
     cd "$dir"
@@ -68,7 +72,7 @@ newgit() {
     git status
 }
 
-capture(){
+capture(){ # Add a dated entry to file $CAPTUREFILE
     args="$@"
     d=$(date +"%F %T")
     if [ -f "$CAPTUREFILE" ]; then
@@ -78,3 +82,6 @@ capture(){
     fi
 }
 
+list_dotfile_functions() {
+    rg ".*\(\).*\{" ~/devel/dotfiles
+}
