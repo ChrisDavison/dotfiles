@@ -9,7 +9,7 @@ cv() { # Choose a Vim session
 
 venv() { # Choose a python env in ~/.envs
     if [ -d ~/.envs ]; then
-        selected=$(fd "\bactivate$" ~/.envs | fzf -q "$1")
+        selected=$(fd "\bactivate$" ~/.envs | fzf -1 -q "$1")
         [[ -n "$selected" ]] && source "$selected"
     else
         echo "Couldn't find ~/.envs folder"
