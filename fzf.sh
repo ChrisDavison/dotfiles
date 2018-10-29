@@ -29,6 +29,10 @@ fcoc() { # FZF through git commits
   git checkout $(echo "$commit" | sed "s/ .*//")
 }
 
+fshow(){ # FZF and show a commit
+    git show $(git log --pretty=oneline | fzf -q "$1" | cut -d=' ' -f1)
+}
+
 vg() { # FZF through grep results, and open (multiple, using tab) files in vim
   local file
 
