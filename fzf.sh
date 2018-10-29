@@ -57,3 +57,7 @@ add_bm(){
     cat ~/.bm | sort | uniq > ~/.bm.bak
     mv ~/.bm.bak ~/.bm
 }
+
+fop(){
+    open $(fzf -m -q "$1")
+}
