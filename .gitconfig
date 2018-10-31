@@ -10,6 +10,7 @@
 [core]
 	excludesfiles = /Users/davison/.global_ignore
     pager = less -r
+    editor="code --wait"
 [alias]
     a = add --all
 	b = branch
