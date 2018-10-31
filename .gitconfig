@@ -9,6 +9,7 @@
 	ff = false
 [core]
 	excludesfiles = /Users/davison/.global_ignore
+    pager = less -r
 [alias]
     a = add --all
 	b = branch
@@ -22,7 +23,8 @@
     unstage = reset -q HEAD --
     discard = checkout --
 	d = diff -w
-	dw = diff -w --word-diff
+    dw = diff -w --minimal --word-diff=color --word-diff-regex='([0-9@A-Za-z]+|[^0-9@A-Za-z()]+|[()])'
+    dws = diff -w --minimal --word-diff=color --word-diff-regex=.
     aliases = "!git config -l | grep alias | cut -c 7-"
 	rb = rebase
 	features = "!git branches | grep feature"
