@@ -60,25 +60,7 @@ source "$DOTFILES/fzf.sh"
 
 typeset -aU path
 
-if [[ -f "$HOME/.fzf.zsh" ]]; then
-    source $HOME/.fzf.zsh
-else
-    echo "No $HOME/.fzf.zsh to source"
-fi
-
-if [[ -f "$HOME/.cargo/env" ]]; then
-    source $HOME/.cargo/env
-else
-    echo "No $HOME/.cargo/env to source"
-fi
-
-if [ -f "/usr/local/etc/profile.d/autojump.sh" ]; then
-    source /usr/local/etc/profile.d/autojump.sh
-else
-    echo "No autojump to source"
-fi
-
-if [ -x pipenv ]; then
-    eval $(pipenv --completion)
-fi
-
+[ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env
+[ -f "/usr/local/etc/profile.d/autojump.sh" ] && source /usr/local/etc/profile.d/autojump.sh
+[ -x pipenv ] && eval $(pipenv --completion)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
