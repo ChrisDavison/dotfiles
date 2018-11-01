@@ -4,7 +4,7 @@ export ZSH="/Users/davison/.oh-my-zsh"
 ZSH_THEME="flazz"
 DISABLE_AUTO_UPDATE="true"
 plugins=(
-  
+
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -33,7 +33,6 @@ unsetopt extended_history
 export DOTFILES="$HOME/devel/dotfiles"
 export TERM=xterm-256color
 export EDITOR="vim"
-export LOGBOOK_DIR="$HOME/devel/logbook"
 export RESEARCHFIGURES="$HOME/Dropbox/work/outputs"
 
 export GOPATH="$HOME"
@@ -53,14 +52,14 @@ path+=$HOME/bin
 path+=/usr/local/miniconda3/bin
 
 # sourceOrError "$DOTFILES/prompt.zsh"
-source "$DOTFILES/functions.zsh"
-source "$DOTFILES/aliases.zsh"
-source "$DOTFILES/bindings.zsh"
-source "$DOTFILES/fzf.sh"
+source "$DOTFILES/functions.zsh" && echo "Functions sourced"
+source "$DOTFILES/aliases.zsh" && echo "Aliases sourced"
+source "$DOTFILES/bindings.zsh" && echo "Bindings sourced"
+source "$DOTFILES/fzf.sh" && echo "FZF functions sourced"
 
 typeset -aU path
 
-[ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env
+[ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env && echo "Cargo sourced"
 [ -f "/usr/local/etc/profile.d/autojump.sh" ] && source /usr/local/etc/profile.d/autojump.sh
-[ -x pipenv ] && eval $(pipenv --completion)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -x pipenv ] && eval $(pipenv --completion) && echo "Pipenv completions enabled"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && echo "FZF sourced"
