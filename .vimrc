@@ -139,9 +139,6 @@ if executable('rls')
 endif
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter=1
-let g:ale_set_quickfix=1
 " }}}2
 " }}}
 " custom folding for markdown headers {{{
@@ -172,20 +169,5 @@ command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
-" Handling logbook
-function! s:last_logbook()
-    let files=globpath('$LOGBOOK_DIR', '20*.md')
-    let fn=split(files, '\n')[-1]
-    exec "edit ".fn
-endfunction
-function! s:logbook_today()
-    let t=localtime()
-    let mydir=$LOGBOOK_DIR
-    let fn=mydir."/".strftime("%Y-%m-%d--%a.md", t)
-    exec "edit ".fn
-endfunction
-command! LBprevious call s:last_logbook()
-command! LBtoday call s:logbook_today()
 " }}}
 cd ~/devel
-let g:deoplete#enable_at_startup = 1
