@@ -52,14 +52,18 @@ path+=$HOME/bin
 path+=/usr/local/miniconda3/bin
 
 # sourceOrError "$DOTFILES/prompt.zsh"
-source "$DOTFILES/functions.zsh" && echo "Functions sourced"
-source "$DOTFILES/aliases.zsh" && echo "Aliases sourced"
-source "$DOTFILES/bindings.zsh" && echo "Bindings sourced"
-source "$DOTFILES/fzf.sh" && echo "FZF functions sourced"
 
 typeset -aU path
 
-[ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env && echo "Cargo sourced"
+[ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env
 [ -f "/usr/local/etc/profile.d/autojump.sh" ] && source /usr/local/etc/profile.d/autojump.sh
-[ -x pipenv ] && eval $(pipenv --completion) && echo "Pipenv completions enabled"
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && echo "FZF sourced"
+[ -x pipenv ] && eval $(pipenv --completion)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source "$DOTFILES/functions.zsh"
+source "$DOTFILES/aliases.zsh"
+source "$DOTFILES/bindings.zsh"
+source "$DOTFILES/fzf.sh"
+
+[ -f ~/bin/randomquote ] && ~/bin/randomquote
+
