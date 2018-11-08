@@ -1,8 +1,10 @@
 if [ -x "$(command -v exa)" ]; then
     alias ls="exa --group-directories-first"
-    alias ll="exa --group-directories-first --long"
-    alias la="exa --group-directories-first -a --long"
+    alias ll="ls --long"
+    alias la="ll -a"
     alias lt="exa --tree -L 2"
+    alias lg="ll --git-ignore"
+    alias ltg="lt --git-ignore"
 elif [ -x "$(command -v gls)" ]; then
     alias ll='gls -lFh --group-directories-first --color=auto'
     alias la='gls -AlFh --group-directories-first --color=auto'
