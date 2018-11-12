@@ -158,12 +158,18 @@ bm(){ # Jump to 'bookmark' directories (dirs in ~/.bm)
     fi
 }
 
-add_bm(){
+add_bm(){ # Add current directory to ~/.bm (bookmarks)
     echo $(pwd) >> ~/.bm
     cat ~/.bm | sort | uniq > ~/.bm.bak
     mv ~/.bm.bak ~/.bm
 }
 
-fop(){
+fop(){ # Fuzzy-open file(s) (multiple, using `<TAB>`)
     open $(fzf -m -q "$1")
+}
+
+
+fza(){ # Fuzzy-add files to git (multiple, using `<TAB>`)
+    selected=$(git ls-files -m -o --exclude-standard | fzf --print0 -m)
+    [ -n ${selected} ] && git add ${selected}
 }
