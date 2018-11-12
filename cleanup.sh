@@ -1,19 +1,7 @@
-removeOrError(){
-    target=~/"$1"
-    if [ -f ${target} ]; then
-        rm "${target}" || echo "Error removing ${target}"
-    else
-        echo "${target} doesn't exist"
-    fi
-}
-removeOrError ".zshenv"
-removeOrError ".vimrc"
-removeOrError ".sqliterc"
-removeOrError ".tmux.conf"
-removeOrError ".gitconfig"
+[ -f "$HOME/.zshrc" ] && rm "$HOME/.zshrc" || echo "Error removing .zshrc"
+[ -f "$HOME/.vimrc" ] && rm "$HOME/.vimrc" || echo "Error removing .vimrc"
+[ -f "$HOME/.sqliterc" ] && rm "$HOME/.sqliterc" || echo "Error removing .sqliterc"
+[ -f "$HOME/.tmux.conf" ] && rm "$HOME/.tmux.conf" || echo "Error removing .tmux.conf"
+[ -f "$HOME/.gitconfig" ] && rm "$HOME/.gitconfig" || echo "Error removing .gitconfig"
 
-if [ -d ~/.vim ]; then
-    rm -rf ~/.vim || echo "Error removing vim"
-else
-    echo "~/.vim doesn't exist"
-fi
+[ -d ~/.vim ] && rm -rf ~/.vim || echo "Error removing ~/.vim"
