@@ -49,7 +49,7 @@ path+=$GOBIN
 path+=$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
 path+=/Users/davison/Library/Python/3.7/bin/
 path+=/Applications/Julia-1.0.app/Contents/Resources/julia/bin/
-path+=$HOME/devel/scripts/
+path+=$HOME/src/github.com/chrisdavison/scripts/
 path+=$HOME/.cargo/bin/
 path+=$HOME/bin
 path+=/usr/local/miniconda3/bin
@@ -101,7 +101,7 @@ alias ipython="ipython --pprint --no-banner"
 #     $$\   $$ |$$ |  $$\ $$ |  $$ |  $$ |  $$ |        $$ |
 #     \$$$$$$  |\$$$$$$  |$$ |  $$ |$$$$$$\ $$ |        $$ |
 #      \______/  \______/ \__|  \__|\______|\__|        \__|
-source "$HOME/devel/dotfiles/functions.zsh"
+source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 
 [ -f ~/bin/randomquote ] && ~/bin/randomquote
 [ -f "$HOME/.cargo/env" ] && source $HOME/.cargo/env

@@ -13,7 +13,7 @@ linkOrError(){
     fi
     ln -s "${origin}" "${target}"
 }
-linkOrError ".zshenv"
+linkOrError ".zshrc"
 linkOrError ".sqliterc"
 linkOrError ".tmux.conf"
 linkOrError ".gitconfig"

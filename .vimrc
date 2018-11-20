@@ -170,4 +170,4 @@ command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
 " }}}
-cd ~/devel
+cd ~/src/github.com/chrisdavison/

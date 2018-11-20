@@ -48,20 +48,6 @@ mcd() { # Make a directory, then switch to it
     cd "$1"
 }
 
-_for_each_repo() {
-    pushd "$HOME" >> /dev/null
-    for repo in $HOME/devel/*; do
-        if [ ! -d "$repo" ]; then
-            continue
-        fi
-        cd "$repo"
-        echo "Running $@ on $repo"
-        $@
-        echo
-    done
-    popd
-}
-
 copy_to_bin() { # Copy a file to ~/bin, without file extension
     cp "$1" ~/bin/$(noext $1)
 }
@@ -90,11 +76,6 @@ capture(){ # Add a dated entry to file $CAPTUREFILE
         echo "Capturefile not defined"
     fi
 }
-
-list_dotfile_functions() {
-    rg ".*\(\).*\{" ~/devel/dotfiles
-}
-
 
 #     $$$$$$$$\ $$$$$$$$\ $$$$$$$$\
 #     $$  _____|\____$$  |$$  _____|
