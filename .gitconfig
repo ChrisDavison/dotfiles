@@ -50,6 +50,10 @@
     # Push branch to/remove branch from remoteorigin/<branch>
     publish = "!git push -u origin $(git branch-name)"
     nuke = "!git push origin :$(git branch-name)"
+	#=============================================================
+    # List branches in order of most recently modified
+    bbd =branch --sort=-committerdate
+    bbdv=branch --sort=-committerdate --format='%(color:green)%(committerdate:relative)%(color:reset) on %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject)%(color:reset)'
 [diff]
 	submodule = log
 [status]
