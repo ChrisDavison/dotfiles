@@ -154,3 +154,7 @@ fza(){ # Fuzzy-add files to git (multiple, using `<TAB>`)
     selected=$(git ls-files -m -o --exclude-standard | fzf --print0 -m)
     [ -n ${selected} ] && git add ${selected}
 }
+
+peek() {
+    tmux split-window -p 33 "$EDITOR" "$@" || exit; 
+}
