@@ -34,6 +34,7 @@ export GOPATH="$HOME"
 export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export CAPTUREFILE=$HOME/Dropbox/.capture
+export WORKON_HOME="$HOME/.envs"
 
 #     $$$$$$$\   $$$$$$\ $$$$$$$$\ $$\   $$\
 #     $$  __$$\ $$  __$$\\__$$  __|$$ |  $$ |
@@ -52,6 +53,7 @@ path+=/Applications/Julia-1.0.app/Contents/Resources/julia/bin/
 path+=$HOME/src/github.com/chrisdavison/scripts/
 path+=$HOME/.cargo/bin/
 path+=$HOME/bin
+path+=$HOME/.virtualenvs/
 path+=/usr/local/miniconda3/bin
 
 # Remove duplicates from $PATH
@@ -108,3 +110,4 @@ source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 [ -f "/usr/local/etc/profile.d/autojump.sh" ] && source /usr/local/etc/profile.d/autojump.sh
 [ -x pipenv ] && eval $(pipenv --completion)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
