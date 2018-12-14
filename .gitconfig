@@ -9,7 +9,8 @@
 	ff = false
 [core]
 	excludesfiles = /Users/davison/.global_ignore
-    editor="code --wait"
+    ; editor="code --wait"
+    editor="mvim -v"
     pager="less -F -X"
 [alias]
     a = add --all
