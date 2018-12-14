@@ -135,7 +135,11 @@ bm(){ # Jump to 'bookmark' directories (dirs in ~/.bm)
     local selected
     selected=$(cat ~/.bm | sed "s/#.*//g" | sed '/^\s*$/d' | fzf -1 -q "$1")
     if [[ -n $selected ]]; then
-        cd $selected
+        if [[ -d "${selected}" ]]; then
+            cd $selected
+        else
+            echo "Dir doesn't exist."
+        fi
     fi
 }
 
@@ -163,7 +167,8 @@ asmr() {
     # Make query an "OR" regex pattern
     query=$(echo "$@" | sed "s/ /|/g")
     # Find all lines matching, and select only 1 from a random shuffle
-    match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | gshuf -n1)
+    # match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | gshuf -n1)
+    match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | gshuf -n1)
     url=""
     if [[ -z ${match} ]]; then
         # If we've NOT got a match, build a youtube search url
@@ -179,5 +184,9 @@ asmr() {
 }
 
 asmrvids() {
-    cat ~/Dropbox/asmr.csv | cut -d';' -f1
+    curl -s https://chrisdavison.github.io/asmr.csv | cut -d';' -f1
+}
+
+asmrfavs() {
+    curl -s https://chrisdavison.github.io/asmr.csv | rg fav | cut -d';' -f1
 }
