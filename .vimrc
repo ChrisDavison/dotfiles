@@ -111,6 +111,9 @@ augroup vimrc
     autocmd FileType c,cpp,arduino,go,rust,javascript set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
+    autocmd BufNewFile * -1r !vim_file_template <afile>
+    autocmd BufNewFile * :silent call search('^.*implementation here')
+    autocmd BufNewFile * :redraw
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
