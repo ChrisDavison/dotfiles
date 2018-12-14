@@ -158,3 +158,26 @@ fza(){ # Fuzzy-add files to git (multiple, using `<TAB>`)
 peek() {
     tmux split-window -p 33 "$EDITOR" "$@" || exit; 
 }
+
+asmr() {
+    # Make query an "OR" regex pattern
+    query=$(echo "$@" | sed "s/ /|/g")
+    # Find all lines matching, and select only 1 from a random shuffle
+    match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | gshuf -n1)
+    url=""
+    if [[ -z ${match} ]]; then
+        # If we've NOT got a match, build a youtube search url
+        echo "No match. Searching for ${query}"
+        joined=$(echo "${query}" | sed "s/|/+/g")
+        url="https://www.youtube.com/results?search_query=asmr+${joined}"
+    else
+        # Otherwise, just set the url to that of the ASMR video
+        echo "Playing ::" $(cut -d";" -f1 <(echo ${match}))
+        url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo ${match}))
+    fi
+    open ${url}
+}
+
+asmrvids() {
+    cat ~/Dropbox/asmr.csv | cut -d';' -f1
+}
