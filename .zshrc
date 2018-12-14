@@ -88,12 +88,24 @@ fi
 
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
-alias git='hub'
-alias g='hub'
-alias git-root='cd $(hub rev-parse --show-toplevel)'
 alias vi='mvim -v'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
+alias git='hub'
+alias g='hub'
+alias git-root='cd $(hub rev-parse --show-toplevel)'
+alias ga="hub add --all"
+alias gb="hub branch"
+alias gc="hub commit"
+alias gco="hub checkout"
+alias gl="hub log --all --decorate --oneline --graph"
+alias gpb="hub pull --rebase --prune"
+alias gunstage="hub reset -q HEAD -- "
+alias gdiscard="hub checkout -- "
+alias gd="hub diff -w"
+alias gs="hub status -s -b"
+alias gbbd="hub branch --sort=committerdate"
+alias gbbdv="hub branch --sort=-committerdate --format='%(color:green)%(committerdate:relative)%(color:reset) on %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject)%(color:reset)'"
 
 #      $$$$$$\   $$$$$$\  $$$$$$$\  $$$$$$\ $$$$$$$\ $$$$$$$$\
 #     $$  __$$\ $$  __$$\ $$  __$$\ \_$$  _|$$  __$$\\__$$  __|
