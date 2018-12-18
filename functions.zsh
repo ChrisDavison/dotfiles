@@ -1,3 +1,4 @@
+# Functions
 #     $$$$$$$$\
 #     $$  _____|
 #     $$ |   $$\   $$\ $$$$$$$\   $$$$$$$\
@@ -77,6 +78,7 @@ capture(){ # Add a dated entry to file $CAPTUREFILE
     fi
 }
 
+# FZF
 #     $$$$$$$$\ $$$$$$$$\ $$$$$$$$\
 #     $$  _____|\____$$  |$$  _____|
 #     $$ |          $$  / $$ |
@@ -166,16 +168,7 @@ peek() {
 asmr() {
     # Make query an "OR" regex pattern
     query=$(echo "$@" | sed "s/ /|/g")
-    # Find all lines matching, and select only 1 from a random shuffle
-    # match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | gshuf -n1)
-    if type shuf > /dev/null; then
-        match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | shuf -n1)
-    elif type gshuf > /dev/null; then
-        match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | gshuf -n1)
-    else
-        echo "No shuffle util..."
-        return
-    fi
+    match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | random_line)
     url=""
     if [[ -z ${match} ]]; then
         # If we've NOT got a match, build a youtube search url
@@ -187,13 +180,7 @@ asmr() {
         echo "Playing ::" $(cut -d";" -f1 <(echo ${match}))
         url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo ${match}))
     fi
-    if type open > /dev/null; then 
-        open ${url}
-    elif type chrome > /dev/null; then
-        chrome ${url}
-    else
-        echo "No browser..."
-    fi
+    open_in_browser ${url}
 }
 
 asmrvids() {
@@ -202,4 +189,15 @@ asmrvids() {
 
 asmrfavs() {
     curl -s https://chrisdavison.github.io/asmr.csv | rg fav | cut -d';' -f1
+}
+
+open_in_browser() {
+    url="$1"
+    if type open > /dev/null; then 
+        open ${url}
+    elif type chrome > /dev/null; then
+        chrome ${url}
+    else
+        echo "No browser..."
+    fi
 }
