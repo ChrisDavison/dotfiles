@@ -168,7 +168,14 @@ asmr() {
     query=$(echo "$@" | sed "s/ /|/g")
     # Find all lines matching, and select only 1 from a random shuffle
     # match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | gshuf -n1)
-    match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | shuf -n1)
+    if type shuf > /dev/null; then
+        match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | shuf -n1)
+    elif type gshuf > /dev/null; then
+        match=$(curl -s https://chrisdavison.github.io/asmr.csv | rg "${query}" | gshuf -n1)
+    else
+        echo "No shuffle util..."
+        return
+    fi
     url=""
     if [[ -z ${match} ]]; then
         # If we've NOT got a match, build a youtube search url
