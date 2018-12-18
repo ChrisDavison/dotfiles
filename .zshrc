@@ -1,3 +1,7 @@
+if [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default
+fi
+
 # ========= ZSH
 export ZSH="/Users/davison/.oh-my-zsh"
 ZSH_THEME="flazz"
@@ -35,6 +39,7 @@ export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export CAPTUREFILE=$HOME/Dropbox/.capture
 export WORKON_HOME="$HOME/.envs"
+export LESS=FRSX
 
 #     $$$$$$$\   $$$$$$\ $$$$$$$$\ $$\   $$\
 #     $$  __$$\ $$  __$$\\__$$  __|$$ |  $$ |
@@ -91,21 +96,7 @@ alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias vi='mvim -v'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
-alias git='hub'
-alias g='hub'
-alias git-root='cd $(hub rev-parse --show-toplevel)'
-alias ga="hub add --all"
-alias gb="hub branch"
-alias gc="hub commit"
-alias gco="hub checkout"
-alias gl="hub log --all --decorate --oneline --graph"
-alias gpb="hub pull --rebase --prune"
-alias gunstage="hub reset -q HEAD -- "
-alias gdiscard="hub checkout -- "
-alias gd="hub diff -w"
-alias gs="hub status -s -b"
-alias gbbd="hub branch --sort=committerdate"
-alias gbbdv="hub branch --sort=-committerdate --format='%(color:green)%(committerdate:relative)%(color:reset) on %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject)%(color:reset)'"
+alias g="git"
 
 #      $$$$$$\   $$$$$$\  $$$$$$$\  $$$$$$\ $$$$$$$\ $$$$$$$$\
 #     $$  __$$\ $$  __$$\ $$  __$$\ \_$$  _|$$  __$$\\__$$  __|

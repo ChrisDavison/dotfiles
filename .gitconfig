@@ -1,65 +1,53 @@
 [user]
-	name = Chris Davison
-	email = c.jr.davison@gmail.com
+    name=Chris Davison
+    email=c.jr.davison@gmail.com
 [advice]
-    ignoreHook = false
+    ignoreHook=false
 [push]
-	default = simple
+    default=simple
 [merge]
-	ff = false
-[core]
-	excludesfiles = /Users/davison/.global_ignore
-    ; editor="code --wait"
+    ff=false
+[rebase]
+    autosquash=true
+[help]
+    autocorrect=5
+[status]
+    submodulesummary=1
+[diff]
+    submodule=log
+[code]
+    excludesfiles=/Users/davison/.global_ignore
     editor="mvim -v"
-    pager="less -F -X"
+    pager="less -FRSX"
 [alias]
-    a = add --all
-	b = branch
-	c = commit
-    co = checkout
-	ca = "!f(){ git add --all; git commit $@; }; f"
-	delete-merged-branches = "!git branch --merged | grep -v '*' | xargs -n 1 git branch -d"
-	l = log --all --decorate --oneline --graph
-	pb = pull --rebase --prune
-	# Handling the staging area
-    unstage = reset -q HEAD --
-    discard = checkout --
-	d = diff -w
-    dw = diff -w --minimal --word-diff=color --word-diff-regex='([0-9@A-Za-z]+|[^0-9@A-Za-z()]+|[()])'
-    dws = diff -w --minimal --word-diff=color --word-diff-regex=.
-    aliases = "!git config -l | grep alias | cut -c 7-"
-	rb = rebase
-	features = "!git branches | grep feature"
-	fixes = "!git branches | grep fix"
+    uncommit=reset --soft HEAD^
+    unstage=reset HEAD --
+    discard=checkout --
+    staged=diff --cached
+    ctags="!.git/hooks/ctags"
+    a=add --all
+	c=commit
+    co=checkout
+	l=log --all --decorate --oneline --graph
+	pb=pull --rebase --prune
+	d=diff -w
+	rb=rebase
+    s=status -s -b
 	#=============================================================
 	# Repo 'metadata'
-	branch-name = rev-parse --abbrev-ref HEAD
-    ignored = ls-files --others
-	untracked = ls-files --others
-	tracked = ls-files
-	s = status -s -b
-	unpushed = log --branches --not --remotes
-	branches = branch -a
-    tags = tag
-    stashes = stash list
+	branch-name=rev-parse --abbrev-ref HEAD
+	branches=branch -a
+    tags=tag
+    stashes=stash list
 	#=============================================================
     # Handling conflicts
 	# Checkout OUR (local) or THEIR (remote) version of a file
-	ours = "!f() { git checkout --ours $@ && git add $@; }; f"
-	theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+	ours="!f() { git checkout --ours $@ && git add $@; }; f"
+	theirs="!f() { git checkout --theirs $@ && git add $@; }; f"
 	#=============================================================
     # Push branch to/remove branch from remoteorigin/<branch>
-    publish = "!git push -u origin $(git branch-name)"
-    nuke = "!git push origin :$(git branch-name)"
-	#=============================================================
-    # List branches in order of most recently modified
-    bbd =branch --sort=-committerdate
-    bbdv=branch --sort=-committerdate --format='%(color:green)%(committerdate:relative)%(color:reset) on %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject)%(color:reset)'
-[diff]
-	submodule = log
-[status]
-	submodulesummary = 1
-[help]
-	autocorrect = 5
-[rebase]
-	autosquash = true
+    publish="!git push -u origin $(git branch-name)"
+    nuke="!git push origin :$(git branch-name)"
+
+[init]
+	templatedir=~/.git_template
