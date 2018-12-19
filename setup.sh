@@ -38,38 +38,6 @@ clone_to_bundle() {
         git clone git@github.com:"$repo" "$target" > /dev/null
     fi
 }
-[ -f ~/.vim-plugins ] && rm ~/.vim-plugins
-touch ~/.vim-plugins
-# Individual languages {{{2
-clone_to_bundle fatih/vim-go
-clone_to_bundle pangloss/vim-javascript
-clone_to_bundle leafgarland/typescript-vim
-clone_to_bundle lervag/vimtex
-clone_to_bundle rust-lang/rust.vim
-# }}}2
-# Utility {{{2
-clone_to_bundle airblade/vim-gitgutter
-clone_to_bundle godlygeek/tabular
-clone_to_bundle Konfekt/FastFold
-clone_to_bundle MarcWeber/vim-addon-mw-utils
-clone_to_bundle dahu/vim-fanfingtastic
-clone_to_bundle dhruvasagar/vim-table-mode
-clone_to_bundle easymotion/vim-easymotion
-clone_to_bundle ervandew/supertab
-clone_to_bundle jpalardy/vim-slime
-clone_to_bundle junegunn/fzf.vim
-clone_to_bundle tomtom/tlib_vim
-clone_to_bundle tpope/vim-commentary
-clone_to_bundle tpope/vim-sensible
-clone_to_bundle tpope/vim-surround
-clone_to_bundle tpope/vim-unimpaired
-clone_to_bundle tpope/vim-vinegar
-clone_to_bundle wellle/targets.vim
-# }}}2
-# Themes {{{2
-clone_to_bundle junegunn/seoul256.vim
-clone_to_bundle morhetz/gruvbox
-# }}}2
 # }}} 
 # Install FZF {{{
 if [ ! -d "$HOME/.vim/bundle/fzf" ]; then
@@ -81,9 +49,3 @@ else
 fi
 ~/.vim/bundle/fzf/install --all > /dev/null
 # }}}
-
-echo "Plugins not tracked (may need deleted)"
-ls -1 ~/$vimdir/bundle | sort > ~/.vim-plugins-installed
-cat ~/.vim-plugins | sort >> ~/.vim-plugins-sorted
-diff ~/.vim-plugins-sorted ~/.vim-plugins-installed
-rm ~/.vim-plugins-sorted ~/.vim-plugins-installed ~/.vim-plugins

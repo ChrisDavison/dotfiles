@@ -1,7 +1,6 @@
 " chrisDavison's vim config
 let mapleader=" "
 " settings (using tpope/vim-sensible as a base) {{{
-execute pathogen#infect()
 syntax on
 filetype plugin indent on
 
@@ -42,12 +41,41 @@ set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
 set splitbelow splitright " Split windows down and right by default
 set laststatus=2
-set statusline=\ (%n)\ %F%=\ %m\ %Y\ 
+set statusline=\ (%n)\ %F%=\ %m\ %Y\
 set t_ut= " Fix issues with background color on some terminals
 if has('persistent_undo')
     set undodir=~/.undodir/ undofile
 endif
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+" }}}
+" plugins {{{
+call plug#begin('~/.vim/plugged')
+" programming languages
+Plug 'sheerun/vim-polyglot'  " Many programming language plugins, lazy-loaded
+" utility
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'airblade/vim-gitgutter'
+Plug 'godlygeek/tabular'
+Plug 'Konfekt/FastFold'
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'dahu/vim-fanfingtastic'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'easymotion/vim-easymotion'
+Plug 'ervandew/supertab'
+Plug 'jpalardy/vim-slime'
+Plug 'junegunn/fzf.vim'
+Plug 'shougo/deoplete.nvim'
+Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'
+Plug 'wellle/targets.vim'
+" themes
+Plug 'junegunn/seoul256.vim'
+Plug 'morhetz/gruvbox'
+call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
@@ -74,6 +102,7 @@ vnoremap > >gv
 " Mostly stuff from FZF for navigating buffers
 nnoremap <leader>b :Buffers<Cr>
 nnoremap <leader>p :Files<Cr>
+nnoremap <leader>g :GFiles<Cr>
 nnoremap <leader>ll :Lines<cr>
 nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
@@ -82,6 +111,8 @@ nnoremap <leader>tb :BTags<CR>
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
+" use very-magic search by default
+nnoremap / /\v
 " Other bindings
 nnoremap <leader>ev :e $MYVIMRC<BAR>echo "Editing VIMRC"<CR>
 nnoremap <leader>sv :so $MYVIMRC<BAR>echo "Sourced VIMRC"<CR>
@@ -115,6 +146,7 @@ augroup vimrc
     autocmd BufNewFile * -1r !vim_file_template <afile>
     autocmd BufNewFile * :silent call search('^.*implementation here')
     autocmd BufNewFile * :redraw
+    autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
@@ -173,5 +205,8 @@ command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
+let g:deoplete#enable_at_startup = 1
+command! ASMR edit ~/Dropbox/asmr.csv | normal Go
+command! Note edit ~/Dropbox/notes.md | normal Go
 " }}}
 cd ~/src/github.com/chrisdavison/
