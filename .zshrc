@@ -93,7 +93,7 @@ fi
 
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
-alias vi='mvim -v'
+alias vi='nvim'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
@@ -114,3 +114,4 @@ source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 [ -x pipenv ] && eval $(pipenv --completion)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
+export PYSRC=/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/
