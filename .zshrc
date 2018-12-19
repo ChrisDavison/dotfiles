@@ -33,7 +33,7 @@ unsetopt bang_hist
 unsetopt extended_history
 
 export TERM=xterm-256color
-export EDITOR="vim"
+export EDITOR="nvim"
 export GOPATH="$HOME"
 export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'

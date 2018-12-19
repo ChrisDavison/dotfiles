@@ -17,7 +17,7 @@
     submodule=log
 [code]
     excludesfiles=/Users/davison/.global_ignore
-    editor="mvim -v"
+    editor="$EDITOR -v"
     pager="less -FRSX"
 [alias]
     uncommit=reset --soft HEAD^
