@@ -41,6 +41,8 @@ export CAPTUREFILE=$HOME/Dropbox/.capture
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 
+export ZSHFUNCS="$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
+
 #     $$$$$$$\   $$$$$$\ $$$$$$$$\ $$\   $$\
 #     $$  __$$\ $$  __$$\\__$$  __|$$ |  $$ |
 #     $$ |  $$ |$$ /  $$ |  $$ |   $$ |  $$ |
