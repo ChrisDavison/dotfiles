@@ -158,6 +158,9 @@ augroup vimrc
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
+    autocmd FileType sh let g:sh_fold_enabled=5
+    autocmd FileType sh let g:is_bash=1
+    autocmd FileType sh set foldmethod=syntax
 augroup END
 " specific language config {{{2
 let g:pymode_python = 'python3'
@@ -208,5 +211,7 @@ command! Bd bp|bd #
 let g:deoplete#enable_at_startup = 1
 command! ASMR edit ~/Dropbox/asmr.csv | normal Go
 command! Note edit ~/Dropbox/notes.md | normal Go
+
+let g:rustfmt_autosave = 1
 " }}}
 cd ~/src/github.com/chrisdavison/
