@@ -162,42 +162,93 @@ fza(){ # Fuzzy-add files to git (multiple, using `<TAB>`)
 }
 
 peek() {
-    tmux split-window -p 33 "$EDITOR" "$@" || exit; 
+    if inpath bat; then
+        tmux split-window -p 33 bat "$@" || exit; 
+    else
+        tmux split-window -p 33 "$EDITOR" "$@" || exit; 
+    fi
+}
+
+inpath() { type "$1" >/dev/null 2>&1; }
+
+pager() {
+    # Use PAGER, defaulting to less, if outputting to a terminal
+    if [ -t 1 ]; then
+        ${PAGER:-less} "$@"
+    # Otherwise, just cat
+    else
+        cat "$@"
+    fi
+}
+
+page() {
+    exec "$@" | pager
+}
+
+swap() {
+    set -e
+    mv "$2" "$1.$$"
+    mv "$1" "$2"
+    mv "$1.$$" "$1"
 }
 
 asmr() {
-    # Make query an "OR" regex pattern
-    query=$(echo "$@" | sed "s/ /|/g")
-    match=$(cat ~/Dropbox/asmr.csv | rg "${query}" | random_line)
-    url=""
-    if [[ -z ${match} ]]; then
-        # If we've NOT got a match, build a youtube search url
-        echo "No match. Searching for ${query}"
-        joined=$(echo "${query}" | sed "s/|/+/g")
-        url="https://www.youtube.com/results?search_query=asmr+${joined}"
-    else
-        # Otherwise, just set the url to that of the ASMR video
-        echo "Playing ::" $(cut -d";" -f1 <(echo ${match}))
-        url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo ${match}))
-    fi
-    open_in_browser ${url}
+    ASMRFILE=~/Dropbox/asmr.csv
+    case "$1" in
+        add|a)
+            read -p "Title: " vid_title
+            read -p "ID: " vid_hash
+            echo "$vid_title"";"$vid_hash >> "$ASMRFILE"  ;;
+        count) 
+            echo -n "Videos: " && echo $(wc -l "${ASMRFILE}") | cut -d' ' -f1 ;;
+        find|filter)
+            query=$(echo "$@" | sed "s/ /|/g")
+            cat "$ASMRFILE" | rg "${query}" | cut -d';' -f1 | column -s':' -t ;;
+        vids|list)
+            cat -s "$ASMRFILE" | sort | cut -d';' -f1 | column -s':' -t ;;
+        authors|artists)
+            cat -s "$ASMRFILE" | cut -d'-' -f1 | sort | uniq ;;
+        *)
+            # Make query an "OR" regex pattern
+            query=$(echo "$@" | sed "s/ /|/g")
+            # Find all lines matching, and select only 1 from a random shuffle
+            # Pipe cat to rg, so that I can switch to an external curl request
+            # if I wish to avoid the local file.
+            if inpath shuf; then
+                match=$(cat "$ASMRFILE" | rg "${query}" | shuf -n1)
+            elif inpath gshuf; then
+                match=$(cat "$ASMRFILE" | rg "${query}" | gshuf -n1)
+            else
+                echo "Couldn't find shuf or gshuf to choose random vid"
+                return 1
+            fi
+            url=""
+            if [[ -z ${match} ]]; then
+                # If we've NOT got a match, build a youtube search url
+                echo "No match. Searching for ${query}"
+                joined=$(echo "${query}" | sed "s/|/+/g")
+                url="https://www.youtube.com/results?search_query=asmr+${joined}"
+            else
+                # Otherwise, just set the url to that of the ASMR video
+                echo "Playing '$(cut -d";" -f1 <(echo ${match}))'"
+                url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo ${match}))
+            fi
+            open_in_browser ${url} ;;
+    esac
 }
 
-asmrvids() {
-    curl -s https://chrisdavison.github.io/asmr.csv | cut -d';' -f1
-}
-
-asmrfavs() {
-    curl -s https://chrisdavison.github.io/asmr.csv | rg fav | cut -d';' -f1
-}
 
 open_in_browser() {
     url="$1"
-    if type open > /dev/null; then 
+    if inpath open; then
         open ${url}
-    elif type chrome > /dev/null; then
+    elif inpath firefox; then 
+        firefox ${url}
+    elif inpath chrome; then
         chrome ${url}
     else
         echo "No browser..."
-    fi
+        return 2
+    fi 
 }
+
