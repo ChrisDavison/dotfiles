@@ -40,6 +40,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 export CAPTUREFILE=$HOME/Dropbox/.capture
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
+export NOTESDIR="$HOME/Dropbox/notes"
 
 export ZSHFUNCS="$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 
@@ -116,4 +117,3 @@ source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 [ -x pipenv ] && eval $(pipenv --completion)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
-export PYSRC=/usr/local/Cellar/python/3.7.1/Frameworks/Python.framework/Versions/3.7/lib/python3.7/

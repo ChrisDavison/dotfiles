@@ -71,10 +71,10 @@ newgit() { # Create a new project (touching readme and init commit)
 capture(){ # Add a dated entry to file $CAPTUREFILE
     args="$@"
     d=$(date +"%F %T")
-    if [ -f "$CAPTUREFILE" ]; then
-        echo "- $d $args" >> "$CAPTUREFILE"
+    if [ -f "$NOTESDIR/braindump.md" ]; then
+        echo "- $d $args" >> "$NOTESDIR/braindump.md"
     else
-        echo "Capturefile not defined"
+        echo "No $NOTESDIR/braindump.md"
     fi
 }
 
