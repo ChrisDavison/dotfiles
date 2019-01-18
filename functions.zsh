@@ -68,16 +68,6 @@ newgit() { # Create a new project (touching readme and init commit)
     git status
 }
 
-capture(){ # Add a dated entry to file $CAPTUREFILE
-    args="$@"
-    d=$(date +"%F %T")
-    if [ -f "$NOTESDIR/braindump.md" ]; then
-        echo "- $d $args" >> "$NOTESDIR/braindump.md"
-    else
-        echo "No $NOTESDIR/braindump.md"
-    fi
-}
-
 # FZF
 #     $$$$$$$$\ $$$$$$$$\ $$$$$$$$\
 #     $$  _____|\____$$  |$$  _____|
@@ -137,7 +127,7 @@ bm(){ # Jump to 'bookmark' directories (dirs in ~/.bm)
     local selected
     selected=$(cat ~/.bm | sed "s/#.*//g" | sed '/^\s*$/d' | fzf -1 -q "$1")
     if [[ -n $selected ]]; then
-        if [[ -d "${selected}" ]]; then
+        if [[ -d "$selected" ]]; then
             cd $selected
         else
             echo "Dir doesn't exist."
@@ -173,9 +163,10 @@ inpath() { type "$1" >/dev/null 2>&1; }
 
 pager() {
     # Use PAGER, defaulting to less, if outputting to a terminal
-    if [ -t 1 ]; then
+    if inpath bat; then
+        bat "$@"
+    elif [ -t 1 ]; then
         ${PAGER:-less} "$@"
-    # Otherwise, just cat
     else
         cat "$@"
     fi
@@ -192,22 +183,50 @@ swap() {
     mv "$1.$$" "$1"
 }
 
+
 asmr() {
     ASMRFILE=~/Dropbox/asmr.csv
     case "$1" in
         add|a)
+            read -p "Author: " vid_author
             read -p "Title: " vid_title
             read -p "ID: " vid_hash
-            echo "$vid_title"";"$vid_hash >> "$ASMRFILE"  ;;
-        count) 
-            echo -n "Videos: " && echo $(wc -l "${ASMRFILE}") | cut -d' ' -f1 ;;
+            echo "$vid_author: $vid_title;$vid_hash" >> "$ASMRFILE"  ;;
         find|filter)
             query=$(echo "$@" | sed "s/ /|/g")
-            cat "$ASMRFILE" | rg "${query}" | cut -d';' -f1 | column -s':' -t ;;
+            cat "$ASMRFILE" | sort | rg "$query" | cut -d';' -f1 | column -s':' -t ;;
+        findfav)
+            query=$(echo "$@" | sed "s/ /|/g")
+            cat "$ASMRFILE" | sort | rg "^\*$query" | cut -d';' -f1 | column -s':' -t ;;
         vids|list)
             cat -s "$ASMRFILE" | sort | cut -d';' -f1 | column -s':' -t ;;
         authors|artists)
             cat -s "$ASMRFILE" | cut -d'-' -f1 | sort | uniq ;;
+        favs|top10) 
+            cat -s "$ASMRFILE" | rg "^\*" | cut -d';' -f1 | sort | uniq ;;
+        fav) 
+            shift
+            query=$(echo "$@" | sed "s/ /|/g")
+            if [ $# -gt 1 ]; then
+                query="($query)"
+            fi
+            query="^\*.*$query"
+            if inpath shuf; then
+                match=$(cat "$ASMRFILE" | rg "$query" | shuf -n1)
+            elif inpath gshuf; then
+                match=$(cat "$ASMRFILE" | rg "$query" | gshuf -n1)
+            else
+                echo "Couldn't find shuf or gshuf to choose random vid"
+                return 1
+            fi
+            if [ "$match" != "" ]; then
+                echo "Playing '$(cut -d";" -f1 <(echo $match))'"
+                url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo $match))
+                OpenInBrowser ${url}
+            else
+                echo "No favourite videos"
+            fi
+            ;;
         *)
             # Make query an "OR" regex pattern
             query=$(echo "$@" | sed "s/ /|/g")
@@ -233,12 +252,12 @@ asmr() {
                 echo "Playing '$(cut -d";" -f1 <(echo ${match}))'"
                 url="https://youtube.com/watch?v="$(cut -d";" -f2 < <(echo ${match}))
             fi
-            open_in_browser ${url} ;;
+            OpenInBrowser ${url} ;;
     esac
 }
 
 
-open_in_browser() {
+OpenInBrowser() {
     url="$1"
     if inpath open; then
         open ${url}
