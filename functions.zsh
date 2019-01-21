@@ -153,9 +153,9 @@ fza(){ # Fuzzy-add files to git (multiple, using `<TAB>`)
 
 peek() {
     if inpath bat; then
-        tmux split-window -p 33 bat "$@" || exit; 
+        tmux split-window -p 33 bat "$@" || exit;
     else
-        tmux split-window -p 33 "$EDITOR" "$@" || exit; 
+        tmux split-window -p 33 "$EDITOR" "$@" || exit;
     fi
 }
 
@@ -202,9 +202,9 @@ asmr() {
             cat -s "$ASMRFILE" | sort | cut -d';' -f1 | column -s':' -t ;;
         authors|artists)
             cat -s "$ASMRFILE" | cut -d'-' -f1 | sort | uniq ;;
-        favs|top10) 
+        favs|top10)
             cat -s "$ASMRFILE" | rg "^\*" | cut -d';' -f1 | sort | uniq ;;
-        fav) 
+        fav)
             shift
             query=$(echo "$@" | sed "s/ /|/g")
             if [ $# -gt 1 ]; then
@@ -261,13 +261,31 @@ OpenInBrowser() {
     url="$1"
     if inpath open; then
         open ${url}
-    elif inpath firefox; then 
+    elif inpath firefox; then
         firefox ${url}
     elif inpath chrome; then
         chrome ${url}
     else
         echo "No browser..."
         return 2
-    fi 
+    fi
 }
 
+notebackup() {
+    if [ -d "${NOTESDIR}" ]; then
+        echo "Notesdir exists: $NOTESDIR"
+        if [ -d "${NOTESBACKUPDIR}" ]; then
+            rm -rf "${NOTESBACKUPDIR}/"*
+            cp -r "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
+            cd "${NOTESBACKUPDIR}"
+            git add .
+            git commit -m 'Backup $(date +"%Y%m%d-%H%M")'
+            git push
+        else
+            echo "No NOTESBACKUPDIR"
+            return -1
+        fi
+    else
+        echo "No NOTESDIR defined"
+    fi
+}
