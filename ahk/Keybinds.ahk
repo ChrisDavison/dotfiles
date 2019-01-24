@@ -2,6 +2,7 @@
 ; # WIN
 ; ! ALT
 ; + SHIFT
+SetCapsLockState, alwaysoff
 
 ; DON'T DECLARE KEYBINDS IN ANY OTHER FILES.
 ; Those are only for functions, so all keybinds are declared in here.
@@ -19,7 +20,7 @@
 +^Del::Send {Media_Prev}
 +^End::Send {Media_Next}
 +^Home::Send  {Media_Play_Pause}
-CapsLock::Esc
+CapsLock::F13
 
 ; UTILITY
 ^#!SPACE::WinSet, Alwaysontop, , A
@@ -43,7 +44,7 @@ return
     Resize(480, 320)
     Move("right", "bottom")
 return
-^SPACE::
+^+SPACE::
     Resize(1024,768)
     Center()
 return
