@@ -272,20 +272,42 @@ OpenInBrowser() {
 }
 
 notebackup() {
+    dt=$(date +"%Y%m%dT%H%M")
+    echo "Backup $dt"
     if [ -d "${NOTESDIR}" ]; then
-        echo "Notesdir exists: $NOTESDIR"
+        echo "Backing up $NOTESDIR"
         if [ -d "${NOTESBACKUPDIR}" ]; then
             rm -rf "${NOTESBACKUPDIR}/"*
             cp -r "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
             cd "${NOTESBACKUPDIR}"
-            git add .
-            git commit -m 'Backup $(date +"%Y%m%d-%H%M")'
+            git add . > /dev/null
+            git commit -m "Backup $dt"
             git push
+            git archive -o $HOME/notes-backup--$(date +"%Y%m%dT%H%M").zip @
         else
-            echo "No NOTESBACKUPDIR"
+            echo "NOTESBACKUPDIR not defined.  Must create env var and git repo."
             return -1
         fi
     else
-        echo "No NOTESDIR defined"
+        echo "NOTESDIR not defined.  Must create env var."
     fi
+}
+
+nf() {
+    if [ -z "$@" ]; then
+        echo "Must pass a query"
+        return 1;
+    fi
+    if [ ! -d "${NOTESDIR}" ]; then
+        echo "NOTESDIR not defined"
+        return 2;
+    fi
+    echo "Matching filename"
+    echo "================="
+    find "${NOTESDIR}" -type f | rg "$@"
+
+    echo
+    echo "Matching contents"
+    echo "================="
+    rg "$@" "${NOTESDIR}" -l
 }
