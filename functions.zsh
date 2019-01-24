@@ -311,3 +311,23 @@ nf() {
     echo "================="
     rg "$@" "${NOTESDIR}" -l
 }
+
+mdsearch() {
+    _usage="usage:
+    link                   markdown url links
+    img|image|picture      markdown image links
+    hashtag|tag|keyword    hashtags (maybe inaccurate)"
+    loc="${NOTESDIR}"
+    if [[ $PWD/ = "${NOTESDIR}"/* ]]; then
+        loc="."
+    fi
+    case $1 in
+        link)
+            rg "[^!]\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path ;;
+        img|image|picture)
+            rg "!\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path ;;
+        hashtag|tag|keyword)
+            rg "(?:[\s\`^])#[a-zA-Z]+" "$loc" -g "*.md" -o --no-heading --sort=path ;;
+        *) echo "$_usage" ;;
+    esac
+}
