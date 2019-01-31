@@ -26,14 +26,6 @@ Filtered views:
     filters                   View available filters
     filter FILTER             Filter using a filter available.  See filters command"
 
-_todoempty="TODOFILE now empty.
-
-If unexpected, revert using dropbox history or $TODOFILE.bak"
-
-_doneempty="DONEFILE now empty.
-
-If unexpected, revert using dropbox history or $DONEFILE.bak"
-
 function todo_append {
     num=$1
     shift
@@ -110,6 +102,7 @@ function todo_undo {
 cat "$TODOFILE" | rg "^\-" | cut -c3- | cat -n >> $HOME/.todos
 
 TASKCOUNT=$(cat "$TODOFILE" | wc -l)
+DONECOUNT=$(cat "$DONEFILE" | wc -l)
 
 cmd=$1
 shift
@@ -160,16 +153,18 @@ case $cmd in
         echo "$_usage" ;;
 esac
 
-if [ ! -s "$TODOFILE" ]; then
-    echo "$_todoempty"
+if [ $TASKCOUNT -gt 0 -a ! -s "$TODOFILE" ]; then
+    echo "TODOFILE now empty. If unexpected, revert using dropbox history or $TODOFILE.bak"
+    echo
     read -p "Revert to $TODOFILE.bak?" revert
     case $revert in
         y|yes|Y|YES) cp "$TODOFILE.bak" "$TODOFILE" ;;
         *) ;;
     esac
 fi
-if [ ! -s "$DONEFILE" ]; then
-    echo "$_doneempty"
+if [ $DONECOUNT -gt 0 -a ! -s "$DONEFILE" ]; then
+    echo "DONEFILE now empty.  If unexpected, revert using dropbox history or $DONEFILE.bak"
+    echo
     read -p "Revert to $DONEFILE.bak?" revert
     case $revert in
         y|yes|Y|YES) cp "$DONEFILE.bak" "$DONEFILE" ;;
