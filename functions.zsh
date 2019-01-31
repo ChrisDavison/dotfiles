@@ -331,3 +331,78 @@ mdsearch() {
         *) echo "$_usage" ;;
     esac
 }
+
+t() {
+    _usage="usage:
+    ls               List tasks
+    lsp              List priorities
+    a|add TEXT...    Add a task
+    c|contexts       List all unique contexts '+CONTEXT'
+    p|projects       List all unique projects '@PROJECT'
+    f|find QUERY     Search tasks for QUERY (e.g. "@work", "notes")
+    cl|contextless   Tasks without a context
+    pl|projectless   Tasks without a project
+    rm #NUM          Remove item #NUM
+    do #NUM          Mark item #NUM as done
+    done             List done tasks
+    "
+    cmd=$1
+    shift
+    [ -z "$TODOFILE" ] && echo "TODOFILE not defined" && return 1
+    [ -z "$DONEFILE" ] && echo "DONEFILE not defined" && return 2
+    cp "$TODOFILE" "$TODOFILE.bak"
+    case $cmd in
+        ls) cat -n "$TODOFILE" ;;
+        lsp) cat -n "$TODOFILE" | rg "\- !";;
+        f|find) cat -n "$TODOFILE" | rg "$@" ;;
+        c|contexts)
+            echo "Tasks: $(cat "$TODOFILE" | wc -l)"
+            rg -No "@(.+?)\b" "$TODOFILE" | sort | uniq -c
+            echo
+            echo "$(rg -v -No "@(.+?)\b" "$TODOFILE" | wc -l) with no context"
+            ;;
+        cl|contextless) cat -n "$TODOFILE" | rg -v -No "@(.+?)\b" ;;
+        p|projects)
+            echo "Tasks: $(cat "$TODOFILE" | wc -l)"
+            rg -No "\+(.+?)\b" "$TODOFILE" | sort | uniq -c
+            echo
+            echo "$(rg -v -No "\+(.+?)\b" "$TODOFILE" | wc -l) with no project"
+            ;;
+        pl|projectless) cat -n "$TODOFILE" | rg -v -No "\+(.+?)\b" ;;
+        a|add) echo "- $@" >> "$TODOFILE" ;;
+        rm)
+            echo "REMOVING $(sed -n "$1p" $TODOFILE)"
+            if [ $1 -le 0 ]; then
+                echo "Argument must be greater than 0"
+                echo "  1-indexed line number of task (from 't ls')"
+                return 3
+            fi
+            sed "$1d" "$TODOFILE" > $TODOFILE.tmp
+            mv $TODOFILE.tmp $TODOFILE
+            # -s checks if file has 'something'
+            # e.g. exists and is not empty
+            if [ ! -s $TODOFILE ]; then
+                echo "TODOFILE now empty."
+                echo "If unexpected, revert using dropbox history"
+                echo "or $TODOFILE.bak"
+            fi
+            ;;
+        do)
+            echo -n "COMPLETING $(sed -n "$1p" $TODOFILE)"
+            msg="$(sed -n "$1p" $TODOFILE) done:$(date +%F)"
+            echo "$msg" >> $DONEFILE
+            sed "$1d" "$TODOFILE" > $TODOFILE.tmp
+            mv $TODOFILE.tmp $TODOFILE
+            # -s checks if file has 'something'
+            # e.g. exists and is not empty
+            if [ ! -s $TODOFILE ]; then
+                echo "TODOFILE now empty."
+                echo "If unexpected, revert using dropbox history"
+                echo "or $TODOFILE.bak"
+            fi
+        ;;
+        done) cat "$DONEFILE" ;;
+        cleardone) sed 'd' "$DONEFILE" > "$DONEFILE" ;;
+        *) echo "$_usage" ;;
+    esac
+}
