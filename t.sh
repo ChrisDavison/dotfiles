@@ -8,14 +8,13 @@ Modifying:
 
 Viewing:
     ls [QUERY]       List tasks (optionally filtered)
+    lsp [QUERY]      List prioritised tasks (optionally filtered)
     c|contexts       List all unique contexts '+CONTEXT'
     p|projects       List all unique projects '@PROJECT'
 
-Filtering:
-    lsp                       List prioritised tasks
+Filtered views:
     cl|contextless            Tasks without a context
     pl|projectless            Tasks without a project
-    fp|findpriority QUERY     Search prioritised tasks
     done                      List done tasks"
 
 cmd=$1
@@ -26,33 +25,31 @@ shift
 
 cp "$TODOFILE" "$TODOFILE.bak"
 
-
-
-case $cmd in
-    a|add) echo "- $@" >> "$TODOFILE" ;;
-    ls) todoslist "$@" ;;
-    lsp) todoslist "\d\s+!" ;;
-    fp|findpriority) todoslist "\d\s+!.*$@" ;;
-    c|contexts)
-        print_todo_count
-        rg -No "@(.+?)\b" "$TODOFILE" | sort | uniq -c
-        echo
-        echo "$(rg -v -No "@(.+?)\b" "$TODOFILE" | wc -l) with no context" ;;
-    p|projects)
-        print_todo_count
-        rg -No "\+(.+?)\b" "$TODOFILE" | sort | uniq -c
-        echo
-        echo "$(rg -v -No "\+(.+?)\b" "$TODOFILE" | wc -l) with no project" ;;
-    cl|contextless) todoslist | rg -v -No "@(.+?)\b" ;;
-    pl|projectless) todoslist | rg -v -No "\+(.+?)\b" ;;
-    rm) todo_rm "$1" ;;
-    do) todo_do "$1" ;;
-    undo) todo_undo "$1" ;;
-    done) cat "$DONEFILE" | rg "^-" | cut -c3- | cat -n ;;
-    cleardone) sed 'd' "$DONEFILE" > "$DONEFILE" ;;
-    *) echo "$_usage" ;;
-esac
-
+function main {
+    case $cmd in
+        a|add) echo "- $@" >> "$TODOFILE" ;;
+        ls) todoslist "$@" ;;
+        lsp) todoslist "\d\s+!.*$@" ;;
+        c|contexts)
+            print_todo_count
+            rg -No "@(.+?)\b" "$TODOFILE" | sort | uniq -c
+            echo
+            echo "$(rg -v -No "@(.+?)\b" "$TODOFILE" | wc -l) with no context" ;;
+        p|projects)
+            print_todo_count
+            rg -No "\+(.+?)\b" "$TODOFILE" | sort | uniq -c
+            echo
+            echo "$(rg -v -No "\+(.+?)\b" "$TODOFILE" | wc -l) with no project" ;;
+        cl|contextless) todoslist | rg -v -No "@(.+?)\b" ;;
+        pl|projectless) todoslist | rg -v -No "\+(.+?)\b" ;;
+        rm) todo_rm "$1" ;;
+        do) todo_do "$1" ;;
+        undo) todo_undo "$1" ;;
+        done) cat "$DONEFILE" | rg "^-" | cut -c3- | cat -n ;;
+        cleardone) sed 'd' "$DONEFILE" > "$DONEFILE" ;;
+        *) echo "$_usage" ;;
+    esac
+}
 function print_todo_count {
     echo "Tasks: $(cat "$TODOFILE" | wc -l)"
 }
@@ -123,3 +120,5 @@ function todo_undo {
     sed "$1d" "$DONEFILE" > "$DONEFILE".tmp
     mv "$DONEFILE.tmp" "$DONEFILE"
 }
+
+main "$@"
