@@ -333,19 +333,25 @@ mdsearch() {
 }
 
 t() {
-    _usage="usage:
-    ls               List tasks
-    lsp              List priorities
-    a|add TEXT...    Add a task
-    c|contexts       List all unique contexts '+CONTEXT'
-    p|projects       List all unique projects '@PROJECT'
-    f|find QUERY     Search tasks for QUERY (e.g. "@work", "notes")
-    cl|contextless   Tasks without a context
-    pl|projectless   Tasks without a project
-    rm #NUM          Remove item #NUM
-    do #NUM          Mark item #NUM as done
-    done             List done tasks
-    "
+    _usage="usage: t <CMD> [ARGS...]
+
+    Modifying:
+        a|add TEXT...    Add a task
+        rm #NUM          Remove item #NUM
+        do #NUM          Mark item #NUM as done
+
+    Viewing:
+        ls               List tasks
+        c|contexts       List all unique contexts '+CONTEXT'
+        p|projects       List all unique projects '@PROJECT'
+
+    Filtering:
+        lsp                       List prioritised tasks
+        cl|contextless            Tasks without a context
+        pl|projectless            Tasks without a project
+        f|find QUERY              Search tasks
+        fp|findpriority QUERY     Search prioritised tasks
+        done                      List done tasks"
     cmd=$1
     shift
     [ -z "$TODOFILE" ] && echo "TODOFILE not defined" && return 1
@@ -355,6 +361,13 @@ t() {
         ls) cat -n "$TODOFILE" ;;
         lsp) cat -n "$TODOFILE" | rg "\- !";;
         f|find) cat -n "$TODOFILE" | rg "$@" ;;
+        fp|findpriority)
+            if [ ! -z "$@" ]; then
+                cat -n "$TODOFILE" | rg "\- !" | rg "$@"
+            else
+                echo "Must pass query"
+            fi
+            ;;
         c|contexts)
             echo "Tasks: $(cat "$TODOFILE" | wc -l)"
             rg -No "@(.+?)\b" "$TODOFILE" | sort | uniq -c
