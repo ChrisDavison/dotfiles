@@ -44,6 +44,10 @@ export NOTESDIR="$HOME/Dropbox/notes"
 
 export ZSHFUNCS="$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh"
 
+# TODO management
+export TODOFILE=/e/Dropbox/notes/todo.md
+export DONEFILE=/e/Dropbox/notes/done.md
+
 #     $$$$$$$\   $$$$$$\ $$$$$$$$\ $$\   $$\
 #     $$  __$$\ $$  __$$\\__$$  __|$$ |  $$ |
 #     $$ |  $$ |$$ /  $$ |  $$ |   $$ |  $$ |
