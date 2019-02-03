@@ -192,18 +192,20 @@ asmr() {
             read -p "Title: " vid_title
             read -p "ID: " vid_hash
             echo "$vid_author: $vid_title;$vid_hash" >> "$ASMRFILE"  ;;
-        find|filter)
+        vids)
             query=$(echo "$@" | sed "s/ /|/g")
-            cat "$ASMRFILE" | sort | rg "$query" | cut -d';' -f1 | column -s':' -t ;;
-        findfav)
+            if [ $# -eq 1 ]; then
+                cat -s "$ASMRFILE" | sort | cut -d';' -f1 | column -s':' -t
+            else
+                cat -s "$ASMRFILE" | sort | rg "$query" | cut -d';' -f1 | column -s':' -t
+            fi ;;
+        favs)
             query=$(echo "$@" | sed "s/ /|/g")
-            cat "$ASMRFILE" | sort | rg "^\*$query" | cut -d';' -f1 | column -s':' -t ;;
-        vids|list)
-            cat -s "$ASMRFILE" | sort | cut -d';' -f1 | column -s':' -t ;;
-        authors|artists)
-            cat -s "$ASMRFILE" | cut -d'-' -f1 | sort | uniq ;;
-        favs|top10)
-            cat -s "$ASMRFILE" | rg "^\*" | cut -d';' -f1 | sort | uniq ;;
+            if [ $# -eq 1 ]; then
+                cat -s "$ASMRFILE" | sort | rg "^\*" | cut -d';' -f1 | column -s':' -t
+            else
+                cat -s "$ASMRFILE" | sort | rg "^\*$query" | cut -d';' -f1 | column -s':' -t
+            fi ;;
         fav)
             shift
             query=$(echo "$@" | sed "s/ /|/g")
