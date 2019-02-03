@@ -49,6 +49,7 @@ export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
 alias tw="t ls @work"
 alias tnw="t hide @work"
+alias ths="t ls @thesis"
 
 #     $$$$$$$\   $$$$$$\ $$$$$$$$\ $$\   $$\
 #     $$  __$$\ $$  __$$\\__$$  __|$$ |  $$ |
