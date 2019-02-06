@@ -112,13 +112,14 @@ nf() { # Find inside notes
     # If I'm inside NOTESDIR, only search the subdirectory
     [[ ! -d "${NOTESDIR}" ]] && echo "NOTESDIR not defined" &&  return 2
     loc="${NOTESDIR}"
-    if [[ "$1" = "." ]] && [[ $PWD/ = "${NOTESDIR}"/* ]]; then
-        loc="."
+    if [ -d "$1" ]; then
+        loc="$1"
         shift
     fi
     [[ -z "$@" ]] && echo "Must pass a query" && return 1;
-    echo "Match is (F)ilename or (C)ontent"
-    find "${loc}" -type f | rg "$@" | sed -e "s/^/(F) /"
+    echo "Match is (F)ilename, (D)irectory, or (C)ontent"
+    fd "$@" "${loc}" -e md | sed -e "s/^/(F) /"
+    fd "$@" "${loc}" -t d | sed -e "s/^/(D) /"
     rg "$@" "${loc}" -l | sed -e "s/^/(C) /"
 }
 
@@ -129,12 +130,12 @@ nfc() { # Find in note contents only
     nf "$@" | rg "^\(C\)" | cut -d' ' -f2-
 }
 
-cnff() {
-    code -w $(nff "$@" | fzf)
+nffc() {
+    code $(nff "$@" | fzf --multi)
 }
 
-cnfc() {
-    code -w $(nfc "$@" | fzf)
+nfcc() {
+    code $(nfc "$@" | fzf --multi)
 }
 
 mdlinks() {

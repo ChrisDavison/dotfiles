@@ -1,7 +1,3 @@
-if [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
-fi
-
 export ZSH="/Users/davison/.oh-my-zsh"
 ZSH_THEME="flazz"
 DISABLE_AUTO_UPDATE="true"
@@ -86,14 +82,23 @@ alias vi='nvim'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
+alias f="fasd -f"
+alias a="fasd -a"
+alias s="fasd -s"
+alias d="fasd -d"
+alias sf="fasd -sif"
+alias sd="fasd -sid"
+alias z="fasd_cd -d"
+alias zz="fasd_cd -d -i"
 
 # =====================
 #        Scripts
 # =====================
-~/bin/randomquote || echo "No bin/randomquote"
+# ~/bin/randomquote || echo "No bin/randomquote"
 
 source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh" || echo "No functions.zsh"
 source $HOME/.cargo/env || echo "No .cargo/env"
 source /usr/local/etc/profile.d/autojump.sh || echo "No autojump.sh"
 source ~/.fzf.zsh || echo "No fzf"
 source /usr/local/bin/virtualenvwrapper.sh || echo "No virtualenvwrapper"
+eval "$(fasd --init auto)"
