@@ -39,13 +39,14 @@ export NOTESDIR="$HOME/Dropbox/notes"
 # =====================
 #         Paths
 # =====================
+CODEDIR="$HOME/code/"
 path+=$HOME/.vim/bundle/fzf/bin
 path+=/usr/local/lib/node_modules
 path+=$GOBIN
 path+=$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
 path+=/Users/davison/Library/Python/3.7/bin/
 path+=/Applications/Julia-1.0.app/Contents/Resources/julia/bin/
-path+=$HOME/src/github.com/chrisdavison/scripts/
+path+=$CODEDIR/scripts/
 path+=$HOME/.cargo/bin/
 path+=$HOME/bin
 path+=$HOME/.virtualenvs/
@@ -82,23 +83,14 @@ alias vi='nvim'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
-alias f="fasd -f"
-alias a="fasd -a"
-alias s="fasd -s"
-alias d="fasd -d"
-alias sf="fasd -sif"
-alias sd="fasd -sid"
-alias z="fasd_cd -d"
-alias zz="fasd_cd -d -i"
 
 # =====================
 #        Scripts
 # =====================
 # ~/bin/randomquote || echo "No bin/randomquote"
 
-source "$HOME/src/github.com/chrisdavison/dotfiles/functions.zsh" || echo "No functions.zsh"
+source "$CODEDIR/dotfiles/functions.zsh" || echo "No functions.zsh"
 source $HOME/.cargo/env || echo "No .cargo/env"
 source /usr/local/etc/profile.d/autojump.sh || echo "No autojump.sh"
 source ~/.fzf.zsh || echo "No fzf"
 source /usr/local/bin/virtualenvwrapper.sh || echo "No virtualenvwrapper"
-eval "$(fasd --init auto)"
