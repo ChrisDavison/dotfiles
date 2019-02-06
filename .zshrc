@@ -37,6 +37,8 @@ export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
+export ASMRFILE="$HOME/Dropbox/asmr.csv"
+export NOTESDIR="$HOME/Dropbox/notes"
 
 # =====================
 #         Paths

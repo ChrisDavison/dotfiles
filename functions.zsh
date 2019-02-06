@@ -49,12 +49,12 @@ swap() {
 }
 
 asmrfind() {
+    [ -z "$ASMRFILE" ] && echo "Need to define ASMRFILE" && return 1
     query=${@:-".*"}
     if [ "$1" = "+" ]; then
         shift
         query="^\+.*$@"
     fi
-    [ -z "$ASMRFILE" ] && echo "Need to define ASMRFILE" && return 1
     cat -s "$ASMRFILE" | sort | rg "$query"
 }
 
@@ -123,10 +123,18 @@ nf() { # Find inside notes
 }
 
 nff() { # Find in note titles only
-    nf "$@" | rg "^\(F\)"
+    nf "$@" | rg "^\(F\)" | cut -d' ' -f2-
 }
 nfc() { # Find in note contents only
-    nf "$@" | rg "^\(C\)"
+    nf "$@" | rg "^\(C\)" | cut -d' ' -f2-
+}
+
+cnff() {
+    code -w $(nff "$@" | fzf)
+}
+
+cnfc() {
+    code -w $(nfc "$@" | fzf)
 }
 
 mdlinks() {
