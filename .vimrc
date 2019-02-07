@@ -214,4 +214,4 @@ command! Note edit ~/Dropbox/notes.md | normal Go
 
 let g:rustfmt_autosave = 1
 " }}}
-cd ~/src/github.com/chrisdavison/
+cd ~/code

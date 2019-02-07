@@ -31,15 +31,17 @@ export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
+export CODEDIR="$HOME/code"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
 export ASMRFILE="$HOME/Dropbox/asmr.csv"
 export NOTESDIR="$HOME/Dropbox/notes"
+export NOTESBACKUPDIR="$CODEDIR/knowledge"
 
 # =====================
 #         Paths
 # =====================
-CODEDIR="$HOME/code/"
+
 path+=$HOME/.vim/bundle/fzf/bin
 path+=/usr/local/lib/node_modules
 path+=$GOBIN
