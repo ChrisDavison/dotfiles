@@ -168,3 +168,37 @@ todobackup() {
     git push
     popd
 }
+
+noext() {
+    echo "${1%.*}"
+}
+
+sanitise() {
+    direc=$(dirname $1)
+    base=$(basename $1)
+    echo $base | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
+}
+
+ppath() {
+    echo "$path" | tr ':' '\n'
+}
+
+fromepoch() {
+    date -r "$1" +"%Y%m%d %H:%M:%S"
+}
+
+_tidy_youtube_url(){
+    echo "$1" | rg "&t=\d+s" -r '' | rg "&list=[a-zA-Z0-9_]+" -r '' | rg "&index=\d+" -r ''
+}
+
+youtubevideo() {
+    tidied=$(_tidy_youtube_url "$1")
+    format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
+    youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 -o "$format" "$tidied"
+}
+
+youtubeaudio() {
+    tidied=$(_tidy_youtube_url "$1")
+    format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
+    youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
+}
