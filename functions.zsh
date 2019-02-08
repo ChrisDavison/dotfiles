@@ -67,7 +67,7 @@ asmradd() {
 }
 
 asmr() {
-    match=$(asmrfind "$@" | random_line)
+    match=$(asmrfind "$@" | sort -R | head -n1)
     [[ -z "${match}" ]] && echo "No match" && return 1
     echo "Watching: $(echo $match | cut -d';' -f1)"
     echo "https://youtube.com/watch?v=$(echo $match | cut -d';' -f2)" | OpenInBrowser
@@ -151,6 +151,10 @@ mdimages() {
 mdhashtags() {
     [[ $PWD/ = "${NOTESDIR}"/* ]] && loc="." || loc="${NOTESDIR}"
     rg "(?:[\s\`^])#[a-zA-Z]+" "$loc" -g "*.md" -o --no-heading --sort=path
+}
+
+mdstructure() {
+    rg "^#+ .*" "$1" -N
 }
 
 todobackup() {
