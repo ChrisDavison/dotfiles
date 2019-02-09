@@ -30,3 +30,6 @@ set PATH /usr/local/miniconda3/bin $PATH
 alias rg="rg -S"
 alias less="less -R"
 alias ipython="command ipython --pprint --no-banner"
+
+source ~/.cargo/env
+# source /usr/local/bin/virtualenvwrapper.fish
