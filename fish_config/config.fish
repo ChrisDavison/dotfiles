@@ -30,6 +30,13 @@ set PATH /usr/local/miniconda3/bin $PATH
 alias rg="rg -S"
 alias less="less -R"
 alias ipython="command ipython --pprint --no-banner"
+alias ls="exa --group-directories-first"
+alias ll="exa --group-directories-first --long"
+alias la="exa --group-directories-first --long -a"
+alias lt="exa --tree -L 2"
+alias lg="exa --group-directories-first --long --git-ignore"
+alias ltg="exa --tree -L 2 --git-ignore"
+alias g="git"
 
 source ~/.cargo/env
 # source /usr/local/bin/virtualenvwrapper.fish
