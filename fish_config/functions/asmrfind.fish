@@ -8,6 +8,8 @@ function asmrfind
     if [ "$argv[1]" = "+" ]
         set query "^\+.*$argv[2..-1]"
     end
-    set output (cat -s "$ASMRFILE" | sort | rg "$query")
-    echo "$output"
+    set output (cat -s $ASMRFILE | sort | rg $query)
+    for i in $output
+        echo $i
+    end
 end
