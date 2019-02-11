@@ -1,18 +1,18 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR ASMRFILE:/Users/davison/Dropbox/asmr\x2ecsv
-SETUVAR CODEDIR:/Users/davison/code
-SETUVAR DONEFILE:/Users/davison/Dropbox/notes/done\x2emd
-SETUVAR EDITOR:nvim
-SETUVAR FZF_DEFAULT_COMMAND:rg\x1e\x2d\x2dfiles\x1e\x2d\x2dno\x2dignore\x1e\x2d\x2dhidden\x1e\x2d\x2dfollow\x1e\x2d\x2dglob\x1e\x21\x2egit/\x2a
-SETUVAR GOBIN:/Users/davison/bin
-SETUVAR --path GOPATH:/Users/davison
-SETUVAR LESS:FRSX
-SETUVAR NOTESBACKUPDIR:/Users/davison/code/knowledge
-SETUVAR NOTESDIR:/Users/davison/Dropbox/notes
+SETUVAR --export ASMRFILE:/Users/davison/Dropbox/asmr\x2ecsv
+SETUVAR --export CODEDIR:/Users/davison/code
+SETUVAR --export DONEFILE:/Users/davison/Dropbox/notes/done\x2emd
+SETUVAR --export EDITOR:nvim
+SETUVAR --export FZF_DEFAULT_COMMAND:rg\x1e\x2d\x2dfiles\x1e\x2d\x2dno\x2dignore\x1e\x2d\x2dhidden\x1e\x2d\x2dfollow\x1e\x2d\x2dglob\x1e\x21\x2egit/\x2a
+SETUVAR --export GOBIN:/Users/davison/bin
+SETUVAR --export --path GOPATH:/Users/davison
+SETUVAR --export LESS:FRSX
+SETUVAR --export NOTESBACKUPDIR:/Users/davison/code/knowledge
+SETUVAR --export NOTESDIR:/Users/davison/Dropbox/notes
 SETUVAR TERM:xterm\x2d256color
-SETUVAR TODOFILE:/Users/davison/Dropbox/notes/todo\x2emd
-SETUVAR WORKON_HOME:/Users/davison/\x2eenvs
+SETUVAR --export TODOFILE:/Users/davison/Dropbox/notes/todo\x2emd
+SETUVAR --export WORKON_HOME:/Users/davison/\x2eenvs
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
