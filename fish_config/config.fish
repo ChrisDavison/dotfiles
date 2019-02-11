@@ -1,16 +1,16 @@
-set -U TERM xterm-256color
-set -U EDITOR nvim
-set -U GOPATH $HOME
-set -U GOBIN $GOPATH/bin
-set -U FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"
-set -U WORKON_HOME $HOME/.envs
-set -U LESS FRSX
-set -U CODEDIR $HOME/code
-set -U TODOFILE $HOME/Dropbox/notes/todo.md
-set -U DONEFILE $HOME/Dropbox/notes/done.md
-set -U ASMRFILE $HOME/Dropbox/asmr.csv
-set -U NOTESDIR $HOME/Dropbox/notes
-set -U NOTESBACKUPDIR $CODEDIR/knowledge
+set -x TERM xterm-256color
+set -x EDITOR nvim
+set -x GOPATH $HOME
+set -x GOBIN $GOPATH/bin
+set -x FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"
+set -x WORKON_HOME $HOME/.envs
+set -x LESS FRSX
+set -x CODEDIR $HOME/code
+set -x TODOFILE $HOME/Dropbox/notes/todo.md
+set -x DONEFILE $HOME/Dropbox/notes/done.md
+set -x ASMRFILE $HOME/Dropbox/asmr.csv
+set -x NOTESDIR $HOME/Dropbox/notes
+set -x NOTESBACKUPDIR $CODEDIR/knowledge
 
 # =====================
 #         Paths
