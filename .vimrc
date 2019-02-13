@@ -140,8 +140,6 @@ nnoremap <leader>tb :BTags<CR>
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
-" use very-magic search by default
-nnoremap / /\v
 " Other bindings
 nnoremap <leader>ev :e $MYVIMRC<BAR>echo "Editing VIMRC"<CR>
 nnoremap <leader>sv :so $MYVIMRC<BAR>echo "Sourced VIMRC"<CR>
@@ -149,6 +147,7 @@ nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>
 nnoremap nw :set wrap!<BAR>echo "Toggling line wrapping"<CR>
 nnoremap <BS> <C-^>
 " toggle 'conceal' mode
+set conceallevel=2
 function! ToggleConceal()
     if &conceallevel == 2
         set conceallevel=0
@@ -190,6 +189,8 @@ augroup vimrc
     autocmd FileType sh let g:sh_fold_enabled=5
     autocmd FileType sh let g:is_bash=1
     autocmd FileType sh set foldmethod=syntax
+    autocmd User GoyoEnter Limelight
+    autocmd User GoyoLeave Limelight!
 augroup END
 " specific language config {{{2
 let g:pymode_python = 'python3'
@@ -231,16 +232,39 @@ if executable('rg')
     command! -bang -nargs=* Find call fzf#vim#grep(
     \    'rg --column  --no-heading -F --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
     nnoremap <leader>F :Find<SPACE>
+    command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview('up:60%')
+      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \   <bang>0)
 endif
 " }}}2
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
-let g:deoplete#enable_at_startup = 1
-command! ASMR edit ~/Dropbox/asmr.csv | normal Go
-command! Note edit ~/Dropbox/notes.md | normal Go
+command! ASMR edit ~/Dropbox/asmr.csv | normal G
+command! Journal edit ~/Dropbox/notes/journal.md | normal G
+command! Todos edit ~/Dropbox/notes/todos.md | normal G
+command! Dones edit ~/Dropbox/notes/dones.md | normal G
+
+function! StripTrailingWhitespace()
+  if !&binary && &filetype != 'diff'
+    normal mz
+    normal Hmy
+    %s/\s\+$//e
+    normal 'yz<CR>
+    normal `z
+  endif
+endfunction
+
+command! StripWhitespace exec StripTrailingWhitespace()
 
 let g:rustfmt_autosave = 1
+let g:vimtex_toc_config = {
+            \'fold_enable': 1,
+            \'split_pos': 'rightbelow'}
+
+command! ILH :normal [I<CR> | Keep expand('%')<CR>
 " }}}
-cd ~/code
