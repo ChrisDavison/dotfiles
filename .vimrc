@@ -1,4 +1,4 @@
-" chrisDavison's vim config
+" ChrisDavison's vim config
 let mapleader=" "
 " settings (using tpope/vim-sensible as a base) {{{
 syntax on
@@ -51,7 +51,23 @@ let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\
 " plugins {{{
 call plug#begin('~/.vim/plugged')
 " programming languages
-Plug 'sheerun/vim-polyglot'  " Many programming language plugins, lazy-loaded
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'aliev/vim-compiler-python'
+Plug 'dag/vim-fish'
+Plug 'elixir-editors/vim-elixir'
+Plug 'fatih/vim-go'
+Plug 'guns/vim-clojure-static'
+Plug 'lervag/vimtex'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'rust-lang/rust.vim'
+Plug 'vim-erlang/vim-erlang-runtime'
+Plug 'vim-jp/vim-cpp'
+Plug 'vim-perl/vim-perl'
+Plug 'vim-python/python-syntax'
+Plug 'vim-scripts/gnuplot-syntax-highlighting'
+Plug 'vimjas/vim-python-pep8-indent'
+Plug 'zah/nim.vim'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'airblade/vim-gitgutter'
@@ -64,17 +80,22 @@ Plug 'easymotion/vim-easymotion'
 Plug 'ervandew/supertab'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf.vim'
-Plug 'shougo/deoplete.nvim'
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'romainl/vim-qlist'
+Plug 'romainl/vim-qf'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
+Plug 'itchyny/lightline.vim'
 " themes
 Plug 'junegunn/seoul256.vim'
-Plug 'morhetz/gruvbox'
+Plug 'Lokaltog/vim-monotone'
 call plug#end()
 " }}}
 " appearance {{{
