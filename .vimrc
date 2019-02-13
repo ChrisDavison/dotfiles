@@ -121,6 +121,10 @@ vmap  <buffer> <silent> k gk
 vmap  <buffer> <silent> j gj
 vmap  <buffer> <silent> 0 g0
 vmap  <buffer> <silent> $ g$
+nmap  <buffer> <silent> k gk
+nmap  <buffer> <silent> j gj
+nmap  <buffer> <silent> 0 g0
+nmap  <buffer> <silent> $ g$
 " indent/de-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
