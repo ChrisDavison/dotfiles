@@ -2,7 +2,7 @@ set -x TERM xterm-256color
 set -x EDITOR nvim
 set -x GOPATH $HOME
 set -x GOBIN $GOPATH/bin
-set -x FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"
+set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
 set -x WORKON_HOME $HOME/.envs
 set -x LESS FRSX
 set -x CODEDIR $HOME/code
@@ -37,6 +37,7 @@ alias lt="exa --tree -L 2"
 alias lg="exa --group-directories-first --long --git-ignore"
 alias ltg="exa --tree -L 2 --git-ignore"
 alias g="git"
+alias v="nvim"
 
 source ~/.cargo/env
 # source /usr/local/bin/virtualenvwrapper.fish
