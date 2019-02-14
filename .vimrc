@@ -43,6 +43,7 @@ set splitbelow splitright " Split windows down and right by default
 set laststatus=2
 set statusline=\ (%n)\ %F%=\ %m\ %Y\
 set t_ut= " Fix issues with background color on some terminals
+set fillchars=fold:\ 
 if has('persistent_undo')
     set undodir=~/.undodir/ undofile
 endif
@@ -218,6 +219,19 @@ function! MarkdownLevel()
     endif
     return ">" . len(h)
 endfunction
+" }}}
+" custom fold text {{{
+function! NeatFoldText()
+  let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+  let lines_count = v:foldend - v:foldstart + 1
+  let lines_count_text = '-- ' . printf("%10s", lines_count . ' lines') . ' '
+  let foldchar = matchstr(&fillchars, 'fold:\zs.')
+  let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+  let foldtextend = lines_count_text . repeat(foldchar, 8)
+  let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+  return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+endfunction
+set foldtext=NeatFoldText()
 " }}}
 " scratch buffers {{{
 command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
