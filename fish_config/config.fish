@@ -2,7 +2,8 @@ set -x TERM xterm-256color
 set -x EDITOR nvim
 set -x GOPATH $HOME
 set -x GOBIN $GOPATH/bin
-set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
+set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
+set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 set -x WORKON_HOME $HOME/.envs
 set -x LESS FRSX
 set -x CODEDIR $HOME/code
