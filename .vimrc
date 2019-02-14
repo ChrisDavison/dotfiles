@@ -16,10 +16,10 @@ if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    if executable('/usr/local/bin/zsh')
-        set shell=/usr/local/bin/zsh
+    if executable('/usr/local/bin/fish')
+        set shell=/usr/local/bin/fish
     else
-        set shell=/bin/zsh
+        set shell=/bin/bash
     endif
 endif
 set nospell
