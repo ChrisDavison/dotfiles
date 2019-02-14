@@ -200,6 +200,7 @@ let g:slime_python_ipython = 1
 let g:slime_paste_file=tempname()
 let g:go_fmt_command = "goimports"
 let g:tex_flavor = "latex"
+let g:vimtex_fold_enabled=1
 if executable('rls')
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'rls',
@@ -252,6 +253,8 @@ if executable('rg')
       \   <bang>0 ? fzf#vim#with_preview('up:60%')
       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
       \   <bang>0)
+    command! -bang -nargs=? -complete=dir Files
+                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 endif
 " }}}2
 command! CopyFilename exec "@+=expand(\"%\")"
@@ -260,8 +263,8 @@ command! Wd write|bdelete
 command! Bd bp|bd #
 command! ASMR edit ~/Dropbox/asmr.csv | normal G
 command! Journal edit ~/Dropbox/notes/journal.md | normal G
-command! Todos edit ~/Dropbox/notes/todos.md | normal G
-command! Dones edit ~/Dropbox/notes/dones.md | normal G
+command! Todos edit ~/Dropbox/notes/todo.md | normal G
+command! Dones edit ~/Dropbox/notes/done.md | normal G
 
 function! StripTrailingWhitespace()
   if !&binary && &filetype != 'diff'
@@ -281,4 +284,5 @@ let g:vimtex_toc_config = {
             \'split_pos': 'rightbelow'}
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
+command! NOH :silent! /ajsdkajskdj<CR>
 " }}}
