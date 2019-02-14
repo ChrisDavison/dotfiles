@@ -173,8 +173,8 @@ augroup vimrc
     autocmd FileType c,cpp,arduino,go,rust,javascript set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
-    autocmd BufNewFile * -1r !vim_file_template <afile>
-    autocmd BufNewFile * :silent call search('^.*implementation here')
+    autocmd BufNewFile * exec VimFileTemplate(expand("<afile>"))
+    autocmd BufNewFile * :silent call search('^.*start writing...')
     autocmd BufNewFile * :redraw
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
@@ -254,8 +254,10 @@ if executable('rg')
       \   <bang>0 ? fzf#vim#with_preview('up:60%')
       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
       \   <bang>0)
-    command! -bang -nargs=? -complete=dir Files
+    if !has('win32')
+        command! -bang -nargs=? -complete=dir Files
                 \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+    endif
 endif
 " }}}2
 command! CopyFilename exec "@+=expand(\"%\")"
@@ -283,6 +285,17 @@ let g:rustfmt_autosave = 1
 let g:vimtex_toc_config = {
             \'fold_enable': 1,
             \'split_pos': 'rightbelow'}
+
+let g:vim_file_template='e:\.vim_file_templates\template.'
+function! VimFileTemplate(fname)
+    let fn=g:vim_file_template_dir . fnamemodify(a:fname, ":e")
+    if filereadable(fn)
+        exec "0read " . fn
+    else
+        echom "File template not readable: " . fn
+    end
+endfunction
+command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
 command! NOH :silent! /ajsdkajskdj<CR>
