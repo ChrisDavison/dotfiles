@@ -39,6 +39,9 @@ alias lg="exa --group-directories-first --long --git-ignore"
 alias ltg="exa --tree -L 2 --git-ignore"
 alias g="git"
 alias v="nvim"
+alias bst="repo bstat"
+alias gst="repo stat"
+alias gf="repo fetch"
 
 source ~/.cargo/env
 # source /usr/local/bin/virtualenvwrapper.fish

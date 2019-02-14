@@ -103,7 +103,7 @@ call plug#end()
 set t_Co=256
 set bg=dark
 let &termguicolors = 1
-let g:monotone_color = [268, 100, 89]
+let g:monotone_color = [260, 40, 85]
 let g:monotone_secondary_hue_offset = 200
 let g:monotone_emphasize_comments = 1
 silent! colorscheme monotone
