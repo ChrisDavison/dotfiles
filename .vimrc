@@ -48,6 +48,7 @@ if has('persistent_undo')
     set undodir=~/.undodir/ undofile
 endif
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+set omnifunc=syntaxcomplete#Complete
 " }}}
 " plugins {{{
 call plug#begin('~/.vim/plugged')
@@ -86,6 +87,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'romainl/vim-qlist'
 Plug 'romainl/vim-qf'
 Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
@@ -139,6 +141,8 @@ nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
 nnoremap <leader>ta :Tags<CR>
 nnoremap <leader>tb :BTags<CR>
+" rot13 text (for privacy)
+nnoremap <leader>r ggg?G``
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
@@ -167,6 +171,10 @@ function! s:ToggleColorcolumn()
 endfunction
 command! ToggleColorColumn call s:ToggleColorcolumn()
 " }}}
+" abbreviations {{{
+iabbrev #i #include
+iabbrev #d #define
+" }}}
 " plugins / languages {{{
 augroup vimrc
     autocmd!
@@ -174,8 +182,6 @@ augroup vimrc
     autocmd FileType python  set foldmethod=indent
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
     autocmd BufNewFile * exec VimFileTemplate(expand("<afile>"))
-    autocmd BufNewFile * :silent call search('^.*start writing...')
-    autocmd BufNewFile * :redraw
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
@@ -299,4 +305,11 @@ command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
 command! NOH :silent! /ajsdkajskdj<CR>
-" }}}
+
+function! s:Underline(chars)
+  let chars = empty(a:chars) ? '-' : a:chars
+  let nr_columns = virtcol('$') - 1
+  let uline = repeat(chars, (nr_columns / len(chars)) + 1)
+  put =strpart(uline, 0, nr_columns)
+endfunction
+command! -nargs=? Underline call s:Underline(<q-args>)" }}}
