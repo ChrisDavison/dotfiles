@@ -23,9 +23,9 @@ else
     endif
 endif
 set nospell
-set foldenable foldlevelstart=0
+set foldenable foldlevelstart=99
 set updatetime=1000 " Write a swap file after 1 second
-set cmdheight=2  " Useful for more info on some plugins
+set cmdheight=1  " Useful for more info on some plugins
 set colorcolumn=0 " No color bar (have a toggle command defined below)
 set hlsearch " Highlight search results
 set ignorecase " Ignore case when searching
@@ -48,7 +48,6 @@ if has('persistent_undo')
     set undodir=~/.undodir/ undofile
 endif
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
-set omnifunc=syntaxcomplete#Complete
 " }}}
 " plugins {{{
 call plug#begin('~/.vim/plugged')
@@ -87,7 +86,6 @@ Plug 'junegunn/goyo.vim'
 Plug 'romainl/vim-qlist'
 Plug 'romainl/vim-qf'
 Plug 'tomtom/tlib_vim'
-Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-sensible'
@@ -99,21 +97,22 @@ Plug 'wellle/targets.vim'
 Plug 'itchyny/lightline.vim'
 " themes
 Plug 'junegunn/seoul256.vim'
-Plug 'Lokaltog/vim-monotone'
+Plug 'reedes/vim-colors-pencil'
+Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
-set bg=dark
+set bg=light
 let &termguicolors = 1
-let g:monotone_color = [260, 40, 85]
-let g:monotone_secondary_hue_offset = 200
-let g:monotone_emphasize_comments = 1
-silent! colorscheme monotone
-if has('gui_running')
-    set guioptions=
-    set guifont=Hack:h16
-endif
+silent! colorscheme PaperColor
+let g:PaperColor_Theme_options = {
+    \ 'theme': {
+    \     'default': {
+    \         'allow_italic': 1
+    \     }
+    \ }
+    \ }
 " }}}
 " keybinds {{{
 " command abbreviatons
@@ -141,8 +140,6 @@ nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
 nnoremap <leader>ta :Tags<CR>
 nnoremap <leader>tb :BTags<CR>
-" rot13 text (for privacy)
-nnoremap <leader>r ggg?G``
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
@@ -171,10 +168,6 @@ function! s:ToggleColorcolumn()
 endfunction
 command! ToggleColorColumn call s:ToggleColorcolumn()
 " }}}
-" abbreviations {{{
-iabbrev #i #include
-iabbrev #d #define
-" }}}
 " plugins / languages {{{
 augroup vimrc
     autocmd!
@@ -182,6 +175,8 @@ augroup vimrc
     autocmd FileType python  set foldmethod=indent
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
     autocmd BufNewFile * exec VimFileTemplate(expand("<afile>"))
+    autocmd BufNewFile * :silent call search('^.*start writing...')
+    autocmd BufNewFile * :redraw
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
@@ -274,6 +269,7 @@ command! ASMR edit ~/Dropbox/asmr.csv | normal G
 command! Journal edit ~/Dropbox/notes/journal.md | normal G
 command! Todos edit ~/Dropbox/notes/todo.md | normal G
 command! Dones edit ~/Dropbox/notes/done.md | normal G
+command! Projects edit ~/Dropbox/notes/projects.md | normal G
 
 function! StripTrailingWhitespace()
   if !&binary && &filetype != 'diff'
@@ -294,7 +290,7 @@ let g:vimtex_toc_config = {
 
 let g:vim_file_template='e:\.vim_file_templates\template.'
 function! VimFileTemplate(fname)
-    let fn=g:vim_file_template_dir . fnamemodify(a:fname, ":e")
+    let fn=g:vim_file_template . fnamemodify(a:fname, ":e")
     if filereadable(fn)
         exec "0read " . fn
     else
@@ -305,11 +301,4 @@ command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
 command! NOH :silent! /ajsdkajskdj<CR>
-
-function! s:Underline(chars)
-  let chars = empty(a:chars) ? '-' : a:chars
-  let nr_columns = virtcol('$') - 1
-  let uline = repeat(chars, (nr_columns / len(chars)) + 1)
-  put =strpart(uline, 0, nr_columns)
-endfunction
-command! -nargs=? Underline call s:Underline(<q-args>)" }}}
+" }}}
