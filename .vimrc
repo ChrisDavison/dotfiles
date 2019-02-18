@@ -174,10 +174,8 @@ augroup vimrc
     autocmd FileType c,cpp,arduino,go,rust,javascript set foldmethod=syntax
     autocmd FileType python  set foldmethod=indent
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
-    autocmd BufNewFile * exec VimFileTemplate(expand("<afile>"))
-    autocmd BufNewFile * :silent call search('^.*start writing...')
-    autocmd BufNewFile * :redraw
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
+    autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
@@ -298,6 +296,15 @@ function! VimFileTemplate(fname)
     end
 endfunction
 command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
+
+function Titlecase(str)
+    return substitute(a:str, "\\<.", "\\u&", "g")
+endfunction
+command! -nargs=1 Titlecase exec Titlecase(<f-args>)
+
+function! VimNewMarkdown(fname)
+    exec ":normal 0i# " . Titlecase(fnamemodify(a:fname, ':t:r:gs/-/ /'))
+endfunction
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
 command! NOH :silent! /ajsdkajskdj<CR>
