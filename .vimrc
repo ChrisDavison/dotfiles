@@ -104,7 +104,6 @@ call plug#end()
 " appearance {{{
 set t_Co=256
 set bg=light
-let &termguicolors = 1
 silent! colorscheme PaperColor
 let g:PaperColor_Theme_options = {
     \ 'theme': {
