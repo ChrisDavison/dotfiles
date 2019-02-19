@@ -103,7 +103,7 @@ call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
-set bg=light
+set bg=dark
 silent! colorscheme PaperColor
 let g:PaperColor_Theme_options = {
     \ 'theme': {
@@ -143,7 +143,7 @@ nnoremap <leader>tb :BTags<CR>
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
 " Other bindings
-nnoremap <leader>ev :e $MYVIMRC<BAR>echo "Editing VIMRC"<CR>
+nnoremap <leader>ev :silent! e $MYVIMRC<BAR>echo "Editing VIMRC"<CR>
 nnoremap <leader>sv :so $MYVIMRC<BAR>echo "Sourced VIMRC"<CR>
 nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>
 nnoremap nw :set wrap!<BAR>echo "Toggling line wrapping"<CR>
@@ -296,7 +296,7 @@ function! VimFileTemplate(fname)
 endfunction
 command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
 
-function Titlecase(str)
+function! Titlecase(str)
     return substitute(a:str, "\\<.", "\\u&", "g")
 endfunction
 command! -nargs=1 Titlecase exec Titlecase(<f-args>)
@@ -307,4 +307,7 @@ endfunction
 
 command! ILH :normal [I<CR> | Keep expand('%')<CR>
 command! NOH :silent! /ajsdkajskdj<CR>
+
+
+let g:fastfold_savehook = 0
 " }}}
