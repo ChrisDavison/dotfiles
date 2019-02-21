@@ -179,6 +179,8 @@ augroup vimrc
     autocmd Filetype markdown setlocal foldmethod=expr
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
+    autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
+    autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
     autocmd FileType make    set noexpandtab
     autocmd FileType vim     set foldmethod=marker
     autocmd ColorScheme * hi! link SignColumn LineNr
@@ -226,7 +228,7 @@ endfunction
 function! NeatFoldText()
   let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
   let lines_count = v:foldend - v:foldstart + 1
-  let lines_count_text = '-- ' . printf("%10s", lines_count . ' lines') . ' '
+  let lines_count_text = '[' . printf("%10s", lines_count . ' lines') . ']'
   let foldchar = matchstr(&fillchars, 'fold:\zs.')
   let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
   let foldtextend = lines_count_text . repeat(foldchar, 8)
@@ -245,18 +247,8 @@ if executable('rg')
     set grepprg=rg\ --vimgrep
     " let s:find_cmd=
     command! -bang -nargs=* Find call fzf#vim#grep(
-    \    'rg --column  --no-heading -F --ignore-case --no-ignore --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+    \    'rg --no-heading -F --smart-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
     nnoremap <leader>F :Find<SPACE>
-    command! -bang -nargs=* Rg
-      \ call fzf#vim#grep(
-      \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-      \   <bang>0 ? fzf#vim#with_preview('up:60%')
-      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-      \   <bang>0)
-    if !has('win32')
-        command! -bang -nargs=? -complete=dir Files
-                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-    endif
 endif
 " }}}
 " miscellaneous/experimental {{{

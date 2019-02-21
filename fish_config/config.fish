@@ -10,6 +10,7 @@ set -x CODEDIR $HOME/code
 set -x TODOFILE $HOME/Dropbox/notes/todo.md
 set -x DONEFILE $HOME/Dropbox/notes/done.md
 set -x ASMRFILE $HOME/Dropbox/asmr.csv
+set -x FINANCEFILE $HOME/Dropbox/notes/finances.csv
 set -x NOTESDIR $HOME/Dropbox/notes
 set -x NOTESBACKUPDIR $CODEDIR/knowledge
 
