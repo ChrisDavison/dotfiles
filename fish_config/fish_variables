@@ -10,7 +10,7 @@ SETUVAR --export --path GOPATH:/Users/davison
 SETUVAR --export LESS:FRSX
 SETUVAR --export NOTESBACKUPDIR:/Users/davison/code/knowledge
 SETUVAR --export NOTESDIR:/Users/davison/Dropbox/notes
-SETUVAR TERM:xterm\x2d256color
+SETUVAR --export TERM:xterm\x2d256color
 SETUVAR --export TODOFILE:/Users/davison/Dropbox/notes/todo\x2emd
 SETUVAR --export WORKON_HOME:/Users/davison/\x2eenvs
 SETUVAR __fish_init_2_3_0:\x1d
