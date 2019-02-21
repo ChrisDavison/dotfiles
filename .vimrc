@@ -193,11 +193,15 @@ augroup vimrc
     autocmd User GoyoLeave Limelight!
 augroup END
 " specific language config {{{2
-let g:pymode_python = 'python3'
-let g:slime_target = "tmux"
-let g:slime_python_ipython = 1
-let g:slime_paste_file=tempname()
+let b:javascript_fold=1
+let g:SuperTabDefaultCompletionType = "context"
+let g:fastfold_savehook = 0
 let g:go_fmt_command = "goimports"
+let g:pymode_python = 'python3'
+let g:rustfmt_autosave = 1
+let g:slime_paste_file=tempname()
+let g:slime_python_ipython = 1
+let g:slime_target = "tmux"
 let g:tex_flavor = "latex"
 let g:vimtex_fold_enabled=1
 if executable('rls')
@@ -207,8 +211,6 @@ if executable('rls')
                 \ 'whitelist': ['rust'],
                 \})
 endif
-let b:javascript_fold=1
-let g:SuperTabDefaultCompletionType = "context"
 " }}}2
 " }}}
 " custom folding for markdown headers {{{
@@ -238,8 +240,7 @@ command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhi
 nnoremap <silent>  == :Scratch<CR>
 nnoremap           =f :Scratch<Bar>set filetype=
 " }}}
-" miscellaneous/experimental {{{
-" FZF && Rg/Ag {{{2
+" FZF && Rg/Ag {{{
 if executable('rg')
     set grepprg=rg\ --vimgrep
     " let s:find_cmd=
@@ -257,7 +258,8 @@ if executable('rg')
                 \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
     endif
 endif
-" }}}2
+" }}}
+" miscellaneous/experimental {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
@@ -267,7 +269,9 @@ command! Journal edit ~/Dropbox/notes/journal.md | normal G
 command! Todos edit ~/Dropbox/notes/todo.md | normal G
 command! Dones edit ~/Dropbox/notes/done.md | normal G
 command! Projects edit ~/Dropbox/notes/projects.md | normal G
+command! NOH :silent! /ajsdkajskdj<CR>
 
+" Strip trailing whitespace {{{2
 function! StripTrailingWhitespace()
   if !&binary && &filetype != 'diff'
     normal mz
@@ -277,14 +281,9 @@ function! StripTrailingWhitespace()
     normal `z
   endif
 endfunction
-
 command! StripWhitespace exec StripTrailingWhitespace()
-
-let g:rustfmt_autosave = 1
-let g:vimtex_toc_config = {
-            \'fold_enable': 1,
-            \'split_pos': 'rightbelow'}
-
+"}}}2
+" Insert a template on file creation {{{2
 let g:vim_file_template='e:\.vim_file_templates\template.'
 function! VimFileTemplate(fname)
     let fn=g:vim_file_template . fnamemodify(a:fname, ":e")
@@ -295,19 +294,16 @@ function! VimFileTemplate(fname)
     end
 endfunction
 command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
-
+" }}}2
+" Titlecase a passed string {{{2
 function! Titlecase(str)
     return substitute(a:str, "\\<.", "\\u&", "g")
 endfunction
 command! -nargs=1 Titlecase exec Titlecase(<f-args>)
-
+"}}}2
+" Insert filename as header of new markdown file {{{2
 function! VimNewMarkdown(fname)
     exec ":normal 0i# " . Titlecase(fnamemodify(a:fname, ':t:r:gs/-/ /'))
 endfunction
-
-command! ILH :normal [I<CR> | Keep expand('%')<CR>
-command! NOH :silent! /ajsdkajskdj<CR>
-
-
-let g:fastfold_savehook = 0
+"}}}2
 " }}}
