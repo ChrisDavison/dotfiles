@@ -7,9 +7,10 @@ function asmradd
     read -P "Title: " vid_title
     read -P "Vid URL: " vid_url
     set vid_hash (youtubevidid $vid_url)
-    if [ ! set -q vid_hash ]
+    if [ vid_hash = "" ]
         echo "Couldn't save video (vidhash empty)"
         return 1
+    else
+        echo "$vid_author: $vid_title;$vid_hash" >> "$ASMRFILE"
     end
-    echo "$vid_author: $vid_title;$vid_hash" >> "$ASMRFILE"
 end
