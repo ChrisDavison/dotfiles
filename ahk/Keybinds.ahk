@@ -44,7 +44,3 @@ return
     Resize(480, 320)
     Move("right", "bottom")
 return
-^+SPACE::
-    Resize(1024,768)
-    Center()
-return
