@@ -301,4 +301,12 @@ function! VimNewMarkdown(fname)
     exec ":normal 0i# " . Titlecase(fnamemodify(a:fname, ':t:r:gs/-/ /'))
 endfunction
 "}}}2
+" Open current logbook entry {{{2
+function! CurrentLogbook()
+    let logbooks=globpath(expand("~/Dropbox/notes/work/logbook"), "*.md", 0, 1)
+    let last_logbook=get(logbooks, len(logbooks)-1)
+    exec ":e ".last_logbook | normal G
+endfunction
+command! Logbook exec CurrentLogbook()
+"}}}2
 " }}}
