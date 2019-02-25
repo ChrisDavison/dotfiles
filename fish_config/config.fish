@@ -1,4 +1,3 @@
-set -x TERM xterm-256color
 set -x EDITOR nvim
 set -x GOPATH $HOME
 set -x GOBIN $GOPATH/bin
