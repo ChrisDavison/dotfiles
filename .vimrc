@@ -7,7 +7,10 @@ filetype plugin indent on
 set nocompatible
 set autochdir
 set wrap lbr
-let &showbreak = '└ '
+let &showbreak = '↳ '
+set cpo+=n
+set breakindent
+set breakindentopt+=shift:2,sbr
 set number norelativenumber
 set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
 set tags=./tags;,tags,.git/tags
