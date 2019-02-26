@@ -63,7 +63,7 @@ Plug 'fatih/vim-go'
 Plug 'guns/vim-clojure-static'
 Plug 'lervag/vimtex'
 Plug 'neovimhaskell/haskell-vim'
-Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-erlang/vim-erlang-runtime'
 Plug 'vim-jp/vim-cpp'
@@ -82,6 +82,8 @@ Plug 'dahu/vim-fanfingtastic'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'easymotion/vim-easymotion'
 Plug 'ervandew/supertab'
+Plug 'kana/vim-textobj-user'
+Plug 'jceb/vim-textobj-uri'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/limelight.vim'
@@ -102,19 +104,22 @@ Plug 'itchyny/lightline.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'reedes/vim-colors-pencil'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'cormacrelf/vim-colors-github'
 call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
-set bg=dark
-silent! colorscheme PaperColor
-let g:PaperColor_Theme_options = {
-    \ 'theme': {
-    \     'default': {
-    \         'allow_italic': 1
-    \     }
-    \ }
-    \ }
+set bg=light
+silent! colorscheme github
+let g:airline_theme = "github"
+let g:lightline = { 'colorscheme': 'github' }
+" let g:PaperColor_Theme_options = {
+"     \ 'theme': {
+"     \     'default': {
+"     \         'allow_italic': 1
+"     \     }
+"     \ }
+"     \ }
 " }}}
 " keybinds {{{
 " command abbreviatons
@@ -142,12 +147,15 @@ nnoremap <leader>lb :BLines<cr>
 nnoremap <leader>m :Marks<cr>
 nnoremap <leader>ta :Tags<CR>
 nnoremap <leader>tb :BTags<CR>
+nnoremap <leader>r :redraw<CR>
+nnoremap <leader>= gqap
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
 " Other bindings
 nnoremap <leader>ev :silent! e $MYVIMRC<BAR>echo "Editing VIMRC"<CR>
 nnoremap <leader>sv :so $MYVIMRC<BAR>echo "Sourced VIMRC"<CR>
+nnoremap <leader>ss :mksession! ~/Dropbox/session.vim<BAR>echo "Saved session to dropbox"<CR>
 nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>
 nnoremap nw :set wrap!<BAR>echo "Toggling line wrapping"<CR>
 nnoremap <BS> <C-^>
@@ -165,12 +173,12 @@ function! s:ToggleColorcolumn()
     if &colorcolumn > 0
         set colorcolumn=0
     else
-        set colorcolumn=100
+        set colorcolumn=80
     endif
 endfunction
 command! ToggleColorColumn call s:ToggleColorcolumn()
 " }}}
-" plugins / languages {{{
+" autocommands {{{
 augroup vimrc
     autocmd!
     autocmd FileType c,cpp,arduino,go,rust,javascript set foldmethod=syntax
@@ -178,8 +186,9 @@ augroup vimrc
 	autocmd BufNewFile,BufWinEnter *.md set filetype=markdown
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
-    autocmd Filetype markdown setlocal foldexpr=MarkdownLevel()
-    autocmd Filetype markdown setlocal foldmethod=expr
+    autocmd Filetype markdown setlocal foldexpr=MarkdownLevel() foldmethod=expr
+    autocmd Filetype markdown setlocal tw=80 autoindent
+    autocmd Filetype markdown setlocal colorcolumn=80
     autocmd Filetype markdown hi Conceal cterm=NONE ctermbg=NONE
     autocmd Filetype markdown hi Conceal guibg=NONE guifg=NONE
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
@@ -197,7 +206,8 @@ augroup vimrc
     autocmd User GoyoEnter Limelight
     autocmd User GoyoLeave Limelight!
 augroup END
-" specific language config {{{2
+" }}}
+" plugin/language config {{{
 let b:javascript_fold=1
 let g:SuperTabDefaultCompletionType = "context"
 let g:fastfold_savehook = 0
@@ -209,6 +219,9 @@ let g:slime_python_ipython = 1
 let g:slime_target = "tmux"
 let g:tex_flavor = "latex"
 let g:vimtex_fold_enabled=1
+let g:vim_markdown_follow_anchor=1
+" Fenced code blocks, when using tpope markdown
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 if executable('rls')
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'rls',
@@ -216,7 +229,6 @@ if executable('rls')
                 \ 'whitelist': ['rust'],
                 \})
 endif
-" }}}2
 " }}}
 " custom folding for markdown headers {{{
 function! MarkdownLevel()
@@ -309,4 +321,18 @@ function! CurrentLogbook()
 endfunction
 command! Logbook exec CurrentLogbook()
 "}}}2
+" Navigate between thesis and notes {{{2
+function! ThesisNotes()
+    if match(expand("%:p"), "thesis") >= 0
+        if expand("%:p:h:t") == "notes"
+            exec ":e ../" . expand("%:n") | normal `z
+        else
+			exec ":normal mz"
+            exec ":e notes/" . expand("%:n")
+        endif
+    endif
+endfunction
+command! ThesisNotes exec ThesisNotes()
+nnoremap <silent> <leader>tn :ThesisNotes<CR>
+" }}}2
 " }}}
