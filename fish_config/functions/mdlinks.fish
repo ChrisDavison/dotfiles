@@ -3,5 +3,5 @@ function mdlinks
     if [ $PWD/ = "$NOTESDIR"/* ]
         set loc "."
     end
-    rg "[^!]\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path
-end
+    rg "[^!]\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path $argv
+en
