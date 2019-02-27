@@ -56,22 +56,11 @@ let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\
 call plug#begin('~/.vim/plugged')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
-Plug 'aliev/vim-compiler-python'
-Plug 'dag/vim-fish'
-Plug 'elixir-editors/vim-elixir'
 Plug 'fatih/vim-go'
-Plug 'guns/vim-clojure-static'
 Plug 'lervag/vimtex'
-Plug 'neovimhaskell/haskell-vim'
-" Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
-Plug 'vim-erlang/vim-erlang-runtime'
 Plug 'vim-jp/vim-cpp'
-Plug 'vim-perl/vim-perl'
 Plug 'vim-python/python-syntax'
-Plug 'vim-scripts/gnuplot-syntax-highlighting'
-Plug 'vimjas/vim-python-pep8-indent'
-Plug 'zah/nim.vim'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'airblade/vim-gitgutter'
@@ -101,40 +90,21 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'itchyny/lightline.vim'
 " themes
+" FLAZZ is a massive colorscheme pack
 Plug 'junegunn/seoul256.vim'
-Plug 'reedes/vim-colors-pencil'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'cormacrelf/vim-colors-github'
 call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
-set bg=light
-silent! colorscheme github
-let g:airline_theme = "github"
-let g:lightline = { 'colorscheme': 'github' }
-" let g:PaperColor_Theme_options = {
-"     \ 'theme': {
-"     \     'default': {
-"     \         'allow_italic': 1
-"     \     }
-"     \ }
-"     \ }
+set bg=dark
+silent! colorscheme seoul256
+let g:lightline = { 'colorscheme': 'seoul256' }
 " }}}
 " keybinds {{{
 " command abbreviatons
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
-" move by visual lines
-vmap  <buffer> <silent> k gk
-vmap  <buffer> <silent> j gj
-vmap  <buffer> <silent> 0 g0
-vmap  <buffer> <silent> $ g$
-nmap  <buffer> <silent> k gk
-nmap  <buffer> <silent> j gj
-nmap  <buffer> <silent> 0 g0
-nmap  <buffer> <silent> $ g$
 " indent/de-dent visual selection
 vnoremap < <gv
 vnoremap > >gv
@@ -159,24 +129,18 @@ nnoremap <leader>ss :mksession! ~/Dropbox/session.vim<BAR>echo "Saved session to
 nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>
 nnoremap nw :set wrap!<BAR>echo "Toggling line wrapping"<CR>
 nnoremap <BS> <C-^>
-" toggle 'conceal' mode
-set conceallevel=2
-function! ToggleConceal()
-    if &conceallevel == 2
-        set conceallevel=0
-    else
-        set conceallevel=2
-    endif
-endfunction
-nnoremap <silent> <C-y> :call ToggleConceal()<CR>
-function! s:ToggleColorcolumn()
-    if &colorcolumn > 0
-        set colorcolumn=0
-    else
-        set colorcolumn=80
-    endif
-endfunction
-command! ToggleColorColumn call s:ToggleColorcolumn()
+" }}}
+" custom commands {{{
+command! CopyFilename exec "@+=expand(\"%\")"
+command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
+command! Wd write|bdelete
+command! Bd bp|bd #
+command! ASMR edit ~/Dropbox/asmr.csv | normal G
+command! Journal edit ~/Dropbox/notes/journal.md | normal G
+command! Todos edit ~/Dropbox/notes/todo.md | normal G
+command! Dones edit ~/Dropbox/notes/done.md | normal G
+command! Projects edit ~/Dropbox/notes/projects.md | normal G
+command! NOH :silent! /ajsdkajskdj<CR>
 " }}}
 " autocommands {{{
 augroup vimrc
@@ -219,7 +183,6 @@ let g:slime_python_ipython = 1
 let g:slime_target = "tmux"
 let g:tex_flavor = "latex"
 let g:vimtex_fold_enabled=1
-let g:vim_markdown_follow_anchor=1
 " Fenced code blocks, when using tpope markdown
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 if executable('rls')
@@ -252,11 +215,6 @@ function! NeatFoldText()
 endfunction
 set foldtext=NeatFoldText()
 " }}}
-" scratch buffers {{{
-command! -bar -nargs=? -bang Scratch :silent enew<bang>|set buftype=nofile bufhidden=hide noswapfile buflisted filetype=<args> modifiable
-nnoremap <silent>  == :Scratch<CR>
-nnoremap           =f :Scratch<Bar>set filetype=
-" }}}
 " FZF && Rg/Ag {{{
 if executable('rg')
     set grepprg=rg\ --vimgrep
@@ -266,18 +224,7 @@ if executable('rg')
     nnoremap <leader>F :Find<SPACE>
 endif
 " }}}
-" miscellaneous/experimental {{{
-command! CopyFilename exec "@+=expand(\"%\")"
-command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
-command! Wd write|bdelete
-command! Bd bp|bd #
-command! ASMR edit ~/Dropbox/asmr.csv | normal G
-command! Journal edit ~/Dropbox/notes/journal.md | normal G
-command! Todos edit ~/Dropbox/notes/todo.md | normal G
-command! Dones edit ~/Dropbox/notes/done.md | normal G
-command! Projects edit ~/Dropbox/notes/projects.md | normal G
-command! NOH :silent! /ajsdkajskdj<CR>
-
+" custom functions {{{
 " Strip trailing whitespace {{{2
 function! StripTrailingWhitespace()
   if !&binary && &filetype != 'diff'
@@ -290,27 +237,9 @@ function! StripTrailingWhitespace()
 endfunction
 command! StripWhitespace exec StripTrailingWhitespace()
 "}}}2
-" Insert a template on file creation {{{2
-let g:vim_file_template='e:\.vim_file_templates\template.'
-function! VimFileTemplate(fname)
-    let fn=g:vim_file_template . fnamemodify(a:fname, ":e")
-    if filereadable(fn)
-        exec "0read " . fn
-    else
-        echom "File template not readable: " . fn
-    end
-endfunction
-command! -nargs=1 VFT exec VimFileTemplate(<f-args>)
-" }}}2
-" Titlecase a passed string {{{2
-function! Titlecase(str)
-    return substitute(a:str, "\\<.", "\\u&", "g")
-endfunction
-command! -nargs=1 Titlecase exec Titlecase(<f-args>)
-"}}}2
 " Insert filename as header of new markdown file {{{2
 function! VimNewMarkdown(fname)
-    exec ":normal 0i# " . Titlecase(fnamemodify(a:fname, ':t:r:gs/-/ /'))
+    exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
 endfunction
 "}}}2
 " Open current logbook entry {{{2
@@ -335,4 +264,27 @@ endfunction
 command! ThesisNotes exec ThesisNotes()
 nnoremap <silent> <leader>tn :ThesisNotes<CR>
 " }}}2
-" }}}
+" Toggle concealing {{{2
+set conceallevel=2
+function! ToggleConceal()
+    if &conceallevel == 2
+        set conceallevel=0
+    else
+        set conceallevel=2
+    endif
+endfunction
+nnoremap <silent> <C-y> :call ToggleConceal()<CR>
+
+" }}}2
+" Toggle color column {{{2
+function! s:ToggleColorcolumn()
+    if &colorcolumn > 0
+        set colorcolumn=0
+    else
+        set colorcolumn=80
+    endif
+endfunction
+command! ToggleColorColumn call s:ToggleColorcolumn()
+
+" }}}2
+"}}}
