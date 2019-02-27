@@ -149,9 +149,9 @@ augroup vimrc
     autocmd FileType python  set foldmethod=indent
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
-    autocmd Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --from\ markdown\ --to\ markdown-shortcut_reference_links\ --atx-headers\ --columns=80\ --reference-links
     autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
     autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
+    autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
     autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
     autocmd FileType make    set noexpandtab
@@ -196,6 +196,8 @@ let g:pandoc#spell#enabled=0
 let g:pandoc#hypertext#autosave_on_edit_open_link=1
 let g:pandoc#hypertext#create_if_no_alternates_exists=1
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
+let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
 " }}}
 " custom folding for markdown headers {{{
 function! MarkdownLevel()
