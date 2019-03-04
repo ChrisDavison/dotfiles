@@ -34,7 +34,7 @@ export LESS=FRSX
 export CODEDIR="$HOME/code"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
-export ASMRFILE="$HOME/Dropbox/asmr.csv"
+export FINANCEFILE="$HOME/Dropbox/notes/finances.csv"
 export NOTESDIR="$HOME/Dropbox/notes"
 export NOTESBACKUPDIR="$CODEDIR/knowledge"
 
@@ -81,6 +81,7 @@ fi
 
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
+alias v="nvim"
 alias vi='nvim'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
@@ -92,6 +93,7 @@ alias g="git"
 # ~/bin/randomquote || echo "No bin/randomquote"
 
 source "$CODEDIR/dotfiles/functions.zsh" || echo "No functions.zsh"
+
 source $HOME/.cargo/env || echo "No .cargo/env"
 source /usr/local/etc/profile.d/autojump.sh || echo "No autojump.sh"
 source ~/.fzf.zsh || echo "No fzf"

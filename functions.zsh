@@ -73,7 +73,6 @@ asmr() {
     echo "https://youtube.com/watch?v=$(echo $match | cut -d';' -f2)" | OpenInBrowser
 }
 
-
 OpenInBrowser() {
     read url
     [ -z $url ] && url="$@"
@@ -100,12 +99,13 @@ notebackup() {
     dt=$(date +"%Y%m%dT%H%M")
     echo "${dt}: $NOTESDIR Backup"
     rm -rf "${NOTESBACKUPDIR}/"*
-    cp -r "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
-    cd "${NOTESBACKUPDIR}"
+    rsync -az  "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
+    pushd "${NOTESBACKUPDIR}"
     git add . > /dev/null
     git commit -m "Backup ${dt}"
     git push
     git archive -o $HOME/notes-backup--${dt}.zip @
+    popd
 }
 
 nf() { # Find inside notes
@@ -126,16 +126,9 @@ nf() { # Find inside notes
 nff() { # Find in note titles only
     nf "$@" | rg "^\(F\)" | cut -d' ' -f2-
 }
+
 nfc() { # Find in note contents only
     nf "$@" | rg "^\(C\)" | cut -d' ' -f2-
-}
-
-nffc() {
-    code $(nff "$@" | fzf --multi)
-}
-
-nfcc() {
-    code $(nfc "$@" | fzf --multi)
 }
 
 mdlinks() {
@@ -202,3 +195,25 @@ youtubeaudio() {
     format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
     youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
 }
+
+t() {
+    # Highlight either a date (d=digit: dddd-dd-dd), or a keyword (+WORD)
+    ~/.cargo/bin/t "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
+}
+
+hlmeta() {
+    rg "\+\w|\w+:.*\b"
+}
+
+financeadd(){
+    if [ -z "$FINANCEFILE" ]; then
+        echo "Need to define FINANCEFILE"
+        return 1
+    fi
+    printf "Date: " && read ddate
+    printf "Cost: " && read cost
+    printf "Description: " && read desc
+    printf "Category: " && read category
+    echo $ddate","$cost","$desc","$category >> $FINANCEFILE
+}
+
