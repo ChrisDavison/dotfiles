@@ -1,1 +1,0 @@
-/Users/davison/.fzf/shell/key-bindings.fish

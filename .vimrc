@@ -21,8 +21,8 @@ if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    if executable('/usr/local/bin/fish')
-        set shell=/usr/local/bin/fish
+    if executable('/usr/local/bin/zsh')
+        set shell=/usr/local/bin/zsh
     else
         set shell=/bin/bash
     endif
@@ -129,19 +129,6 @@ nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>
 nnoremap nw :set wrap!<BAR>echo "Toggling line wrapping"<CR>
 nnoremap <BS> <C-^>
 " }}}
-" custom commands {{{
-command! CopyFilename exec "@+=expand(\"%\")"
-command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
-command! Wd write|bdelete
-command! Bd bp|bd #
-command! ASMR edit ~/Dropbox/asmr.csv | normal G
-command! Journal edit ~/Dropbox/notes/journal.md | normal G
-command! Todos edit ~/Dropbox/notes/todo.md | normal G
-command! Dones edit ~/Dropbox/notes/done.md | normal G
-command! Projects edit ~/Dropbox/notes/projects.md | normal G
-command! NOH :silent! /ajsdkajskdj<CR>
-command! Scratch edit ~/.scratch | normal G
-" }}}
 " autocommands {{{
 augroup vimrc
     autocmd!
@@ -163,7 +150,7 @@ augroup vimrc
     autocmd VimResized * wincmd= " equally resize splits on window resize
     autocmd FileType sh let g:sh_fold_enabled=5
     autocmd FileType sh let g:is_bash=1
-    autocmd FileType sh set foldmethod=syntax
+    autocmd FileType sh,zsh set foldmethod=syntax
     autocmd User GoyoEnter Limelight
     autocmd User GoyoLeave Limelight!
 augroup END
@@ -195,7 +182,7 @@ let g:pandoc#formatting#textwidth=80
 let g:pandoc#spell#enabled=0
 let g:pandoc#hypertext#autosave_on_edit_open_link=1
 let g:pandoc#hypertext#create_if_no_alternates_exists=1
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
 let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
 " }}}
@@ -208,19 +195,6 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" custom fold text {{{
-function! NeatFoldText()
-  let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
-  let lines_count = v:foldend - v:foldstart + 1
-  let lines_count_text = '[' . printf("%10s", lines_count . ' lines') . ']'
-  let foldchar = matchstr(&fillchars, 'fold:\zs.')
-  let foldtextstart = strpart('+' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-  let foldtextend = lines_count_text . repeat(foldchar, 8)
-  let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-  return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
-endfunction
-set foldtext=NeatFoldText()
-" }}}
 " FZF && Rg/Ag {{{
 if executable('rg')
     set grepprg=rg\ --vimgrep
@@ -231,18 +205,6 @@ if executable('rg')
 endif
 " }}}
 " custom functions {{{
-" Strip trailing whitespace {{{2
-function! StripTrailingWhitespace()
-  if !&binary && &filetype != 'diff'
-    normal mz
-    normal Hmy
-    %s/\s\+$//e
-    normal 'yz<CR>
-    normal `z
-  endif
-endfunction
-command! StripWhitespace exec StripTrailingWhitespace()
-"}}}2
 " Insert filename as header of new markdown file {{{2
 function! VimNewMarkdown(fname)
     exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
@@ -250,7 +212,7 @@ endfunction
 "}}}2
 " Open current logbook entry {{{2
 function! CurrentLogbook()
-    let logbooks=globpath(expand("~/Dropbox/notes/work/logbook"), "*.md", 0, 1)
+    let logbooks=globpath(expand("~/Dropbox/notes/logbook"), "*.md", 0, 1)
     let last_logbook=get(logbooks, len(logbooks)-1)
     exec ":e ".last_logbook | normal G
 endfunction
@@ -308,3 +270,16 @@ command! RotateScheduleWord call RotateWord()
 nnoremap <leader>r  :RotateScheduleWord<Cr>
 "}}}2
 "}}}
+" custom commands {{{
+command! CopyFilename exec "@+=expand(\"%\")"
+command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
+command! Wd write|bdelete
+command! Bd bp|bd #
+command! ASMR edit ~/Dropbox/asmr.csv | normal G
+command! Journal edit ~/Dropbox/notes/journal.md | normal G
+command! Todos edit ~/Dropbox/notes/todo.md | normal G
+command! Dones edit ~/Dropbox/notes/done.md | normal G
+command! Projects edit ~/Dropbox/notes/projects.md | normal G
+command! NOH :silent! /ajsdkajskdj<CR>
+command! Scratch edit ~/.scratch | normal G
+" }}}
