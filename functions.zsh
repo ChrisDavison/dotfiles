@@ -24,7 +24,9 @@ peek() {
     fi
 }
 
-inpath() { type "$1" >/dev/null 2>&1; }
+inpath() { 
+    type "$1" >/dev/null 2>&1; 
+}
 
 pager() {
     # Use PAGER, defaulting to less, if outputting to a terminal
@@ -46,31 +48,6 @@ swap() {
     mv "$2" "$1.$$"
     mv "$1" "$2"
     mv "$1.$$" "$1"
-}
-
-asmrfind() {
-    [ -z "$ASMRFILE" ] && echo "Need to define ASMRFILE" && return 1
-    query=${@:-".*"}
-    if [ "$1" = "+" ]; then
-        shift
-        query="^\+.*$@"
-    fi
-    cat -s "$ASMRFILE" | sort | rg "$query"
-}
-
-asmradd() {
-    [ -z "$ASMRFILE" ] && echo "Need to define ASMRFILE" && return 1
-    read -p "Author: " vid_author
-    read -p "Title: " vid_title
-    read -p "ID: " vid_hash
-    echo "$vid_author: $vid_title;$vid_hash" >> "$ASMRFILE"
-}
-
-asmr() {
-    match=$(asmrfind "$@" | sort -R | head -n1)
-    [[ -z "${match}" ]] && echo "No match" && return 1
-    echo "Watching: $(echo $match | cut -d';' -f1)"
-    echo "https://youtube.com/watch?v=$(echo $match | cut -d';' -f2)" | OpenInBrowser
 }
 
 OpenInBrowser() {
@@ -117,37 +94,22 @@ nf() { # Find inside notes
         shift
     fi
     [[ -z "$@" ]] && echo "Must pass a query" && return 1;
-    echo "Match is (F)ilename, (D)irectory, or (C)ontent"
-    fd "$@" "${loc}" -e md | sed -e "s/^/(F) /"
-    fd "$@" "${loc}" -t d | sed -e "s/^/(D) /"
-    rg "$@" "${loc}" -l | sed -e "s/^/(C) /"
+    echo "Match is Filename, Directory, or Content"
+    fd "$@" "${loc}" -e md | sed -e "s/^/F,/"
+    fd "$@" "${loc}" -t d | sed -e "s/^/D,/"
+    rg "$@" "${loc}" -l | sed -e "s/^/C,/"
 }
 
-nff() { # Find in note titles only
-    nf "$@" | rg "^\(F\)" | cut -d' ' -f2-
-}
-
-nfc() { # Find in note contents only
-    nf "$@" | rg "^\(C\)" | cut -d' ' -f2-
-}
-
-mdlinks() {
-    [[ $PWD/ = "${NOTESDIR}"/* ]] && loc="." || loc="${NOTESDIR}"
-    rg "[^!]\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path
-}
-
-mdimages() {
-    [[ $PWD/ = "${NOTESDIR}"/* ]] && loc="." || loc="${NOTESDIR}"
-    rg "!\[.*?\]\(.*?\)" "$loc" -g "*.md" -o --no-heading --sort=path
-}
-
-mdhashtags() {
-    [[ $PWD/ = "${NOTESDIR}"/* ]] && loc="." || loc="${NOTESDIR}"
-    rg "(?:[\s\`^])#[a-zA-Z]+" "$loc" -g "*.md" -o --no-heading --sort=path
-}
-
-mdstructure() {
-    rg "^#+ .*" "$1" -N
+mdstructure(){
+    cmd="$1"; shift
+    case "$cmd" in
+        links) query="[^!]\[.*?\]\(.*?\)" ;;
+        images) query="!\[.*?\]\(.*?\)" ;;
+        keywords) query="(?:[\s\`^])#[a-zA-Z]+" ;;
+        headers) query="^#+ .*" ;;
+        *) echo "Unrecognised command: $cmd" && return 1 ;;
+    esac
+    rg "$query" "$@" -g -o --no-heading --sort=path
 }
 
 todobackup() {
@@ -180,29 +142,29 @@ fromepoch() {
     date -r "$1" +"%Y%m%d %H:%M:%S"
 }
 
-_tidy_youtube_url(){
-    echo "$1" | rg "&t=\d+s" -r '' | rg "&list=[a-zA-Z0-9_]+" -r '' | rg "&index=\d+" -r ''
+# Get audio or video from youtube, or tidy a youtube url
+youtube() {
+    cmd="$1"; shift
+    case "$cmd" in
+        video) 
+            tidied=$(_tidy_youtube_url "$1")
+            format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
+            youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 -o "$format" "$tidied"
+            ;;
+        audio) 
+            tidied=$(_tidy_youtube_url "$1")
+            format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
+            youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
+            ;;
+        tidyurl)
+            echo "$1" | rg "&t=\d+s" -r '' | rg "&list=[a-zA-Z0-9_]+" -r '' | rg "&index=\d+" -r ''
+            ;;
+    esac
 }
 
-youtubevideo() {
-    tidied=$(_tidy_youtube_url "$1")
-    format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
-    youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 -o "$format" "$tidied"
-}
-
-youtubeaudio() {
-    tidied=$(_tidy_youtube_url "$1")
-    format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
-    youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
-}
-
+# Highlight either a date (d=digit: dddd-dd-dd), or a keyword (+WORD)
 t() {
-    # Highlight either a date (d=digit: dddd-dd-dd), or a keyword (+WORD)
     ~/.cargo/bin/t "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
-}
-
-hlmeta() {
-    rg "\+\w|\w+:.*\b"
 }
 
 financeadd(){
