@@ -139,6 +139,7 @@ augroup vimrc
     autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
     autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
     autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
+    autocmd Filetype pandoc setlocal noautoindent
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
     autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
     autocmd FileType make    set noexpandtab
