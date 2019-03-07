@@ -65,6 +65,7 @@ Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
+Plug 'elixir-editors/vim-elixir'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'Konfekt/FastFold'  " More performant fold refreshing
@@ -182,7 +183,7 @@ let g:pandoc#formatting#textwidth=80
 let g:pandoc#spell#enabled=0
 let g:pandoc#hypertext#autosave_on_edit_open_link=1
 let g:pandoc#hypertext#create_if_no_alternates_exists=1
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
 let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
 " }}}
@@ -280,6 +281,5 @@ command! Journal edit ~/Dropbox/notes/journal.md | normal G
 command! Todos edit ~/Dropbox/notes/todo.md | normal G
 command! Dones edit ~/Dropbox/notes/done.md | normal G
 command! Projects edit ~/Dropbox/notes/projects.md | normal G
-command! NOH :silent! /ajsdkajskdj<CR>
 command! Scratch edit ~/.scratch | normal G
 " }}}
