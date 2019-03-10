@@ -164,7 +164,7 @@ youtube() {
 
 # Highlight either a date (d=digit: dddd-dd-dd), or a keyword (+WORD)
 t() {
-    ~/.cargo/bin/t "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
+    $(which t) "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
 }
 
 financeadd(){
