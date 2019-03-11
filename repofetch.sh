@@ -3,10 +3,10 @@ set -o errexit  # Exit early on error
 set -o pipefail # Exit when a pipe fails
 set -o nounset  # Exit when trying to use undeclared variables
 
-repoloc="${HOME}/code"
-echo "Fetching repos in ${repoloc}";
-for dir in ${repoloc}/*; do
-    pushd $dir 2>&1 > /dev/null
-    git fetch -q --all &
-    popd 2>&1 > /dev/null
-done
+fetch_in() {
+    echo "Fetching repos in $1";
+    parallel 'cd {} && git fetch -q --all' ::: "$1"/*
+}
+
+fetch_in "${HOME}/src/github.com/chrisdavison"
+fetch_in "${HOME}/src/github.com/cidcom"
