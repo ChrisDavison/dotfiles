@@ -31,7 +31,7 @@ export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
-export CODEDIR="$HOME/code"
+export CODEDIR="$HOME/src/github.com/chrisdavison"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
 export FINANCEFILE="$HOME/Dropbox/notes/finances.csv"
@@ -86,6 +86,9 @@ alias vi='nvim'
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
+alias fdd="fd -t d"
+alias fdf="fd -t f"
+alias fdm="fd -e md"
 
 # =====================
 #        Scripts
