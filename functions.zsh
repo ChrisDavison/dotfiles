@@ -16,7 +16,7 @@ choose_tmux_session() {
     fi
 }
 
-peek() {
+peek() { # Either bat or EIDOT a file
     if inpath bat; then
         tmux split-window -p 33 bat "$@" || exit;
     else
@@ -24,12 +24,11 @@ peek() {
     fi
 }
 
-inpath() { 
+inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1; 
 }
 
-pager() {
-    # Use PAGER, defaulting to less, if outputting to a terminal
+pager() { # Use PAGER, defaulting to less
     if inpath bat; then
         bat "$@"
     elif [ -t 1 ]; then
@@ -39,18 +38,18 @@ pager() {
     fi
 }
 
-page() {
+page() { # Execute a path and pipe to PAGER
     exec "$@" | pager
 }
 
-swap() {
+swap() { # Swap two files (move, using a temporary)
     set -e
     mv "$2" "$1.$$"
     mv "$1" "$2"
     mv "$1.$$" "$1"
 }
 
-OpenInBrowser() {
+OpenInBrowser() { # Open link in whichever browser is in path
     read url
     [ -z $url ] && url="$@"
     [ -z $url ] && echo "Empty url" && return 1
@@ -66,7 +65,7 @@ OpenInBrowser() {
     fi
 }
 
-notebackup() {
+notebackup() { # Add notes to note repo, and create zip
     if [[ ! -d "${NOTESDIR}" || ! -d "${NOTESBACKUPDIR}" ]]; then
         echo "NOTESDIR and NOTESBACKUPDIR must both be defined"
         echo "NOTESDIR: ${NOTESDIR}"
@@ -100,7 +99,7 @@ nf() { # Find inside notes
     rg "$@" "${loc}" -l | sed -e "s/^/C,/"
 }
 
-mdstructure(){
+mdstructure(){ # Display links, images, keywords, or headers for MD files
     cmd="$1"; shift
     case "$cmd" in
         links) query="[^!]\[.*?\]\(.*?\)" ;;
@@ -112,7 +111,7 @@ mdstructure(){
     rg "$query" "$@" -g -o --no-heading --sort=path
 }
 
-todobackup() {
+todobackup() { # Backup only todo files to notes repo
     cp "${NOTESDIR}/todo.md" "${NOTESBACKUPDIR}/todo.md"
     cp "${NOTESDIR}/done.md" "${NOTESBACKUPDIR}/done.md"
     pushd ${NOTESBACKUPDIR}
@@ -124,35 +123,34 @@ todobackup() {
     popd
 }
 
-noext() {
+noext() { # Remove extension from file
     echo "${1%.*}"
 }
 
-sanitise() {
+sanitise() { # Tidy up a filename
     direc=$(dirname $1)
     base=$(basename $1)
     echo $base | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
 }
 
-ppath() {
+ppath() { # Pretty print $PATH
     echo "$path" | tr ':' '\n'
 }
 
-fromepoch() {
+fromepoch() { # Convert from epoch seconds to YYYYmmdd HHMMSS
     date -r "$1" +"%Y%m%d %H:%M:%S"
 }
 
-# Get audio or video from youtube, or tidy a youtube url
-youtube() {
+youtube() { # Get audio, video, or tidyurl from youtube
     cmd="$1"; shift
     case "$cmd" in
         video) 
-            tidied=$(_tidy_youtube_url "$1")
+            tidied=$(youtube tidyurl "$1")
             format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
             youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 -o "$format" "$tidied"
             ;;
         audio) 
-            tidied=$(_tidy_youtube_url "$1")
+            tidied=$(youtube tidyurl "$1")
             format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
             youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
             ;;
@@ -162,9 +160,8 @@ youtube() {
     esac
 }
 
-# Highlight either a date (d=digit: dddd-dd-dd), or a keyword (+WORD)
-t() {
-    $(which t) "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
+t() { # Highlight dates and keywords (dddd-dd-dd, +WORD)
+    ~/.cargo/bin/t "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
 }
 
 financeadd(){
