@@ -182,3 +182,6 @@ financeadd(){
     echo $ddate","$cost","$desc","$category >> $FINANCEFILE
 }
 
+listfuncs() { # List functions in this file
+    cat $SHELLFUNCS | rg "\w+\(\)" | column -s'{' -t
+}
