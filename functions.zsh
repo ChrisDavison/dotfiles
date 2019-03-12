@@ -84,6 +84,12 @@ notebackup() { # Add notes to note repo, and create zip
     popd
 }
 
+notes(){ # Use fzf and bat to preview, and select, notes
+    query=${1:-''}
+    batcmd='bat $NOTESDIR/{} --color=always -n'
+    fd . -e md "$loc" | sed -e "s!$NOTESDIR/!!g" | fzf -q "$query" -e --multi --preview="$batcmd" --preview-window=down:50%
+}
+
 nf() { # Find inside notes
     # If I'm inside NOTESDIR, only search the subdirectory
     [[ ! -d "${NOTESDIR}" ]] && echo "NOTESDIR not defined" &&  return 2
