@@ -29,14 +29,17 @@ export EDITOR="nvim"
 export GOPATH="$HOME"
 export GOBIN="$GOPATH/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
+export DATADIR="$HOME/Dropbox/data"
 export CODEDIR="$HOME/src/github.com/chrisdavison"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
 export DONEFILE="$HOME/Dropbox/notes/done.md"
-export FINANCEFILE="$HOME/Dropbox/notes/finances.csv"
+export FINANCEFILE="$DATADIR/finances.csv"
 export NOTESDIR="$HOME/Dropbox/notes"
 export NOTESBACKUPDIR="$CODEDIR/knowledge"
+export SHELLFUNCS="$CODEDIR/dotfiles/functions.zsh"
 
 # =====================
 #         Paths
@@ -95,8 +98,7 @@ alias fdm="fd -e md"
 # =====================
 # ~/bin/randomquote || echo "No bin/randomquote"
 
-source "$CODEDIR/dotfiles/functions.zsh" || echo "No functions.zsh"
-
+source $SHELLFUNCS || echo "No SHELLFUNCS"
 source $HOME/.cargo/env || echo "No .cargo/env"
 source /usr/local/etc/profile.d/autojump.sh || echo "No autojump.sh"
 source ~/.fzf.zsh || echo "No fzf"
