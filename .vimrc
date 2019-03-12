@@ -93,13 +93,15 @@ Plug 'tpope/vim-vinegar'      " Easily navigate directories
 Plug 'wellle/targets.vim'
 Plug 'itchyny/lightline.vim'  " More visual statusline
 Plug 'junegunn/seoul256.vim'  " Seoul256 theme
+Plug 'morhetz/gruvbox'
 call plug#end()
 " }}}
 " appearance {{{
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
-let g:lightline = { 'colorscheme': 'seoul256' }
+set termguicolors
+silent! colorscheme gruvbox
+let g:lightline = { 'colorscheme' : 'seoul256' }
 " }}}
 " keybinds {{{
 " command abbreviatons
@@ -119,6 +121,7 @@ nnoremap <leader>m :Marks<cr>
 nnoremap <leader>ta :Tags<CR>
 nnoremap <leader>tb :BTags<CR>
 nnoremap <leader>= gqap
+nnoremap <leader>n :NOH<CR>
 " easily search/replace using last search
 nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
@@ -139,6 +142,7 @@ augroup vimrc
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
     autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
+    autocmd Filetype pandoc setlocal tw=80 colorcolumn=80
     autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
     autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
@@ -154,6 +158,7 @@ augroup vimrc
     autocmd FileType sh,zsh set foldmethod=syntax
     autocmd User GoyoEnter Limelight
     autocmd User GoyoLeave Limelight!
+    autocmd BufWritePre * call MakeNonExDir()
 augroup END
 " }}}
 " plugin/language config {{{
@@ -270,16 +275,24 @@ endfunction
 command! RotateScheduleWord call RotateWord()
 nnoremap <leader>r  :RotateScheduleWord<Cr>
 "}}}2
+" Create directory if it doesn't exist, on write
+function! MakeNonExDir()
+    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
+        call mkdir(expand('<afile>:h'), 'p')
+    endif
+endfunction
+" }}}2
 "}}}
 " custom commands {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Wd write|bdelete
 command! Bd bp|bd #
-command! ASMR edit ~/Dropbox/asmr.csv | normal G
+command! ASMR edit ~/Dropbox/asmr.json | normal G
 command! Journal edit ~/Dropbox/notes/journal.md | normal G
 command! Todos edit ~/Dropbox/notes/todo.md | normal G
 command! Dones edit ~/Dropbox/notes/done.md | normal G
 command! Projects edit ~/Dropbox/notes/projects.md | normal G
 command! Scratch edit ~/.scratch | normal G
+command! NOH silent! /aksjdkajsd<CR>
 " }}}
