@@ -94,6 +94,10 @@ Plug 'wellle/targets.vim'
 Plug 'itchyny/lightline.vim'  " More visual statusline
 Plug 'junegunn/seoul256.vim'  " Seoul256 theme
 Plug 'morhetz/gruvbox'
+Plug 'natebosch/vim-lsc'
+Plug 'kshenoy/vim-signature'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
 call plug#end()
 " }}}
 " appearance {{{
@@ -143,6 +147,7 @@ augroup vimrc
     autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
     autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
     autocmd Filetype pandoc setlocal tw=80 colorcolumn=80
+    autocmd Filetype pandoc setlocal foldmethod=expr
     autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
     autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
@@ -295,4 +300,8 @@ command! Dones edit ~/Dropbox/notes/done.md | normal G
 command! Projects edit ~/Dropbox/notes/projects.md | normal G
 command! Scratch edit ~/.scratch | normal G
 command! NOH silent! /aksjdkajsd<CR>
+" }}}
+" TESTING {{{
+set inccommand=nosplit  " Live-preview of :s commands
+let g:lsc_server_commands = {'python': 'pyls'}
 " }}}
