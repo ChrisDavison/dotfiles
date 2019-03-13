@@ -87,7 +87,7 @@ notebackup() { # Add notes to note repo, and create zip
 notes(){ # Use fzf and bat to preview, and select, notes
     query=${1:-''}
     batcmd='bat $NOTESDIR/{} --color=always -n'
-    fd . -e md "$loc" | sed -e "s!$NOTESDIR/!!g" | fzf -q "$query" -e --multi --preview="$batcmd" --preview-window=down:50%
+    fd . -e md "$NOTESDIR" | sed -e "s!$NOTESDIR/!!g" | fzf -q "$query" -e --multi --preview="$batcmd" --preview-window=down:50%
 }
 
 nf() { # Find inside notes
@@ -164,10 +164,6 @@ youtube() { # Get audio, video, or tidyurl from youtube
             echo "$1" | rg "&t=\d+s" -r '' | rg "&list=[a-zA-Z0-9_]+" -r '' | rg "&index=\d+" -r ''
             ;;
     esac
-}
-
-t() { # Highlight dates and keywords (dddd-dd-dd, +WORD)
-    ~/.cargo/bin/t "$@" | rg --passthru "\+\w|\b\d\d\d\d-\d\d-\d\d\b"
 }
 
 financeadd(){
