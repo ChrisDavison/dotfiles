@@ -228,12 +228,12 @@ let g:lsc_server_commands = {'python': 'pyls'}
 set runtimepath+=~/.vim
 runtime! make_nonexistent_dir.vim
 runtime! logbook.vim
-runtime! thesis-notes.vim
+runtime! thesis_notes.vim
 runtime! scheduling.vim
-runtime! toggle-color-column.vim
-runtime! toggle-conceal.vim
-runtime! new-markdown-template.vim
-runtime! fzf-rg-config.vim
+runtime! toggle_color_column.vim
+runtime! toggle_conceal.vim
+runtime! new_markdown_template.vim
+runtime! fzf_rg_config.vim
 
 let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
 nnoremap <leader>r  :RotateScheduleWord<Cr>
