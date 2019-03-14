@@ -1,5 +1,6 @@
 " ChrisDavison's vim config
 let mapleader=" "
+set runtimepath^=~/src/github.com/chrisdavison/dotfiles
 set runtimepath^=~/src/github.com/chrisdavison/dotfiles/vim
 " REMEMBER
 " filetype-specific stuff is in runtimepath/ftplugin/<filetype>.vim
@@ -13,7 +14,7 @@ set runtimepath^=~/src/github.com/chrisdavison/dotfiles/vim
 
 " Plugins must be sourced (as they have built in laziness)
 " and it doesn't work right with runtime
-exec 'source '.globpath(&rtp, '*/junegunn_plug_plugins.vim')
+exec 'source '.globpath(&rtp, '*/junegunn*.vim')
 
 " Personal plugins/config
 runtime my_settings.vim 

@@ -17,8 +17,7 @@ nmap S :%s///<LEFT>
 vnoremap S :s///<LEFT>
 " Other bindings
 nnoremap <leader>ev :silent! exec 'e '.globpath(&rtp, '.vimrc')<BAR>echo "Editing VIMRC"<CR>
-nnoremap <leader>ep :EditPlugin 
-nnoremap <leader>lp :exec 'Sexplore '.globpath(&rtp, 'vim/plugin')<CR>
+nnoremap <leader>lp :exec 'Explore '.globpath(&rtp, 'dotfiles/vim/**/*.vim')<CR>
 nnoremap <leader>sv :exec 'so '.globpath(&rtp, '.vimrc')<BAR>echo "Sourced VIMRC"<CR>
 nnoremap <leader>ss :mksession! ~/Dropbox/session.vim<BAR>echo "Saved session to dropbox"<CR>
 nnoremap <Leader>hh :set list!<BAR>echo "Toggle hidden characters"<CR>

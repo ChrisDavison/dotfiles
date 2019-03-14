@@ -1,8 +1,3 @@
-if !exists(':FZF')
-    echom "No FZF"
-    finish
-endif
-
 if executable('rg')
     set grepprg=rg\ --vimgrep
     command! -bang -nargs=* Find call fzf#vim#grep(
