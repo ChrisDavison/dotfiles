@@ -53,6 +53,7 @@ if has('persistent_undo')
     set undodir=~/.undodir/ undofile
 endif
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+set conceallevel=2
 " }}}
 " plugins {{{
 call plug#begin('~/.vim/plugged')
@@ -146,7 +147,7 @@ augroup vimrc
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
     autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
-    autocmd Filetype pandoc setlocal tw=80 colorcolumn=80
+    autocmd Filetype pandoc setlocal tw=80
     autocmd Filetype pandoc setlocal foldmethod=expr
     autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
@@ -206,88 +207,6 @@ function! MarkdownLevel()
     return ">" . len(h)
 endfunction
 " }}}
-" FZF && Rg/Ag {{{
-if executable('rg')
-    set grepprg=rg\ --vimgrep
-    " let s:find_cmd=
-    command! -bang -nargs=* Find call fzf#vim#grep(
-    \    'rg --no-heading -F --smart-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-    nnoremap <leader>F :Find<SPACE>
-endif
-" }}}
-" custom functions {{{
-" Insert filename as header of new markdown file {{{2
-function! VimNewMarkdown(fname)
-    exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
-endfunction
-"}}}2
-" Open current logbook entry {{{2
-function! CurrentLogbook()
-    let logbooks=globpath(expand("~/Dropbox/notes/logbook"), "*.md", 0, 1)
-    let last_logbook=get(logbooks, len(logbooks)-1)
-    exec ":e ".last_logbook | normal G
-endfunction
-command! Logbook exec CurrentLogbook()
-"}}}2
-" Navigate between thesis and notes {{{2
-function! ThesisNotes()
-    if match(expand("%:p"), "thesis") >= 0
-        if expand("%:p:h:t") == "notes"
-            exec ":e ../" . expand("%:n") | normal `z
-        else
-			exec ":normal mz"
-            exec ":e notes/" . expand("%:n")
-        endif
-    endif
-endfunction
-command! ThesisNotes exec ThesisNotes()
-nnoremap <silent> <leader>tn :ThesisNotes<CR>
-" }}}2
-" Toggle concealing {{{2
-set conceallevel=2
-function! ToggleConceal()
-    if &conceallevel == 2
-        set conceallevel=0
-    else
-        set conceallevel=2
-    endif
-endfunction
-nnoremap <silent> <C-y> :call ToggleConceal()<CR>
-
-" }}}2
-" Toggle color column {{{2
-function! s:ToggleColorcolumn()
-    if &colorcolumn > 0
-        set colorcolumn=0
-    else
-        set colorcolumn=80
-    endif
-endfunction
-command! ToggleColorColumn call s:ToggleColorcolumn()
-" }}}2
-" Rotate 'schedule' words {{{2
-let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
-function! RotateWord()
-    let N = len(g:cd_schedule_words)
-    let cur = substitute(expand('<cWORD>'), '\**', '', 'g')
-    let idx = index(g:cd_schedule_words, cur)
-    if idx >= 0
-        let next = g:cd_schedule_words[(idx+1) % N]
-        let cmd = "ciW**" . next . "**"
-        execute "normal " . cmd
-    endif
-endfunction
-command! RotateScheduleWord call RotateWord()
-nnoremap <leader>r  :RotateScheduleWord<Cr>
-"}}}2
-" Create directory if it doesn't exist, on write
-function! MakeNonExDir()
-    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
-        call mkdir(expand('<afile>:h'), 'p')
-    endif
-endfunction
-" }}}2
-"}}}
 " custom commands {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
@@ -297,7 +216,7 @@ command! ASMR edit ~/Dropbox/asmr.json | normal G
 command! Journal edit ~/Dropbox/notes/journal.md | normal G
 command! Todos edit ~/Dropbox/notes/todo.md | normal G
 command! Dones edit ~/Dropbox/notes/done.md | normal G
-command! Projects edit ~/Dropbox/notes/projects.md | normal G
+command! Projects Explore ~/Dropbox/notes/projects/
 command! Scratch edit ~/.scratch | normal G
 command! NOH silent! /aksjdkajsd<CR>
 " }}}
@@ -305,3 +224,18 @@ command! NOH silent! /aksjdkajsd<CR>
 set inccommand=nosplit  " Live-preview of :s commands
 let g:lsc_server_commands = {'python': 'pyls'}
 " }}}
+" Runtimepath stuff (my config)
+set runtimepath+=~/.vim
+runtime! make_nonexistent_dir.vim
+runtime! logbook.vim
+runtime! thesis-notes.vim
+runtime! scheduling.vim
+runtime! toggle-color-column.vim
+runtime! toggle-conceal.vim
+runtime! new-markdown-template.vim
+runtime! fzf-rg-config.vim
+
+let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
+nnoremap <leader>r  :RotateScheduleWord<Cr>
+nnoremap <silent> <C-y> :call ToggleConceal()<CR>
+nnoremap <silent> <leader>tn :ThesisNotes<CR>
