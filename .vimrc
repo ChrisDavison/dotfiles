@@ -145,23 +145,14 @@ augroup vimrc
     autocmd FileType python  set foldmethod=indent
     autocmd BufWritePre *.md,*.txt,*.csv %s/\s\+$//e
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
-    autocmd Filetype tex,latex setlocal tw=80 colorcolumn=80
-    autocmd Filetype tex,latex setlocal equalprg=pandoc\ --to\ latex\ --columns=80
-    autocmd Filetype pandoc setlocal tw=80
-    autocmd Filetype pandoc setlocal foldmethod=expr
-    autocmd Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers
     autocmd BufWinEnter todo.md highlight TodoDate ctermfg=red
     autocmd BufWinEnter todo.md match TodoDate /\d\d\d\d-\d\d-\d\d/
     autocmd FileType make    set noexpandtab
     autocmd FileType vim     set foldmethod=marker
     autocmd ColorScheme * hi! link SignColumn LineNr
-    autocmd BufNewFile,BufReadPost *.tex set filetype=tex
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
-    autocmd FileType sh let g:sh_fold_enabled=5
-    autocmd FileType sh let g:is_bash=1
-    autocmd FileType sh,zsh set foldmethod=syntax
     autocmd User GoyoEnter Limelight
     autocmd User GoyoLeave Limelight!
     autocmd BufWritePre * call MakeNonExDir()
@@ -198,15 +189,6 @@ let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
 let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
 " }}}
-" custom folding for markdown headers {{{
-function! MarkdownLevel()
-    let h = matchstr(getline(v:lnum), '^#\+')
-    if empty(h)
-        return "="
-    endif
-    return ">" . len(h)
-endfunction
-" }}}
 " custom commands {{{
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
@@ -234,6 +216,9 @@ runtime! toggle_color_column.vim
 runtime! toggle_conceal.vim
 runtime! new_markdown_template.vim
 runtime! fzf_rg_config.vim
+runtime! find_markdown_fold_level.vim
+
+" REMEMBER, autocommand stuff is in runtimepath/ftplugin/<filename>.vim
 
 let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
 nnoremap <leader>r  :RotateScheduleWord<Cr>
