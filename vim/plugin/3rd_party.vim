@@ -1,4 +1,4 @@
-call plug#begin('~/src/github.com/chrisdavison/dotfiles/vim/plugged')
+call plug#begin('~/src/github.com/chrisdavison/dotfiles/vim/3rd_party')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'fatih/vim-go'
@@ -24,11 +24,9 @@ Plug 'junegunn/fzf.vim'       " FZF for buffer/file etc navigation
 Plug 'junegunn/limelight.vim' " De-emphasise paragraphs around your current one
 Plug 'junegunn/goyo.vim'      " 'Focus' mode (centered text buffer)
 Plug 'romainl/vim-qlist'
-Plug 'romainl/vim-qf'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-commentary'   " Comment modification/text objects
 Plug 'tpope/vim-fugitive'     " Git integration
-Plug 'tpope/vim-sensible'     " Sensible vim default settings
 Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
 Plug 'tpope/vim-unimpaired'   " Deal with bracket/surrounding pairs
 Plug 'tpope/vim-eunuch'       " More integrated unix commands (mv, rm etc)

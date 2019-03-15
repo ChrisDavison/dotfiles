@@ -55,5 +55,5 @@ nnoremap <right> :cnext<CR>zvzz
 nnoremap <up> :lprev<CR>zvzz
 nnoremap <down> :lnext<CR>zvzz
 
-nnoremap <leader>v :vimgrep // *.<LEFT><LEFT><LEFT><LEFT>
-inoremap <leader>v <ESC>:vimgrep // *.<LEFT><LEFT><LEFT><LEFT>
+nnoremap <leader>vv :vimgrep // *.<LEFT><LEFT><LEFT><LEFT>
+inoremap <leader>vv <ESC>:vimgrep // *.<LEFT><LEFT><LEFT><LEFT>

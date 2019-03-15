@@ -3,7 +3,7 @@ if exists('g:loaded_striptrailingwhitespace')
 endif
 let g:loaded_striptrailingwhitespace = 1
 
-function StripTrailingWhitespace()
+function! StripTrailingWhitespace()
   if !&binary && &filetype != 'diff'
     normal mz
     normal Hmy
