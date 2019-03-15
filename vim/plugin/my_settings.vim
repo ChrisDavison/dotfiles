@@ -25,7 +25,9 @@ else
         set shell=/bin/bash
     endif
 endif
-set inccommand=nosplit  " Live-preview of :s commands
+if has('nvim')
+    set inccommand=nosplit  " Live-preview of :s commands
+endif
 set nospell
 set foldenable foldlevelstart=99
 set updatetime=1000 " Write a swap file after 1 second
@@ -53,3 +55,10 @@ if has('persistent_undo')
 endif
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
 set conceallevel=2
+
+" =====================
+" general plugin config
+" =====================
+let g:SuperTabDefaultCompletionType = "context"
+let g:fastfold_savehook = 0
+let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]

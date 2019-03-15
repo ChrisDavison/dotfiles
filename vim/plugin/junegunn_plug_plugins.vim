@@ -1,14 +1,14 @@
 call plug#begin('~/src/github.com/chrisdavison/dotfiles/vim/plugged')
 " programming languages
-Plug 'JuliaEditorSupport/julia-vim'
-Plug 'fatih/vim-go'
-Plug 'lervag/vimtex'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-jp/vim-cpp'
-Plug 'vim-python/python-syntax'
-Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'elixir-editors/vim-elixir'
+Plug 'JuliaEditorSupport/julia-vim', { 'for': 'julia' }
+Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoInstallBinaries' }
+Plug 'lervag/vimtex', { 'for': ['tex', 'latex'] }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'vim-jp/vim-cpp', { 'for': ['c', 'cpp'] }
+Plug 'vim-python/python-syntax', { 'for': 'python' }
+Plug 'vim-pandoc/vim-pandoc-syntax', { 'for': ['markdown', 'pandoc'] }
+Plug 'vim-pandoc/vim-pandoc', { 'for': ['markdown', 'pandoc'] }
+Plug 'elixir-editors/vim-elixir', { 'for': 'elixir' }
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'Konfekt/FastFold'  " More performant fold refreshing

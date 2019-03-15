@@ -4,3 +4,8 @@ function MakeNonExDir()
         call mkdir(expand('<afile>:h'), 'p')
     endif
 endfunction
+
+augroup nonExDir
+    autocmd!
+    autocmd BufWritePre * call MakeNonExDir()   " Use my rtp func
+augroup END

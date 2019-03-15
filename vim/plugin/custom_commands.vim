@@ -5,3 +5,4 @@ command! Bd bp|bd #
 command! Scratch edit ~/.scratch | normal G
 command! NOH silent! /aksjdkajsd<CR>
 command! AddPlugin exec 'e '.globpath(&rtp, '*/junegunn_plug_plugins.vim') | normal GOPlug ''<LEFT>
+command! RefreshPlugins call NewPlugins()<CR>

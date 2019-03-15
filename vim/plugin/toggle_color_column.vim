@@ -1,4 +1,4 @@
-" Toggle color column {{{2
+" Toggle color column
 function! s:ToggleColorcolumn()
     if &colorcolumn > 0
         set colorcolumn=0
@@ -7,4 +7,3 @@ function! s:ToggleColorcolumn()
     endif
 endfunction
 command! ToggleColorColumn call s:ToggleColorcolumn()
-" }}}2
