@@ -10,7 +10,7 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'elixir-editors/vim-elixir'
 " utility
-Plug 'junegunn/fzf', { 'dir': '~/.fzf' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'Konfekt/FastFold'  " More performant fold refreshing
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'dahu/vim-fanfingtastic'  " Let f/F work across line endings
