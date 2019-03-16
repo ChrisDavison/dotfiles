@@ -31,20 +31,22 @@ function! HiInterestingWord(n) " {{{
 endfunction " }}}
 
 " Mappings {{{
-
 nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
 nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
 nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
 nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
 nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
 nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
-command! DelInterestingWord silent! call matchdelete(86751)<bar>
-            \ silent! call matchdelete(86752)<bar>
-            \ silent! call matchdelete(86753)<bar>
-            \ silent! call matchdelete(86754)<bar>
-            \ silent! call matchdelete(86755)<bar>
-            \ silent! call matchdelete(86756)
 
+function! s:ClearMatches()
+    silent! call matchdelete(86751)
+    silent! call matchdelete(86752)
+    silent! call matchdelete(86753)
+    silent! call matchdelete(86754)
+    silent! call matchdelete(86755)
+    silent! call matchdelete(86756)
+endfunction
+command! NoWord silent! call <SID>ClearMatches()
 " }}}
 " Default Highlights {{{
 
