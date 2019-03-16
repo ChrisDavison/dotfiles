@@ -1,5 +1,5 @@
-" ChrisDavison's vim config
 let mapleader=" "
+" ChrisDavison's vim config
 set runtimepath^=~/src/github.com/chrisdavison/dotfiles/vim
 " TODO Language server config for rust currently disabled (in ftplugin/rust)
 " TODO add abbrevs for my common languages
@@ -27,11 +27,11 @@ set ruler
 set nospell
 set foldenable foldlevelstart=99
 set updatetime=1000 " Write a swap file after 1 second
-set cmdheight=1  " Useful for more info on some plugins
-set colorcolumn=0 " No color bar (have a toggle command defined below)
-set hlsearch " Highlight search results
-set ignorecase " Ignore case when searching
-set tabstop=4 softtabstop=4 shiftwidth=4 expandtab " Use 4spaces as tabs
+set cmdheight=1
+set colorcolumn=0
+set hlsearch
+set ignorecase
+set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set scrolloff=1
@@ -42,9 +42,9 @@ set backupcopy=yes
 set backupdir=~/.temp,.
 set directory=~/.temp,.
 set wildmenu
-set wildmode=list:full
+set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
-set splitbelow splitright " Split windows down and right by default
+set splitbelow splitright
 set laststatus=2
 set statusline=\ (%n)\ %F%=\ %m\ %Y\
 set conceallevel=2
@@ -87,13 +87,12 @@ else
 endif
 
 " =====[ Personal plugins/config ]=====
-"
 " Plugins must be sourced (as they have built in laziness)
 " and it doesn't work right with runtime
 exec 'source '.globpath(&rtp, '*/3rd_party.vim')
 runtime! dotfiles/vim/plugin/*.vim
 
-" =====[ autocommands (NON file specific) ]=====
+" =====[ autocommands  ]=====
 " file-specific are in DOTFILES/vim/ftplugin/<lang>.vim
 augroup vimrc
     autocmd!
@@ -104,8 +103,8 @@ augroup vimrc
     autocmd User GoyoEnter Limelight
     autocmd User GoyoLeave Limelight!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
-    autocmd BufWritePre *.md silent! call StripTrailingWhitespace()
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
+    autocmd BufNewFile *.md call StripTrailingWhitespace()
     autocmd BufNewFile *.py call ReadFileTemplate()
 augroup END
 
