@@ -1,5 +1,6 @@
-command! ASMR edit ~/Dropbox/asmr.json | normal G
-command! Journal edit ~/Dropbox/notes/journal.md | normal G
-command! Todos edit ~/Dropbox/notes/todo.md | normal G
-command! Dones edit ~/Dropbox/notes/done.md | normal G
-command! Projects Explore ~/Dropbox/notes/projects/
+command! ASMR edit ~/Dropbox/asmr.json | normal Gzz
+command! Journal edit ~/Dropbox/notes/journal.md | normal Gzz
+command! Todos edit ~/Dropbox/notes/todo.md | normal Gzz
+command! Dones edit ~/Dropbox/notes/done.md | normal Gzz
+command! Projects exec "e " . expand("~/Dropbox/notes/projects/")
+
