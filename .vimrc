@@ -31,7 +31,7 @@ set cmdheight=1
 set colorcolumn=0
 set hlsearch
 set ignorecase
-set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set scrolloff=1
@@ -46,7 +46,7 @@ set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
 set splitbelow splitright
 set laststatus=2
-set statusline=\ (%n)\ %F%=\ %m\ %Y\
+set statusline=\ (%n)\ %F%=\ «\ %Y%R\ »
 set conceallevel=2
 set formatoptions+=j  "Delete comment char when joining lines
 set history=1000

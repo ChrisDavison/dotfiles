@@ -21,8 +21,8 @@ inoremap <C-u>   <esc>mzgUiw`za
 nnoremap <F9>    mzggg?G`z
 
 " =====[ Formatting using Q ]=====
-nnoremap Q    gqip
-vnoremap Q    gq
+nnoremap <silent> Q    =ip
+vnoremap <silent> Q    =
 
 " =====[ List (quickfix and loclist) navigation ]=====
 nnoremap <left>  :cprev<CR>zvzz
@@ -31,10 +31,12 @@ nnoremap <up>    :lprev<CR>zvzz
 nnoremap <down>  :lnext<CR>zvzz
 
 " =====[ Generic useful stuff ]=====
-inoremap jj     <ESC>
+inoremap jj     <ESC>:w<CR>
 nnoremap <BS>   <C-^>
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 
+nnoremap <S-RIGHT> :bnext<CR>
+nnoremap <S-LEFT>  :bprev<CR>

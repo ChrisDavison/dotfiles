@@ -18,5 +18,4 @@ let g:pandoc#hypertext#create_if_no_alternates_exists=1
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
 let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
-
-
+let g:pandoc#toc#close_after_navigating=0

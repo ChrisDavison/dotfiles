@@ -32,7 +32,6 @@ Plug 'tpope/vim-unimpaired'   " Deal with bracket/surrounding pairs
 Plug 'tpope/vim-eunuch'       " More integrated unix commands (mv, rm etc)
 Plug 'tpope/vim-vinegar'      " Easily navigate directories
 Plug 'wellle/targets.vim'
-Plug 'itchyny/lightline.vim'  " More visual statusline
 Plug 'junegunn/seoul256.vim'  " Seoul256 theme
 Plug 'morhetz/gruvbox'
 Plug 'natebosch/vim-lsc'
