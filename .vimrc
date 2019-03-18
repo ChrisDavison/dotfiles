@@ -46,7 +46,8 @@ set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
 set splitbelow splitright
 set laststatus=2
-set statusline=\ (%n)\ %F%=\ «\ %Y%R\ »
+set statusline=%1*\ %t\ %0*%=%1*\ %Y%R\ %0*
+hi User1 guifg=white guibg=purple
 set conceallevel=2
 set formatoptions+=j  "Delete comment char when joining lines
 set history=1000
@@ -106,8 +107,8 @@ augroup vimrc
     autocmd User GoyoLeave Limelight!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
-    autocmd BufNewFile *.md call StripTrailingWhitespace()
     autocmd BufNewFile *.py call ReadFileTemplate()
+    autocmd BufWritePre *.md call StripTrailingWhitespace()
 augroup END
 
 " =====[ Config for downloaded plugins ]=====
