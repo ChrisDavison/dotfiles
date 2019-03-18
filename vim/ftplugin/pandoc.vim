@@ -1,6 +1,6 @@
 setlocal tw=80
 setlocal foldmethod=expr
-setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links\ --columns=80\ --reference-links\ --atx-headers 
+setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables\ --columns=80\ --reference-links\ --atx-headers 
 setlocal nospell 
 
 if exists('b:undo_ftplugin')
@@ -19,3 +19,5 @@ let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links --columns=80"
 let g:pandoc#formatting#extra_equalprg="--reference-links --atx-headers"
 let g:pandoc#toc#close_after_navigating=0
+let g:table_mode_corner='|'
+let g:table_mode_header_fillchar='-'

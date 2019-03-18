@@ -4,8 +4,8 @@ nnoremap <leader>p :Files<Cr>
 nnoremap <leader>g :GFiles<Cr>
 
 " =====[ MY commands ]=====
-nnoremap <C-r>      :RotateScheduleWord<Cr>
-inoremap <C-r>      <C-o>:RotateScheduleWord<Cr>
+nnoremap <M-r>      :RotateScheduleWord<Cr>
+inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
 nnoremap <C-y>      :call ToggleConceal()<CR>
 
 " =====[ Edit files and source vimrc ]=====
@@ -13,6 +13,11 @@ nnoremap <leader>ev :edit ~/src/github.com/chrisdavison/dotfiles/.vimrc<CR>
 nnoremap <leader>en :Files ~/Dropbox/notes<CR>
 nnoremap <leader>ep :edit ~/src/github.com/chrisdavison/dotfiles/vim/plugin/
 nnoremap <leader>ss :mksession! ~/Dropbox/session.vim<CR>
+
+nnoremap <F5>   :=strftime('%H:%M:%S')<CR>P
+inoremap <F5>   <C-R>=strftime('%H:%M:%S')<CR>
+nnoremap <F6>   :=strftime('%Y-%m-%d')<CR>P
+inoremap <F6>   <C-R>=strftime('%Y-%m-%d')<CR>
 
 " =====[ Uppercase the current word (from anywhere within the <word>) ]=====
 inoremap <C-u>   <esc>mzgUiw`za

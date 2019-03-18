@@ -78,9 +78,11 @@ endif
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
-elseif executable('/usr/bin/env\ zsh')
+elseif executable('/usr/local/bin/zsh')
     set shell=/usr/local/bin/zsh
-elseif executable('/usr/bin/env\ bash')
+elseif executable('/usr/local/bin/bash')
+    set shell=/usr/local/bin/bash
+elseif executable('/bin/bash')
     set shell=/bin/bash
 else
     echom "No valid shell!"
