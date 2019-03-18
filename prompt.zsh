@@ -1,9 +1,9 @@
-PROMPTDIR="%2d"
+PROMPTDIR="%2~"
 NAMEANDHOST="(%n@%m)"
-PROMPTCHAR="λ"
+PROMPTCHAR="»"
 SERVER=""
 if [ -f ~/.servername ]; then
     contents=$(cat ~/.servername)
-    SERVER="(${contents}) "
+    SERVER="${contents} » "
 fi
 PROMPT="%{%F{yellow}%}${SERVER}%{%F{green}%}%}${PROMPTDIR} ${PROMPTCHAR} %{%F{reset}%}%}"
