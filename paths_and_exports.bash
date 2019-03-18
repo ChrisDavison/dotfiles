@@ -18,17 +18,15 @@ export SHELLFUNCS="$CODEDIR/dotfiles/functions.zsh"
 # =====================
 #         Paths
 # =====================
-path+=$HOME/.vim/bundle/fzf/bin
-path+=/usr/local/lib/node_modules
-path+=$GOBIN
-path+=$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin
-path+=/Users/davison/Library/Python/3.7/bin/
-path+=/Applications/Julia-1.0.app/Contents/Resources/julia/bin/
-path+=$CODEDIR/scripts/
-path+=$HOME/.cargo/bin/
-path+=$HOME/bin
-path+=$HOME/.virtualenvs/
-path+=/usr/local/miniconda3/bin
+export PATH=$HOME/.vim/bundle/fzf/bin:$PATH;
+export PATH=/usr/local/lib/node_modules:$PATH;
+export PATH=$GOBIN:$PATH;
+export PATH=$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin:$PATH;
+export PATH=/Users/davison/Library/Python/3.7/bin/:$PATH;
+export PATH=/Applications/Julia-1.0.app/Contents/Resources/julia/bin/:$PATH;
+export PATH=$CODEDIR/scripts/:$PATH;
+export PATH=$HOME/.cargo/bin/:$PATH;
+export PATH=$HOME/bin:$PATH;
+export PATH=$HOME/.virtualenvs/:$PATH;
+export PATH=/usr/local/miniconda3/bin:$PATH;
 
-# Remove duplicates from $PATH
-typeset -aU path

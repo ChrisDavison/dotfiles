@@ -183,3 +183,12 @@ financeadd(){
 listfuncs() { # List functions in this file
     cat $SHELLFUNCS | rg "\w+\(\)" | column -s'{' -t
 }
+
+
+aesenc() {
+    out="$1".asc
+    in="$1"
+    gpg --symmetric -a --cipher-algo aes256 --output "$out" "$in"
+    echo "$out created"
+}
+
