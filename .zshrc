@@ -1,8 +1,8 @@
-export ZSH="/Users/davison/.oh-my-zsh"
-ZSH_THEME="flazz"
-DISABLE_AUTO_UPDATE="true"
-plugins=( )
-source $ZSH/oh-my-zsh.sh
+# export ZSH="/Users/davison/.oh-my-zsh"
+# ZSH_THEME="flazz"
+# DISABLE_AUTO_UPDATE="true"
+# plugins=( )
+# source $ZSH/oh-my-zsh.sh
 
 SAVEHIST=100000
 HISTSIZE=100000
@@ -19,6 +19,7 @@ if [ $(basename $SHELL) = "zsh" ]; then
 fi
 source_or_error "$CODEDIR/dotfiles/paths_and_exports.bash"
 source_or_error "$CODEDIR/dotfiles/aliases.bash"
+source_or_error "$CODEDIR/dotfiles/prompt.zsh"
 source_or_error $SHELLFUNCS
 source_or_error $HOME/.cargo/env
 source_or_error /usr/local/etc/profile.d/autojump.sh

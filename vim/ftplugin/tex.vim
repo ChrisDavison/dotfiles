@@ -1,6 +1,6 @@
 setlocal tw=80
 setlocal colorcolumn=80
-setlocal equalprg=pandoc\ --to\ --latex\ --columns=80
+setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
 
 if exists('b:undo_ftplugin')
     let b:undo_ftplugin .= '|tw< colorcolumn< equalprg<'
