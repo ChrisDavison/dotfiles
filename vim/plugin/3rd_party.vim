@@ -39,4 +39,5 @@ Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
 Plug 'reedes/vim-colors-pencil'
+Plug 'rpdelaney/vim-pgn'
 call plug#end()

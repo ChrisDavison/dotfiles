@@ -21,7 +21,7 @@ source_or_error $DOTFILES/aliases.bash
 source_or_error ~/.fzf.bash
 
 if grep -q "MINGW" <<< "$(uname -a)"; then
-    source $DOTFILES/bashrc_win
+    export BROWSER=start
 fi
 
 cd E:/src/github.com/chrisdavison
