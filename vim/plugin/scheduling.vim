@@ -1,3 +1,9 @@
+if exists('g:scheduling_loaded')
+    finish
+endif
+let g:scheduling_loaded = 1
+
+let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
 function! RotateWord()
     let N = len(g:cd_schedule_words)
     for word in g:cd_schedule_words

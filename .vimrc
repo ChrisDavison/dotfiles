@@ -43,7 +43,7 @@ set backupdir=~/.temp,.
 set directory=~/.temp,.
 set wildmenu
 set wildmode=list:longest,full
-set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux
 set splitbelow splitright
 set laststatus=2
 set statusline=%1*\ %t\ %0*%=%1*\ %Y%R\ %0*
@@ -113,5 +113,3 @@ augroup END
 
 " =====[ Config for downloaded plugins ]=====
 let g:SuperTabDefaultCompletionType = "context"
-let g:fastfold_savehook = 0
-let g:cd_schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
