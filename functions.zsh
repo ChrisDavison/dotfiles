@@ -84,6 +84,10 @@ notebackup() { # Add notes to note repo, and create zip
     popd
 }
 
+note(){ # Use fzf and bat to preview, and select, notes
+    v $(notes)
+}
+
 notes(){ # Use fzf and bat to preview, and select, notes
     query=${1:-''}
     batcmd='bat $NOTESDIR/{} --color=always -n'
@@ -184,7 +188,6 @@ listfuncs() { # List functions in this file
     cat $SHELLFUNCS | rg "\w+\(\)" | column -s'{' -t
 }
 
-
 aesenc() {
     out="$1".asc
     in="$1"
@@ -192,3 +195,10 @@ aesenc() {
     echo "$out created"
 }
 
+fh() {
+    history | fzf -q "${1:-}" --preview='echo {} | bat'
+}
+
+mdtohtml() {
+    pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
+}

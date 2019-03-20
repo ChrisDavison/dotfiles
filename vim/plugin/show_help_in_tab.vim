@@ -4,7 +4,6 @@ function! s:ToggleHelpInTabs()
     let g:help_in_tabs = !g:help_in_tabs
     echo "Help in tabs? ".g:help_in_tabs
 endfunction 
-nmap H  :call <SID>ToggleHelpInTabs()<CR>
 
 "Only apply to .txt files...
 augroup HelpInTabs

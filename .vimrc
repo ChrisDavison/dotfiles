@@ -30,7 +30,7 @@ set updatetime=1000 " Write a swap file after 1 second
 set cmdheight=1
 set colorcolumn=0
 set hlsearch
-set ignorecase
+set smartcase
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
@@ -103,8 +103,8 @@ augroup vimrc
     autocmd TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd CursorHold * silent! checktime " Check for external changes to files
     autocmd VimResized * wincmd= " equally resize splits on window resize
-    autocmd User GoyoEnter Limelight
-    autocmd User GoyoLeave Limelight!
+    autocmd User GoyoEnter Limelight | exec "normal zz" | Typewrite
+    autocmd User GoyoLeave Limelight! | Typewrite!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
     autocmd BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     autocmd BufNewFile *.py call ReadFileTemplate()

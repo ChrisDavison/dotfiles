@@ -14,7 +14,6 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'Konfekt/FastFold'  " More performant fold refreshing
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'dahu/vim-fanfingtastic'  " Let f/F work across line endings
-Plug 'dhruvasagar/vim-table-mode' " Refactoring/formatting tables
 Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
 Plug 'ervandew/supertab'
 Plug 'kana/vim-textobj-user'  " Custom text objects
@@ -40,4 +39,5 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
 Plug 'reedes/vim-colors-pencil'
 Plug 'rpdelaney/vim-pgn'
+Plug 'kana/vim-narrow'
 call plug#end()

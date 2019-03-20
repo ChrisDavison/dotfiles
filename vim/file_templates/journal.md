@@ -1,12 +1,12 @@
-## YYYY-MM-DD - YYYY-MM-DD
+# YYYYMMDD To YYYYMMDD
 
-Diet: 
+Diet:
 
-Strength: 
+Strength:
 
-Fitness: 
+Fitness:
 
-Self-improvement: 
+Self-improvement:
 
-Life: 
+Life:
 
