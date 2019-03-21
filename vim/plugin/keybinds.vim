@@ -1,5 +1,5 @@
 " =====[ Mostly stuff from FZF for navigating buffers ]=====
-nnoremap <leader>b :Buffers<Cr>
+nnoremap <leader>b :ls<Cr>:b
 nnoremap <leader>p :Files<Cr>
 nnoremap <leader>g :GFiles<Cr>
 
@@ -10,24 +10,23 @@ nnoremap <C-y>      :call ToggleConceal()<CR>
 
 " =====[ Edit files and source vimrc ]=====
 nnoremap <leader>ev :edit ~/src/github.com/chrisdavison/dotfiles/.vimrc<CR>
-nnoremap <leader>en :Files ~/Dropbox/notes<CR>
+nnoremap <leader>en :edit ~/Dropbox/notes/**/
 nnoremap <leader>ep :edit ~/src/github.com/chrisdavison/dotfiles/vim/plugin/
-nnoremap <leader>ss :mksession! ~/Dropbox/session.vim<CR>
+nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
 
+" =====[ Insert timestamps ]=====
 nnoremap <F5>   :=strftime('%H:%M:%S')<CR>P
 inoremap <F5>   <C-R>=strftime('%H:%M:%S')<CR>
 nnoremap <F6>   :=strftime('%Y-%m-%d')<CR>P
 inoremap <F6>   <C-R>=strftime('%Y-%m-%d')<CR>
+nnoremap <F7>   :=strftime('`%Y-%m-%d`')<CR>P
+inoremap <F7>   <C-R>=strftime('`%Y-%m-%d`')<CR>
 
 " =====[ Uppercase the current word (from anywhere within the <word>) ]=====
 inoremap <C-u>   <esc>mzgUiw`za
 
 " =====[ Panic button (scramble current buffer) ]=====
 nnoremap <F9>    mzggg?G`z
-
-" =====[ Formatting using Q ]=====
-nnoremap <silent> Q    =ip
-vnoremap <silent> Q    =
 
 " =====[ List (quickfix and loclist) navigation ]=====
 nnoremap <left>  :cprev<CR>zvzz
@@ -43,5 +42,3 @@ vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 
-nnoremap <S-RIGHT> :bnext<CR>
-nnoremap <S-LEFT>  :bprev<CR>
