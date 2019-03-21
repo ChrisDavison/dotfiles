@@ -196,9 +196,10 @@ aesenc() {
 }
 
 fh() {
-    history | fzf -q "${1:-}" --preview='echo {} | bat'
+    cat ~/.zsh_history | fzf -q "${1:-}" --preview='echo {} | bat' --preview-window=down:50%
 }
 
 mdtohtml() {
     pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
 }
+
