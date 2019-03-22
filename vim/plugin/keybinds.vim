@@ -10,7 +10,7 @@ nnoremap <C-y>      :call ToggleConceal()<CR>
 
 " =====[ Edit files and source vimrc ]=====
 nnoremap <leader>ev :edit ~/src/github.com/chrisdavison/dotfiles/.vimrc<CR>
-nnoremap <leader>en :edit ~/Dropbox/notes/**/
+nnoremap <leader>en :edit ~/Dropbox/notes/**/*
 nnoremap <leader>ep :edit ~/src/github.com/chrisdavison/dotfiles/vim/plugin/
 nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
 
