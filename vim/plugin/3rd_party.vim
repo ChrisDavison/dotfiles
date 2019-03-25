@@ -1,4 +1,4 @@
-call plug#begin('~/.vim/3rd_party')
+call plug#begin('~/code/dotfiles/vim/3rd_party')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'fatih/vim-go'
@@ -19,7 +19,6 @@ Plug 'ervandew/supertab'
 Plug 'kana/vim-textobj-user'  " Custom text objects
 Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff
 Plug 'jpalardy/vim-slime'     " Send commands to tmux
-Plug 'junegunn/fzf.vim'       " FZF for buffer/file etc navigation
 Plug 'junegunn/limelight.vim' " De-emphasise paragraphs around your current one
 Plug 'junegunn/goyo.vim'      " 'Focus' mode (centered text buffer)
 Plug 'romainl/vim-qlist'
@@ -32,12 +31,10 @@ Plug 'tpope/vim-eunuch'       " More integrated unix commands (mv, rm etc)
 Plug 'tpope/vim-vinegar'      " Easily navigate directories
 Plug 'wellle/targets.vim'
 Plug 'junegunn/seoul256.vim'  " Seoul256 theme
-Plug 'morhetz/gruvbox'
 Plug 'natebosch/vim-lsc'
 Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
-Plug 'reedes/vim-colors-pencil'
 Plug 'rpdelaney/vim-pgn'
 Plug 'kana/vim-narrow'
 Plug 'tomasr/molokai'

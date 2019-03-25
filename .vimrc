@@ -1,6 +1,6 @@
 let mapleader=" "
 " ChrisDavison's vim config
-set runtimepath^=$CODEDIR/dotfiles/vim
+set runtimepath^=~/code/dotfiles/vim
 " TODO Language server config for rust currently disabled (in ftplugin/rust)
 " TODO add abbrevs for my common languages
 

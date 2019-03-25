@@ -1,17 +1,8 @@
-" =====[ Mostly stuff from FZF for navigating buffers ]=====
-nnoremap <leader>b :ls<Cr>:b
-nnoremap <leader>p :Files<Cr>
-nnoremap <leader>g :GFiles<Cr>
-
-" =====[ MY commands ]=====
-nnoremap <M-r>      :RotateScheduleWord<Cr>
-inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
-nnoremap <C-y>      :call ToggleConceal()<CR>
-
 " =====[ Edit files and source vimrc ]=====
 nnoremap <leader>ev :edit $CODEDIR/dotfiles/.vimrc<CR>
 nnoremap <leader>en :edit $HOME/Dropbox/notes/**/*
-nnoremap <leader>ep :edit $CODEDOR/dotfiles/vim/plugin/
+nnoremap <leader>ep :edit $CODEDIR/dotfiles/vim/plugin/
+nnoremap <leader>b :ls<Cr>:b
 nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
 
 " =====[ Insert timestamps ]=====
@@ -42,3 +33,7 @@ vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 
+" =====[ MY commands ]=====
+nnoremap <M-r>      :RotateScheduleWord<Cr>
+inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
+nnoremap <C-y>      :call ToggleConceal()<CR>

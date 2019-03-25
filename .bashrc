@@ -14,7 +14,7 @@ source_or_error(){
     fi
 }
 
-export DOTFILES=~/src/github.com/chrisdavison/dotfiles
+export DOTFILES=~/code/dotfiles
 source_or_error $DOTFILES/paths_and_exports.bash
 source_or_error $DOTFILES/functions.zsh
 source_or_error $DOTFILES/aliases.bash
@@ -24,5 +24,5 @@ if grep -q "MINGW" <<< "$(uname -a)"; then
     export BROWSER=start
 fi
 
-cd E:/src/github.com/chrisdavison
+cd E:/code
 

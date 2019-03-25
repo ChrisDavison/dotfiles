@@ -28,8 +28,8 @@ CapsLock::F13
 ^#!o::   ; Open my 'default' tabs and apps
     run "https://www.pinboard.in/u:davison"
     run "https://www.pinboard.com/u:davison/untagged"
-    run "https://www.todoist.com"
     run "https://www.youtube.com"
+    run "https://www.bbc.com/news"
     run "https://www.feedly.com"
     run "https://mail.google.com"
 return
