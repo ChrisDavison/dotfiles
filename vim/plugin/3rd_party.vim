@@ -1,4 +1,4 @@
-call plug#begin('~/src/github.com/chrisdavison/dotfiles/vim/3rd_party')
+call plug#begin('~/.vim/3rd_party')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'fatih/vim-go'
@@ -40,4 +40,5 @@ Plug 'skywind3000/gutentags_plus'
 Plug 'reedes/vim-colors-pencil'
 Plug 'rpdelaney/vim-pgn'
 Plug 'kana/vim-narrow'
+Plug 'tomasr/molokai'
 call plug#end()
