@@ -9,9 +9,9 @@ inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
 nnoremap <C-y>      :call ToggleConceal()<CR>
 
 " =====[ Edit files and source vimrc ]=====
-nnoremap <leader>ev :edit ~/src/github.com/chrisdavison/dotfiles/.vimrc<CR>
-nnoremap <leader>en :edit ~/Dropbox/notes/**/*
-nnoremap <leader>ep :edit ~/src/github.com/chrisdavison/dotfiles/vim/plugin/
+nnoremap <leader>ev :edit $CODEDIR/dotfiles/.vimrc<CR>
+nnoremap <leader>en :edit $HOME/Dropbox/notes/**/*
+nnoremap <leader>ep :edit $CODEDOR/dotfiles/vim/plugin/
 nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
 
 " =====[ Insert timestamps ]=====
