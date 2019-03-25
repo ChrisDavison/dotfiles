@@ -91,7 +91,7 @@ note(){ # Use fzf and bat to preview, and select, notes
 notes(){ # Use fzf and bat to preview, and select, notes
     query=${1:-''}
     batcmd='bat $NOTESDIR/{} --color=always -n'
-    fd . -e md "$NOTESDIR" | sed -e "s!$NOTESDIR/!!g" | fzf -q "$query" -e --multi --preview="$batcmd" --preview-window=down:50% | sed -e "s!^!$NOTESDIR/!g"
+    fd . -e md "$NOTESDIR" | sed -e "s!$NOTESDIR/!!g" | fzf -q "$query" --multi --preview="$batcmd" --preview-window=down:50% | sed -e "s!^!$NOTESDIR/!g"
 }
 
 nf() { # Find inside notes
@@ -203,3 +203,6 @@ mdtohtml() {
     pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
 }
 
+linkedtobin(){
+    ls -l ~/bin | awk -F' ' '/-> .*scripts.*/{print $7":"$9}' | column -s':' -t
+}
