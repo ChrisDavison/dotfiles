@@ -12,7 +12,7 @@ source_or_error() {
     [ -f "$1" ] && source "$1" || echo "No file: $1"
 }
 
-export CODEDIR="$HOME/src/github.com/chrisdavison"
+export CODEDIR="$HOME/code"
 
 if [ $(basename $SHELL) = "zsh" ]; then
     source_or_error "$CODEDIR/dotfiles/setopts.zsh"
