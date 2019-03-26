@@ -1,7 +1,7 @@
 " =====[ Edit files and source vimrc ]=====
-nnoremap <leader>ev :edit $CODEDIR/dotfiles/.vimrc<CR>
-nnoremap <leader>en :edit $HOME/Dropbox/notes/**/*
-nnoremap <leader>ep :edit $CODEDIR/dotfiles/vim/plugin/
+nnoremap <leader>ev :edit ~/code/dotfiles/.vimrc<CR>
+nnoremap <leader>en :edit ~/Dropbox/notes/**/*
+nnoremap <leader>ep :edit ~/code/dotfiles/vim/plugin/
 nnoremap <leader>b :ls<Cr>:b
 nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
 
