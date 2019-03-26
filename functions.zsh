@@ -84,7 +84,7 @@ notebackup() { # Add notes to note repo, and create zip
     popd
 }
 
-note(){ # Use fzf and bat to preview, and select, notes
+note(){ # Use vim to open files selected with `notes`
     v $(notes)
 }
 
