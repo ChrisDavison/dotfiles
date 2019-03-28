@@ -46,7 +46,7 @@ set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux
 set splitbelow splitright
 set laststatus=2
-set statusline=%1*[%l:%c]\ %t\ %0*%=%1*\ %Y%R\ %0*
+set statusline=%1*[%l:%c]\ %t\ (%{Dir1()})\ %0*%=%1*\ %Y%R\ %0*
 hi User1 guifg=white guibg=purple
 set conceallevel=2
 set formatoptions+=j  "Delete comment char when joining lines
@@ -57,6 +57,10 @@ set viminfo^=!
 set t_ut= " Fix issues with background color on some terminals
 set fillchars=fold:\ 
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+
+function! Dir1() " Get only the trailing directory for the statusline
+    return fnamemodify(getcwd(), ":t")
+endfunction
 
 " =====[ Conditional settings ]=====
 if has('persistent_undo')
