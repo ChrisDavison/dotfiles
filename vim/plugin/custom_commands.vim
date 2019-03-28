@@ -8,4 +8,4 @@ command! AddPlugin exec 'e '.globpath(&rtp, '*/junegunn_plug_plugins.vim') | nor
 command! RefreshPlugins call NewPlugins()<CR>
 command! NewJournal exec "r " . expand("~/.vim_file_templates/journal.md")
 command! CD exec "cd ".expand("%:h")
-
+command! RMD exec "!rm ".expand("%") | bp | bd #
