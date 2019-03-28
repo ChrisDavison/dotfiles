@@ -188,21 +188,43 @@ listfuncs() { # List functions in this file
     cat $SHELLFUNCS | rg "\w+\(\)" | column -s'{' -t
 }
 
-aesenc() {
+aesenc() { # Symmetric encode a file with AES256
     out="$1".asc
     in="$1"
     gpg --symmetric -a --cipher-algo aes256 --output "$out" "$in"
     echo "$out created"
 }
 
-fh() {
+fh() { # Use FZF to preview history
     cat ~/.zsh_history | fzf -q "${1:-}" --preview='echo {} | bat' --preview-window=down:50%
 }
 
-mdtohtml() {
+mdtohtml() { # Convert a markdown file to html
     pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
 }
 
-linkedtobin(){
+linkedtobin(){ # View all entires in ~/bin that are symlinks to my scripts
     ls -l ~/bin | awk -F' ' '/-> .*scripts.*/{print $7":"$9}' | column -s':' -t
+}
+
+up(){ # Jump up (..) by N (default 1) directories
+    LIMIT=$1
+    P=$PWD
+    export MPWD=$P
+    for ((i=1; i<=LIMIT; i++))
+    do
+        P=$P/..
+    done
+    cd $P
+}
+
+back(){ # Go back to the last directory before an 'up' call
+    LIMIT=$1
+    P=$MPWD
+    for ((i=1; i<=LIMIT; i++))
+    do
+        P=${P%/..}
+    done
+    cd $P
+    export MPWD=$P
 }
