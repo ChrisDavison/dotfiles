@@ -16,7 +16,7 @@ let g:pandoc#syntax#style#use_definition_lists=0
 let g:pandoc#syntax#conceal#use=0
 let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx', 'ellipses']
 let g:pandoc#toc#close_after_navigating=0
-let g:pandoc#syntax#conceal#use=0
+let g:pandoc#syntax#conceal#use=1
 
 nnoremap <silent><buffer> <C-n>      :ThesisNotes<CR>
 

@@ -3,7 +3,7 @@ nnoremap <leader>ev :edit ~/code/dotfiles/.vimrc<CR>
 nnoremap <leader>en :edit ~/Dropbox/notes/**/*
 nnoremap <leader>ep :edit ~/code/dotfiles/vim/plugin/
 nnoremap <leader>b :ls<Cr>:b
-nnoremap <leader>s  :filt  ls<LEFT><LEFT><LEFT>
+nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
 
 " =====[ Insert timestamps ]=====
 nnoremap <F5>   :=strftime('%H:%M:%S')<CR>P
