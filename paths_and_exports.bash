@@ -1,7 +1,7 @@
 export TERM=xterm-256color
 export EDITOR="nvim"
-export GOPATH="$HOME"
-export GOBIN="$GOPATH/bin"
+export GOPATH="$HOME/go"
+export GOBIN="$HOME/bin"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
