@@ -30,7 +30,7 @@ set updatetime=1000 " Write a swap file after 1 second
 set cmdheight=1
 set colorcolumn=0
 set hlsearch
-set smartcase
+set ignorecase smartcase
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard=unnamed " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
