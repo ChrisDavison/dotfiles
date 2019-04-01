@@ -80,7 +80,7 @@ notebackup() { # Add notes to note repo, and create zip
     git add . > /dev/null
     git commit -m "Backup ${dt}"
     git push
-    git archive -o $HOME/notes-backup--${dt}.zip @
+    git archive -o $HOME/notes-${dt}.zip @
     popd
 }
 
