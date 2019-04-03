@@ -1,9 +1,3 @@
-# export ZSH="/Users/davison/.oh-my-zsh"
-# ZSH_THEME="flazz"
-# DISABLE_AUTO_UPDATE="true"
-# plugins=( )
-# source $ZSH/oh-my-zsh.sh
-
 SAVEHIST=100000
 HISTSIZE=100000
 HISTFILE=~/.zsh_history
