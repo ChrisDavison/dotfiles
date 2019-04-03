@@ -9,7 +9,6 @@ export LESS=FRSX
 export DATADIR="$HOME/Dropbox/data"
 export CODEDIR="$HOME/code"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
-export DONEFILE="$HOME/Dropbox/notes/done.md"
 export FINANCEFILE="$DATADIR/finances.csv"
 export NOTESDIR="$HOME/Dropbox/notes"
 export NOTESBACKUPDIR="$CODEDIR/knowledge"
