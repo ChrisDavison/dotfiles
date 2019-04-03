@@ -16,7 +16,6 @@ source_or_error "$CODEDIR/dotfiles/aliases.bash"
 source_or_error "$CODEDIR/dotfiles/prompt.zsh"
 source_or_error $SHELLFUNCS
 source_or_error $HOME/.cargo/env
-source_or_error /usr/local/etc/profile.d/autojump.sh
 source_or_error ~/.fzf.zsh
 source_or_error /usr/local/bin/virtualenvwrapper.sh
 
