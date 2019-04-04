@@ -5,14 +5,6 @@ nnoremap <leader>ep :edit ~/code/dotfiles/vim/plugin/
 nnoremap <leader>b :ls<Cr>:b
 nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
 
-" =====[ Insert timestamps ]=====
-nnoremap <F5>   :=strftime('%H:%M:%S')<CR>P
-inoremap <F5>   <C-R>=strftime('%H:%M:%S')<CR>
-nnoremap <F6>   :=strftime('%Y%m%d')<CR>P
-inoremap <F6>   <C-R>=strftime('%Y%m%d')<CR>
-nnoremap <F7>   :=strftime('-   `%Y%m%d`: ')<CR>P
-inoremap <F7>   <C-R>=strftime('-   `%Y%m%d`: ')<CR>
-
 " =====[ Uppercase the current word (from anywhere within the <word>) ]=====
 inoremap <C-u>   <esc>mzgUiw`za
 
