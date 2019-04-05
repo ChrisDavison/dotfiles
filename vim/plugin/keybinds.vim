@@ -17,6 +17,8 @@ nnoremap <right> :cnext<CR>zvzz
 nnoremap <up>    :lprev<CR>zvzz
 nnoremap <down>  :lnext<CR>zvzz
 
+nnoremap <silent> Q =ip
+
 " =====[ Generic useful stuff ]=====
 inoremap jj     <ESC>:w<CR>
 nnoremap <BS>   <C-^>
