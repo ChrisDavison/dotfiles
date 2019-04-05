@@ -1,7 +1,11 @@
-setlocal tw=80
-setlocal foldmethod=expr
-setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
-setlocal nospell 
+augroup pandoc
+    autocmd!
+    au Filetype pandoc setlocal tw=80
+    au Filetype pandoc setlocal foldmethod=expr
+    au Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
+    au Filetype pandoc setlocal nospell 
+    au Filetype pandoc nnoremap D dip
+augroup END
 
 let g:pandoc#folding#fdc=0
 let g:pandoc#formatting#mode="hA"
