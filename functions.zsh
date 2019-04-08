@@ -228,3 +228,7 @@ back(){ # Go back to the last directory before an 'up' call
     cd $P
     export MPWD=$P
 }
+
+ta(){ # Add a todo
+    echo "- $@" >> $TODOFILE
+}
