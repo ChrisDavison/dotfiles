@@ -18,7 +18,7 @@ let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links+
 let g:pandoc#formatting#extra_equalprg="--reference-links --reference-location=section --atx-headers"
 let g:pandoc#syntax#style#use_definition_lists=0
 let g:pandoc#syntax#conceal#use=0
-let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx', 'ellipses']
+let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx', 'ellipses', 'codeblock_start', 'codeblock_delim']
 let g:pandoc#toc#close_after_navigating=0
 let g:pandoc#syntax#conceal#use=1
 
