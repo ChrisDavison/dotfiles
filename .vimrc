@@ -66,6 +66,7 @@ endfunction
 if has('persistent_undo')
     set undodir=~/.undodir
 endif
+set undofile
 
 if has('path_extra')
     setglobal tags-=./tags tags-=./tags; tags^=./tags;
