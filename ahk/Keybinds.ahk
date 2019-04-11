@@ -44,3 +44,21 @@ return
     Resize(480, 320)
     Move("right", "bottom")
 return
+
+^#!s::switchDesktop()
+
+switchedDesktop := false
+switchDesktop() 
+{
+  global switchedDesktop
+    if switchedDesktop
+    {
+        SendEvent ^#{Right}
+        switchedDesktop := false
+    }
+    else
+    {
+        SendEvent ^#{Left}
+        switchedDesktop := true
+    }
+}

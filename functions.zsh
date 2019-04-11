@@ -234,3 +234,7 @@ back(){ # Go back to the last directory before an 'up' call
 ta(){ # Add a todo
     echo "- $@" >> $TODOFILE
 }
+
+dashboardflask(){
+    FLASK_APP=server.py FLASK_DEBUG=True flask run
+}
