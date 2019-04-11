@@ -85,7 +85,9 @@ notebackup() { # Add notes to note repo, and create zip
 }
 
 note(){ # Use vim to open files selected with `notes`
-    v $(notes)
+    files=$(notes)
+    [ -z "$files" ] && return 1
+    v "$files"
 }
 
 notes(){ # Use fzf and bat to preview, and select, notes
