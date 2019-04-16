@@ -118,7 +118,11 @@ mdstructure(){ # Display links, images, keywords, or headers for MD files
         images) query="!\[.*?\]\(.*?\)" ;;
         keywords) query="(?:[\s\`^])#[a-zA-Z]+" ;;
         headers) query="^#+ .*" ;;
-        *) echo "Unrecognised command: $cmd" && return 1 ;;
+        *) 
+            echo "Unrecognised command: $cmd"
+            echo "links, images, keywords, or headers"
+            return 1 
+            ;;
     esac
     rg "$query" "$@" -g -o --no-heading --sort=path
 }
