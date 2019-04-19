@@ -25,7 +25,7 @@ peek() { # Either bat or EIDOT a file
 }
 
 inpath() { # Check ifa file is in $PATH
-    type "$1" >/dev/null 2>&1; 
+    type "$1" >/dev/null 2>&1;
 }
 
 pager() { # Use PAGER, defaulting to less
@@ -75,7 +75,11 @@ notebackup() { # Add notes to note repo, and create zip
     dt=$(date +"%Y%m%dT%H%M")
     echo "${dt}: $NOTESDIR Backup"
     rm -rf "${NOTESBACKUPDIR}/"*
-    rsync -az  "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
+    if inpath rsync; then
+        rsync -az  "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
+    else
+        cp -r * "${NOTESDIR}/*" "${NOTESBACKUPDIR}/"
+    fi
     pushd "${NOTESBACKUPDIR}"
     git add . > /dev/null
     git commit -m "Backup ${dt}"
@@ -118,10 +122,10 @@ mdstructure(){ # Display links, images, keywords, or headers for MD files
         images) query="!\[.*?\]\(.*?\)" ;;
         keywords) query="(?:[\s\`^])#[a-zA-Z]+" ;;
         headers) query="^#+ .*" ;;
-        *) 
+        *)
             echo "Unrecognised command: $cmd"
             echo "links, images, keywords, or headers"
-            return 1 
+            return 1
             ;;
     esac
     rg "$query" "$@" -g -o --no-heading --sort=path
@@ -161,12 +165,12 @@ youtube() { # Get audio, video, or tidyurl from youtube
     [ $# -lt 1 ] && echo "Usage: youtube (video|audio|tidyurl) url" && return 1
     cmd=${1:-''}; shift
     case "$cmd" in
-        video) 
+        video)
             tidied=$(youtube tidyurl "$1")
             format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
             youtube-dl -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 -o "$format" "$tidied"
             ;;
-        audio) 
+        audio)
             tidied=$(youtube tidyurl "$1")
             format="%(title)s-%(id)s-%(format_id)s.%(ext)s"
             youtube-dl --prefer-ffmpeg -f 171/251/140/bestaudio --extract-audio --audio-format mp3 --audio-quality 0 -o "$format" "$tidied"
