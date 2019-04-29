@@ -8,8 +8,8 @@ export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export DATADIR="$HOME/Dropbox/"
 export CODEDIR="$HOME/code"
-export TODOFILE="$HOME/Dropbox/notes/todo.md"
-export NOTESDIR="$HOME/Dropbox/notes"
+export TODOFILE="$HOME/Dropbox/todo.md"
+export NOTESDIR="$HOME/Dropbox"
 export SHELLFUNCS="$CODEDIR/dotfiles/functions.zsh"
 
 # =====================

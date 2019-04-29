@@ -65,29 +65,6 @@ OpenInBrowser() { # Open link in whichever browser is in path
     fi
 }
 
-notebackup() { # Add notes to note repo, and create zip
-    if [[ ! -d "${NOTESDIR}" || ! -d "${NOTESBACKUPDIR}" ]]; then
-        echo "NOTESDIR and NOTESBACKUPDIR must both be defined"
-        echo "NOTESDIR: ${NOTESDIR}"
-        echo "NOTESBACKUPDIR: ${NOTESBACKUPDIR}"
-        return 1
-    fi
-    dt=$(date +"%Y%m%dT%H%M")
-    echo "${dt}: $NOTESDIR Backup"
-    rm -rf "${NOTESBACKUPDIR}/"*
-    if inpath rsync; then
-        rsync -az  "${NOTESDIR}"/* "${NOTESBACKUPDIR}/"
-    else
-        cp -r * "${NOTESDIR}/*" "${NOTESBACKUPDIR}/"
-    fi
-    pushd "${NOTESBACKUPDIR}"
-    git add . > /dev/null
-    git commit -m "Backup ${dt}"
-    git push
-    git archive -o $HOME/notes-${dt}.zip @
-    popd
-}
-
 note(){ # Use vim to open files selected with `notes`
     files=$(notes)
     [ -z "$files" ] && return 1
