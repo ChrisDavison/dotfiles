@@ -246,3 +246,13 @@ ta(){ # Add a todo
 dashboardflask(){
     FLASK_APP=server.py FLASK_DEBUG=True flask run
 }
+
+dbxarchive(){
+    archivedir="$HOME/Dropbox/archive"
+    if [ -d "$archivedir" ]; then
+        echo "Moving $@ to Dropbox archive"
+        mv $@ "$archivedir"
+    else
+        echo "Couldn't find Dropbox archive directory $archivedir"
+    fi
+}
