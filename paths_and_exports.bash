@@ -6,12 +6,10 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
-export DATADIR="$HOME/Dropbox/data"
+export DATADIR="$HOME/Dropbox/"
 export CODEDIR="$HOME/code"
 export TODOFILE="$HOME/Dropbox/notes/todo.md"
-export FINANCEFILE="$DATADIR/finances.csv"
 export NOTESDIR="$HOME/Dropbox/notes"
-export NOTESBACKUPDIR="$CODEDIR/knowledge"
 export SHELLFUNCS="$CODEDIR/dotfiles/functions.zsh"
 
 # =====================
@@ -28,4 +26,3 @@ export PATH=$HOME/.cargo/bin/:$PATH;
 export PATH=$HOME/bin:$PATH;
 export PATH=$HOME/.virtualenvs/:$PATH;
 export PATH=/usr/local/miniconda3/bin:$PATH;
-
