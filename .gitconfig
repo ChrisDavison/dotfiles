@@ -3,6 +3,8 @@
     email=c.jr.davison@gmail.com
 [advice]
     ignoreHook=false
+[pull]
+    rebase=true
 [push]
     default=simple
 [merge]
@@ -24,17 +26,9 @@
     unstage=reset HEAD --
     discard=checkout --
     staged=diff --cached
-    ctags="!.git/hooks/ctags"
-    a=add --all
-	c=commit
-    co=checkout
 	l=log --all --decorate --oneline --graph
-	pb=pull --rebase --prune
 	d=diff -w
-	rb=rebase
     s=status -s -b
-	#=============================================================
-	# Repo 'metadata'
 	branch-name=rev-parse --abbrev-ref HEAD
 	branches=branch -a
     tags=tag
@@ -47,7 +41,6 @@
 	#=============================================================
     # Push branch to/remove branch from remoteorigin/<branch>
     publish="!git push -u origin $(git branch-name)"
-    nuke="!git push origin :$(git branch-name)"
-
+    unpublish="!git push origin :$(git branch-name)"
 [init]
 	templatedir=~/.git_template

@@ -1,6 +1,9 @@
-SAVEHIST=100000
-HISTSIZE=100000
-HISTFILE=~/.zsh_history
+export ZSH="/Users/davison/.oh-my-zsh"
+ZSH_THEME="imajes"
+HIST_STAMPS="yyyy-mm-dd"
+plugins=()
+
+source $ZSH/oh-my-zsh.sh
 
 source_or_error() {
     [ -f "$1" ] && source "$1" || echo "No file: $1"
