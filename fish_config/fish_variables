@@ -1,8 +1,8 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR ASMRFILE:/Users/davison/Dropbox/asmr\x2ecsv
-SETUVAR CODEDIR:/Users/davison/code
-SETUVAR DATADIR:/Users/davison/Dropbox
+SETUVAR --export CODEDIR:/Users/davison/code
+SETUVAR --export DATADIR:/Users/davison/Dropbox
 SETUVAR DONEFILE:/Users/davison/Dropbox/notes/done\x2emd
 SETUVAR --export EDITOR:code\x20\x2dw
 SETUVAR --export FZF_ALT_C_COMMAND:fd\x1e\x2dt\x1ed\x1e\x2e\x1e/Users/davison
@@ -11,10 +11,10 @@ SETUVAR --export GOBIN:/Users/davison/bin
 SETUVAR --export --path GOPATH:/Users/davison/go
 SETUVAR --export LESS:FRSX
 SETUVAR NOTESBACKUPDIR:/Users/davison/code/knowledge
-SETUVAR NOTESDIR:/Users/davison/Dropbox
-SETUVAR TERM:xterm\x2d256color
-SETUVAR TODOFILE:/Users/davison/Dropbox/todo\x2emd
-SETUVAR WORKON_HOME:/Users/davison/\x2eenvs
+SETUVAR --export NOTESDIR:/Users/davison/Dropbox
+SETUVAR --export TERM:xterm\x2d256color
+SETUVAR --export TODOFILE:/Users/davison/Dropbox/todo\x2emd
+SETUVAR --export WORKON_HOME:/Users/davison/\x2eenvs
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
