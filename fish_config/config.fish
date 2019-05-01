@@ -1,16 +1,16 @@
 set -U TERM xterm-256color
-set -U EDITOR code -w
-set -U GOPATH $HOME/go
-set -U GOBIN $HOME/bin
-set -U FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"
-set -U FZF_ALT_C_COMMAND fd -t d . $HOME
+set -Ux EDITOR "code -w"
+set -Ux GOPATH $HOME/go
+set -Ux GOBIN $HOME/bin
+set -Ux FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"
+set -Ux FZF_ALT_C_COMMAND fd -t d . $HOME
 set -U WORKON_HOME $HOME/.envs
-set -U LESS FRSX
+set -Ux LESS FRSX
 set -U DATADIR $HOME/Dropbox
 set -U CODEDIR $HOME/code
 set -U TODOFILE $HOME/Dropbox/todo.md
 set -U NOTESDIR $HOME/Dropbox
-set -U fish_greeting ""
+set -Ux fish_greeting ""
 
 # =====================
 #         Paths
@@ -47,14 +47,15 @@ alias tt="cat -n $TODOFILE"
 
 # Git aliases
 alias g="git"
-# alias ga="git add"
-# alias gaa="git add --all"
-# alias gap="git add --patch"
-# alias gc="git commit -v"
-# alias gc!="git commit -v --amend"
+alias ga="git add"
+alias gaa="git add --all"
+alias gap="git add --patch"
+alias gc="git commit -v"
+alias gc!="git commit -v --amend"
+alias gcne="git commit --amend --no-edit"
 # alias gca="git commit -v -a"
 # alias gcl="git config --list"
-# alias gss="git stash show --text"
-# alias gsc="git stash clear"
-# alias gwch="git whatchanged -p --abbrev-commit --pretty=medium"
-# alias gp="git pull"
+alias gss="git stash show --text"
+alias gsc="git stash clear"
+alias gsp="git stash pop"
+alias gwch="git whatchanged -p --abbrev-commit --pretty=medium"

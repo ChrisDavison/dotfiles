@@ -4,17 +4,18 @@ SETUVAR ASMRFILE:/Users/davison/Dropbox/asmr\x2ecsv
 SETUVAR CODEDIR:/Users/davison/code
 SETUVAR DATADIR:/Users/davison/Dropbox
 SETUVAR DONEFILE:/Users/davison/Dropbox/notes/done\x2emd
-SETUVAR EDITOR:code\x1e\x2dw
-SETUVAR FZF_ALT_C_COMMAND:fd\x1e\x2dt\x1ed\x1e\x2e\x1e/Users/davison
-SETUVAR FZF_DEFAULT_COMMAND:rg\x1e\x2d\x2dfiles\x1e\x2d\x2dno\x2dignore\x1e\x2d\x2dhidden\x1e\x2d\x2dfollow\x1e\x2d\x2dglob\x1e\x21\x2egit/\x2a
-SETUVAR GOBIN:/Users/davison/bin
-SETUVAR --path GOPATH:/Users/davison/go
-SETUVAR LESS:FRSX
+SETUVAR --export EDITOR:code\x20\x2dw
+SETUVAR --export FZF_ALT_C_COMMAND:fd\x1e\x2dt\x1ed\x1e\x2e\x1e/Users/davison
+SETUVAR --export FZF_DEFAULT_COMMAND:rg\x1e\x2d\x2dfiles\x1e\x2d\x2dno\x2dignore\x1e\x2d\x2dhidden\x1e\x2d\x2dfollow\x1e\x2d\x2dglob\x1e\x21\x2egit/\x2a
+SETUVAR --export GOBIN:/Users/davison/bin
+SETUVAR --export --path GOPATH:/Users/davison/go
+SETUVAR --export LESS:FRSX
 SETUVAR NOTESBACKUPDIR:/Users/davison/code/knowledge
 SETUVAR NOTESDIR:/Users/davison/Dropbox
 SETUVAR TERM:xterm\x2d256color
 SETUVAR TODOFILE:/Users/davison/Dropbox/todo\x2emd
 SETUVAR WORKON_HOME:/Users/davison/\x2eenvs
+SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
@@ -38,8 +39,9 @@ SETUVAR fish_color_search_match:bryellow\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_user:brgreen
 SETUVAR fish_color_valid_path:\x2d\x2dunderline
-SETUVAR fish_greeting:
+SETUVAR --export fish_greeting:
 SETUVAR fish_key_bindings:fish_default_key_bindings
+SETUVAR fish_pager_color_completion:\x1d
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:white\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
