@@ -252,3 +252,11 @@ add2md(){
     echo "===== TAIL OF THE NOTE FILE ====="
     tail -n $(( $# + 2 )) $dest
 }
+
+todo(){
+    echo "-   [ ] $@" >> "$HOME/Dropbox/inbox.md"
+}
+
+todos(){
+    rg "^\s*\-\s+\[ \]\s+(.*)$" -r '$1' "$HOME/Dropbox/inbox.md" --color=never | column -s':' -t
+}
