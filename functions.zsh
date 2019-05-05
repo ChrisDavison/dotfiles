@@ -99,13 +99,19 @@ mdstructure(){ # Display links, images, keywords, or headers for MD files
         images) query="!\[.*?\]\(.*?\)" ;;
         keywords) query="(?:[\s\`^])#[a-zA-Z]+" ;;
         headers) query="^#+ .*" ;;
+        todos) query="^\s*\-*\s*\[ \]\s*.*" ;;
         *)
             echo "Unrecognised command: $cmd"
-            echo "links, images, keywords, or headers"
+            echo "links, images, keywords, todos, or headers"
             return 1
             ;;
     esac
-    rg "$query" "$@" -g -o --no-heading --sort=path
+    if [ $# -gt 0 ]; then
+        files="$@"
+    else
+        files=`echo **/*.md`
+    fi
+    rg "$query" $files -g -o --no-heading --sort=path
 }
 
 todobackup() { # Backup only todo files to notes repo
