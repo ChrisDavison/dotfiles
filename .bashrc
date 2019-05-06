@@ -1,10 +1,12 @@
 [ -z "$PS1" ] && exit
 
-shopt -s cdspell;
-set -o vi
+shopt -s cdspell
+shopt -s globstar
+shopt -s extglob
+shopt -s dotglob
+shopt -s nullglob
 
 export PS1="\n\W » "
-
 
 source_or_error(){
     if [ -f "$1" ]; then
@@ -23,6 +25,3 @@ source_or_error ~/.fzf.bash
 if grep -q "MINGW" <<< "$(uname -a)"; then
     export BROWSER=start
 fi
-
-cd E:/code
-
