@@ -110,8 +110,7 @@
   (setq ivy-count-format "")
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
-        '((swiper . ivy--regex-plus)
-          (t . ivy--regex-fuzzy))))
+        '((t . ivy--regex-plus))))
 
 (use-package counsel :ensure t
   :bind*
@@ -128,6 +127,7 @@
 (set-register ?i (cons 'file "~/Dropbox/inbox.org"))
 (set-register ?j (cons 'file "~/Dropbox/journal.org"))
 (set-register ?l (cons 'file "~/Dropbox/logbook.org"))
+(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/config"))
 ;; (set-register ?t (cons 'file "~/Dropbox/todo.org"))
 
 ;; Windmove gives shift-up/down/left/right for window navigation
