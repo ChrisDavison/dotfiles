@@ -28,13 +28,13 @@
         org-src-fontify-natively t
         org-todo-keywords '((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-startup-indented t
-        org-agenda-files (list "~/Dropbox/"))
+        org-agenda-files (list "~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive"))
   ;; Settings for refiling
   (setq org-reverse-note-order t
         org-refile-use-outline-path nil
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
-        org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+        org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
         org-blank-before-new-entry nil)
   ;; (add-hook 'org-mode-hook 'auto-fill-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
@@ -90,8 +90,8 @@
          "[[%^{URL}][%^{DESCRIPTION}]]\n")
         
         ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
-        ("t" "todo" entry (file+headline "~/Dropbox/inbox.org" "TASKS")
-         "* -TODO- %^{TASK}")
+        ("t" "todo" item (file+headline "~/Dropbox/inbox.org" "TASKS")
+         "- [ ] %^{TASK}")
         
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("j" "Journal" item (file+datetree "~/Dropbox/journal.org")
