@@ -157,7 +157,8 @@
 ;; that occurence
 (use-package ace-isearch :ensure ace-jump-mode
   :diminish ""
-  :config (global-ace-isearch-mode 1))
+  :config (global-ace-isearch-mode 1)
+  :bind ("C-c ." . ace-jump-mode))
 
 (defun ipython()
   (interactive)
