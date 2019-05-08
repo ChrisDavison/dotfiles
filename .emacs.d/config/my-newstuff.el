@@ -6,7 +6,15 @@
 ;; =================================
 ;; ====== Magit - Git in Emacs =====
 ;; =================================
-(use-package magit :ensure t)
+(use-package magit :ensure t
+  :config
+  (setq
+   ;; Magit needs to call git multiple times
+   ;; only refreshing the main buffer can improve performance
+   magit-refresh-status-buffer nil
+   ;; Emacs has its own version control.  We don't need to run both
+   ;; as that'll be detrimental for performance
+   vc-handled-backends (delq 'Git vc-handled-backends)))
 
 ;; =================================
 ;; ======== Elpy for Python ========
