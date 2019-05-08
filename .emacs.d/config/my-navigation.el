@@ -126,7 +126,9 @@
 
 ;; jump to register (file shortcuts)
 (set-register ?i (cons 'file "~/Dropbox/inbox.org"))
-(set-register ?t (cons 'file "~/Dropbox/todo.org"))
+(set-register ?j (cons 'file "~/Dropbox/journal.org"))
+(set-register ?l (cons 'file "~/Dropbox/logbook.org"))
+;; (set-register ?t (cons 'file "~/Dropbox/todo.org"))
 
 ;; Windmove gives shift-up/down/left/right for window navigation
 (windmove-default-keybindings)
