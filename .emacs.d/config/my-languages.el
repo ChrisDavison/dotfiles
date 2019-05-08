@@ -181,6 +181,8 @@
 
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+(add-hook 'latex-mode-hook 'visual-line-mode)
+(add-hook 'markdown-mode-hook 'visual-line-mode)
 
 (provide 'my-languages)
 ;;; my-languages.el ends here
