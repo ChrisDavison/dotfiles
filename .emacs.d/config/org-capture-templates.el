@@ -21,7 +21,7 @@
         ("r" "reading" entry (file+headline "~/Dropbox/inbox.org" "Read")
          "* TODO Read %^{Read}")
         
-        ("p" "project" entry (file+headline "~/Dropbox/inbox.org" "Projects")
+        ("p" "project" entry (file "~/Dropbox/projects.org")
          "* %^{PROJECT}")
 
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
