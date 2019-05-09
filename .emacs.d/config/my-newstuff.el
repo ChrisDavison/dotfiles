@@ -62,16 +62,15 @@
 ;; =================================
 ;; ========== Latex Config =========
 ;; =================================
-;; (require-package 'auctex)
-;; (setq TeX-auto-save t)
-;; (setq TeX-parse-self t)
-;; (setq TeX-save-query nil)
-
-;; (setq ispell-program-name "aspell") ; could be ispell as well, depending on your preferences
-;; (setq ispell-dictionary "english") ; this can obviously be set to any language your spell-checking program supports
-
-;; (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-;; (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+;; (use-package auctex :ensure t
+;;   :config
+;;   (setq TeX-auto-save t
+;;         TeX-parse-self t
+;;         TeX-save-query nil
+;;         ispell-program-name "aspell"
+;;         ispell-dictionary "english")
+;;   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+;;   (add-hook 'LaTeX-mode-hook 'flyspell-buffer))
 
 ;; (defun turn-on-outline-minor-mode ()
 ;;   (outline-minor-mode 1))
@@ -165,8 +164,13 @@
 ;; that occurence
 (use-package ace-isearch :ensure ace-jump-mode
   :diminish ""
-  :config (global-ace-isearch-mode 1)
-  :bind ("C-c ." . ace-jump-mode))
+  :config
+  (global-ace-isearch-mode 1)
+  (setq ace-isearch-use-jump t)
+  :bind (("C-c ." . ace-jump-mode)
+         ("C-c j c" . ace-jump-char-mode)
+         ("C-c j l" . ace-jump-line-mode)
+         ))
 
 (defun ipython()
   (interactive)
