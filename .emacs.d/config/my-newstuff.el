@@ -189,5 +189,12 @@
   (interactive)
   (message (buffer-file-name)))
 
+(use-package saveplace :ensure t
+  :config
+  (setq save-place t
+        save-place-file (concat user-emacs-directory "places")))
+
+(setq uniquify-buffer-name-style 'forward)
+
 (provide 'my-newstuff)
 ;;; my-newstuff.el ends here
