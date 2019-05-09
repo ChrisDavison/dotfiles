@@ -180,19 +180,22 @@
              (setq explicit-sh.exe-args '("--login" "-i"))
              (setenv "SHELL" shell-file-name)
              (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-             (shell))
+             (shell)
+             (cd/set-windows-shell))
     (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython")))
 
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "--simple-prompt -i --pprint")
 
 (defun what-face (pos)
+  "Echo the face (font element) under point."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 (defun filepath ()
+  "Echo the filepath as a message."
   (interactive)
   (message (buffer-file-name)))
 
@@ -203,13 +206,20 @@
 
 (setq uniquify-buffer-name-style 'forward)
 
-(if *is-windows*
-    (progn (setq explicit-shell-file-name
-                 "C:/Program Files/Git/bin/sh.exe")
-           (setq shell-file-name "bash")
-           (setq explicit-sh.exe-args '("--login" "-i"))
-           (setenv "SHELL" shell-file-name)
-           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+(defun cd/set-windows-shell ()
+  "If on windows, set the shell to git bash."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (progn (setq explicit-shell-file-name
+                   "C:/Program Files/Git/bin/sh.exe")
+             (setq shell-file-name "bash")
+             (setq explicit-sh.exe-args '("--login" "-i"))
+             (setenv "SHELL" shell-file-name)
+             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
+    nil))
+
+(cd/set-windows-shell)
+
 
 (provide 'my-newstuff)
 ;;; my-newstuff.el ends here
