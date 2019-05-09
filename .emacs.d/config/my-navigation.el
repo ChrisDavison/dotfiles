@@ -94,15 +94,12 @@
 ;; navigation of ~everything (helm OR ivy)
 
 (use-package flx :ensure t)
-(use-package avy :ensure t)
 (use-package ivy :ensure t
   :diminish (ivy-mode . "")
   :bind
   (:map ivy-mode-map
-        ("C-'" . ivy-avy)
         ("C-c h" . ivy-switch-buffer)
-        ("C-c s" . swiper)
-        )
+        ("C-c s" . swiper))
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
@@ -128,7 +125,6 @@
 (set-register ?j (cons 'file "~/Dropbox/journal.org"))
 (set-register ?l (cons 'file "~/Dropbox/logbook.org"))
 (set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/config"))
-;; (set-register ?t (cons 'file "~/Dropbox/todo.org"))
 
 ;; Windmove gives shift-up/down/left/right for window navigation
 (windmove-default-keybindings)
