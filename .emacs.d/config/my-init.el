@@ -10,8 +10,8 @@
 ;; for your config, to override platform-specific behaviour (or perhaps
 ;; implement some more specificity).
 (defconst *spell-check-support-enabled* nil)
-(defconst *is-a-mac* (eq system-type 'darwin)
-  "A constant that can be used in functions for platform-specific behaviour")
+(defconst *is-a-mac* (eq system-type 'darwin))
+(defconst *is-windows* (equal system-type 'windows-nt))
 
 ;; eval after load
 (if (fboundp 'with-eval-after-load)
