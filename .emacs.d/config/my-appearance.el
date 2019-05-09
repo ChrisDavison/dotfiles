@@ -9,7 +9,8 @@
 (when (member "Iosevka Term" (font-family-list))
   (set-default-font "Iosevka Term"))
 (setq line-spacing 0.2)
-(set-face-attribute 'default nil :height 200)
+(if *is-a-mac* (set-face-attribute 'default nil :height 200))
+(if *is-windows* (set-face-attribute 'default nil :height 160))
 
 ;; colour theme
 
@@ -25,7 +26,7 @@
 (use-package solarized-theme :ensure t)
 (use-package molokai-theme :ensure t)
 (use-package seoul256-theme :ensure t)
-(use-package gruvbox :ensure t)
+(use-package gruvbox-theme :ensure t)
 
 ;; *maybe* suspend frame
 ;; This is useful if running a mac, so that C-z wont hide it.  Considered
