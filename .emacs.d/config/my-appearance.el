@@ -25,6 +25,7 @@
 (use-package solarized-theme :ensure t)
 (use-package molokai-theme :ensure t)
 (use-package seoul256-theme :ensure t)
+(use-package gruvbox :ensure t)
 
 ;; *maybe* suspend frame
 ;; This is useful if running a mac, so that C-z wont hide it.  Considered
