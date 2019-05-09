@@ -169,12 +169,19 @@
   (setq ace-isearch-use-jump t)
   :bind (("C-c ." . ace-jump-mode)
          ("C-c j c" . ace-jump-char-mode)
-         ("C-c j l" . ace-jump-line-mode)
-         ))
+         ("C-c j l" . ace-jump-line-mode)))
 
 (defun ipython()
   (interactive)
-  (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython"))
+  (if *is-windows*
+      (progn (setq explicit-shell-file-name
+                   "C:/python3/scripts/ipython.exe")
+             (setq shell-file-name "ipython")
+             (setq explicit-sh.exe-args '("--login" "-i"))
+             (setenv "SHELL" shell-file-name)
+             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+             (shell))
+    (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython")))
 
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "--simple-prompt -i --pprint")
@@ -195,6 +202,14 @@
         save-place-file (concat user-emacs-directory "places")))
 
 (setq uniquify-buffer-name-style 'forward)
+
+(if *is-windows*
+    (progn (setq explicit-shell-file-name
+                 "C:/Program Files/Git/bin/sh.exe")
+           (setq shell-file-name "bash")
+           (setq explicit-sh.exe-args '("--login" "-i"))
+           (setenv "SHELL" shell-file-name)
+           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
 
 (provide 'my-newstuff)
 ;;; my-newstuff.el ends here
