@@ -19,7 +19,6 @@
   :bind (("<f1>" . org-capture)
          ("<f2>" . org-agenda)
          ("<f3>" . org-agenda-list)
-         ("<f4>" . org-timeline)
          ("C-c l" . org-store-link))
   :config
   (setq org-directory "~/Dropbox/notes"
@@ -28,7 +27,9 @@
         org-src-fontify-natively t
         org-todo-keywords '((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-startup-indented t
-        org-agenda-files (list "~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive"))
+        org-hide-leading-stars t
+        org-agenda-files '("~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive")
+        org-log-done 'time)
   ;; Settings for refiling
   (setq org-reverse-note-order t
         org-refile-use-outline-path nil
@@ -42,9 +43,6 @@
 
 ;; (use-package ox-reveal :ensure t)
 (use-package htmlize :ensure t)
-(use-package org-bullets :ensure t
-  :disabled f
-  :config (org-bullets-mode 1))
 
 ;; This makes it easier to add links from outside.
 (defun sacha/yank-more ()
@@ -55,60 +53,8 @@
   (insert "][more]]"))
 (global-set-key (kbd "<f6>") 'sacha/yank-more)
 
-
-;; Paste a link into an org file document, using the currently
-;; selected text as the description
-
-;; Something like Sacha Chua's yank-more, but using the current region
-;; as 'more'
-
-;; Below is /kind of/ along the right lines, but need to make it work
-;; with either the kill ring or the clipboard, as well as removing the
-;; current region.
-
-;; (setq save-interprogram-paste-before-kill t)
-
-;; (defun cd/yank-with-selection-as-description (title)
-;;   (interactive "MLink Title: \n")
-;;   (insert "[[")
-;;   (clipboard-yank)
-;;   (insert "][")
-;;   (insert title)
-;;   insert "]]"
-;;   (message "Yanked with Selection"))
-
-;; (global-set-key (kbd "<f7>") 'cd/yank-with-selection-as-description)
-
-;; capture - templates
-;; =org-capture= lets you create templates for jotting down info of
-;; various kinds.
-(setq org-capture-templates
-      '(("q" "quotes" entry (file "~/Dropbox/reference/quotes.org")
-         "* %^{WHAT} ** %^{WHO? WHERE?}\n%^{QUOTE}" :immediate-finish)
-        
-        ("u" "url" item (file+headline "~/Dropbox/inbox.org" "Links")
-         "[[%^{URL}][%^{DESCRIPTION}]]\n")
-        
-        ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
-        ("t" "todo" item (file+headline "~/Dropbox/inbox.org" "TASKS")
-         "- [ ] %^{TASK}")
-        
-        ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("j" "Journal" item (file+datetree "~/Dropbox/journal.org")
-         "- %^{BLAH} \n")
-        
-        ("l" "Logbook" item (file+datetree "~/Dropbox/logbook.org")
-         "- %^{BLAH} \n")
-
-        ("n" "note" item (file+headline "~/Dropbox/inbox.org" "Notes")
-         "%^{NOTE}\n")
-        ))
-
-
-
 ;; indent org babel src
 ;; In an Org-Babel block, run my/org-cleanup to fix indentation
-
 (defun cd/org-cleanup ()
   (interactive)
   (org-edit-special)
@@ -123,7 +69,6 @@
 
 
 ;; babel
-
 (setq org-babel-load-languages
       '((emacs-lisp . t)
         (R . t)
