@@ -4,45 +4,65 @@
 ;; These are all the capture templates I use for org-mode
 
 ;;; Code:
+(setq cd-template--article
+      '))
+
 (setq org-capture-templates
-      '(("q" "quotes" entry (file "~/Dropbox/reference/quotes.org")
-         "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE" :immediate-finish 1)
+'(("q" "Quotes" entry (file "~/Dropbox/reference/quotes.org")
+   "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE" :immediate-finish 1)
 
-        ("u" "url" item (file+headline "~/Dropbox/inbox.org" "Links")
-         "[[%^{URL}][%^{DESCRIPTION}]] %^{COMMENTS}\n" :immediate-finish 1)
+  ("u" "URL" item (file+headline "~/Dropbox/inbox.org" "Links")
+   "[[%^{URL}][%^{DESCRIPTION}]] %^{COMMENTS}\n" :immediate-finish 1)
 
-        ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
-        ("t" "todo" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
-         "* TODO %^{TASK}" :immediate-finish 1)
+  ("p" "Project" entry (file "~/Dropbox/projects.org")
+   "* %^{PROJECT}")
 
-        ("T" "todo with clipboard" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
-         "* TODO %^{TASK} %c" :immediate-finish 1)
+  ("a" "Article" entry (file+headline "~/Dropbox/projects.org" "Literature")
+   "* TODO %^{Title} %(org-set-tags) :article:
+:PROPERTIES:
+:CREATED: %U
+:LINKED: %a
+:END:
+%i
+Brief description:
+%?"
+   :prepend t
+   :created t)
 
-        ("r" "reading" entry (file+headline "~/Dropbox/inbox.org" "Read")
-         "* TODO Read %^{Read}")
-        
-        ("p" "project" entry (file "~/Dropbox/projects.org")
-         "* %^{PROJECT}")
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Todos (tasks within inbox)
+  ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
+  ("t" "Todo")
+  ("tt" "Todo" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+   "* TODO %^{TASK}" :immediate-finish 1)
+  ("tT" "Todo with pasted clipboard" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+   "* TODO %^{TASK}\n%c" :immediate-finish 1)
 
-        ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("j" "Journal note" item (file+datetree "~/Dropbox/journal.org")
-         "%^{Journal}" :immediate-finish 1)
+  ;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Journal
+  ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
+  ("j" "Journal entry")
+  ("jj" "Quick entry" item (file+datetree "~/Dropbox/journal.org")
+   "%^{Journal}" :immediate-finish 1)
+  ("jJ" "Full entry" item (file+datetree "~/Dropbox/journal.org")
+   "%^{Journal}")
 
-        ("J" "Journal note (with editing)" item (file+datetree "~/Dropbox/journal.org")
-         "%^{Journal}")
+  ;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; LOGBOOK
+  ("l" "Logbook entry")
+  ("ll" "Quick entry" item (file+datetree "~/Dropbox/logbook.org")
+   "%^{Logbook}" :immediate-finish 1)
+  ("lL" "Full entry" item (file+datetree "~/Dropbox/logbook.org")
+   "%^{Logbook}")
 
-        ("l" "Logbook note" item (file+datetree "~/Dropbox/logbook.org")
-         "%^{Logbook}" :immediate-finish 1)
-
-        ("L" "Logbook note (with editing)" item (file+datetree "~/Dropbox/logbook.org")
-         "%^{Logbook}")
-        
-        ("n" "note" item (file+headline "~/Dropbox/inbox.org" "Notes")
-         "%^{NOTE}" :immediate-finish 1)
-
-        ("N" "note with clipboard" item (file+headline "~/Dropbox/inbox.org" "Notes")
-         "%^{NOTE} %c")
-        ))
+  ;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Note in Inbox
+  ("n" "Note in Inbox")
+  ("nn" "Note" item (file+headline "~/Dropbox/inbox.org" "Notes")
+   "%^{NOTE}" :immediate-finish 1)
+  ("nN" "Note with clipboard" item (file+headline "~/Dropbox/inbox.org" "Notes")
+   "%^{NOTE} %c")
+  ))
 
 (provide 'cd-org-capture-templates)
 ;;; cd-org-capture-templates.el ends here
