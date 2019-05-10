@@ -219,7 +219,43 @@
     nil))
 
 (cd/set-windows-shell)
+(global-set-key (kbd "C-c C-f") 'hs-toggle-hiding)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;           IMPROVEMENT FOR ANSI-TERM
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+  "Close an ansi-term buffer if I quit the terminal."
+  (if (memq (process-status proc) '(signal exit))
+      (let ((buffer (process-buffer proc)))
+        ad-do-it
+        (kill-buffer buffer))
+    ad-do-it))
+(ad-activate 'term-sentinel)
+
+;; By default, use fish in ansi-term
+;; e.g. don't prompt for a shell
+(defvar my-term-shell "/usr/local/bin/fish")
+(defadvice ansi-term (before force-bash)
+  (interactive (list my-term-shell)))
+(ad-activate 'ansi-term)
+
+;; Use UTF8 in terminals
+(defun my-term-use-utf8 ()
+  (set-buffer-process-coding-system 'utf-8-unx 'utf-8-unix))
+(add-hook 'term-exec-hook 'my-term-use-utf8)
+
+;; Make URLs in the term clickable
+(defun my-term-paste (&optional string)
+  (interactive)
+  (process-send-string
+   (get-buffer-process (current-buffer))
+   (if string string (current-kill 0))))
+
+(defun my-term-hook ()
+  (goto-address-mode)
+  (define-key term-raw-map "\C-y" 'my-term-paste))
+(add-hook 'term-mode-hook 'my-term-hook)
 
 (provide 'cd-newstuff)
 ;;; cd-newstuff.el ends here
