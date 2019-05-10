@@ -29,6 +29,8 @@
   (package-install 'use-package))
 (require 'use-package)
 
+(add-to-list 'load-path user-emacs-directory)
+
 (require 'cd-init)
 (require 'cd-header) ;; Config for auto-file-headers
 (require 'cd-appearance)
