@@ -1,4 +1,4 @@
-;;; my-history-and-sessions.el --- Configuring history, sessions, backup, and undo
+;;; cd-history-and-sessions.el --- Configuring history, sessions, backup, and undo
 
 ;;; Commentary:
 ;;; history, backups, session and undo Disk space is plentiful.  Keep
@@ -52,5 +52,5 @@
   (setq undo-tree-visualizer-timestamps nil)
   (setq undo-tree-visualizer-diff t))
 
-(provide 'my-history-and-sessions)
-;;; my-history-and-sessions.el ends here
+(provide 'cd-history-and-sessions)
+;;; cd-history-and-sessions.el ends here

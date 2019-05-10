@@ -1,4 +1,4 @@
-;;; org-capture-templates.el --- 
+;;; cd-org-capture-templates.el --- 
 
 ;;; Commentary:
 ;; These are all the capture templates I use for org-mode
@@ -44,5 +44,5 @@
          "%^{NOTE} %c")
         ))
 
-(provide 'org-capture-templates)
-;;; org-capture-templates.el ends here
+(provide 'cd-org-capture-templates)
+;;; cd-org-capture-templates.el ends here

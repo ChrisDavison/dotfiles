@@ -29,22 +29,18 @@
   (package-install 'use-package))
 (require 'use-package)
 
-(defvar config-dir
-  (expand-file-name "config/" user-emacs-directory))
-(add-to-list 'load-path config-dir)
-
-(require 'my-init)
-(require 'my-header) ;; Config for auto-file-headers
-(require 'my-appearance)
-(require 'my-history-and-sessions)
-(require 'my-editing)
-(require 'my-languages)
-(require 'my-navigation)
-(require 'my-utility)
-(require 'my-osx)
-(require 'my-newstuff)
-(require 'my-org)
-(require 'org-capture-templates)
+(require 'cd-init)
+(require 'cd-header) ;; Config for auto-file-headers
+(require 'cd-appearance)
+(require 'cd-history-and-sessions)
+(require 'cd-editing)
+(require 'cd-languages)
+(require 'cd-navigation)
+(require 'cd-utility)
+(require 'cd-osx)
+(require 'cd-newstuff)
+(require 'cd-org)
+(require 'cd-org-capture-templates)
 
 (load-theme 'gruvbox)
 

@@ -1,4 +1,4 @@
-;;; my-init --- Initialisation stuff for my emacs config
+;;; cd-init --- Initialisation stuff for my emacs config
 
 ;;; Commentary:
 
@@ -51,5 +51,5 @@
 
 (setq apropos-do-all t)
 
-(provide 'my-init)
-;;; my-init ends here
+(provide 'cd-init)
+;;; cd-init ends here

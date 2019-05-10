@@ -1,4 +1,4 @@
-;;; my-org.el --- Org-mode
+;;; cd-org.el --- Org-mode
 
 ;;; Commentary:
 ;;;
@@ -268,5 +268,5 @@
 ;;   (setq ad-return-value
 ;;         (wicked/org-update-checkbox-count (ad-get-arg 1))))
 
-(provide 'my-org)
-;;; my-org.el ends here
+(provide 'cd-org)
+;;; cd-org.el ends here

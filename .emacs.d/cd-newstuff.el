@@ -1,4 +1,4 @@
-;;; my-newstuff.el --- Stuff I'm trying out, which may make it's way into my full config.
+;;; cd-newstuff.el --- Stuff I'm trying out, which may make it's way into my full config.
 
 ;;; Commentary:
 
@@ -221,5 +221,5 @@
 (cd/set-windows-shell)
 
 
-(provide 'my-newstuff)
-;;; my-newstuff.el ends here
+(provide 'cd-newstuff)
+;;; cd-newstuff.el ends here

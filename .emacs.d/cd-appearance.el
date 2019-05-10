@@ -1,4 +1,4 @@
-;;; my-appearance.el --- Appearance of my emacs config
+;;; cd-appearance.el --- Appearance of my emacs config
 
 ;;; Commentary:
 
@@ -86,5 +86,5 @@
 ;; Replace any occurrence of 'lambda' with the actual symbol.
 (global-prettify-symbols-mode +1)
 
-(provide 'my-appearance)
-;;; my-appearance.el ends here
+(provide 'cd-appearance)
+;;; cd-appearance.el ends here

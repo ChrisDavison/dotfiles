@@ -1,4 +1,4 @@
-;;; my-osx.el --- Hand-holding for OSX
+;;; cd-osx.el --- Hand-holding for OSX
 
 ;;; Commentary:
 
@@ -31,5 +31,5 @@
 
 
 
-(provide 'my-osx)
-;;; my-osx.el ends here
+(provide 'cd-osx)
+;;; cd-osx.el ends here

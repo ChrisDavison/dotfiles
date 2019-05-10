@@ -1,4 +1,4 @@
-;;; my-editing.el --- Text editing
+;;; cd-editing.el --- Text editing
 
 ;;; Commentary:
 
@@ -50,5 +50,5 @@
 ;; 'Zen-move' - distraction free editing
 (use-package darkroom :ensure t)
 
-(provide 'my-editing)
-;;; my-editing.el ends here
+(provide 'cd-editing)
+;;; cd-editing.el ends here

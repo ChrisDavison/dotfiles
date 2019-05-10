@@ -1,4 +1,4 @@
-;;; my-utility.el --- General utilities
+;;; cd-utility.el --- General utilities
 
 ;;; Commentary:
 
@@ -22,5 +22,5 @@
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
-(provide 'my-utility)
-;;; my-utility.el ends here
+(provide 'cd-utility)
+;;; cd-utility.el ends here
