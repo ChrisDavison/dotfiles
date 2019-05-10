@@ -25,6 +25,9 @@
         org-default-notes-file "~/Dropbox/inbox.org"
         org-src-window-setup 'current-window
         org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-confirm-babel-evaluate nil
+        org-edit-src-content-indentation 0
         org-todo-keywords '((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-startup-indented t
         org-hide-leading-stars t
@@ -39,7 +42,9 @@
         org-blank-before-new-entry nil)
   ;; (add-hook 'org-mode-hook 'auto-fill-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq fill-column 80))
+(use-package org-bullets :ensure t)
 
 ;; (use-package ox-reveal :ensure t)
 (use-package htmlize :ensure t)
@@ -67,6 +72,11 @@
 
 (global-set-key (kbd "C-x c") 'cd/org-cleanup)
 
+(setq org-imenu-depth 3)
+
+(if (eq system-type 'windows-nt)
+    (setq inhibit-compacting-font-caches t))
+
 
 ;; babel
 (setq org-babel-load-languages
@@ -92,120 +102,6 @@
 
 (unless (boundp 'org-latex-classes)
   (setq org-latex-classes nil))
-
-(add-to-list 'org-latex-classes
-             '("simple"
-               "\\documentclass[a4paper, 12pt, article]{article}
-                  \\usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
-                  \\usepackage{mathpazo}
-                  \\usepackage{cite}
-                  \\usepackage{color}
-                  \\usepackage[unicode=true]{hyperref}
-                  \\hypersetup{breaklinks=true, bookmarks=true, pdfauthor={}, pdftitle={}, colorlinks=true, citecolor=blue, urlcolor=blue, linkcolor=magenta, pdfborder={0 0 0}}
-                  [DEFAULT-PACKAGES]
-                  [PACKAGES]
-                  "
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-(add-to-list 'org-latex-classes
-             '("cd"
-               "\\documentclass[12pt, a4paper]{article}
-                  \\usepackage{setspace} % Line spacing
-                  \\singlespacing
-                  % \\onehalfspacing
-                  % \\doublespacing
-                  % \\setstretch{1.25}
-
-                  % Set Margins
-                  \\usepackage[left=2cm, right=2cm, top=2cm, bottom=4cm]{geometry}
-
-                  % Set paragraph indents to 1 cm
-                  \\setlength{\\parindent}{0.5cm}
-
-                  % Set no space between paragraphs
-                  \\setlength{\\parskip}{0ex}
-
-                  % No extra space between words
-                  \\frenchspacing
-
-                  % Set up margin notes
-                  \\usepackage{mparhack}
-                  \\newcommand{\\marginnote}[1]{\\marginpar{\\vspace{-8ex}\\singlespacing\\raggedright\\scriptsize{#1}}}
-
-                  % Prevent over-eager hyphenation
-                  % \\hyphenpenalty=5000
-                  \\tolerance=1000
-
-                  % Captions left justified
-                  \\usepackage[format=plain,labelsep=newline,singlelinecheck=false,font={small},labelfont={small,bf}]{caption}[2008/04/01]
-
-                  % Pretty tables
-                  \\usepackage{mdwtab}
-                  % Long tables
-                  \\usepackage{longtable, mdwtab}
-                  \\usepackage{longtable}
-                  % Don't indent longtables by a parindent!
-                  \\setlength\\LTleft{0pt}
-                  \\setlength\\LTright{0pt}
-
-                  % Multirow cells in tables
-                  \\usepackage{multirow}
-
-                  % Maths
-                  \\usepackage[fleqn]{amsmath} % All equations left justified
-                  \\usepackage{amsfonts}
-                  \\usepackage{amsthm}
-                  \\usepackage{stmaryrd}
-                  \\allowdisplaybreaks
-                  \\usepackage{latexsym}
-                  \\usepackage{bm}
-                  \\usepackage{dsfont}
-                  \\usepackage{mathrsfs}
-                  \\usepackage{xfrac} %  \\sfrac
-                  %% QED symbol
-                  \\renewcommand{\\qedsymbol}{$\\blacksquare$}
-
-
-                  % Subfigures
-                  % \\usepackage{subfig}
-                  \\usepackage{subcaption}
-
-                  % URLs
-                  \\usepackage{url}
-
-                  % Compact lists
-                  \\newenvironment{itemize*}%
-                  {\\begin{itemize}%
-                      \\setlength{\\itemsep}{0.5pt}%
-                      \\setlength{\\parskip}{0.5pt}}%
-                  {\\end{itemize}}
-
-                  \\newenvironment{enumerate*}%
-                  {\\begin{enumerate}%
-                      \\setlength{\\itemsep}{0.5pt}%
-                      \\setlength{\\parskip}{0.5pt}}%
-                  {\\end{enumerate}}
-
-                  % Set figure size
-                  \\newcommand{\\figsize}{4.5in}
-
-                  % Numbered subsubsections
-                  \\setcounter{secnumdepth}{3}
-
-                  % Annotate correction
-                  \\usepackage{color}
-                  \\newcommand{\\annotate}[2]{\\marginpar{{\\color{red}\\textbf{#1}}}{\\color{red}\\emph{#2}}}
-
-
-                  \\newcommand{\\divider}{\\begin{center}\\line(1,0){250}\\end{center}}
-                  [DEFAULT-PACKAGES]
-                  [PACKAGES]
-                  "
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
 ;; This function makes checkbox counting work with HEADER checkboxes, as well as sublists.
 ;; (defun wicked/org-update-checkbox-count (&optional all)
