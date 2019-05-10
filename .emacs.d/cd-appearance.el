@@ -1,19 +1,21 @@
-;;; my-appearance.el --- Appearance of my emacs config
+;;; cd-appearance.el --- Appearance of my emacs config
 
 ;;; Commentary:
 
 ;;; Code:
 
-;; FONT
 
-(when (member "Iosevka Term" (font-family-list))
-  (set-default-font "Iosevka Term"))
-(setq line-spacing 0.2)
-(if *is-a-mac* (set-face-attribute 'default nil :height 200))
-(if *is-windows* (set-face-attribute 'default nil :height 160))
+
+(when (member "CamingoCode" (font-family-list))
+  (set-default-font "CamingoCode"))
+(setq line-spacing 0.1)
+(setq cd-font-height
+      (cond
+       (*is-windows* 160)
+       (t 200)))
+(set-face-attribute 'default nil :height cd-font-height)
 
 ;; colour theme
-
 ;; Disable themes before loading a new theme
 (defadvice load-theme (before theme-dont-propagate activate)
   (mapc #'disable-theme custom-enabled-themes))
@@ -45,10 +47,8 @@
 (setq inhibit-startup-echo-area-message t)
 
 ;; Hide tool bar,  scroll bar and borders
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode)
-  (set-scroll-bar-mode nil))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
 
 (let ((no-border '(internal-border-width . 0)))
   (add-to-list 'default-frame-alist no-border)
@@ -67,9 +67,9 @@
 ;; faster keystroke echoing (setq echo-keystrokes 0.1)
 
 ;; tabs to spaces, and tab-related things
-(setq tab-stop-list (number-sequence 2 200 2))
+(setq tab-stop-list (number-sequence 4 200 4))
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
+(setq-default tab-width 4)
 
 ;; show line and column number in status bar
 (line-number-mode 1)
@@ -86,5 +86,5 @@
 ;; Replace any occurrence of 'lambda' with the actual symbol.
 (global-prettify-symbols-mode +1)
 
-(provide 'my-appearance)
-;;; my-appearance.el ends here
+(provide 'cd-appearance)
+;;; cd-appearance.el ends here

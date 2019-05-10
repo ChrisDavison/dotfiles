@@ -1,4 +1,4 @@
-;;; my-header --- Automatic file headers
+;;; cd-header --- Automatic file headers
 
 ;;; Commentary:
 
@@ -20,5 +20,5 @@
          " # File: " (file-name-nondirectory buffer-file-name) "\n"
          " # Description: " _ "\n\n")))
 
-(provide 'my-header)
-;;; my-header ends here
+(provide 'cd-header)
+;;; cd-header ends here

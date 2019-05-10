@@ -1,4 +1,4 @@
-;;; my-languages.el --- Configuration for programming languages
+;;; cd-languages.el --- Configuration for programming languages
 
 ;;; Commentary:
 
@@ -100,12 +100,12 @@
          (lambda (output)
            (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
 
-(defun my-web-mode-hook ()
+(defun cd-web-mode-hook ()
   "Hooks for Web mode.  Adjust indent."
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2)
-  (add-hook 'web-mode-hook 'my-web-mode-hook))
+  (add-hook 'web-mode-hook 'cd-web-mode-hook))
 
 (defadvice web-mode-highlight-part (around tweak-jsx activate)
   (if (equal web-mode-conten-type "jsx")
@@ -131,10 +131,12 @@
 (use-package flymake-rust :ensure t)
 (use-package flycheck-rust :ensure t)
 
-(use-package company :ensure t
-  :diminish company-mode
-  :config (setq company-tooltip-align-annotations t)
-  :bind (("TAB" . company-indent-or-complete-common)))
+(use-package company :ensure t :diminish company-mode
+  :bind ("TAB" . company-indent-or-complete-common)
+  :config
+  (setq company-tooltip-align-annotations t)
+  (add-hook 'python-mode 'company-mode)
+  (add-hook 'org-mode 'company-mode))
 
 (use-package cargo :ensure t)
 
@@ -151,7 +153,7 @@
 (diminish 'hs-minor-mode)
 (diminish 'smartparens-mode)
 
-(defun my-c-mode-font-lock-if0 (limit)
+(defun cd-c-mode-font-lock-if0 (limit)
   (save-restriction
     (widen)
     (save-excursion
@@ -174,15 +176,22 @@
           (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
   nil)
 
-(defun my-c-mode-common-hook ()
+(defun cd-c-mode-common-hook ()
   (font-lock-add-keywords
    nil
-   '((my-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
+   '((cd-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
 
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'cd-c-mode-common-hook)
 
 (add-hook 'latex-mode-hook 'visual-line-mode)
 (add-hook 'markdown-mode-hook 'visual-line-mode)
 
-(provide 'my-languages)
-;;; my-languages.el ends here
+(yas-global-mode +1)
+
+(use-package julia-mode :ensure t)
+(use-package julia-repl :ensure t
+  :config
+  (add-hook 'julia-mode-hook 'julia-repl-mode))
+
+(provide 'cd-languages)
+;;; cd-languages.el ends here

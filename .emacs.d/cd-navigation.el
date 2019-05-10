@@ -1,4 +1,4 @@
-;;; my-navigation.el --- Navigation and searching
+;;; cd-navigation.el --- Navigation and searching
 
 ;;; Commentary:
 ;;;
@@ -129,5 +129,5 @@
 ;; Windmove gives shift-up/down/left/right for window navigation
 (windmove-default-keybindings)
 
-(provide 'my-navigation)
-;;; my-navigation.el ends here
+(provide 'cd-navigation)
+;;; cd-navigation.el ends here
