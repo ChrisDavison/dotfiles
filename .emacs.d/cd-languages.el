@@ -131,10 +131,12 @@
 (use-package flymake-rust :ensure t)
 (use-package flycheck-rust :ensure t)
 
-(use-package company :ensure t
-  :diminish company-mode
-  :config (setq company-tooltip-align-annotations t)
-  :bind (("TAB" . company-indent-or-complete-common)))
+(use-package company :ensure t :diminish company-mode
+  :bind ("TAB" . company-indent-or-complete-common)
+  :config
+  (setq company-tooltip-align-annotations t)
+  (add-hook 'python-mode 'company-mode)
+  (add-hook 'org-mode 'company-mode))
 
 (use-package cargo :ensure t)
 
@@ -183,6 +185,13 @@
 
 (add-hook 'latex-mode-hook 'visual-line-mode)
 (add-hook 'markdown-mode-hook 'visual-line-mode)
+
+(yas-global-mode +1)
+
+(use-package julia-mode :ensure t)
+(use-package julia-repl :ensure t
+  :config
+  (add-hook 'julia-mode-hook 'julia-repl-mode))
 
 (provide 'cd-languages)
 ;;; cd-languages.el ends here
