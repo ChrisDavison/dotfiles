@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: annotation
+# key: note
+# --
+\\annotate{${0:side}}{${1:inline}}

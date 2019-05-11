@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: fplaceholder
+# key: imgthp
+# --
+% FIGURE - 
+\\begin{figure}[h]
+\\centering
+\\includegraphics[width=\\figsize]{./Figures/placeholder.jpg}
+\\caption{$1}
+\\label{fig:$2}
+% \\footnote{$3}
+\\end{figure}

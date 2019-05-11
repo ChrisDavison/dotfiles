@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: thesistabular
+# key: tbl
+# --
+\\begin{table}[t]
+    \\caption{${1:CAPTION}}
+    \\vspace{0.5cm}
+    \\begin{tabular*}{1\\columnwidth}{@{\\extracolsep{\\fill}}${2:ALIGN}}
+        \\toprule
+        ${3:HEADER}
+        \\midrule
+        ${4:DATA}
+        \\bottomrule
+    \\end{tabular*}
+    \\label{tab:${5:LABEL}}
+\\end{table}

@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: thesis figure
+# key: imgth
+# --
+% FIGURE - 
+\\begin{figure}[h]
+    \\centering
+    \\includegraphics[width=\\figsize]{${0:filename}}
+    \\caption{$1}
+    \\label{fig:$2}
+    % \\footnote{$3}
+\\end{figure}
