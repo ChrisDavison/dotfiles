@@ -53,6 +53,16 @@ Define a few constants to make it easy to modify behaviour by-system.
        '(progn ,@body))))
 #+END_SRC
 
+This is again a quality of life thing, to allow you to hit yes or no by using y or n.
+#+BEGIN_SRC emacs-lisp
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+HTMLize lets you export the current region or buffer to HTML, with full syntax highlighting (using current colortheme).
+#+BEGIN_SRC emacs-lisp
+(use-package htmlize :ensure t)
+#+END_SRC
+** File Utils
 #+BEGIN_SRC emacs-lisp
 (defun delete-this-file ()
   "Delete the current file, and kill the buffer."
@@ -64,14 +74,11 @@ Define a few constants to make it easy to modify behaviour by-system.
     (kill-this-buffer)))
 #+END_SRC
 
-This is again a quality of life thing, to allow you to hit yes or no by using y or n.
 #+BEGIN_SRC emacs-lisp
-(defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-HTMLize lets you export the current region or buffer to HTML, with full syntax highlighting (using current colortheme).
-#+BEGIN_SRC emacs-lisp
-(use-package htmlize :ensure t)
+(defun filepath ()
+  "Echo the filepath as a message."
+  (interactive)
+  (message (buffer-file-name)))
 #+END_SRC
 ** OTHER utility stuff
 #+BEGIN_SRC emacs-lisp
@@ -89,7 +96,10 @@ HTMLize lets you export the current region or buffer to HTML, with full syntax h
 
 ;; utf-8
 ;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
-
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
@@ -150,17 +160,20 @@ HTMLize lets you export the current region or buffer to HTML, with full syntax h
 ** Colour themes
 Disable themes before loading a new theme
 #+BEGIN_SRC emacs-lisp
-;; Disable themes before loading a new theme
 (defadvice load-theme (before theme-dont-propagate activate)
   (mapc #'disable-theme custom-enabled-themes))
 (setq custom-safe-themes t)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package solarized-theme :ensure t)
-(use-package molokai-theme :ensure t)
-(use-package seoul256-theme :ensure t)
-(use-package material-theme :ensure t)
+(use-package solarized-theme :defer t)
+(use-package molokai-theme :defer t)
+(use-package seoul256-theme :defer t)
+(use-package material-theme :defer t)
+(use-package doom-themes :defer t)
+(use-package zenburn-theme :defer t)
+
+(load-theme 'doom-vibrant t)
 #+END_SRC
 ** Don't make C-z hide when on OSX
 #+BEGIN_SRC emacs-lisp
@@ -175,7 +188,7 @@ Disable themes before loading a new theme
 #+BEGIN_SRC emacs-lisp
 (setq use-file-dialog nil
       use-dialog-box nil
-      menu-bar-mode -1
+      menu-bar-mode nil
       inhibit-startup-screen t
       inhibit-startup-echo-area-message t)
 
@@ -214,9 +227,31 @@ Disable themes before loading a new theme
 #+BEGIN_SRC emacs-lisp
 (setq-default initial-scratch-message ";; Scratch pad\n\n")
 #+END_SRC
+** Rainbow parentheses
+Thought i detected a slowdown with this, so not auto-including.  Not sure though...
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+  :ensure t
+  :config 
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'org-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
 ** Global symbol prettification (e.g. replace lambda with symbol)
 #+BEGIN_SRC emacs-lisp
 (global-prettify-symbols-mode +1)
+#+END_SRC
+** Powerline (prettier statusbar)
+#+BEGIN_SRC emacs-lisp
+(use-package powerline :ensure t
+:config
+(powerline-nano-theme))
+#+END_SRC
+** OTHER appearance stuff
+#+BEGIN_SRC emacs-lisp
+(setq uniquify-buffer-name-style 'forward)
+(setq linum-format "%4d ")
+
+(set-default 'indicate-empty-lines t)
 #+END_SRC
 * History, Sessions, and Undo
 ** General history/session config
@@ -228,6 +263,7 @@ Disable themes before loading a new theme
 (setq auto-save-file-name-transforms
       '((".*" "~/.emacs.d/auto-save-list/" t)))
 
+;; Save minibuffer and other history
 (setq savehist-file (expand-file-name "savehist" user-emacs-directory))
 (savehist-mode 1)
 (setq history-length t)
@@ -246,11 +282,15 @@ Disable themes before loading a new theme
 
 ;; Always save the desktop, the current workspace config
 (setq desktop-path (list user-emacs-directory)
-      desktop-auto-save-timeout 600)
+      desktop-auto-save-timeout 600
+      desktop-restore-frames nil) ; desktop-store-frames will keep themes loaded
 (desktop-save-mode 1)
 
 ;; Reload when file changed on disk
 (global-auto-revert-mode t)
+
+;; Don't create lockfiles.  They're often a hassle
+(setq create-lockfiles nil)
 #+END_SRC
 ** Undo Tree - Visualise branches of undos
 People often struggle with the Emacs undo model, where there's
@@ -268,14 +308,30 @@ redo), and go down different branches.
   (setq undo-tree-visualizer-timestamps nil
         undo-tree-visualizer-diff t))
 #+END_SRC
+** Places (e.g. remember cursor position)
+#+BEGIN_SRC emacs-lisp
+(use-package saveplace :ensure t
+  :config
+  (setq save-place t
+        save-place-file (concat user-emacs-directory "/places")))
+#+END_SRC
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
-;; parentheses
-
 (show-paren-mode 1)
 (use-package smartparens :ensure t
   :config (require 'smartparens-config))
+
+;; transparently open compressed files
+(auto-compression-mode t)
+
+;; Don't double-space sentences
+(set-default 'sentence-end-double-space nil)
+
+;; Use lettercase to determine words in camelcase text
+(global-subword-mode 1)
+
+(setq gc-cons-threshold 20000000)
 
 ;; clean up spaces
 (global-set-key (kbd "C-S-SPC") 'cycle-spacing)
@@ -284,8 +340,28 @@ redo), and go down different branches.
 (use-package expand-region :ensure t
   :bind ("C-=" . er/expand-region))
 
-;; word wrapping and truncation
-;; Couldn't get this working directly...so functionalise it
+;; If a region is selected, any 'insert' command (typing or yanking) will overwrite it, rather than inserting before.
+(delete-selection-mode 1)
+
+;; Invert regex and normal isearch
+(define-key global-map (kbd "C-M-%") 'anzu-query-replace)
+(define-key global-map (kbd "M-%") 'anzu-query-replace-regexp)
+
+
+;; indent after newline
+(global-set-key (kbd "RET") 'newline-and-indent)
+(defun sanityinc/newline-at-end-of-line ()
+  "Move to end of line, enter a newline, and reindent."
+  (interactive)
+  (move-end-of-line 1)
+  (newline-and-indent))
+
+;; 'Zen-move' - distraction free editing
+(use-package darkroom :ensure t)
+
+#+END_SRC
+** Text wrap and truncate
+#+BEGIN_SRC emacs-lisp
 (defun trunc-wrap()
   "Turn on truncation and word wrapping"
   (interactive)
@@ -300,19 +376,6 @@ redo), and go down different branches.
       (message "Truncation and word wrap disabled"))))
 (setq truncate-lines nil)
 (setq word-wrap t)
-
-
-;; indent after newline
-(global-set-key (kbd "RET") 'newline-and-indent)
-(defun sanityinc/newline-at-end-of-line ()
-  "Move to end of line, enter a newline, and reindent."
-  (interactive)
-  (move-end-of-line 1)
-  (newline-and-indent))
-
-;; 'Zen-move' - distraction free editing
-(use-package darkroom :ensure t)
-
 #+END_SRC
 ** Text filling (paragraph reflowing)
 #+BEGIN_SRC emacs-lisp
@@ -336,7 +399,24 @@ redo), and go down different branches.
 #+END_SRC
 ** Managing indentation
 #+BEGIN_SRC emacs-lisp
+;; aggressive indentation
+(use-package aggressive-indent :ensure t
+  :config (global-aggressive-indent-mode))
 
+(define-key global-map (kbd "C->") 'indent-rigidly-right-to-tab-stop)
+(define-key global-map (kbd "C-<") 'indent-rigidly-left-to-tab-stop)
+#+END_SRC
+** Offer to create parent dirs if they do not exist
+#+BEGIN_SRC emacs-lisp
+;; Offer to create parent directories if they do not exist
+;; http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+(defun my-create-non-existent-directory ()
+  (let ((parent-directory (file-name-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+               (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+      (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions 'my-create-non-existent-directory)
 #+END_SRC
 * Languages
 ** OTHER
@@ -437,7 +517,7 @@ Auto-completion for rust, using racer
 ;; =================================
 ;; ======== Elpy for Python ========
 ;; =================================
-(use-package ob-ipython :ensure t)
+;; (use-package ob-ipython :ensure t)
 
 (use-package elpy :ensure t
   :config
@@ -465,7 +545,7 @@ Auto-completion for rust, using racer
              (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
              (shell)
              (cd/set-windows-shell))
-    (ansi-term "/Users/davison/.envs/ml/bin/ipython" "ipython")))
+    (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
 
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "--simple-prompt -i --pprint")
@@ -638,7 +718,6 @@ Auto-completion for rust, using racer
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
         ivy-height 15
-        enable-recursive-minibuffers t
         ivy-count-format ""
         ivy-initial-inputs-alist nil
         ivy-re-builders-alist
@@ -659,12 +738,15 @@ Auto-completion for rust, using racer
 
 (defun cd-prompt-file-jump ()
   (interactive)
-  (counsel-file-jump nil (read-directory-name "")))
+  (counsel-file-jump nil (read-directory-name "Directory ")))
 
 (global-set-key (kbd "C-x C-j") 'cd-prompt-file-jump)
 (global-set-key (kbd "C-x j") 'counsel-file-jump)
 
 (use-package dired-single :ensure t)
+
+;; do imenu over every file with the same major mode, recursively
+(use-package imenu-anywhere :ensure t)
 #+END_SRC
 ** Give HUD prompt when changing window
 #+BEGIN_SRC emacs-lisp
@@ -699,13 +781,31 @@ Bound to =M-n= and =M-b= by default, I think.
   :ensure t
   :config (global-smartscan-mode t))
 #+END_SRC
+** Ace-jump (jump to characters)
+#+BEGIN_SRC emacs-lisp
+;; =================================
+;; === Ace-mode - Jump to letter ===
+;; =================================
+;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
+;; Hybrid of isearch and ace-jump.  Type a single character in search and words 
+;; beginning with that will highlight.  Press the highlighted letter to jump to 
+;; that occurence
+(use-package ace-isearch :ensure ace-jump-mode
+  :diminish ""
+  :config
+  (global-ace-isearch-mode 1)
+  (setq ace-isearch-use-jump t)
+  :bind (("C-c ." . ace-jump-mode)
+         ("C-c j c" . ace-jump-char-mode)
+         ("C-c j l" . ace-jump-line-mode)))
+#+END_SRC
 ** Jump to register (file bookmarks)
 #+BEGIN_SRC emacs-lisp
 ;; jump to register (file shortcuts)
 (set-register ?i (cons 'file "~/Dropbox/inbox.org"))
 (set-register ?j (cons 'file "~/Dropbox/journal.org"))
 (set-register ?l (cons 'file "~/Dropbox/logbook.org"))
-(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/config"))
+(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/chris-davison.org"))
 #+END_SRC
 ** Code-folding
 #+BEGIN_SRC emacs-lisp
@@ -800,11 +900,11 @@ You can easily /capture/ information using various different templates (includin
 (use-package org
   :ensure t
   :bind (("<f1>" . org-capture)
-         ("<f2>" . org-agenda)
+         ;; ("<f2>" . org-agenda)
          ("<f3>" . org-agenda-list)
          ("C-c l" . org-store-link))
   :config
-  (setq org-directory "~/Dropbox/notes"
+  (setq org-directory "~/Dropbox/"
         org-default-notes-file "~/Dropbox/inbox.org"
         org-src-window-setup 'current-window
         org-src-fontify-natively t
@@ -813,13 +913,15 @@ You can easily /capture/ information using various different templates (includin
         org-edit-src-content-indentation 0
         org-catch-invisible-edits 'show-and-error
         org-imenu-depth 3
+        ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
+        org-replace-disputed-keys t 
         inhibit-compacting-font-caches t
         org-todo-keywords
         '(
           (sequence "TODO" "WIP" "|" "DONE")
           (sequence "|" "CANCELLED")
           (sequence "|" "BACKBURNER")
-         )
+          )
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
@@ -836,11 +938,14 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry nil)
   ;; (add-hook 'org-mode-hook 'auto-fill-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
-  (add-hook 'org-mode-hook 'org-bullets-mode)
+  ;; (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq fill-column 80))
-(use-package org-bullets :ensure t)
+;; (use-package org-bullets :ensure t)
 #+END_SRC
-
+** Archiving
+#+BEGIN_SRC emacs-lisp
+(setq org-archive-location "~/Dropbox/archive.org::")
+#+END_SRC
 ** Utility functions
 #+BEGIN_SRC emacs-lisp
 ;; (use-package ox-reveal :ensure t)
@@ -851,7 +956,18 @@ You can easily /capture/ information using various different templates (includin
   (insert "[[")
   (yank)
   (insert "][more]]"))
-(global-set-key (kbd "<f6>") 'sacha/yank-more)
+;; (global-set-key (kbd "<f6>") 'sacha/yank-more)
+
+;; Basically the sacha function above, but with a prompted description
+(defun insert-link-with-description-prompt ()
+  "Yank into an org link."
+  (interactive)
+  (let ((description (read-string "Description: ")))
+    (insert "[[")
+    (yank)
+    (insert (s-concat "][" description "]]"))
+    ))
+
 #+END_SRC
 ** Org-babel (programming inside org-mode)
 #+BEGIN_SRC emacs-lisp
@@ -905,7 +1021,6 @@ You can easily /capture/ information using various different templates (includin
         ("I" "#+INCLUDE: %file ?")))
 #+END_SRC
 ** Org and Latex
-** 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; latex exporting
 
@@ -1031,7 +1146,6 @@ Abstract:
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
         ))
 #+END_SRC
-
 * Magit - Git in Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package magit :ensure t
@@ -1044,43 +1158,25 @@ Abstract:
    ;; as that'll be detrimental for performance
    vc-handled-backends (delq 'Git vc-handled-backends)))
 #+END_SRC
-* FINAL COMMANDS
+* Terminal Improvements
+** Windows Shell Config
 #+BEGIN_SRC emacs-lisp
-(load-theme 'molokai t)
-#+END_SRC
-* NEW
-** Ace-jump (jump to characters)
-#+BEGIN_SRC emacs-lisp
-;; =================================
-;; === Ace-mode - Jump to letter ===
-;; =================================
-;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
-;; Hybrid of isearch and ace-jump.  Type a single character in search and words 
-;; beginning with that will highlight.  Press the highlighted letter to jump to 
-;; that occurence
-(use-package ace-isearch :ensure ace-jump-mode
-  :diminish ""
-  :config
-  (global-ace-isearch-mode 1)
-  (setq ace-isearch-use-jump t)
-  :bind (("C-c ." . ace-jump-mode)
-         ("C-c j c" . ace-jump-char-mode)
-         ("C-c j l" . ace-jump-line-mode)))
-#+END_SRC
-** Rainbow parentheses
-Thought i detected a slowdown with this, so not auto-including.  Not sure though...
-#+BEGIN_SRC emacs-lisp
-(use-package rainbow-delimiters
-  :ensure t
-  :config 
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'org-mode-hook 'rainbow-delimiters-mode))
+(defun cd/set-windows-shell ()
+  "If on windows, set the shell to git bash."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (progn (setq explicit-shell-file-name
+                   "C:/Program Files/Git/bin/sh.exe")
+             (setq shell-file-name "bash")
+             (setq explicit-sh.exe-args '("--login" "-i"))
+             (setenv "SHELL" shell-file-name)
+             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
+    nil))
+
+(cd/set-windows-shell)
 #+END_SRC
 ** Improvements for ansi-term
 #+BEGIN_SRC emacs-lisp
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;           IMPROVEMENT FOR ANSI-TERM
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
   "Close an ansi-term buffer if I quit the terminal."
   (if (memq (process-status proc) '(signal exit))
@@ -1114,50 +1210,237 @@ Thought i detected a slowdown with this, so not auto-including.  Not sure though
   (define-key term-raw-map "\C-y" 'my-term-paste))
 (add-hook 'term-mode-hook 'my-term-hook)
 #+END_SRC
-** Windows Shell Config
+
+* Hydra
 #+BEGIN_SRC emacs-lisp
-(defun cd/set-windows-shell ()
-  "If on windows, set the shell to git bash."
-  (interactive)
-  (if (eq system-type 'windows-nt)
-      (progn (setq explicit-shell-file-name
-                   "C:/Program Files/Git/bin/sh.exe")
-             (setq shell-file-name "bash")
-             (setq explicit-sh.exe-args '("--login" "-i"))
-             (setenv "SHELL" shell-file-name)
-             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
-    nil))
-
-(cd/set-windows-shell)
+(use-package hydra :ensure t)
 #+END_SRC
-** GENERAL WIP STUFF
+
+** Dired
 #+BEGIN_SRC emacs-lisp
-(defun filepath ()
-  "Echo the filepath as a message."
-  (interactive)
-  (message (buffer-file-name)))
+(defhydra hydra-dired (:hint nil :color pink)
+  "
+_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
+_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
+_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
+_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+_z_ compress-file  _A_ find regexp
+_Z_ compress       _Q_ repl regexp
 
-(use-package saveplace :ensure t
-  :config
-  (setq save-place t
-        save-place-file (concat user-emacs-directory "places")))
+T - tag prefix
+"
+  ("\\" dired-do-ispell)
+  ("(" dired-hide-details-mode)
+  (")" dired-omit-mode)
+  ("+" dired-create-directory)
+  ("=" diredp-ediff)         ;; smart diff
+  ("?" dired-summary)
+  ("$" diredp-hide-subdir-nomove)
+  ("A" dired-do-find-regexp)
+  ("C" dired-do-copy)        ;; Copy all marked files
+  ("D" dired-do-delete)
+  ("E" dired-mark-extension)
+  ("e" dired-ediff-files)
+  ("F" dired-do-find-marked-files)
+  ("G" dired-do-chgrp)
+  ("g" revert-buffer)        ;; read all directories again (refresh)
+  ("i" dired-maybe-insert-subdir)
+  ("l" dired-do-redisplay)   ;; relist the marked or singel directory
+  ("M" dired-do-chmod)
+  ("m" dired-mark)
+  ("O" dired-display-file)
+  ("o" dired-find-file-other-window)
+  ("Q" dired-do-find-regexp-and-replace)
+  ("R" dired-do-rename)
+  ("r" dired-do-rsynch)
+  ("S" dired-do-symlink)
+  ("s" dired-sort-toggle-or-edit)
+  ("t" dired-toggle-marks)
+  ("U" dired-unmark-all-marks)
+  ("u" dired-unmark)
+  ("v" dired-view-file)      ;; q to exit, s to search, = gets line #
+  ("w" dired-kill-subdir)
+  ("Y" dired-do-relsymlink)
+  ("z" diredp-compress-this-file)
+  ("Z" dired-do-compress)
+  ("q" nil)
+  ("." nil :color blue))
 
-(setq uniquify-buffer-name-style 'forward)
-
-(global-set-key (kbd "C-c C-f") 'hs-toggle-hiding)
-
-(setq linum-format "%4d ")
-(setq create-lockfiles nil)
-
-(define-key global-map (kbd "C-s") 'counsel-grep-or-swiper)
-
-;; Invert regex and normal isearch
-(define-key global-map (kbd "C-M-%") 'anzu-query-replace)
-(define-key global-map (kbd "M-%") 'anzu-query-replace-regexp)
-
-;; (yas-global-mode +1)
+(define-key dired-mode-map "." 'hydra-dired/body)
 #+END_SRC
-** SCRATCH
+** Ibuffer
+#+BEGIN_SRC emacs-lisp
+(defhydra hydra-ibuffer-main (:color pink :hint nil)
+  "
+ ^Navigation^ | ^Mark^        | ^Actions^        | ^View^
+-^----------^-+-^----^--------+-^-------^--------+-^----^-------
+  _k_:    ʌ   | _m_: mark     | _D_: delete      | _g_: refresh
+ _RET_: visit | _u_: unmark   | _S_: save        | _s_: sort
+  _j_:    v   | _*_: specific | _a_: all actions | _/_: filter
+-^----------^-+-^----^--------+-^-------^--------+-^----^-------
+"
+  ("j" ibuffer-forward-line)
+  ("RET" ibuffer-visit-buffer :color blue)
+  ("k" ibuffer-backward-line)
+
+  ("m" ibuffer-mark-forward)
+  ("u" ibuffer-unmark-forward)
+  ("*" hydra-ibuffer-mark/body :color blue)
+
+  ("D" ibuffer-do-delete)
+  ("S" ibuffer-do-save)
+  ("a" hydra-ibuffer-action/body :color blue)
+
+  ("g" ibuffer-update)
+  ("s" hydra-ibuffer-sort/body :color blue)
+  ("/" hydra-ibuffer-filter/body :color blue)
+
+  ("o" ibuffer-visit-buffer-other-window "other window" :color blue)
+  ("q" quit-window "quit ibuffer" :color blue)
+  ("." nil "toggle hydra" :color blue))
+
+(defhydra hydra-ibuffer-mark (:color teal :columns 5
+                              :after-exit (hydra-ibuffer-main/body))
+  "Mark"
+  ("*" ibuffer-unmark-all "unmark all")
+  ("M" ibuffer-mark-by-mode "mode")
+  ("m" ibuffer-mark-modified-buffers "modified")
+  ("u" ibuffer-mark-unsaved-buffers "unsaved")
+  ("s" ibuffer-mark-special-buffers "special")
+  ("r" ibuffer-mark-read-only-buffers "read-only")
+  ("/" ibuffer-mark-dired-buffers "dired")
+  ("e" ibuffer-mark-dissociated-buffers "dissociated")
+  ("h" ibuffer-mark-help-buffers "help")
+  ("z" ibuffer-mark-compressed-file-buffers "compressed")
+  ("b" hydra-ibuffer-main/body "back" :color blue))
+
+(defhydra hydra-ibuffer-action (:color teal :columns 4
+                                :after-exit
+                                (if (eq major-mode 'ibuffer-mode)
+                                    (hydra-ibuffer-main/body)))
+  "Action"
+  ("A" ibuffer-do-view "view")
+  ("E" ibuffer-do-eval "eval")
+  ("F" ibuffer-do-shell-command-file "shell-command-file")
+  ("I" ibuffer-do-query-replace-regexp "query-replace-regexp")
+  ("H" ibuffer-do-view-other-frame "view-other-frame")
+  ("N" ibuffer-do-shell-command-pipe-replace "shell-cmd-pipe-replace")
+  ("M" ibuffer-do-toggle-modified "toggle-modified")
+  ("O" ibuffer-do-occur "occur")
+  ("P" ibuffer-do-print "print")
+  ("Q" ibuffer-do-query-replace "query-replace")
+  ("R" ibuffer-do-rename-uniquely "rename-uniquely")
+  ("T" ibuffer-do-toggle-read-only "toggle-read-only")
+  ("U" ibuffer-do-replace-regexp "replace-regexp")
+  ("V" ibuffer-do-revert "revert")
+  ("W" ibuffer-do-view-and-eval "view-and-eval")
+  ("X" ibuffer-do-shell-command-pipe "shell-command-pipe")
+  ("b" nil "back"))
+
+(defhydra hydra-ibuffer-sort (:color amaranth :columns 3)
+  "Sort"
+  ("i" ibuffer-invert-sorting "invert")
+  ("a" ibuffer-do-sort-by-alphabetic "alphabetic")
+  ("v" ibuffer-do-sort-by-recency "recently used")
+  ("s" ibuffer-do-sort-by-size "size")
+  ("f" ibuffer-do-sort-by-filename/process "filename")
+  ("m" ibuffer-do-sort-by-major-mode "mode")
+  ("b" hydra-ibuffer-main/body "back" :color blue))
+
+(defhydra hydra-ibuffer-filter (:color amaranth :columns 4)
+  "Filter"
+  ("m" ibuffer-filter-by-used-mode "mode")
+  ("M" ibuffer-filter-by-derived-mode "derived mode")
+  ("n" ibuffer-filter-by-name "name")
+  ("c" ibuffer-filter-by-content "content")
+  ("e" ibuffer-filter-by-predicate "predicate")
+  ("f" ibuffer-filter-by-filename "filename")
+  (">" ibuffer-filter-by-size-gt "size")
+  ("<" ibuffer-filter-by-size-lt "size")
+  ("/" ibuffer-filter-disable "disable")
+  ("b" hydra-ibuffer-main/body "back" :color blue))
+
+(define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+
+(add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+#+END_SRC
+** My utility binds
+
+#+BEGIN_SRC emacs-lisp
+(defhydra cd/zoom ()
+  "Text scale"
+  ("+" text-scale-increase "Zoom in" :column "Zoom")
+  ("-" text-scale-decrease "Zoom out" :column "Zoom")
+  ("." nil "quit"))
+
+(defhydra cd/join-lines (:exit t)
+  ("<up>" delete-indentation "Join line UP")
+  ("<down>" (join-line -1) "Join line DOWN"))
+
+(defhydra cd/folding (:exit t)
+  ("n" origami-forward-toggle-node "Toggle next fold")
+  ("a" origami-toggle-all-nodes "Toggle all folds"))
+
+(defhydra cd/indent (:exit t)
+  (">" indent-rigidly-right-to-tab-stop "Indent to tabstop")
+  ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop"))
+
+(defhydra cd/paragraphs (:exit t)
+  ("u" unfill-paragraph "Unfill paragraph")
+  ("f" fill-paragraph "Fill paragraph"))
+
+(defhydra cd/navsearch (:exit t)
+  ("s" counsel-grep-or-swiper "Grep or Swiper")
+  ("r" anzu-query-replace-regexp "Anzu Replace Regexp")
+  ("i" ivy-imenu-anywhere "Imenu Anywhere"))
+
+(defhydra cd/links (:exit t)
+  ("c" insert-link-with-description-prompt "From clipboard" :column "Insert")
+  ("l" org-insert-link "Prompted" :column "Insert")
+  ("s" org-store-link "Store" :column "Store"))
+
+(defhydra cd/windowmove (:exit t)
+  ("<left>" windmove-left "Left" :column "Move")
+  ("<right>" windmove-right "Right" :column "Move")
+  ("<up>" windmove-up "Up" :column "Move")
+  ("<down>" windmove-down "Down" :column "Move")
+  ("|" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
+  ("-" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
+  ("d" delete-window "Close window" :column "Windows")
+  ("o" delete-other-windows "Keep only this window" :column "Windows"))
+
+(defhydra cd/unicode (:hint nil :exit t)
+ ("ar" (insert "→") "→" :column "Arrows")
+ ("al" (insert "←") "←" :column "Arrows"))
+
+(defhydra hydra-cd-util (:hint nil :exit t)
+  ("<tab>" cd/indent/body "Indent" :column "Appearance")
+  ("j" cd/join-lines/body "Join lines" :column "Text")
+  ("f" cd/folding/body "Code folding" :column "Utils")
+  ("p" cd/paragraphs/body "Paragraph fill" :column "Text")
+  ("z" cd/zoom/body "Font size" :column "Appearance")
+  ("s" cd/navsearch/body "Nav & Search" :column "Utils")
+  ("m" cd/windowmove/body "Move Windows" :column "Utils")
+  ("l" cd/links/body "Links" :column "Utils")
+  ("u" cd/unicode/body "Unicode symbols" :column "Text")
+  ("q " nil :color blue)
+  ("." nil :color blue))
+
+(define-key global-map (kbd "M-c") 'hydra-cd-util/body)
+#+END_SRC
+* NEW
+#+BEGIN_SRC emacs-lisp
+(when (fboundp 'yas-global-mode) 
+  (yas-global-mode +1))
+
+(use-package iedit :ensure t)
+#+END_SRC
+
+Language Server Protocol.  Not enabling this yet, as I'm not sure how well it incorporates across platforms and with my current languages. 
+LSP vs elpy?
 #+BEGIN_SRC emacs-lisp :tangle no
-
+(use-package lsp-mode :ensure t)
 #+END_SRC
