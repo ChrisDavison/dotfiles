@@ -172,8 +172,10 @@ Disable themes before loading a new theme
 (use-package material-theme :defer t)
 (use-package doom-themes :defer t)
 (use-package zenburn-theme :defer t)
+(use-package creamsody-theme :defer t)
 
-(load-theme 'doom-vibrant t)
+(load-theme 'creamsody t)
+(creamsody-modeline-four)
 #+END_SRC
 ** Don't make C-z hide when on OSX
 #+BEGIN_SRC emacs-lisp
@@ -241,10 +243,10 @@ Thought i detected a slowdown with this, so not auto-including.  Not sure though
 (global-prettify-symbols-mode +1)
 #+END_SRC
 ** Powerline (prettier statusbar)
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package powerline :ensure t
-:config
-(powerline-nano-theme))
+  :config
+  (powerline-default-theme))
 #+END_SRC
 ** OTHER appearance stuff
 #+BEGIN_SRC emacs-lisp
@@ -451,6 +453,7 @@ redo), and go down different branches.
   (add-hook 'python-mode 'company-mode)
   (add-hook 'emacs-lisp-mode 'company-mode))
 
+
 (diminish 'hs-minor-mode)
 (diminish 'smartparens-mode)
 
@@ -584,6 +587,9 @@ Auto-completion for rust, using racer
 (add-hook 'c-mode-common-hook 'cd-c-mode-common-hook)
 #+END_SRC
 ** WIP Latex config
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+#+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package auctex :ensure t
   :config
@@ -599,7 +605,6 @@ Auto-completion for rust, using racer
   (outline-minor-mode 1))
 
 (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
-(add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
 (add-hook 'latex-mode-hook 'visual-line-mode)
 
 (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
@@ -755,6 +760,10 @@ Auto-completion for rust, using racer
   :ensure t
   :config (setq switch-window-shortcut-style 'alphabet)
   :bind ("C-x o" . switch-window))
+
+;; cycle through 'windows' (e.g. panes)
+(define-key global-map (kbd "M-`") 'next-multiframe-window)
+(define-key global-map (kbd "C-M-`") 'previous-multiframe-window)
 #+END_SRC
 ** Better isearch - show what's happening during search
 #+BEGIN_SRC emacs-lisp
@@ -880,7 +889,6 @@ Bound to =M-n= and =M-b= by default, I think.
       (global-set-key (kbd (concat "<" multiple "wheel-" direction ">")) 'ignore)))
 
   ;;And give emacs some of the expected OS X keybinds
-  (global-set-key (kbd "M-`") 'ns-next-frame)
   (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
   (global-set-key (kbd "M-˙") 'ns-do-hide-others)
   (after-load 'nxml-mode (define-key nxml-mode-map (kbd "M-h") nil))
@@ -938,6 +946,7 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry nil)
   ;; (add-hook 'org-mode-hook 'auto-fill-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook 'org-indent-mode)
   ;; (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq fill-column 80))
 ;; (use-package org-bullets :ensure t)
@@ -1119,6 +1128,11 @@ Abstract:
          "* TODO %^{TASK}" :immediate-finish 1)
         ("tT" "Todo with pasted clipboard" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
          "* TODO %^{TASK}\n%c" :immediate-finish 1)
+        ("ts" "Todo with date" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+         "* TODO %^{TASK}\n\nSCHEDULED: %^t" :immediate-finish 1)
+        ("td" "Todo with deadline" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+         "* TODO %^{TASK}\n\nDEADLINE: %^t" :immediate-finish 1)
+
 
         ;; Journal
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
@@ -1126,14 +1140,14 @@ Abstract:
         ("jj" "Quick entry" item (file+datetree "~/Dropbox/journal.org")
          "%^{Journal}" :immediate-finish 1)
         ("jJ" "Full entry" item (file+datetree "~/Dropbox/journal.org")
-         "%^{Journal}")
+         "%?")
 
         ;; LOGBOOK
         ("l" "Logbook entry")
         ("ll" "Quick entry" item (file+datetree "~/Dropbox/logbook.org")
          "%^{Logbook}" :immediate-finish 1)
         ("lL" "Full entry" item (file+datetree "~/Dropbox/logbook.org")
-         "%^{Logbook}")
+         "%?")
 
         ;; Note in Inbox
         ("n" "Note in Inbox")
@@ -1141,6 +1155,8 @@ Abstract:
          "%^{NOTE}" :immediate-finish 1)
         ("nN" "Note with clipboard" item (file+headline "~/Dropbox/inbox.org" "Notes")
          "%^{NOTE} %c")
+        ("ne" "Note" entry (file+headline "~/Dropbox/inbox.org" "Notes")
+         "* %^{Title}\n%?")
 
         ("c" "Code Snippet" entry (file+headline "~/Dropbox/inbox.org" "Code Snippets")
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
@@ -1367,35 +1383,51 @@ T - tag prefix
 
 (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
 #+END_SRC
+** WIP Movement
+#+BEGIN_SRC emacs-lisp :tangle no
+(defhydra cd/move (:body-pre (next-line))
+  "move"
+  ("n" next-line)
+  ("p" previous-line)
+  ("f" forward-char)
+  ("b" backward-char)
+  ("F" forward-word)
+  ("B" backward-word)
+  ("a" beginning-of-line)
+  ("e" move-end-of-line)
+  ("v" scroll-up-command)
+  ;; Converting M-v to V here by analogy.
+  ("V" scroll-down-command)
+  ("l" recenter-top-bottom))
+;; (define-key global-map (kbd "C-n") 'cd/move/body)
+#+END_SRC
 ** My utility binds
-
 #+BEGIN_SRC emacs-lisp
-(defhydra cd/zoom ()
+(defhydra cd/zoom (:exit nil)
   "Text scale"
   ("+" text-scale-increase "Zoom in" :column "Zoom")
   ("-" text-scale-decrease "Zoom out" :column "Zoom")
   ("." nil "quit"))
 
-(defhydra cd/join-lines (:exit t)
+(defhydra cd/join-lines (:exit nil)
   ("<up>" delete-indentation "Join line UP")
-  ("<down>" (join-line -1) "Join line DOWN"))
+  ("<down>" (join-line -1) "Join line DOWN")
+  ("." nil))
 
 (defhydra cd/folding (:exit t)
   ("n" origami-forward-toggle-node "Toggle next fold")
   ("a" origami-toggle-all-nodes "Toggle all folds"))
 
-(defhydra cd/indent (:exit t)
+(defhydra cd/indent (:exit nil)
   (">" indent-rigidly-right-to-tab-stop "Indent to tabstop")
-  ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop"))
+  ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
+  ("<right>" indent-rigidly-right-to-tab-stop "Indent to tabstop")
+  ("<left>" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
+  ("." nil))
 
 (defhydra cd/paragraphs (:exit t)
   ("u" unfill-paragraph "Unfill paragraph")
   ("f" fill-paragraph "Fill paragraph"))
-
-(defhydra cd/navsearch (:exit t)
-  ("s" counsel-grep-or-swiper "Grep or Swiper")
-  ("r" anzu-query-replace-regexp "Anzu Replace Regexp")
-  ("i" ivy-imenu-anywhere "Imenu Anywhere"))
 
 (defhydra cd/links (:exit t)
   ("c" insert-link-with-description-prompt "From clipboard" :column "Insert")
@@ -1407,40 +1439,87 @@ T - tag prefix
   ("<right>" windmove-right "Right" :column "Move")
   ("<up>" windmove-up "Up" :column "Move")
   ("<down>" windmove-down "Down" :column "Move")
-  ("|" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
-  ("-" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
+  ("`" next-multiframe-window "Next" :column "Move" :exit nil)
+  ("'" previous-multiframe-window "Previous" :column "Move" :exit nil)
+  ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
+  ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
+
+  ("S-<up>" enlarge-window "Enlarge" :column "Size" :exit nil)
+  ("S-<down>" shrink-window "Shrink" :column "Size" :exit nil)
+  ("=" balance-windows "Equalise" :column "Size")
+  
   ("d" delete-window "Close window" :column "Windows")
   ("o" delete-other-windows "Keep only this window" :column "Windows"))
 
-(defhydra cd/unicode (:hint nil :exit t)
- ("ar" (insert "→") "→" :column "Arrows")
- ("al" (insert "←") "←" :column "Arrows"))
+(defhydra cd/files (:exit t)
+  ("i" (find-file "~/Dropbox/inbox.org") "Inbox")
+  ("j" (find-file "~/Dropbox/journal.org") "Journal")
+  ("l" (find-file "~/Dropbox/logbook.org") "Logbook")
+  ("a" (find-file "~/Dropbox/archive.org") "Archive")
+  ("f" counsel-find-file "Find file")
+  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config"))
 
 (defhydra hydra-cd-util (:hint nil :exit t)
   ("<tab>" cd/indent/body "Indent" :column "Appearance")
-  ("j" cd/join-lines/body "Join lines" :column "Text")
-  ("f" cd/folding/body "Code folding" :column "Utils")
-  ("p" cd/paragraphs/body "Paragraph fill" :column "Text")
+  ("f" cd/folding/body "Folding" :column "Appearance")
   ("z" cd/zoom/body "Font size" :column "Appearance")
-  ("s" cd/navsearch/body "Nav & Search" :column "Utils")
-  ("m" cd/windowmove/body "Move Windows" :column "Utils")
-  ("l" cd/links/body "Links" :column "Utils")
+  ("w" cd/windowmove/body "Windows" :column "Appearance")
+
+  ("j" cd/join-lines/body "Join lines" :column "Text")
+  ("p" cd/paragraphs/body "Paragraph fill" :column "Text")
   ("u" cd/unicode/body "Unicode symbols" :column "Text")
-  ("q " nil :color blue)
-  ("." nil :color blue))
+
+  ("s" counsel-grep-or-swiper "Swiper" :column "Search & Replace")
+  ("r" anzu-query-replace-regexp "Replace" :column "Search & Replace")
+  ("i" ivy-imenu-anywhere "Imenu Anywhere" :column "Search & Replace")
+  ("e" iedit-mode "Iedit" :column "Search & Replace")
+
+  ("l" cd/links/body "Links" :column "Utils")
+  ("o" cd/files/body "Open file bookmarks" :column "Utils")
+  ("a" hydra-apropos/body "Apropos" :column "Utils")
+  ("b" ivy-switch-buffer "Switch Buffer" :column "Utils"))
+
+(defhydra hydra-apropos (:color blue)
+  "Apropos"
+  ("a" apropos "apropos")
+  ("c" apropos-command "cmd")
+  ("d" apropos-documentation "doc")
+  ("e" apropos-value "val")
+  ("l" apropos-library "lib")
+  ("o" apropos-user-option "option")
+  ("u" apropos-user-option "option")
+  ("v" apropos-variable "var")
+  ("i" info-apropos "info")
+  ("t" tags-apropos "tags")
+  ("z" hydra-customize-apropos/body "customize"))
 
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
 #+END_SRC
 * NEW
+** WIP Global Yasnippet (snippets) mode
 #+BEGIN_SRC emacs-lisp
 (when (fboundp 'yas-global-mode) 
   (yas-global-mode +1))
-
-(use-package iedit :ensure t)
 #+END_SRC
+** TODO Language Server Protocol 
+Not enabling this yet, as I'm not sure how well it incorporates across platforms and with my current languages.
 
-Language Server Protocol.  Not enabling this yet, as I'm not sure how well it incorporates across platforms and with my current languages. 
 LSP vs elpy?
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package lsp-mode :ensure t)
+#+END_SRC
+
+
+** WIP Temporary 'zoom' into a pane
+This is kind of a 'cheat'.  Use ~C-x 0~ to focus on only this window, and then use winner to revert back to the previous configuration with ~C-c <left>~
+#+BEGIN_SRC 
+(winner-mode)
+#+END_SRC
+** WIP Origami (for better fold commands)
+#+BEGIN_SRC emacs-lisp
+(use-package origami :ensure t :config (global-origami-mode))
+#+END_SRC
+** WIP Iedit (interactive edit, similar to isearch)
+#+BEGIN_SRC emacs-lisp
+(use-package iedit :ensure t)
 #+END_SRC
