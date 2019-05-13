@@ -254,6 +254,8 @@ Thought i detected a slowdown with this, so not auto-including.  Not sure though
 (setq linum-format "%4d ")
 
 (set-default 'indicate-empty-lines t)
+
+(highlight-indentation-mode -1)
 #+END_SRC
 * History, Sessions, and Undo
 ** General history/session config
@@ -1099,6 +1101,23 @@ do this for the whole buffer."
   (setq ad-return-value
         (wicked/org-update-checkbox-count (ad-get-arg 1))))
 #+END_SRC
+** Org move to prev/next narrow
+#+BEGIN_SRC emacs-lisp
+(defun cd/move-to-previous-narrow ()
+  (interactive)
+  (progn
+    (beginning-of-buffer)
+    (widen)
+    (org-backward-heading-same-level 1)
+    (org-narrow-to-subtree)))
+
+(defun cd/move-to-next-narrow ()
+  (interactive)
+  (progn  (beginning-of-buffer)
+          (widen)
+          (org-forward-heading-same-level 1)
+          (org-narrow-to-subtree)))
+#+END_SRC
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
@@ -1443,6 +1462,8 @@ T - tag prefix
   ("'" previous-multiframe-window "Previous" :column "Move" :exit nil)
   ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
   ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
+  ;; ("n" cd/mode-to-next-narrow "Next narrowed subtree" :column "Move")
+  ;; ("p" cd/mode-to-previous-narrow "Previous narrowed subtree" :column "Move")
 
   ("S-<up>" enlarge-window "Enlarge" :column "Size" :exit nil)
   ("S-<down>" shrink-window "Shrink" :column "Size" :exit nil)
