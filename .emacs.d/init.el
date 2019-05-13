@@ -3,7 +3,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(load "chris-davison.el" t)
+(load "~/code/dotfiles/.emacs.d/chris-davison.el" t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
