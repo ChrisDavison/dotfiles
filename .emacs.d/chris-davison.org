@@ -184,7 +184,8 @@ Disable themes before loading a new theme
   (interactive)
   (unless (and *is-a-mac* window-system)
     (suspend-frame)))
-(global-set-key (kbd "C-z") 'maybe-suspend-frame)
+;; Disabling this keybind for now, as I think C-z might be nice for my hydra utils
+;; (global-set-key (kbd "C-z") 'maybe-suspend-frame)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
@@ -247,6 +248,41 @@ Thought i detected a slowdown with this, so not auto-including.  Not sure though
 (use-package powerline :ensure t
   :config
   (powerline-default-theme))
+#+END_SRC
+** Temporary 'zoom' into a pane
+A bit like 'focus mode' for other languages.  Can perhaps combine this with /darkroom/ to enforce distraction free writing.
+
+Just set ~darkroom-tentative-mode~ and then whenever I go to one-window mode, it'll automatically be distraction-free?  Is ~darkroom-tentative-mode~ global, or buffer specific?  *Buffer specific*.
+
+From [[https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-windows-buffers.el][this github repo]].
+#+BEGIN_SRC emacs-lisp
+(defvar modi/toggle-one-window--buffer-name nil
+  "Variable to store the name of the buffer for which the `modi/toggle-one-window'
+function is called.")
+
+(defvar modi/toggle-one-window--window-configuration nil
+  "Variable to store the window configuration before `modi/toggle-one-window'
+function was called.")
+
+(defun modi/toggle-one-window (&optional force-one-window zen)
+  "Toggles the frame state between deleting all windows other than
+the current window and the windows state prior to that."
+  (interactive "P")
+  (if (or (null (one-window-p))
+          force-one-window)
+      (progn
+        (setq modi/toggle-one-window--buffer-name (buffer-name))
+        (setq modi/toggle-one-window--window-configuration (current-window-configuration))
+        (delete-other-windows)
+        (when zen (darkroom-mode t)))
+    (progn
+      (when modi/toggle-one-window--buffer-name
+        (set-window-configuration modi/toggle-one-window--window-configuration)
+        (switch-to-buffer modi/toggle-one-window--buffer-name)
+        (when zen (darkroom-mode -1))))))
+  (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
+
+
 #+END_SRC
 ** OTHER appearance stuff
 #+BEGIN_SRC emacs-lisp
@@ -312,13 +348,6 @@ redo), and go down different branches.
   (setq undo-tree-visualizer-timestamps nil
         undo-tree-visualizer-diff t))
 #+END_SRC
-** Places (e.g. remember cursor position)
-#+BEGIN_SRC emacs-lisp
-(use-package saveplace :ensure t
-  :config
-  (setq save-place t
-        save-place-file (concat user-emacs-directory "/places")))
-#+END_SRC
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
@@ -337,9 +366,6 @@ redo), and go down different branches.
 
 (setq gc-cons-threshold 20000000)
 
-;; clean up spaces
-(global-set-key (kbd "C-S-SPC") 'cycle-spacing)
-
 ;; expand region
 (use-package expand-region :ensure t
   :bind ("C-=" . er/expand-region))
@@ -351,45 +377,18 @@ redo), and go down different branches.
 (define-key global-map (kbd "C-M-%") 'anzu-query-replace)
 (define-key global-map (kbd "M-%") 'anzu-query-replace-regexp)
 
-
 ;; indent after newline
 (global-set-key (kbd "RET") 'newline-and-indent)
-(defun sanityinc/newline-at-end-of-line ()
-  "Move to end of line, enter a newline, and reindent."
-  (interactive)
-  (move-end-of-line 1)
-  (newline-and-indent))
 
 ;; 'Zen-move' - distraction free editing
-(use-package darkroom :ensure t)
+(use-package darkroom :ensure t
+  :config
+  (setq darkroom-text-scale-increase 0
+        darkroom-margins 0.15))
 
-#+END_SRC
-** Text wrap and truncate
-#+BEGIN_SRC emacs-lisp
-(defun trunc-wrap()
-  "Turn on truncation and word wrapping"
-  (interactive)
-  (if truncate-lines 
-      (progn
-        (setq truncate-lines nil)
-        (setq word-wrap t)
-        (message "Truncation and word wrap enabled"))
-    (progn 
-      (setq truncate-lines t)
-      (setq word-wrap nil)
-      (message "Truncation and word wrap disabled"))))
-(setq truncate-lines nil)
-(setq word-wrap t)
 #+END_SRC
 ** Text filling (paragraph reflowing)
 #+BEGIN_SRC emacs-lisp
-;; not sure if add-auto-mode works like the setq...so leaving for now
-(defun cd/auto-fill-at-80 ()
-  "Use auto fill mode and wrap at col 80."
-  (progn
-    (auto-fill-mode)
-    (set-fill-column 80)))
-
 (defun unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and make it into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
@@ -398,8 +397,6 @@ redo), and go down different branches.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 (define-key global-map "\M-Q" 'unfill-paragraph)
-
-(global-set-key (kbd "C-c q") 'auto-fill-mode)
 #+END_SRC
 ** Managing indentation
 #+BEGIN_SRC emacs-lisp
@@ -430,7 +427,6 @@ redo), and go down different branches.
   :config
   (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'")
   (add-hook 'markdown-mode-hook 'pandoc-mode)
-  (add-hook 'markdown-mode-hook 'cd/auto-fill-at-80)
   (add-hook 'markdown-mode-hook 'visual-line-mode)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
 
@@ -462,25 +458,21 @@ redo), and go down different branches.
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck :ensure t)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq-default flycheck-disabled-checkers
-              (append flycheck-disabled-checkers
-                      '(javascript-jshint)))
-
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-
-(setq-default flycheck-temp-prefix ".flycheck")
-(setq-default flycheck-disabled-checkers
-              (append flycheck-disabled-checkers
-                      '(json-jsonlist)))
+(use-package flycheck :ensure t :defer 4
+  :config
+  (setq-default 
+   flycheck-disabled-checkers
+   (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
+   flycheck-temp-prefix ".flycheck")
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
 ** Lisps
 #+BEGIN_SRC emacs-lisp
 ;; Cider for interactive clojure programming
 (use-package flycheck-clojure :ensure t)
 
-(use-package cider :ensure t
+(use-package cider :ensure t :defer 4
   :config
   (setq nrepl-popup-stacktraces nil)
   (after-load 'cider
@@ -506,7 +498,6 @@ Auto-completion for rust, using racer
 (use-package flymake-rust :ensure t)
 (use-package flycheck-rust :ensure t)
 (use-package cargo :ensure t)
-
 (use-package racer
   :ensure t
   :config
@@ -518,21 +509,22 @@ Auto-completion for rust, using racer
   (add-hook 'racer-mode-hook #'company-mode))
 #+END_SRC
 ** Python configuration
+Use elpy for python
 #+BEGIN_SRC emacs-lisp
-;; =================================
-;; ======== Elpy for Python ========
-;; =================================
 ;; (use-package ob-ipython :ensure t)
 
-(use-package elpy :ensure t
+(use-package elpy :ensure t :defer 4
   :config
   (add-hook 'python-mode-hook (lambda () (elpy-enable)))
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "--simple-prompt -i"))
 
+(diminish 'elpy-mode)
+
+
 ;; need to set up VENV usage
 ;; Python
-(use-package virtualenvwrapper :ensure t
+(use-package virtualenvwrapper :ensure t :defer 4
   :config
   (venv-initialize-interactive-shells)
   (venv-initialize-eshell)
@@ -593,7 +585,7 @@ Auto-completion for rust, using racer
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle no
-(use-package auctex :ensure t
+(use-package auctex :ensure t :defer 8
   :config
   (setq TeX-auto-save t
         TeX-parse-self t
@@ -823,7 +815,7 @@ Bound to =M-n= and =M-b= by default, I think.
 ;; Code folding
 (use-package fold-dwim :ensure t)
 (use-package fold-dwim-org :ensure t)
-(add-hook 'prog-mode-hook #'hs-minor-mode)
+;; (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'prog-mode-hook #'fold-dwim-org/minor-mode)
 #+END_SRC
 ** Better ibuffer
@@ -938,7 +930,19 @@ You can easily /capture/ information using various different templates (includin
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive")
-        org-log-done 'time)
+        org-log-done 'time
+        org-ellipsis "↴"
+        org-archive-location "~/Dropbox/archive.org::")
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (python . t)
+     (R . t)
+     (sqlite . t)
+     (perl . t)
+     ))
+  (setq org-confirm-babel-evaluate nil)
+  (setq )
   ;; Settings for refiling
   (setq org-reverse-note-order t
         org-refile-use-outline-path nil
@@ -947,15 +951,19 @@ You can easily /capture/ information using various different templates (includin
         org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
         org-blank-before-new-entry nil)
   ;; (add-hook 'org-mode-hook 'auto-fill-mode)
+  ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-indent-mode)
-  ;; (add-hook 'org-mode-hook 'org-bullets-mode)
+  (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq fill-column 80))
-;; (use-package org-bullets :ensure t)
-#+END_SRC
-** Archiving
-#+BEGIN_SRC emacs-lisp
-(setq org-archive-location "~/Dropbox/archive.org::")
+
+(use-package org-bullets :ensure t
+  :config
+  (setq org-bullets-bullet-list (list "⚫" "☉" "⚪" "◉" "○" "◦" "∙")))
+
+(use-package visual-fill-column :ensure t
+  :config
+  (setq visual-fill-column-width 80))
 #+END_SRC
 ** Utility functions
 #+BEGIN_SRC emacs-lisp
@@ -979,16 +987,6 @@ You can easily /capture/ information using various different templates (includin
     (insert (s-concat "][" description "]]"))
     ))
 
-#+END_SRC
-** Org-babel (programming inside org-mode)
-#+BEGIN_SRC emacs-lisp
-(setq org-babel-load-languages
-      '((emacs-lisp . t)
-        (R . t)
-        (Python . t)))
-(setq org-confirm-babel-evaluate nil)
-
-(define-key global-map (kbd "C-c C-x C-e") 'org-babel-execute-src-block)
 #+END_SRC
 ** Fix indentation for org source blocks
 #+BEGIN_SRC emacs-lisp
@@ -1034,7 +1032,6 @@ You can easily /capture/ information using various different templates (includin
 ** Org and Latex
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; latex exporting
-
 (require 'ox-latex)
 
 (unless (boundp 'org-latex-classes)
@@ -1183,7 +1180,7 @@ Abstract:
 #+END_SRC
 * Magit - Git in Emacs
 #+BEGIN_SRC emacs-lisp
-(use-package magit :ensure t
+(use-package magit :ensure t :defer 4
   :config
   (setq
    ;; Magit needs to call git multiple times
@@ -1248,7 +1245,7 @@ Abstract:
 
 * Hydra
 #+BEGIN_SRC emacs-lisp
-(use-package hydra :ensure t)
+(use-package hydra :ensure t :defer 4)
 #+END_SRC
 
 ** Dired
@@ -1428,15 +1425,6 @@ T - tag prefix
   ("-" text-scale-decrease "Zoom out" :column "Zoom")
   ("." nil "quit"))
 
-(defhydra cd/join-lines (:exit nil)
-  ("<up>" delete-indentation "Join line UP")
-  ("<down>" (join-line -1) "Join line DOWN")
-  ("." nil))
-
-(defhydra cd/folding (:exit t)
-  ("n" origami-forward-toggle-node "Toggle next fold")
-  ("a" origami-toggle-all-nodes "Toggle all folds"))
-
 (defhydra cd/indent (:exit nil)
   (">" indent-rigidly-right-to-tab-stop "Indent to tabstop")
   ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
@@ -1444,7 +1432,9 @@ T - tag prefix
   ("<left>" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
   ("." nil))
 
-(defhydra cd/paragraphs (:exit t)
+(defhydra cd/paragraphs-and-lines (:exit t)
+  ("<up>" delete-indentation "Join line UP" :exit nil)
+  ("<down>" (join-line -1) "Join line DOWN" :exit nil)
   ("u" unfill-paragraph "Unfill paragraph")
   ("f" fill-paragraph "Fill paragraph"))
 
@@ -1478,27 +1468,15 @@ T - tag prefix
   ("l" (find-file "~/Dropbox/logbook.org") "Logbook")
   ("a" (find-file "~/Dropbox/archive.org") "Archive")
   ("f" counsel-find-file "Find file")
+  ("b" ivy-switch-buffer "Switch Buffer")
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config"))
 
-(defhydra hydra-cd-util (:hint nil :exit t)
-  ("<tab>" cd/indent/body "Indent" :column "Appearance")
-  ("f" cd/folding/body "Folding" :column "Appearance")
-  ("z" cd/zoom/body "Font size" :column "Appearance")
-  ("w" cd/windowmove/body "Windows" :column "Appearance")
-
-  ("j" cd/join-lines/body "Join lines" :column "Text")
-  ("p" cd/paragraphs/body "Paragraph fill" :column "Text")
-  ("u" cd/unicode/body "Unicode symbols" :column "Text")
-
-  ("s" counsel-grep-or-swiper "Swiper" :column "Search & Replace")
-  ("r" anzu-query-replace-regexp "Replace" :column "Search & Replace")
-  ("i" ivy-imenu-anywhere "Imenu Anywhere" :column "Search & Replace")
-  ("e" iedit-mode "Iedit" :column "Search & Replace")
-
-  ("l" cd/links/body "Links" :column "Utils")
-  ("o" cd/files/body "Open file bookmarks" :column "Utils")
-  ("a" hydra-apropos/body "Apropos" :column "Utils")
-  ("b" ivy-switch-buffer "Switch Buffer" :column "Utils"))
+(defhydra hydra-fold (:pre (hs-minor-mode 1))
+  "fold"
+  ("t" fold-dwim-toggle "toggle")
+  ("h" fold-dwim-hide-all "hide-all")
+  ("s" fold-dwim-show-all "show-all")
+  ("q" nil "quit"))
 
 (defhydra hydra-apropos (:color blue)
   "Apropos"
@@ -1514,7 +1492,26 @@ T - tag prefix
   ("t" tags-apropos "tags")
   ("z" hydra-customize-apropos/body "customize"))
 
+(defhydra hydra-cd-util (:hint nil :exit t)
+  ("<tab>" cd/indent/body "Indent" :column "Appearance")
+  ("f" hydra-fold/body "Fold" :column "Appearance")
+  ("Z" cd/zoom/body "Font size" :column "Appearance")
+  ("z" (modi/toggle-one-window nil t) "Zen mode" :column "Appearance")
+  ("C-z" (modi/toggle-one-window nil t) "Zen mode" :column "Appearance")
+  ("w" cd/windowmove/body "Windows" :column "Appearance")
+
+  ("s" counsel-grep-or-swiper "Swiper" :column "Search & Replace")
+  ("r" anzu-query-replace-regexp "Replace" :column "Search & Replace")
+  ("i" ivy-imenu-anywhere "Imenu Anywhere" :column "Search & Replace")
+  ("e" iedit-mode "Iedit" :column "Search & Replace")
+
+  ("l" cd/links/body "Links" :column "Utils")
+  ("o" cd/files/body "Open file bookmarks" :column "Utils")
+  ("a" hydra-apropos/body "Apropos" :column "Utils")
+  ("p" cd/paragraphs-and-lines/body "Paragraphs and lines" :column "Utils"))
+
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
+(define-key global-map (kbd "C-z") 'hydra-cd-util/body)
 #+END_SRC
 * NEW
 ** WIP Global Yasnippet (snippets) mode
@@ -1530,17 +1527,26 @@ LSP vs elpy?
 (use-package lsp-mode :ensure t)
 #+END_SRC
 
-
-** WIP Temporary 'zoom' into a pane
-This is kind of a 'cheat'.  Use ~C-x 0~ to focus on only this window, and then use winner to revert back to the previous configuration with ~C-c <left>~
-#+BEGIN_SRC 
-(winner-mode)
-#+END_SRC
 ** WIP Origami (for better fold commands)
+Need to find good keybinds for this.  Hydra is useful for utility, but the keybinds are still a bit of a pain.
 #+BEGIN_SRC emacs-lisp
 (use-package origami :ensure t :config (global-origami-mode))
 #+END_SRC
 ** WIP Iedit (interactive edit, similar to isearch)
 #+BEGIN_SRC emacs-lisp
 (use-package iedit :ensure t)
+#+END_SRC
+** WIP Adaptive wrapping
+With visual line mode, org-mode section headers and stuff get wrapped.
+
+Pair visual-line-mode with adaptive-wrap to get indentation at the start of wrapped lines
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package adaptive-wrap :ensure t)
+#+END_SRC
+** WIP Diminish modes
+#+BEGIN_SRC emacs-lisp
+(diminish 'hs-minor-mode)
+;; (diminish 'flymake-mode "Fm")
+;; (diminish 'flycheck-mode "Fc")
+(diminish 'org-indent-mode)
 #+END_SRC
