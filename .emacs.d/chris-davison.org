@@ -386,6 +386,9 @@ redo), and go down different branches.
   (setq darkroom-text-scale-increase 0
         darkroom-margins 0.15))
 
+;; Interactive editing...over word or region, C-; to edit.  Just modify the symbol, then repeat
+;; C-; to exit.
+(use-package iedit :ensure t)
 #+END_SRC
 ** Text filling (paragraph reflowing)
 #+BEGIN_SRC emacs-lisp
@@ -1513,7 +1516,7 @@ T - tag prefix
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
 (define-key global-map (kbd "C-z") 'hydra-cd-util/body)
 #+END_SRC
-* NEW
+* WIP NEW
 ** WIP Global Yasnippet (snippets) mode
 #+BEGIN_SRC emacs-lisp
 (when (fboundp 'yas-global-mode) 
@@ -1527,15 +1530,6 @@ LSP vs elpy?
 (use-package lsp-mode :ensure t)
 #+END_SRC
 
-** WIP Origami (for better fold commands)
-Need to find good keybinds for this.  Hydra is useful for utility, but the keybinds are still a bit of a pain.
-#+BEGIN_SRC emacs-lisp
-(use-package origami :ensure t :config (global-origami-mode))
-#+END_SRC
-** WIP Iedit (interactive edit, similar to isearch)
-#+BEGIN_SRC emacs-lisp
-(use-package iedit :ensure t)
-#+END_SRC
 ** WIP Adaptive wrapping
 With visual line mode, org-mode section headers and stuff get wrapped.
 
