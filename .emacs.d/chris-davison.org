@@ -33,36 +33,60 @@ We also use the ~use-package~ library to make adding new packages, and configuri
  user-mail-address "c.jr.davison@gmail.com"
  user-emacs-directory "~/code/dotfiles/.emacs.d")
 #+END_SRC
+** Plugins/config currently ignored...
+These are plugins that, while interesting, I've not generally found significant use for in my workflow and so am putting on the backburner.
+*** Jump to register (file bookmarks)
+This has been superseded with my hydra config
+#+BEGIN_SRC emacs-lisp :tangle no
+;; jump to register (file shortcuts)
+(set-register ?i (cons 'file "~/Dropbox/inbox.org"))
+(set-register ?j (cons 'file "~/Dropbox/journal.org"))
+(set-register ?l (cons 'file "~/Dropbox/logbook.org"))
+(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/chris-davison.org"))
+#+END_SRC
+*** Ace-jump (jump to characters)
+Ace-mode is fantastic.  It's a hybrid of ace-jump and isearch hybrid of isearch and ace-jump.  Type a single character in search and words  with that will highlight.  Press the highlighted letter to jump to that occurence
+
+*Disabling this for now*.  Not been making much use of this.  Just use keyboard shortcuts, and C-s (/isearch/) rather than having another keybind?
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package ace-isearch :ensure ace-jump-mode :defer t
+  :diminish ""
+  :config
+  (global-ace-isearch-mode 1)
+  (setq ace-isearch-use-jump t)
+  :bind (("C-c ." . ace-jump-mode)
+         ("C-c j c" . ace-jump-char-mode)
+         ("C-c j l" . ace-jump-line-mode)))
+#+END_SRC
+
 * General init
 Define a few constants to make it easy to modify behaviour by-system.
 #+BEGIN_SRC emacs-lisp
 (defconst *spell-check-support-enabled* nil)
-(defconst *is-a-mac* (eq system-type 'darwin))
-(defconst *is-windows* (equal system-type 'windows-nt))
+
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+;; Make list-packages take up the entire window
+(use-package fullframe :ensure t :defer t
+  :config (fullframe list-packages quit-window))
+
+;; Generally useful common-lisp library (functions)
+(use-package cl-lib :ensure t
+  :config (require 'cl-lib))
+(use-package s :ensure t :defer t)  ; Useful string functions
+(use-package f :ensure t :defer t)  ; Useful file and dir functions
+
+;; Make messages of some minor modes shorter
+(use-package diminish :ensure t)
+
+;; Make /apropos/ bring up everything, rather than requiring separate keybinds
+(setq apropos-do-all t)
+
+(setq-default initial-scratch-message ";; Scratch pad\n\n")
 #+END_SRC
 
-* Utility functions and macros
-#+BEGIN_SRC emacs-lisp
-;; eval after load
-(if (fboundp 'with-eval-after-load)
-    (defalias 'after-load 'with-eval-after-load)
-  (defmacro after-load (feature &rest body)
-    "After FEATURE is loaded, evaluate BODY."
-    (declare (indent defun))
-    `(eval-after-load ,feature
-       '(progn ,@body))))
-#+END_SRC
-
-This is again a quality of life thing, to allow you to hit yes or no by using y or n.
-#+BEGIN_SRC emacs-lisp
-(defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
-
-HTMLize lets you export the current region or buffer to HTML, with full syntax highlighting (using current colortheme).
-#+BEGIN_SRC emacs-lisp
-(use-package htmlize :ensure t)
-#+END_SRC
-** File Utils
+** Delete the current file
 #+BEGIN_SRC emacs-lisp
 (defun delete-this-file ()
   "Delete the current file, and kill the buffer."
@@ -73,29 +97,16 @@ HTMLize lets you export the current region or buffer to HTML, with full syntax h
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 #+END_SRC
-
+** Echo path of the current file
 #+BEGIN_SRC emacs-lisp
 (defun filepath ()
   "Echo the filepath as a message."
   (interactive)
   (message (buffer-file-name)))
 #+END_SRC
-** OTHER utility stuff
+** Try to make everything UTF8
+From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html][here]]
 #+BEGIN_SRC emacs-lisp
-(use-package s :ensure t)
-(use-package f :ensure t)
-
-;; help - guide-key
-;; It's hard to remember keyboard shortcuts. The =guide-key= package
-;; pops up help after a short delay.
-
-(use-package guide-key :ensure t
-  :diminish guide-key-mode
-  :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-  :config (guide-key-mode 1))
-
-;; utf-8
-;; From http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -104,194 +115,12 @@ HTMLize lets you export the current region or buffer to HTML, with full syntax h
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+END_SRC
-* Not yet organised....
+** Show help popup if you stop halfway through a keybind sequence
 #+BEGIN_SRC emacs-lisp
-(defun add-auto-mode (mode &rest patterns)
-  "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
-  (dolist (pattern patterns)
-    (add-to-list 'auto-mode-alist (cons pattern mode))))
-
-(setq package-enable-at-startup nil)
-(package-initialize)
-
-(use-package fullframe :ensure t
-  :config (fullframe list-packages quit-window))
-
-(use-package cl-lib :ensure t
-  :config (require 'cl-lib))
-
-(use-package diminish :ensure t)
-
-(use-package let-alist :ensure t)
-
-(setq apropos-do-all t)
-#+END_SRC
-* Automatically insert headers
-#+BEGIN_SRC emacs-lisp
-(setq auto-insert-alist
-      '(((emacs-lisp-mode . "Emacs lisp mode") nil
-         ";;; " (file-name-nondirectory buffer-file-name) " --- " _ "\n\n"
-         ";;; Commentary:\n\n"
-         ";;; Code:\n\n"
-         "(provide '" (substring (file-name-nondirectory buffer-file-name) 0 -3) ")\n"
-         ";;; " (file-name-nondirectory buffer-file-name) " ends here\n")
-        ((c-mode . "C program") nil
-         "/*\n"
-         " * File: " (file-name-nondirectory buffer-file-name) "\n"
-         " * Description: " _ "\n"
-         " */\n\n")
-        ((shell-mode . "Shell script") nil
-         "#!/bin/bash\n\n"
-         " # File: " (file-name-nondirectory buffer-file-name) "\n"
-         " # Description: " _ "\n\n")))
-#+END_SRC
-* Appearance
-** Font
-#+BEGIN_SRC emacs-lisp
-(when (member "CamingoCode" (font-family-list))
-  (set-default-font "CamingoCode"))
-(setq line-spacing 0.1)
-(setq cd-font-height
-      (cond
-       (*is-windows* 160)
-       (t 200)))
-(set-face-attribute 'default nil :height cd-font-height)
-#+END_SRC
-** Colour themes
-Disable themes before loading a new theme
-#+BEGIN_SRC emacs-lisp
-(defadvice load-theme (before theme-dont-propagate activate)
-  (mapc #'disable-theme custom-enabled-themes))
-(setq custom-safe-themes t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package solarized-theme :defer t)
-(use-package molokai-theme :defer t)
-(use-package seoul256-theme :defer t)
-(use-package material-theme :defer t)
-(use-package doom-themes :defer t)
-(use-package zenburn-theme :defer t)
-(use-package creamsody-theme :defer t)
-
-(load-theme 'creamsody t)
-(creamsody-modeline-four)
-#+END_SRC
-** Don't make C-z hide when on OSX
-#+BEGIN_SRC emacs-lisp
-(defun maybe-suspend-frame ()
-  "Don't suspend the frame if it's a Mac."
-  (interactive)
-  (unless (and *is-a-mac* window-system)
-    (suspend-frame)))
-;; Disabling this keybind for now, as I think C-z might be nice for my hydra utils
-;; (global-set-key (kbd "C-z") 'maybe-suspend-frame)
-#+END_SRC
-** Suppress GUI features
-#+BEGIN_SRC emacs-lisp
-(setq use-file-dialog nil
-      use-dialog-box nil
-      menu-bar-mode nil
-      inhibit-startup-screen t
-      inhibit-startup-echo-area-message t)
-
-;; Hide tool bar,  scroll bar and borders
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
-
-(let ((no-border '(internal-border-width . 0)))
-  (add-to-list 'default-frame-alist no-border)
-  (add-to-list 'initial-frame-alist no-border))
-#+END_SRC
-
-** Highlight current line, and no blinking cursor
-#+BEGIN_SRC emacs-lisp
-(global-hl-line-mode 1)
-(blink-cursor-mode 0)
-(setq linum-format "%d ")
-#+END_SRC
-** Tabstop stuff
-#+BEGIN_SRC emacs-lisp
-(setq tab-stop-list (number-sequence 4 200 4))
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-#+END_SRC
-** Linum and Colnum in status bar
-#+BEGIN_SRC emacs-lisp
-(line-number-mode 1)
-(column-number-mode 1)
-#+END_SRC
-** Don't scroll jump multiple lines
-#+BEGIN_SRC emacs-lisp
-(setq scroll-step           1
-      scroll-conservatively 10000)
-#+END_SRC
-** Initial scratch buffer message
-#+BEGIN_SRC emacs-lisp
-(setq-default initial-scratch-message ";; Scratch pad\n\n")
-#+END_SRC
-** Rainbow parentheses
-Thought i detected a slowdown with this, so not auto-including.  Not sure though...
-#+BEGIN_SRC emacs-lisp
-(use-package rainbow-delimiters
-  :ensure t
-  :config 
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'org-mode-hook 'rainbow-delimiters-mode))
-#+END_SRC
-** Global symbol prettification (e.g. replace lambda with symbol)
-#+BEGIN_SRC emacs-lisp
-(global-prettify-symbols-mode +1)
-#+END_SRC
-** Powerline (prettier statusbar)
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package powerline :ensure t
-  :config
-  (powerline-default-theme))
-#+END_SRC
-** Temporary 'zoom' into a pane
-A bit like 'focus mode' for other languages.  Can perhaps combine this with /darkroom/ to enforce distraction free writing.
-
-Just set ~darkroom-tentative-mode~ and then whenever I go to one-window mode, it'll automatically be distraction-free?  Is ~darkroom-tentative-mode~ global, or buffer specific?  *Buffer specific*.
-
-From [[https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-windows-buffers.el][this github repo]].
-#+BEGIN_SRC emacs-lisp
-(defvar modi/toggle-one-window--buffer-name nil
-  "Variable to store the name of the buffer for which the `modi/toggle-one-window'
-function is called.")
-
-(defvar modi/toggle-one-window--window-configuration nil
-  "Variable to store the window configuration before `modi/toggle-one-window'
-function was called.")
-
-(defun modi/toggle-one-window (&optional force-one-window zen)
-  "Toggles the frame state between deleting all windows other than
-the current window and the windows state prior to that."
-  (interactive "P")
-  (if (or (null (one-window-p))
-          force-one-window)
-      (progn
-        (setq modi/toggle-one-window--buffer-name (buffer-name))
-        (setq modi/toggle-one-window--window-configuration (current-window-configuration))
-        (delete-other-windows)
-        (when zen (darkroom-mode t)))
-    (progn
-      (when modi/toggle-one-window--buffer-name
-        (set-window-configuration modi/toggle-one-window--window-configuration)
-        (switch-to-buffer modi/toggle-one-window--buffer-name)
-        (when zen (darkroom-mode -1))))))
-  (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
-
-
-#+END_SRC
-** OTHER appearance stuff
-#+BEGIN_SRC emacs-lisp
-(setq uniquify-buffer-name-style 'forward)
-(setq linum-format "%4d ")
-
-(set-default 'indicate-empty-lines t)
-
-(highlight-indentation-mode -1)
+(use-package guide-key :ensure t :defer t
+  :diminish guide-key-mode
+  :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+  :config (guide-key-mode 1))
 #+END_SRC
 * History, Sessions, and Undo
 ** General history/session config
@@ -315,7 +144,7 @@ the current window and the windows state prior to that."
         regexp-search-ring))
 
 ;; Counting 'recent files' as part of history
-(use-package recentf :ensure t)
+(use-package recentf :ensure t :defer t)
 (setq recentf-max-saved-items 200)
 (setq recentf-max-menu-items 15)
 (recentf-mode)
@@ -341,19 +170,33 @@ through the changes you've made, undo back to a certain point (or
 redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
-(use-package undo-tree :ensure t
+(use-package undo-tree :ensure t :defer t
   :diminish undo-tree-mode
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps nil
         undo-tree-visualizer-diff t))
 #+END_SRC
+** Magit - Git in Emacs
+#+BEGIN_SRC emacs-lisp
+(use-package magit :ensure t :defer t
+  :config
+  (setq
+   ;; Magit needs to call git multiple times
+   ;; only refreshing the main buffer can improve performance
+   magit-refresh-status-buffer nil
+   ;; Emacs has its own version control.  We don't need to run both
+   ;; as that'll be detrimental for performance
+   vc-handled-backends (delq 'Git vc-handled-backends)))
+(define-key global-map (kbd "C-x g") 'magit-status)
+#+END_SRC
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode 1)
-(use-package smartparens :ensure t
-  :config (require 'smartparens-config))
+(use-package smartparens :ensure t :defer t
+  :config (require 'smartparens-config)
+  (diminish 'smartparens-mode))
 
 ;; transparently open compressed files
 (auto-compression-mode t)
@@ -367,7 +210,7 @@ redo), and go down different branches.
 (setq gc-cons-threshold 20000000)
 
 ;; expand region
-(use-package expand-region :ensure t
+(use-package expand-region :ensure t :defer t
   :bind ("C-=" . er/expand-region))
 
 ;; If a region is selected, any 'insert' command (typing or yanking) will overwrite it, rather than inserting before.
@@ -381,14 +224,18 @@ redo), and go down different branches.
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; 'Zen-move' - distraction free editing
-(use-package darkroom :ensure t
+(use-package darkroom :ensure t :defer t
   :config
   (setq darkroom-text-scale-increase 0
         darkroom-margins 0.15))
 
 ;; Interactive editing...over word or region, C-; to edit.  Just modify the symbol, then repeat
 ;; C-; to exit.
-(use-package iedit :ensure t)
+(use-package iedit :ensure t :defer t)
+
+;; snippets
+(when (fboundp 'yas-global-mode) 
+  (yas-global-mode +1))
 #+END_SRC
 ** Text filling (paragraph reflowing)
 #+BEGIN_SRC emacs-lisp
@@ -404,16 +251,17 @@ redo), and go down different branches.
 ** Managing indentation
 #+BEGIN_SRC emacs-lisp
 ;; aggressive indentation
-(use-package aggressive-indent :ensure t
+(use-package aggressive-indent :ensure t :defer t
   :config (global-aggressive-indent-mode))
 
 (define-key global-map (kbd "C->") 'indent-rigidly-right-to-tab-stop)
 (define-key global-map (kbd "C-<") 'indent-rigidly-left-to-tab-stop)
 #+END_SRC
 ** Offer to create parent dirs if they do not exist
+Offer to create parent directories if they do not exist
+[[http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/][From this blog]]
 #+BEGIN_SRC emacs-lisp
-;; Offer to create parent directories if they do not exist
-;; http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+
 (defun my-create-non-existent-directory ()
   (let ((parent-directory (file-name-directory buffer-file-name)))
     (when (and (not (file-exists-p parent-directory))
@@ -422,46 +270,133 @@ redo), and go down different branches.
 
 (add-to-list 'find-file-not-found-functions 'my-create-non-existent-directory)
 #+END_SRC
-* Languages
-** OTHER
+** Header templates per filetype
+Use ~auto-insert~ when in a new file of that kind to insert header.
 #+BEGIN_SRC emacs-lisp
-(use-package pandoc-mode :ensure t :diminish "")
-(use-package markdown-mode :ensure t
+(setq auto-insert-alist
+      '(((emacs-lisp-mode . "Emacs lisp mode") nil
+         ";;; " (file-name-nondirectory buffer-file-name) " --- " _ "\n\n"
+         ";;; Commentary:\n\n"
+         ";;; Code:\n\n"
+         "(provide '" (substring (file-name-nondirectory buffer-file-name) 0 -3) ")\n"
+         ";;; " (file-name-nondirectory buffer-file-name) " ends here\n")
+        ((c-mode . "C program") nil
+         "/*\n"
+         " * File: " (file-name-nondirectory buffer-file-name) "\n"
+         " * Description: " _ "\n"
+         " */\n\n")
+        ((shell-mode . "Shell script") nil
+         "#!/bin/bash\n\n"
+         " # File: " (file-name-nondirectory buffer-file-name) "\n"
+         " # Description: " _ "\n\n")
+        ((org-mode . "Org mode") nil
+        "#+TITLE: " (read-string "Title: ") "\n"
+        "#+AUTHOR: Chris Davison\n"
+        "#+EMAIL: c.jr.davison@gmail.com\n"
+        "#+OPTIONS: toc:2 num:nil html-postamble:nil\n"
+        "#+PROPERTY: header-args :tangle " (read-string "Tangle filename: ") "\n")
+        ((python-mode . "Python") nil
+        "#!/usr/bin/env python3")
+      ))
+(setq auto-insert t)
+(add-hook 'find-file-hook 'auto-insert)
+#+END_SRC
+* Languages
+** Terminal Improvements
+*** Windows Shell Config
+Use git-bash as windows shell
+#+BEGIN_SRC emacs-lisp
+(defun cd/set-windows-shell ()
+  "If on windows, set the shell to git bash."
+  (interactive)
+  (if (eq system-type 'windows-nt)
+      (progn (setq explicit-shell-file-name
+                   "C:/Program Files/Git/bin/sh.exe")
+             (setq shell-file-name "bash")
+             (setq explicit-sh.exe-args '("--login" "-i"))
+             (setenv "SHELL" shell-file-name)
+             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
+    nil))
+
+(cd/set-windows-shell)
+#+END_SRC
+*** Improvements for ansi-term
+#+BEGIN_SRC emacs-lisp
+(defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+  "Close an ansi-term buffer if I quit the terminal."
+  (if (memq (process-status proc) '(signal exit))
+      (let ((buffer (process-buffer proc)))
+        ad-do-it
+        (kill-buffer buffer))
+    ad-do-it))
+(ad-activate 'term-sentinel)
+
+;; By default, use fish in ansi-term
+;; e.g. don't prompt for a shell
+(defvar my-term-shell "/usr/local/bin/fish")
+(defadvice ansi-term (before force-bash)
+  (interactive (list my-term-shell)))
+(ad-activate 'ansi-term)
+
+;; Use UTF8 in terminals
+(defun my-term-use-utf8 ()
+  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+(add-hook 'term-exec-hook 'my-term-use-utf8)
+
+;; Make URLs in the term clickable
+(defun my-term-paste (&optional string)
+  (interactive)
+  (process-send-string
+   (get-buffer-process (current-buffer))
+   (if string string (current-kill 0))))
+
+(defun my-term-hook ()
+  (goto-address-mode)
+  (define-key term-raw-map "\C-y" 'my-term-paste))
+(add-hook 'term-mode-hook 'my-term-hook)
+#+END_SRC
+** Markdown
+#+BEGIN_SRC emacs-lisp
+(use-package pandoc-mode :ensure t :diminish "" :defer t)
+(use-package markdown-mode :ensure t :defer t
   :config
-  (add-auto-mode 'markdown-mode "\\.\\(md\\|markdown\\)\\'")
+  (add-to-list 'auto-mode-alist
+               (cons "\\.\\(md\\|markdown\\)\\'" 'markdown-mode))
   (add-hook 'markdown-mode-hook 'pandoc-mode)
   (add-hook 'markdown-mode-hook 'visual-line-mode)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
+#+END_SRC
 
+Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters laying around
+#+BEGIN_SRC emacs-lisp
 (defun cd/yank-md ()
   "Yank a markdown link and enter a description for it."
   (interactive)
-  (insert "[")
-  (insert (read-from-minibuffer "Link text: "))
-  (insert "](")
-  (yank)
-  (insert ")"))
+  (let ((desc (read-string "Description: ")))
+    (insert "[")
+    (insert desc)
+    (insert "](")
+    (yank)
+    (insert ")")))
 (global-set-key (kbd "<f5>") 'cd/yank-md)
-
-(use-package csv-mode
-  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
-  :config (setq csv-separators '("," ";" "|" " ")))
-
-(use-package company :ensure t :diminish company-mode
+#+END_SRC
+** Company -- COMPlete ANYthing
+#+BEGIN_SRC emacs-lisp
+(use-package company :ensure t :diminish company-mode :defer t
   :bind ("TAB" . company-indent-or-complete-common)
   :config
   (setq company-tooltip-align-annotations t)
-  (add-hook 'python-mode 'company-mode)
-  (add-hook 'emacs-lisp-mode 'company-mode))
-
-
-(diminish 'hs-minor-mode)
-(diminish 'smartparens-mode)
-
+  (add-hook 'prog-mode-hook 'company-mode))
+#+END_SRC
+** CSV
+#+BEGIN_SRC emacs-lisp
+(use-package csv-mode :defer t
+  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
+  :config (setq csv-separators '("," ";" "|" " ")))
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck :ensure t :defer 4
+(use-package flycheck :ensure t :defer t
   :config
   (setq-default 
    flycheck-disabled-checkers
@@ -470,12 +405,12 @@ redo), and go down different branches.
   (flycheck-add-mode 'javascript-eslint 'web-mode)
   (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
-** Lisps
+** Lisps -- Clojure and Cider
 #+BEGIN_SRC emacs-lisp
 ;; Cider for interactive clojure programming
-(use-package flycheck-clojure :ensure t)
+(use-package flycheck-clojure :ensure t :defer t)
 
-(use-package cider :ensure t :defer 4
+(use-package cider :ensure t :defer t
   :config
   (setq nrepl-popup-stacktraces nil)
   (after-load 'cider
@@ -489,7 +424,7 @@ redo), and go down different branches.
 #+END_SRC
 ** Golang
 #+BEGIN_SRC emacs-lisp
-(use-package go-mode :ensure t
+(use-package go-mode :ensure t :defer t
   :config
   (add-hook 'before-save-hook 'gofmt-before-save)
   (setq gofmt-command "goimports"))
@@ -497,26 +432,25 @@ redo), and go down different branches.
 ** Rust / Racer config
 Auto-completion for rust, using racer
 #+BEGIN_SRC emacs-lisp
-(use-package rust-mode :ensure t)
-(use-package flymake-rust :ensure t)
-(use-package flycheck-rust :ensure t)
-(use-package cargo :ensure t)
-(use-package racer
+(use-package rust-mode :ensure t :defer t)
+(use-package flymake-rust :ensure t :defer t)
+(use-package flycheck-rust :ensure t :defer t)
+(use-package cargo :ensure t :defer t)
+(use-package racer :defer t
   :ensure t
   :config
   (setq racer-cmd "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer")
   (setq racer-rust-src-path "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/")
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'rust-mode-hook #'cargo-minor-mode)
-  (add-hook 'racer-mode-hook #'company-mode))
+  (add-hook 'rust-mode-hook 'racer-mode)
+  (add-hook 'racer-mode-hook 'eldoc-mode)
+  (add-hook 'rust-mode-hook 'cargo-minor-mode)
+  (add-hook 'racer-mode-hook 'company-mode))
 #+END_SRC
 ** Python configuration
 Use elpy for python
 #+BEGIN_SRC emacs-lisp
 ;; (use-package ob-ipython :ensure t)
-
-(use-package elpy :ensure t :defer 4
+(use-package elpy :ensure t :defer t
   :config
   (add-hook 'python-mode-hook (lambda () (elpy-enable)))
   (setq python-shell-interpreter "ipython"
@@ -524,10 +458,9 @@ Use elpy for python
 
 (diminish 'elpy-mode)
 
-
 ;; need to set up VENV usage
 ;; Python
-(use-package virtualenvwrapper :ensure t :defer 4
+(use-package virtualenvwrapper :ensure t :defer t
   :config
   (venv-initialize-interactive-shells)
   (venv-initialize-eshell)
@@ -536,7 +469,7 @@ Use elpy for python
 
 (defun ipython()
   (interactive)
-  (if *is-windows*
+  (if (eq system-type 'windows-nt)
       (progn (setq explicit-shell-file-name
                    "C:/python3/scripts/ipython.exe")
              (setq shell-file-name "ipython")
@@ -551,44 +484,13 @@ Use elpy for python
       python-shell-interpreter-args "--simple-prompt -i --pprint")
 #+END_SRC
 
-** C / C++
-#+BEGIN_SRC emacs-lisp
-(defun cd-c-mode-font-lock-if0 (limit)
-  (save-restriction
-    (widen)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((depth 0) str start start-depth)
-        (while (re-search-forward "^\\s-*#\\s-*\\(if\\|else\\|endif\\)" limit 'move)
-          (setq str (match-string 1))
-          (if (string= str "if")
-              (progn
-                (setq depth (1+ depth))
-                (when (and (null start) (looking-at "\\s-+0"))
-                  (setq start (match-end 0)
-                        start-depth depth)))
-            (when (and start (= depth start-depth))
-              (c-put-font-lock-face start (match-beginning 0) 'font-lock-comment-face)
-              (setq start nil))
-            (when (string= str "endif")
-              (setq depth (1- depth)))))
-        (when (and start (> depth 0))
-          (c-put-font-lock-face start (point) 'font-lock-comment-face)))))
-  nil)
-
-(defun cd-c-mode-common-hook ()
-  (font-lock-add-keywords
-   nil
-   '((cd-c-mode-font-lock-if0 (0 font-lock-comment-face prepend))) 'add-to-end))
-
-(add-hook 'c-mode-common-hook 'cd-c-mode-common-hook)
-#+END_SRC
 ** WIP Latex config
 #+BEGIN_SRC emacs-lisp
 (add-hook 'LaTeX-mode-hook 'visual-line-mode)
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp :tangle no
-(use-package auctex :ensure t :defer 8
+(use-package auctex :ensure t :defer t
   :config
   (setq TeX-auto-save t
         TeX-parse-self t
@@ -637,8 +539,8 @@ Use elpy for python
 #+END_SRC
 ** Julia
 #+BEGIN_SRC emacs-lisp
-(use-package julia-mode :ensure t)
-(use-package julia-repl :ensure t
+(use-package julia-mode :ensure t :defer t)
+(use-package julia-repl :ensure t :defer t
   :config
   (add-hook 'julia-mode-hook 'julia-repl-mode))
 
@@ -651,55 +553,17 @@ Use elpy for python
 ** Web-stuff
 #+BEGIN_SRC emacs-lisp
 ;; Emmet is fantastic for quickly outlining HTML
-(use-package emmet-mode :ensure t
+(use-package emmet-mode :ensure t :defer t
   :config 
   (add-hook 'sgml-mode-hook 'emmet-mode)
   (add-hook 'css-mode-hook 'emmet-mode)
   (setq emmet-move-cursor-between-quotes t))
 
-(use-package haml-mode :ensure t)
-(use-package sass-mode :ensure t)
-(use-package scss-mode :ensure t
-  :config (setq-default scss-compile-at-save t))
-
-(use-package js2-mode :ensure t)
-(use-package json-mode :ensure t)
-(use-package coffee-mode :ensure t)
-(use-package nodejs-repl :ensure t)
-(use-package js-comint :ensure t
-  :config
-  (setq inferior-js-program-command "node")
-  (add-hook 'js3-mode-hook
-            '(lambda ()
-               (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-               (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-               (local-set-key "\C-cb" 'js-send-buffer)
-               (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-               (local-set-key "\C-cl" 'js-load-file-and-go))))
-
-(setq inferior-js-mode-hook
-      (lambda ()
-        (ansi-color-for-comint-mode-on) ;; We like nice colors
-        (add-to-list ;; Deal with some prompt nonsense
-         'comint-preoutput-filter-functions
-         (lambda (output)
-           (replace-regexp-in-string "\033\\[[0-9]+[GK]" "" output)))))
-
-(defun cd-web-mode-hook ()
-  "Hooks for Web mode.  Adjust indent."
-  (setq web-mode-markup-indent-offset 2
-        web-mode-css-indent-offset 2
-        web-mode-code-indent-offset 2)
-  (add-hook 'web-mode-hook 'cd-web-mode-hook))
-
-(defadvice web-mode-highlight-part (around tweak-jsx activate)
-  (if (equal web-mode-conten-type "jsx")
-      (let ((web-mode-enable-part-face nil))
-        ad-do-it)
-    ad-do-it))
+(use-package sass-mode :ensure t :defer t)
+(use-package js2-mode :ensure t :defer t)
 
 ;; Colourize CSS literals
-(use-package rainbow-mode :ensure t
+(use-package rainbow-mode :ensure t :defer t
   :config 
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
@@ -707,10 +571,11 @@ Use elpy for python
 #+END_SRC
 * Navigation
 ** General Navigation config
+Navigation of prtty much any /menu-type/ thing
 #+BEGIN_SRC emacs-lisp
-;; navigation of ~everything (helm OR ivy)
-(use-package flx :ensure t)
-(use-package ivy :ensure t
+
+(use-package flx :ensure t :defer t)
+(use-package ivy :ensure t :defer t
   :diminish (ivy-mode . "")
   :bind
   (:map ivy-mode-map
@@ -724,7 +589,7 @@ Use elpy for python
         ivy-initial-inputs-alist nil
         ivy-re-builders-alist
         '((t . ivy--regex-plus))))
-(use-package counsel :ensure t
+(use-package counsel :ensure t :defer t
   :bind*
   (("C-x f" . counsel-find-file)
    ("C-c i" . counsel-imenu)
@@ -733,98 +598,36 @@ Use elpy for python
    ("C-c b" . counsel-descbinds)
    ("M-x" . counsel-M-x)))
 
-(use-package swiper :ensure t)
-
-;; Windmove gives shift-up/down/left/right for window navigation
-(windmove-default-keybindings)
-
-(defun cd-prompt-file-jump ()
-  (interactive)
-  (counsel-file-jump nil (read-directory-name "Directory ")))
-
-(global-set-key (kbd "C-x C-j") 'cd-prompt-file-jump)
-(global-set-key (kbd "C-x j") 'counsel-file-jump)
-
+(use-package swiper :ensure t :defer t)
 (use-package dired-single :ensure t)
 
 ;; do imenu over every file with the same major mode, recursively
-(use-package imenu-anywhere :ensure t)
+(use-package imenu-anywhere :ensure t :defer t)
 #+END_SRC
-** Give HUD prompt when changing window
+** Navigate between windows
+Give HUD prompt when changing window
 #+BEGIN_SRC emacs-lisp
 ;; Prompt with a hud when switching windows, if more than 2 windows
-(use-package switch-window
+(use-package switch-window :defer t
   :ensure t
-  :config (setq switch-window-shortcut-style 'alphabet)
   :bind ("C-x o" . switch-window))
+#+END_SRC
 
+Navigate between windows with ~shift+<direction>~
+#+BEGIN_SRC emacs-lisp
+(windmove-default-keybindings)
+#+END_SRC
+
+Cycle through windows (e.g. panes)
+#+BEGIN_SRC emacs-lisp
 ;; cycle through 'windows' (e.g. panes)
 (define-key global-map (kbd "M-`") 'next-multiframe-window)
 (define-key global-map (kbd "C-M-`") 'previous-multiframe-window)
 #+END_SRC
-** Better isearch - show what's happening during search
-#+BEGIN_SRC emacs-lisp
-;; Show current and total matches while searching
-(use-package anzu
-  :ensure t
-  :diminish anzu-mode
-  :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
-         ([remap query-replace] . anzu-query-replace))
-  :config (global-anzu-mode t))
-
-;; DEL during isearch should edit the search string, not jump back to the previous result
-(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
-#+END_SRC
-** Smartscan - Search for word under point
-From https://github.com/itsjeyd/emacs-config/blob/emacs24/init.el
-
-This basically allows you to do something similar to VIM *...i.e. it'll jump forward or backward to the next occurence of the symbol under the cursor.
-
-Bound to =M-n= and =M-b= by default, I think.
-
-#+BEGIN_SRC emacs-lisp
-(use-package smartscan
-  :ensure t
-  :config (global-smartscan-mode t))
-#+END_SRC
-** Ace-jump (jump to characters)
-#+BEGIN_SRC emacs-lisp
-;; =================================
-;; === Ace-mode - Jump to letter ===
-;; =================================
-;; ace-mode is fantastic.  It's a hybrid of ace-jump and isearch
-;; Hybrid of isearch and ace-jump.  Type a single character in search and words 
-;; beginning with that will highlight.  Press the highlighted letter to jump to 
-;; that occurence
-(use-package ace-isearch :ensure ace-jump-mode
-  :diminish ""
-  :config
-  (global-ace-isearch-mode 1)
-  (setq ace-isearch-use-jump t)
-  :bind (("C-c ." . ace-jump-mode)
-         ("C-c j c" . ace-jump-char-mode)
-         ("C-c j l" . ace-jump-line-mode)))
-#+END_SRC
-** Jump to register (file bookmarks)
-#+BEGIN_SRC emacs-lisp
-;; jump to register (file shortcuts)
-(set-register ?i (cons 'file "~/Dropbox/inbox.org"))
-(set-register ?j (cons 'file "~/Dropbox/journal.org"))
-(set-register ?l (cons 'file "~/Dropbox/logbook.org"))
-(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/chris-davison.org"))
-#+END_SRC
-** Code-folding
-#+BEGIN_SRC emacs-lisp
-;; Code folding
-(use-package fold-dwim :ensure t)
-(use-package fold-dwim-org :ensure t)
-;; (add-hook 'prog-mode-hook #'hs-minor-mode)
-(add-hook 'prog-mode-hook #'fold-dwim-org/minor-mode)
-#+END_SRC
-** Better ibuffer
+** ibuffer -- show version control status of file
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
-(use-package fullframe :ensure t)
+(use-package fullframe :ensure t :defer t)
 (after-load 'buffer (fullframe ibuffer ibuffer-quit))
 
 (use-package ibuffer-vc :ensure t)
@@ -843,12 +646,11 @@ Bound to =M-n= and =M-b= by default, I think.
     (cond
      ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
      ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-     (t (format "%8d" (buffer-size))))))
+     (t (format "%8d" (buffer-size)))))
+  ;; Explicitly require ibuffer-vc to get its column definitions, which
+  ;; can't be autoloaded
+  (require 'ibuffer-vc))
 
-
-;; Explicitly require ibuffer-vc to get its column definitions, which
-;; can't be autoloaded
-(after-load 'ibuffer (require 'ibuffer-vc))
 
 ;; Modify the default ibuffer-formats (toggle with `)
 (setq ibuffer-formats
@@ -856,19 +658,34 @@ Bound to =M-n= and =M-b= by default, I think.
               (name 18 18 :left :elide) " "
               (size-h 9 -1 :right) " "
               (mode 16 16 :left :elide) " "
+              (vc-status 16 16 :left) " "
               filename-and-process)
         (mark modified read-only vc-status-mini " "
               (name 18 18 :left :elide) " "
               (size-h 9 -1 :right) " "
               (mode 16 16 :left :elide) " "
-              (vc-status 16 16 :left) " "
-              filename-and-process)))
+              filename-and-process)
+        ))
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
+** isearch -- live preview of search and replace
+#+BEGIN_SRC emacs-lisp
+;; Show current and total matches while searching
+(use-package anzu :defer t
+  :ensure t
+  :diminish anzu-mode
+  :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
+         ([remap query-replace] . anzu-query-replace))
+  :config (global-anzu-mode t))
+
+;; DEL during isearch should edit the search string, not jump back to the previous result
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+#+END_SRC
+
 * OSX
 #+BEGIN_SRC emacs-lisp
-(when *is-a-mac*
+(when (eq system-type 'darwin)
   (use-package exec-path-from-shell :ensure t
     :config
     (when (memq window-system '(mac ns))
@@ -936,6 +753,7 @@ You can easily /capture/ information using various different templates (includin
         org-log-done 'time
         org-ellipsis "↴"
         org-archive-location "~/Dropbox/archive.org::")
+  (diminish 'org-indent-mode)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
@@ -957,39 +775,21 @@ You can easily /capture/ information using various different templates (includin
   ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-indent-mode)
-  (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq fill-column 80))
 
-(use-package org-bullets :ensure t
-  :config
-  (setq org-bullets-bullet-list (list "⚫" "☉" "⚪" "◉" "○" "◦" "∙")))
 
-(use-package visual-fill-column :ensure t
-  :config
-  (setq visual-fill-column-width 80))
 #+END_SRC
-** Utility functions
+** Insert a link from clipboard
+Prompt for description. Basically slightly quicker than having to ~C-y~ when creating a link.
 #+BEGIN_SRC emacs-lisp
 ;; (use-package ox-reveal :ensure t)
-;; This makes it easier to add links from outside.
-(defun sacha/yank-more ()
-  "Yank into an org link."
-  (interactive)
-  (insert "[[")
-  (yank)
-  (insert "][more]]"))
-;; (global-set-key (kbd "<f6>") 'sacha/yank-more)
-
-;; Basically the sacha function above, but with a prompted description
 (defun insert-link-with-description-prompt ()
   "Yank into an org link."
   (interactive)
   (let ((description (read-string "Description: ")))
     (insert "[[")
     (yank)
-    (insert (s-concat "][" description "]]"))
-    ))
-
+    (insert (s-concat "][" description "]]"))))
 #+END_SRC
 ** Fix indentation for org source blocks
 #+BEGIN_SRC emacs-lisp
@@ -999,18 +799,6 @@ You can easily /capture/ information using various different templates (includin
   (indent-region (point-min) (point-max))
   (org-edit-src-exit))
 (global-set-key (kbd "C-x c") 'cd/org-cleanup)
-#+END_SRC
-** Skeleton for Org-mode files
-#+BEGIN_SRC emacs-lisp
-(define-skeleton org-skeleton
-  "Header info for a emacs-org file."
-  "-----\n"
-  "#+TITLE: " (skeleton-read "Title: ") "\n"
-  "#+AUTHOR: Chris Davison\n"
-  "#+EMAIL: c.jr.davison@gmail.com\n"
-  "#+OPTIONS: toc:2 num:nil html-postamble:nil\n"
-  "#+PROPERTY: header-args :tangle " (skeleton-read "Tangle filename: ") "\n")
-;;(global-set-key [C-S-f4] 'org-skeleton)
 #+END_SRC
 ** Templates for src/latex/etc blocks
 #+BEGIN_SRC emacs-lisp
@@ -1101,22 +889,23 @@ do this for the whole buffer."
   (setq ad-return-value
         (wicked/org-update-checkbox-count (ad-get-arg 1))))
 #+END_SRC
-** Org move to prev/next narrow
+** Move to prev/next narrow
 #+BEGIN_SRC emacs-lisp
 (defun cd/move-to-previous-narrow ()
   (interactive)
   (progn
     (beginning-of-buffer)
     (widen)
-    (org-backward-heading-same-level 1)
+    (outline-previous-heading)
     (org-narrow-to-subtree)))
 
 (defun cd/move-to-next-narrow ()
   (interactive)
-  (progn  (beginning-of-buffer)
-          (widen)
-          (org-forward-heading-same-level 1)
-          (org-narrow-to-subtree)))
+  (progn
+    (beginning-of-buffer)
+    (widen)
+    (outline-next-heading)
+    (org-narrow-to-subtree)))
 #+END_SRC
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
@@ -1127,14 +916,14 @@ do this for the whole buffer."
         ("u" "URL" item (file+headline "~/Dropbox/inbox.org" "Links")
          "[[%^{URL}][%^{DESCRIPTION}]] %^{COMMENTS}\n" :immediate-finish 1)
 
-        ("p" "Project" entry (file "~/Dropbox/projects.org") "* %^{PROJECT}")
+        ("p" "Project" entry (file "~/Dropbox/inbox.org") "* TODO %^{PROJECT}")
 
-        ("a" "Article" entry (file+headline "~/Dropbox/projects.org" "Literature")
-         "* TODO %^{Title} %(org-set-tags) :article:
+        ("a" "Article" entry (file+headline "~/Dropbox/inbox.org" "Literature")
+         "* TODO %^{Title}
 :PROPERTIES:
 :CREATED: %U
 :END:
-%i
+
 Abstract:
 %?"
          :prepend t
@@ -1181,74 +970,9 @@ Abstract:
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
         ))
 #+END_SRC
-* Magit - Git in Emacs
+* Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
-(use-package magit :ensure t :defer 4
-  :config
-  (setq
-   ;; Magit needs to call git multiple times
-   ;; only refreshing the main buffer can improve performance
-   magit-refresh-status-buffer nil
-   ;; Emacs has its own version control.  We don't need to run both
-   ;; as that'll be detrimental for performance
-   vc-handled-backends (delq 'Git vc-handled-backends)))
-#+END_SRC
-* Terminal Improvements
-** Windows Shell Config
-#+BEGIN_SRC emacs-lisp
-(defun cd/set-windows-shell ()
-  "If on windows, set the shell to git bash."
-  (interactive)
-  (if (eq system-type 'windows-nt)
-      (progn (setq explicit-shell-file-name
-                   "C:/Program Files/Git/bin/sh.exe")
-             (setq shell-file-name "bash")
-             (setq explicit-sh.exe-args '("--login" "-i"))
-             (setenv "SHELL" shell-file-name)
-             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
-    nil))
-
-(cd/set-windows-shell)
-#+END_SRC
-** Improvements for ansi-term
-#+BEGIN_SRC emacs-lisp
-(defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-  "Close an ansi-term buffer if I quit the terminal."
-  (if (memq (process-status proc) '(signal exit))
-      (let ((buffer (process-buffer proc)))
-        ad-do-it
-        (kill-buffer buffer))
-    ad-do-it))
-(ad-activate 'term-sentinel)
-
-;; By default, use fish in ansi-term
-;; e.g. don't prompt for a shell
-(defvar my-term-shell "/usr/local/bin/fish")
-(defadvice ansi-term (before force-bash)
-  (interactive (list my-term-shell)))
-(ad-activate 'ansi-term)
-
-;; Use UTF8 in terminals
-(defun my-term-use-utf8 ()
-  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
-(add-hook 'term-exec-hook 'my-term-use-utf8)
-
-;; Make URLs in the term clickable
-(defun my-term-paste (&optional string)
-  (interactive)
-  (process-send-string
-   (get-buffer-process (current-buffer))
-   (if string string (current-kill 0))))
-
-(defun my-term-hook ()
-  (goto-address-mode)
-  (define-key term-raw-map "\C-y" 'my-term-paste))
-(add-hook 'term-mode-hook 'my-term-hook)
-#+END_SRC
-
-* Hydra
-#+BEGIN_SRC emacs-lisp
-(use-package hydra :ensure t :defer 4)
+(use-package hydra :ensure t :defer t)
 #+END_SRC
 
 ** Dired
@@ -1400,25 +1124,7 @@ T - tag prefix
 
 (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
 
-(add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
-#+END_SRC
-** WIP Movement
-#+BEGIN_SRC emacs-lisp :tangle no
-(defhydra cd/move (:body-pre (next-line))
-  "move"
-  ("n" next-line)
-  ("p" previous-line)
-  ("f" forward-char)
-  ("b" backward-char)
-  ("F" forward-word)
-  ("B" backward-word)
-  ("a" beginning-of-line)
-  ("e" move-end-of-line)
-  ("v" scroll-up-command)
-  ;; Converting M-v to V here by analogy.
-  ("V" scroll-down-command)
-  ("l" recenter-top-bottom))
-;; (define-key global-map (kbd "C-n") 'cd/move/body)
+(add-hook 'ibuffer-hook 'hydra-ibuffer-main/body)
 #+END_SRC
 ** My utility binds
 #+BEGIN_SRC emacs-lisp
@@ -1455,8 +1161,8 @@ T - tag prefix
   ("'" previous-multiframe-window "Previous" :column "Move" :exit nil)
   ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
   ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
-  ;; ("n" cd/mode-to-next-narrow "Next narrowed subtree" :column "Move")
-  ;; ("p" cd/mode-to-previous-narrow "Previous narrowed subtree" :column "Move")
+  ("n" cd/move-to-next-narrow "Next narrowed subtree" :column "Move" :exit nil)
+  ("p" cd/move-to-previous-narrow "Previous narrowed subtree" :column "Move" :exit nil)
 
   ("S-<up>" enlarge-window "Enlarge" :column "Size" :exit nil)
   ("S-<down>" shrink-window "Shrink" :column "Size" :exit nil)
@@ -1471,8 +1177,10 @@ T - tag prefix
   ("l" (find-file "~/Dropbox/logbook.org") "Logbook")
   ("a" (find-file "~/Dropbox/archive.org") "Archive")
   ("f" counsel-find-file "Find file")
+  ("F" counsel-file-jump "Find file (recursive)")
   ("b" ivy-switch-buffer "Switch Buffer")
-  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config"))
+  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config")
+  ("d" dired "Dired"))
 
 (defhydra hydra-fold (:pre (hs-minor-mode 1))
   "fold"
@@ -1498,8 +1206,7 @@ T - tag prefix
 (defhydra hydra-cd-util (:hint nil :exit t)
   ("<tab>" cd/indent/body "Indent" :column "Appearance")
   ("f" hydra-fold/body "Fold" :column "Appearance")
-  ("Z" cd/zoom/body "Font size" :column "Appearance")
-  ("z" (modi/toggle-one-window nil t) "Zen mode" :column "Appearance")
+  ("z" cd/zoom/body "Font size" :column "Appearance")
   ("C-z" (modi/toggle-one-window nil t) "Zen mode" :column "Appearance")
   ("w" cd/windowmove/body "Windows" :column "Appearance")
 
@@ -1516,13 +1223,141 @@ T - tag prefix
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
 (define-key global-map (kbd "C-z") 'hydra-cd-util/body)
 #+END_SRC
-* WIP NEW
-** WIP Global Yasnippet (snippets) mode
+* Appearance
+** Font
+List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
-(when (fboundp 'yas-global-mode) 
-  (yas-global-mode +1))
+(setq cd-font-options 
+      '("Fantasque Sans Mono" "Ubuntu Mono" "Roboto Mono"
+"DejaVu Sans Mono" 
+         "Fira Mono" "Liberation Mono"))
+(setq cd-fonts-available
+      (cl-remove-if
+       (lambda (font)
+         (not (member font (font-family-list)))) cd-font-options))
+(when cd-fonts-available
+  (set-frame-font (car cd-fonts-available) 1))
+
+(setq line-spacing 0.1)
+(setq cd-font-height
+      (if (eq system-type 'windows-nt) 160 200))
+(set-face-attribute 'default nil :height cd-font-height)
 #+END_SRC
-** TODO Language Server Protocol 
+** Colour themes
+Disable themes before loading a new theme
+#+BEGIN_SRC emacs-lisp
+(defadvice load-theme (before theme-dont-propagate activate)
+  (mapc #'disable-theme custom-enabled-themes))
+(setq custom-safe-themes t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package kaolin-themes)
+(load-theme 'kaolin-dark t)
+#+END_SRC
+** Suppress GUI features
+#+BEGIN_SRC emacs-lisp
+(setq use-file-dialog nil
+      use-dialog-box nil
+      menu-bar-mode nil
+      inhibit-startup-screen t
+      inhibit-startup-echo-area-message t)
+
+;; Hide tool bar,  scroll bar and borders
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
+
+(let ((no-border '(internal-border-width . 0)))
+  (add-to-list 'default-frame-alist no-border)
+  (add-to-list 'initial-frame-alist no-border))
+#+END_SRC
+
+** Line highlighting, linum, colnum, and cursor
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+(blink-cursor-mode 0)
+(setq linum-format "%d ")
+
+;; Line number and column 
+(line-number-mode 1)
+(column-number-mode 1)
+#+END_SRC
+** Tabstop stuff
+#+BEGIN_SRC emacs-lisp
+(setq tab-stop-list (number-sequence 4 200 4))
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+#+END_SRC
+** Don't scroll jump multiple lines
+#+BEGIN_SRC emacs-lisp
+(setq scroll-step           1
+      scroll-conservatively 10000)
+#+END_SRC
+** Temporary 'zoom' into a pane
+A bit like 'focus mode' for other languages.  Can perhaps combine this with /darkroom/ to enforce distraction free writing.
+
+Just set ~darkroom-tentative-mode~ and then whenever I go to one-window mode, it'll automatically be distraction-free?  Is ~darkroom-tentative-mode~ global, or buffer specific?  *Buffer specific*.
+
+From [[https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-windows-buffers.el][this github repo]].
+#+BEGIN_SRC emacs-lisp
+(defvar modi/toggle-one-window--buffer-name nil
+  "Variable to store the name of the buffer for which the `modi/toggle-one-window'
+function is called.")
+
+(defvar modi/toggle-one-window--window-configuration nil
+  "Variable to store the window configuration before `modi/toggle-one-window'
+function was called.")
+
+(defun modi/toggle-one-window (&optional force-one-window zen)
+  "Toggles the frame state between deleting all windows other than
+the current window and the windows state prior to that."
+  (interactive "P")
+  (if (or (null (one-window-p))
+          force-one-window)
+      (progn
+        (setq modi/toggle-one-window--buffer-name (buffer-name))
+        (setq modi/toggle-one-window--window-configuration (current-window-configuration))
+        (delete-other-windows)
+        (when zen (darkroom-mode t)))
+    (progn
+      (when modi/toggle-one-window--buffer-name
+        (set-window-configuration modi/toggle-one-window--window-configuration)
+        (switch-to-buffer modi/toggle-one-window--buffer-name)
+        (when zen (darkroom-mode -1))))))
+  (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
+
+
+#+END_SRC
+** Code-folding
+#+BEGIN_SRC emacs-lisp
+;; Code folding
+(use-package fold-dwim :ensure t :defer t)
+(use-package fold-dwim-org :ensure t :defer t)
+;; (add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'prog-mode-hook 'fold-dwim-org/minor-mode)
+
+(diminish 'hs-minor-mode)
+#+END_SRC
+** OTHER appearance stuff
+#+BEGIN_SRC emacs-lisp
+(setq uniquify-buffer-name-style 'forward)
+(setq linum-format "%4d ")
+
+(set-default 'indicate-empty-lines t)
+
+(highlight-indentation-mode -1)
+
+;; Soft-wrap at a column.
+;; Not currently setting this globally, as still unsure about 
+;; hard wrap vs soft-wrap vs soft-wrap with ruler
+(use-package visual-fill-column :ensure t
+  :config
+  (setq visual-fill-column-width 80))
+
+;; Replace lambda and AND etc with pretty symbols
+(global-prettify-symbols-mode +1)
+#+END_SRC
+* WIP Language Server Protocol 
 Not enabling this yet, as I'm not sure how well it incorporates across platforms and with my current languages.
 
 LSP vs elpy?
@@ -1530,17 +1365,3 @@ LSP vs elpy?
 (use-package lsp-mode :ensure t)
 #+END_SRC
 
-** WIP Adaptive wrapping
-With visual line mode, org-mode section headers and stuff get wrapped.
-
-Pair visual-line-mode with adaptive-wrap to get indentation at the start of wrapped lines
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package adaptive-wrap :ensure t)
-#+END_SRC
-** WIP Diminish modes
-#+BEGIN_SRC emacs-lisp
-(diminish 'hs-minor-mode)
-;; (diminish 'flymake-mode "Fm")
-;; (diminish 'flycheck-mode "Fc")
-(diminish 'org-indent-mode)
-#+END_SRC
