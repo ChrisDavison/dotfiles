@@ -15,6 +15,7 @@ You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-da
 (setq use-package-always-ensure t)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 #+END_SRC
 
 We also use the ~use-package~ library to make adding new packages, and configuring them, much easier.
@@ -33,36 +34,15 @@ We also use the ~use-package~ library to make adding new packages, and configuri
  user-mail-address "c.jr.davison@gmail.com"
  user-emacs-directory "~/code/dotfiles/.emacs.d")
 #+END_SRC
-** Plugins/config currently ignored...
-These are plugins that, while interesting, I've not generally found significant use for in my workflow and so am putting on the backburner.
-*** Jump to register (file bookmarks)
-This has been superseded with my hydra config
-#+BEGIN_SRC emacs-lisp :tangle no
-;; jump to register (file shortcuts)
-(set-register ?i (cons 'file "~/Dropbox/inbox.org"))
-(set-register ?j (cons 'file "~/Dropbox/journal.org"))
-(set-register ?l (cons 'file "~/Dropbox/logbook.org"))
-(set-register ?c (cons 'file "~/code/dotfiles/.emacs.d/chris-davison.org"))
-#+END_SRC
-*** Ace-jump (jump to characters)
-Ace-mode is fantastic.  It's a hybrid of ace-jump and isearch hybrid of isearch and ace-jump.  Type a single character in search and words  with that will highlight.  Press the highlighted letter to jump to that occurence
+** Plugins ignored
+These are plugins that I used to use, and may go back to, but didn't really get used in my workflow.
 
-*Disabling this for now*.  Not been making much use of this.  Just use keyboard shortcuts, and C-s (/isearch/) rather than having another keybind?
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package ace-isearch :ensure ace-jump-mode :defer t
-  :diminish ""
-  :config
-  (global-ace-isearch-mode 1)
-  (setq ace-isearch-use-jump t)
-  :bind (("C-c ." . ace-jump-mode)
-         ("C-c j c" . ace-jump-char-mode)
-         ("C-c j l" . ace-jump-line-mode)))
-#+END_SRC
+- darkroom (zen-ish mode)
+- ace-jump (just used isearch)
+- smartparens (not doing that much lisp for the extra mental overhead)
 * General init
 Define a few constants to make it easy to modify behaviour by-system.
 #+BEGIN_SRC emacs-lisp
-(defconst *spell-check-support-enabled* nil)
-
 (setq package-enable-at-startup nil)
 (package-initialize)
 
@@ -71,8 +51,7 @@ Define a few constants to make it easy to modify behaviour by-system.
   :config (fullframe list-packages quit-window))
 
 ;; Generally useful common-lisp library (functions)
-(use-package cl-lib :ensure t
-  :config (require 'cl-lib))
+(use-package cl-lib :ensure t :config (require 'cl-lib))
 (use-package s :ensure t :defer t)  ; Useful string functions
 (use-package f :ensure t :defer t)  ; Useful file and dir functions
 
@@ -83,6 +62,8 @@ Define a few constants to make it easy to modify behaviour by-system.
 (setq apropos-do-all t)
 
 (setq-default initial-scratch-message ";; Scratch pad\n\n")
+
+(defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
 ** Delete the current file
@@ -143,10 +124,12 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
         regexp-search-ring))
 
 ;; Counting 'recent files' as part of history
-(use-package recentf :ensure t :defer t)
-(setq recentf-max-saved-items 200)
-(setq recentf-max-menu-items 15)
-(recentf-mode)
+(use-package recentf :ensure t :defer t
+  :config
+  (setq recentf-max-saved-items 200
+        recentf-max-menu-items 15)
+  (recentf-mode))
+
 
 ;; Always save the desktop, the current workspace config
 (setq desktop-path (list user-emacs-directory)
@@ -186,16 +169,13 @@ redo), and go down different branches.
    magit-refresh-status-buffer nil
    ;; Emacs has its own version control.  We don't need to run both
    ;; as that'll be detrimental for performance
-   vc-handled-backends (delq 'Git vc-handled-backends)))
-(define-key global-map (kbd "C-x g") 'magit-status)
+   vc-handled-backends (delq 'Git vc-handled-backends))
+  :bind (("C-x g" . magit-status)))
 #+END_SRC
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode 1)
-(use-package smartparens :ensure t :defer t
-  :config (require 'smartparens-config)
-  (diminish 'smartparens-mode))
 
 ;; transparently open compressed files
 (auto-compression-mode t)
@@ -206,27 +186,15 @@ redo), and go down different branches.
 ;; Use lettercase to determine words in camelcase text
 (global-subword-mode 1)
 
-(setq gc-cons-threshold 20000000)
-
 ;; expand region
-(use-package expand-region :ensure t :defer t
-  :bind ("C-=" . er/expand-region))
+(use-package expand-region :ensure t)
+(define-key global-map (kbd "C-=") 'er/expand-region)
 
 ;; If a region is selected, any 'insert' command (typing or yanking) will overwrite it, rather than inserting before.
 (delete-selection-mode 1)
 
-;; Invert regex and normal isearch
-(define-key global-map (kbd "C-M-%") 'anzu-query-replace)
-(define-key global-map (kbd "M-%") 'anzu-query-replace-regexp)
-
 ;; indent after newline
 (global-set-key (kbd "RET") 'newline-and-indent)
-
-;; 'Zen-move' - distraction free editing
-(use-package darkroom :ensure t :defer t
-  :config
-  (setq darkroom-text-scale-increase 0
-        darkroom-margins 0.15))
 
 ;; Interactive editing...over word or region, C-; to edit.  Just modify the symbol, then repeat
 ;; C-; to exit.
@@ -257,7 +225,6 @@ redo), and go down different branches.
 (define-key global-map (kbd "C-<") 'indent-rigidly-left-to-tab-stop)
 #+END_SRC
 ** Offer to create parent dirs if they do not exist
-Offer to create parent directories if they do not exist
 [[http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/][From this blog]]
 #+BEGIN_SRC emacs-lisp
 
@@ -356,14 +323,11 @@ Use git-bash as windows shell
 #+END_SRC
 ** Markdown
 #+BEGIN_SRC emacs-lisp
-(use-package pandoc-mode :ensure t :diminish "" :defer t)
 (use-package markdown-mode :ensure t :defer t
   :config
   (add-to-list 'auto-mode-alist
                (cons "\\.\\(md\\|markdown\\)\\'" 'markdown-mode))
-  (add-hook 'markdown-mode-hook 'pandoc-mode)
-  (add-hook 'markdown-mode-hook 'visual-line-mode)
-  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings))
+  (add-hook 'markdown-mode-hook 'visual-line-mode))
 #+END_SRC
 
 Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters laying around
@@ -384,7 +348,8 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
 (use-package company :ensure t :diminish company-mode :defer t
   :bind ("TAB" . company-indent-or-complete-common)
   :config
-  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-align-annotations t
+        company-global-modes '(not org-mode))
   (add-hook 'prog-mode-hook 'company-mode))
 #+END_SRC
 ** CSV
@@ -408,7 +373,6 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
 #+BEGIN_SRC emacs-lisp
 ;; Cider for interactive clojure programming
 (use-package flycheck-clojure :ensure t :defer t)
-
 (use-package cider :ensure t :defer t
   :config
   (setq nrepl-popup-stacktraces nil)
@@ -453,18 +417,8 @@ Use elpy for python
   :config
   (add-hook 'python-mode-hook (lambda () (elpy-enable)))
   (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i"))
-
-(diminish 'elpy-mode)
-
-;; need to set up VENV usage
-;; Python
-(use-package virtualenvwrapper :ensure t :defer t
-  :config
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell)
-  (setq venv-location "~/.envs/")
-  (add-hook 'python-mode-hook (lambda () (venv-workon "ml"))))
+        python-shell-interpreter-args "--simple-prompt -i")
+  (diminish 'elpy-mode))
 
 (defun ipython()
   (interactive)
@@ -478,9 +432,6 @@ Use elpy for python
              (shell)
              (cd/set-windows-shell))
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
-
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "--simple-prompt -i --pprint")
 #+END_SRC
 
 ** WIP Latex config
@@ -551,13 +502,6 @@ Use elpy for python
 #+END_SRC
 ** Web-stuff
 #+BEGIN_SRC emacs-lisp
-;; Emmet is fantastic for quickly outlining HTML
-(use-package emmet-mode :ensure t :defer t
-  :config 
-  (add-hook 'sgml-mode-hook 'emmet-mode)
-  (add-hook 'css-mode-hook 'emmet-mode)
-  (setq emmet-move-cursor-between-quotes t))
-
 (use-package sass-mode :ensure t :defer t)
 (use-package js2-mode :ensure t :defer t)
 
@@ -573,7 +517,6 @@ Use elpy for python
 Navigation of prtty much any /menu-type/ thing
 #+BEGIN_SRC emacs-lisp
 
-(use-package flx :ensure t :defer t)
 (use-package ivy :ensure t :defer t
   :diminish (ivy-mode . "")
   :bind
@@ -598,7 +541,6 @@ Navigation of prtty much any /menu-type/ thing
    ("M-x" . counsel-M-x)))
 
 (use-package swiper :ensure t :defer t)
-(use-package dired-single :ensure t)
 
 ;; do imenu over every file with the same major mode, recursively
 (use-package imenu-anywhere :ensure t :defer t)
@@ -675,7 +617,10 @@ Cycle through windows (e.g. panes)
   :ensure t
   :diminish anzu-mode
   :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
-         ([remap query-replace] . anzu-query-replace))
+         ([remap query-replace] . anzu-query-replace)
+         ;; Invert regex and normal isearch
+         ("C-M-%" . anzu-query-replace)
+         ("M-%" . anzu-query-replace-regexp))
   :config (global-anzu-mode t))
 
 ;; DEL during isearch should edit the search string, not jump back to the previous result
@@ -721,7 +666,7 @@ You can easily /capture/ information using various different templates (includin
 (use-package org
   :ensure t
   :bind (("<f1>" . org-capture)
-         ;; ("<f2>" . org-agenda)
+         ("<f2>" . org-agenda)
          ("<f3>" . org-agenda-list)
          ("C-c l" . org-store-link))
   :config
@@ -802,91 +747,17 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 ** Templates for src/latex/etc blocks
 #+BEGIN_SRC emacs-lisp
 (setq org-structure-template-alist
-      '(
-        ("s" "#+BEGIN_SRC ?\n\n#+END_SRC")
-        ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE")
-        ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE")
-        ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE")
-        ("V" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM")
-        ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER")
-        ("C" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
-        ("L" "#+BEGIN_EXPORT latex\n?\n#+END_EXPORT")
-        ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
-        ("h" "#+BEGIN_EXPORT html\n?\n#+END_EXPORT")
-        ("H" "#+HTML: ")
-        ("a" "#+BEGIN_EXPORT ascii\n?\n#+END_EXPORT")
-        ("A" "#+ASCII: ")
-        ("i" "#+INDEX: ?")
-        ("I" "#+INCLUDE: %file ?")))
-#+END_SRC
-** Org and Latex
-#+BEGIN_SRC emacs-lisp :tangle no
-;; latex exporting
-(require 'ox-latex)
-
-(unless (boundp 'org-latex-classes)
-  (setq org-latex-classes nil))
-
-;; This function makes checkbox counting work with HEADER checkboxes, as well as sublists.
-(defun wicked/org-update-checkbox-count (&optional all)
-  "Update the checkbox statistics in the current section.
-This will find all statistic cookies like [57%] and [6/12] and update
-them with the current numbers.  With optional prefix argument ALL,
-do this for the whole buffer."
-  (interactive "P")
-  (save-excursion
-    (let* ((buffer-invisibility-spec (org-inhibit-invisibility)) 
-           (beg (condition-case nil
-                    (progn (outline-back-to-heading) (point))
-                  (error (point-min))))
-           (end (move-marker
-                 (make-marker)
-                 (progn (or (outline-get-next-sibling) ;; (1)
-                            (goto-char (point-max)))
-                        (point))))   
-           (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*/[0-9]*\\]\\)")
-           (re-box
-            "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
-           b1 e1 f1 c-on c-off lim (cstat 0))
-      (when all
-        (goto-char (point-min))
-        (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
-        (setq beg (point) end (point-max)))
-      (goto-char beg)
-      (while (re-search-forward re end t)
-        (setq cstat (1+ cstat)
-              b1 (match-beginning 0)
-              e1 (match-end 0)
-              f1 (match-beginning 1)
-              lim (cond
-                   ((org-on-heading-p)
-                    (or (outline-get-next-sibling) ;; (3)
-                        (goto-char (point-max)))
-                    (point))
-                   ((org-at-item-p) (org-end-of-item) (point))
-                   (t nil))
-              c-on 0 c-off 0)
-        (goto-char e1)
-        (when lim
-          (while (re-search-forward re-box lim t)
-            (if (member (match-string 2) '("[ ]" "[-]"))
-                (setq c-off (1+ c-off))
-              (setq c-on (1+ c-on))))
-          (goto-char b1)
-          (insert (if f1
-                      (format "[%d%%]" (/ (* 100 c-on)
-                                          (max 1 (+ c-on c-off))))
-                    (format "[%d/%d]" c-on (+ c-on c-off))))
-          (and (looking-at "\\[.*?\\]")
-               (replace-match ""))))
-      (when (interactive-p)
-        (message "Checkbox statistics updated %s (%d places)"
-                 (if all "in entire file" "in current outline entry")
-                 cstat)))))
-(defadvice org-update-checkbox-count (around wicked activate)
-  "Fix the built-in checkbox count to understand headlines."
-  (setq ad-return-value
-        (wicked/org-update-checkbox-count (ad-get-arg 1))))
+      '(("a" . "export ascii")
+        ("c" . "center")
+        ("C" . "comment")
+        ("e" . "example")
+        ("E" . "export")
+        ("h" . "export html")
+        ("l" . "src emacs-lisp")
+        ("q" . "quote")
+        ("s" . "src")
+        ("v" . "verse")
+        ("V" . "verbatim")))
 #+END_SRC
 ** Move to prev/next narrow
 #+BEGIN_SRC emacs-lisp
@@ -984,7 +855,7 @@ _D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ ki
 _R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
 _Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
 _S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
-_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+_r_sync            ^ ^              _f_ilter           ^ ^                _?_ summary
 _z_ compress-file  _A_ find regexp
 _Z_ compress       _Q_ repl regexp
 
@@ -1002,6 +873,10 @@ T - tag prefix
   ("D" dired-do-delete)
   ("E" dired-mark-extension)
   ("e" dired-ediff-files)
+  ("f" (progn
+         (dired-mark-files-regexp (read-string "Regexp: "))
+         (dired-toggle-marks)
+         (dired-do-kill-lines)) :exit t)
   ("F" dired-do-find-marked-files)
   ("G" dired-do-chgrp)
   ("g" revert-buffer)        ;; read all directories again (refresh)
@@ -1027,7 +902,9 @@ T - tag prefix
   ("q" nil)
   ("." nil :color blue))
 
-(define-key dired-mode-map "." 'hydra-dired/body)
+(with-eval-after-load 'dired
+  (define-key dired-mode-map "." 'hydra-dired/body))
+
 #+END_SRC
 ** Ibuffer
 #+BEGIN_SRC emacs-lisp
@@ -1156,18 +1033,15 @@ T - tag prefix
   ("<right>" windmove-right "Right" :column "Move")
   ("<up>" windmove-up "Up" :column "Move")
   ("<down>" windmove-down "Down" :column "Move")
-  ("`" next-multiframe-window "Next" :column "Move" :exit nil)
-  ("'" previous-multiframe-window "Previous" :column "Move" :exit nil)
-  ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Split")
-  ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Split")
+  ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Move")
+  ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Move")
   ("n" cd/move-to-next-narrow "Next narrowed subtree" :column "Move" :exit nil)
   ("p" cd/move-to-previous-narrow "Previous narrowed subtree" :column "Move" :exit nil)
 
-  ("S-<up>" enlarge-window "Enlarge" :column "Size" :exit nil)
-  ("S-<down>" shrink-window "Shrink" :column "Size" :exit nil)
-  ("=" balance-windows "Equalise" :column "Size")
-  
-  ("d" delete-window "Close window" :column "Windows")
+  ("S-<up>" enlarge-window "Enlarge" :column "Windows" :exit nil)
+  ("S-<down>" shrink-window "Shrink" :column "Windows" :exit nil)
+  ("=" balance-windows "Equalise" :column "Windows")
+    ("d" delete-window "Close window" :column "Windows")
   ("o" delete-other-windows "Keep only this window" :column "Windows"))
 
 (defhydra cd/files (:exit t)
@@ -1188,20 +1062,6 @@ T - tag prefix
   ("s" fold-dwim-show-all "show-all")
   ("q" nil "quit"))
 
-(defhydra hydra-apropos (:color blue)
-  "Apropos"
-  ("a" apropos "apropos")
-  ("c" apropos-command "cmd")
-  ("d" apropos-documentation "doc")
-  ("e" apropos-value "val")
-  ("l" apropos-library "lib")
-  ("o" apropos-user-option "option")
-  ("u" apropos-user-option "option")
-  ("v" apropos-variable "var")
-  ("i" info-apropos "info")
-  ("t" tags-apropos "tags")
-  ("z" hydra-customize-apropos/body "customize"))
-
 (defhydra hydra-cd-util (:hint nil :exit t)
   ("<tab>" cd/indent/body "Indent" :column "Appearance")
   ("f" hydra-fold/body "Fold" :column "Appearance")
@@ -1214,9 +1074,10 @@ T - tag prefix
   ("i" ivy-imenu-anywhere "Imenu Anywhere" :column "Search & Replace")
   ("e" iedit-mode "Iedit" :column "Search & Replace")
 
+  ("c" (progn (mark-whole-buffer) (kill-ring-save 0 0 t)) "Copy buffer" :column "Utils")
   ("l" cd/links/body "Links" :column "Utils")
   ("o" cd/files/body "Open file bookmarks" :column "Utils")
-  ("a" hydra-apropos/body "Apropos" :column "Utils")
+  ("a" apropos "Apropos" :column "Utils")
   ("p" cd/paragraphs-and-lines/body "Paragraphs and lines" :column "Utils"))
 
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
@@ -1227,9 +1088,12 @@ T - tag prefix
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-font-options 
-      '("Fantasque Sans Mono" "Ubuntu Mono" "Roboto Mono"
-"DejaVu Sans Mono" 
-         "Fira Mono" "Liberation Mono"))
+      '("Fantasque Sans Mono" 
+        "Ubuntu Mono" 
+        "Roboto Mono"
+        "DejaVu Sans Mono" 
+        "Fira Mono"
+        "Liberation Mono"))
 (setq cd-fonts-available
       (cl-remove-if
        (lambda (font)
@@ -1295,8 +1159,6 @@ Disable themes before loading a new theme
 ** Temporary 'zoom' into a pane
 A bit like 'focus mode' for other languages.  Can perhaps combine this with /darkroom/ to enforce distraction free writing.
 
-Just set ~darkroom-tentative-mode~ and then whenever I go to one-window mode, it'll automatically be distraction-free?  Is ~darkroom-tentative-mode~ global, or buffer specific?  *Buffer specific*.
-
 From [[https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-windows-buffers.el][this github repo]].
 #+BEGIN_SRC emacs-lisp
 (defvar modi/toggle-one-window--buffer-name nil
@@ -1307,7 +1169,7 @@ function is called.")
   "Variable to store the window configuration before `modi/toggle-one-window'
 function was called.")
 
-(defun modi/toggle-one-window (&optional force-one-window zen)
+(defun modi/toggle-one-window (&optional force-one-window)
   "Toggles the frame state between deleting all windows other than
 the current window and the windows state prior to that."
   (interactive "P")
@@ -1316,13 +1178,11 @@ the current window and the windows state prior to that."
       (progn
         (setq modi/toggle-one-window--buffer-name (buffer-name))
         (setq modi/toggle-one-window--window-configuration (current-window-configuration))
-        (delete-other-windows)
-        (when zen (darkroom-mode t)))
+        (delete-other-windows))
     (progn
       (when modi/toggle-one-window--buffer-name
         (set-window-configuration modi/toggle-one-window--window-configuration)
-        (switch-to-buffer modi/toggle-one-window--buffer-name)
-        (when zen (darkroom-mode -1))))))
+        (switch-to-buffer modi/toggle-one-window--buffer-name)))))
   (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
 
 
@@ -1332,10 +1192,7 @@ the current window and the windows state prior to that."
 ;; Code folding
 (use-package fold-dwim :ensure t :defer t)
 (use-package fold-dwim-org :ensure t :defer t)
-;; (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'prog-mode-hook 'fold-dwim-org/minor-mode)
-
-(diminish 'hs-minor-mode)
 #+END_SRC
 ** OTHER appearance stuff
 #+BEGIN_SRC emacs-lisp
@@ -1343,7 +1200,6 @@ the current window and the windows state prior to that."
 (setq linum-format "%4d ")
 
 (set-default 'indicate-empty-lines t)
-
 (highlight-indentation-mode -1)
 
 ;; Soft-wrap at a column.
