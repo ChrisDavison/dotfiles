@@ -58,7 +58,6 @@ Ace-mode is fantastic.  It's a hybrid of ace-jump and isearch hybrid of isearch 
          ("C-c j c" . ace-jump-char-mode)
          ("C-c j l" . ace-jump-line-mode)))
 #+END_SRC
-
 * General init
 Define a few constants to make it easy to modify behaviour by-system.
 #+BEGIN_SRC emacs-lisp
@@ -413,13 +412,13 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
 (use-package cider :ensure t :defer t
   :config
   (setq nrepl-popup-stacktraces nil)
-  (after-load 'cider
+  (with-eval-after-load 'cider
     (add-hook 'cider-mode-hook 'eldoc-mode)
     (add-hook 'cider-repl-mode-hook 'subword-mode)
     (add-hook 'cider-repl-mode-hook 'smartparens-mode)
     (add-hook 'cider-repl-mode-hook 'paredit-mode)
-    (after-load 'clojure-mode
-      (after-load 'flycheck
+    (with-eval-after-load 'clojure-mode
+      (with-eval-after-load 'flycheck
         (flycheck-clojure-setup)))))
 #+END_SRC
 ** Golang
@@ -628,7 +627,7 @@ Cycle through windows (e.g. panes)
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
 (use-package fullframe :ensure t :defer t)
-(after-load 'buffer (fullframe ibuffer ibuffer-quit))
+(with-eval-after-load 'buffer (fullframe ibuffer ibuffer-quit))
 
 (use-package ibuffer-vc :ensure t)
 
@@ -639,7 +638,7 @@ Cycle through windows (e.g. panes)
 
 (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 
-(after-load 'ibuffer
+(with-eval-after-load 'ibuffer
   ;; Use human readable Size column instead of original one
   (define-ibuffer-column size-h
     (:name "Size" :inline t)
@@ -705,7 +704,7 @@ Cycle through windows (e.g. panes)
   ;;And give emacs some of the expected OS X keybinds
   (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
   (global-set-key (kbd "M-˙") 'ns-do-hide-others)
-  (after-load 'nxml-mode (define-key nxml-mode-map (kbd "M-h") nil))
+  (with-eval-after-load 'nxml-mode (define-key nxml-mode-map (kbd "M-h") nil))
   (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
   (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
   (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
