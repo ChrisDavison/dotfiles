@@ -12,6 +12,7 @@ You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-da
 #+BEGIN_SRC emacs-lisp
 ;; This sets up the load path so that we can override it
 (package-initialize)
+(package-refresh-contents)
 (setq use-package-always-ensure t)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -22,7 +23,6 @@ We also use the ~use-package~ library to make adding new packages, and configuri
 
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
 #+END_SRC
@@ -54,9 +54,6 @@ Define a few constants to make it easy to modify behaviour by-system.
 (use-package cl-lib :ensure t :config (require 'cl-lib))
 (use-package s :ensure t :defer t)  ; Useful string functions
 (use-package f :ensure t :defer t)  ; Useful file and dir functions
-
-;; Make messages of some minor modes shorter
-(use-package diminish :ensure t)
 
 ;; Make /apropos/ bring up everything, rather than requiring separate keybinds
 (setq apropos-do-all t)
@@ -98,7 +95,6 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 ** Show help popup if you stop halfway through a keybind sequence
 #+BEGIN_SRC emacs-lisp
 (use-package guide-key :ensure t :defer t
-  :diminish guide-key-mode
   :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
   :config (guide-key-mode 1))
 #+END_SRC
@@ -153,7 +149,6 @@ redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree :ensure t :defer t
-  :diminish undo-tree-mode
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps nil
@@ -176,6 +171,8 @@ redo), and go down different branches.
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode 1)
+
+(setq find-file-visit-truename t)
 
 ;; transparently open compressed files
 (auto-compression-mode t)
@@ -264,7 +261,6 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
         ((python-mode . "Python") nil
         "#!/usr/bin/env python3")
       ))
-(setq auto-insert t)
 (add-hook 'find-file-hook 'auto-insert)
 #+END_SRC
 * Languages
@@ -345,7 +341,7 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
 #+END_SRC
 ** Company -- COMPlete ANYthing
 #+BEGIN_SRC emacs-lisp
-(use-package company :ensure t :diminish company-mode :defer t
+(use-package company :ensure t :defer t
   :bind ("TAB" . company-indent-or-complete-common)
   :config
   (setq company-tooltip-align-annotations t
@@ -417,8 +413,7 @@ Use elpy for python
   :config
   (add-hook 'python-mode-hook (lambda () (elpy-enable)))
   (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
-  (diminish 'elpy-mode))
+        python-shell-interpreter-args "--simple-prompt -i"))
 
 (defun ipython()
   (interactive)
@@ -518,7 +513,6 @@ Navigation of prtty much any /menu-type/ thing
 #+BEGIN_SRC emacs-lisp
 
 (use-package ivy :ensure t :defer t
-  :diminish (ivy-mode . "")
   :bind
   (:map ivy-mode-map
         ("C-c h" . ivy-switch-buffer)
@@ -538,7 +532,10 @@ Navigation of prtty much any /menu-type/ thing
    ("C-c a" . counsel-rg)
    ("C-c g s" . counsel-grep-or-swiper)
    ("C-c b" . counsel-descbinds)
-   ("M-x" . counsel-M-x)))
+   ("M-x" . counsel-M-x))
+  :config
+  (setq counsel-grep-base-command 
+        "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package swiper :ensure t :defer t)
 
@@ -615,7 +612,6 @@ Cycle through windows (e.g. panes)
 ;; Show current and total matches while searching
 (use-package anzu :defer t
   :ensure t
-  :diminish anzu-mode
   :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
          ([remap query-replace] . anzu-query-replace)
          ;; Invert regex and normal isearch
@@ -695,9 +691,8 @@ You can easily /capture/ information using various different templates (includin
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive")
         org-log-done 'time
-        org-ellipsis "↴"
+        org-ellipsis "…"
         org-archive-location "~/Dropbox/archive.org::")
-  (diminish 'org-indent-mode)
   (org-babel-do-load-languages
    'org-babel-load-languages
    '(
@@ -839,6 +834,14 @@ Abstract:
         ("c" "Code Snippet" entry (file+headline "~/Dropbox/inbox.org" "Code Snippets")
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
         ))
+#+END_SRC
+** Update checkboxes on save
+#+BEGIN_SRC emacs-lisp
+(defun custom_org_auto_check()
+  (org-update-checkbox-count t))
+(add-hook 'org-mode-hook 
+          (lambda () 
+             (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
@@ -1088,8 +1091,8 @@ T - tag prefix
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-font-options 
-      '("Fantasque Sans Mono" 
-        "Ubuntu Mono" 
+      '("Ubuntu Mono" 
+        "Fantasque Sans Mono" 
         "Roboto Mono"
         "DejaVu Sans Mono" 
         "Fira Mono"
@@ -1101,7 +1104,7 @@ List some pretty fonts, and grab the first one that's available.
 (when cd-fonts-available
   (set-frame-font (car cd-fonts-available) 1))
 
-(setq line-spacing 0.1)
+(setq line-spacing 0)
 (setq cd-font-height
       (if (eq system-type 'windows-nt) 160 200))
 (set-face-attribute 'default nil :height cd-font-height)
@@ -1115,6 +1118,14 @@ Disable themes before loading a new theme
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config
+(setq doom-modeline-height 40)
+(setq doom-modeline-bar-width 3)
+)
+(use-package doom-themes :ensure t)
 (use-package kaolin-themes)
 (load-theme 'kaolin-dark t)
 #+END_SRC
@@ -1219,4 +1230,15 @@ LSP vs elpy?
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package lsp-mode :ensure t)
 #+END_SRC
-
+* WIP Diminish/delight modes
+#+BEGIN_SRC emacs-lisp
+(use-package diminish :ensure t)
+(diminish 'anzu-mode)
+(diminish 'ivy-mode)
+(diminish 'undo-tree-mode)
+(diminish 'guide-key-mode)
+(diminish 'org-indent-mode)
+(diminish 'yas-minor-mode)
+(diminish 'visual-line-mode)
+(diminish 'subword-mode)
+#+END_SRC
