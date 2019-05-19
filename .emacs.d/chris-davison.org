@@ -888,6 +888,10 @@ Abstract:
           (lambda () 
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
+** Automatic list markers
+#+BEGIN_SRC emacs-lisp
+(use-package org-autolist)
+#+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
@@ -1287,4 +1291,6 @@ LSP vs elpy?
 (diminish 'yas-minor-mode)
 (diminish 'visual-line-mode)
 (diminish 'subword-mode)
+(diminish 'org-autolist-mode)
+(diminish 'eldoc-mode)
 #+END_SRC
