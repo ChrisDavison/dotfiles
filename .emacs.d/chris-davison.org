@@ -1160,10 +1160,22 @@ List some pretty fonts, and grab the first one that's available.
 (when cd-fonts-available
   (set-frame-font (car cd-fonts-available) 1))
 
+(defvar current-font-idx 0)
+(defun next-font ()
+  (interactive)
+  (setq current-font-idx 
+        (% (+ 1 current-font-idx) 
+           (length cd-fonts-available)))
+  (let ((next-font-name (nth current-font-idx cd-fonts-available)))
+    (set-frame-font next-font-name 1)
+    (message next-font-name)))
+
+
 (setq line-spacing 0)
 (setq cd-font-height
       (if (eq system-type 'windows-nt) 160 200))
 (set-face-attribute 'default nil :height cd-font-height)
+(setq auto-window-vscroll nil)
 #+END_SRC
 ** Colour themes
 Disable themes before loading a new theme
