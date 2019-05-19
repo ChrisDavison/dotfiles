@@ -705,8 +705,8 @@ You can easily /capture/ information using various different templates (includin
          ("<f3>" . org-agenda-list)
          ("C-c l" . org-store-link))
   :config
-  (setq org-directory "~/Dropbox/"
-        org-default-notes-file "~/Dropbox/inbox.org"
+  (setq org-directory "~/Dropbox/notes"
+        org-default-notes-file "~/Dropbox/notes/inbox.org"
         org-src-window-setup 'current-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -728,20 +728,21 @@ You can easily /capture/ information using various different templates (includin
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files '("~/Dropbox/" "~/Dropbox/projects" "~/Dropbox/archive")
+        org-agenda-files '("~/Dropbox/notes/inbox.org"
+                           "~/Dropbox/notes/work.org"
+                           "~/Dropbox/notes/logbook.org"
+                           "~/Dropbox/notes/journal.org"
+                           "~/Dropbox/notes/habits.org"
+                           "~/Dropbox/notes/life-progress.org")
         org-log-done 'time
         org-ellipsis "…"
-        org-archive-location "~/Dropbox/archive.org::")
+        org-archive-location "~/Dropbox/notes/archive.org::")
   (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-     (python . t)
-     (R . t)
-     (sqlite . t)
-     (perl . t)
-     ))
+   'org-babel-load-languages '((python . t)
+                               (R . t)
+                               (sqlite . t)
+                               (perl . t)))
   (setq org-confirm-babel-evaluate nil)
-  (setq )
   ;; Settings for refiling
   (setq org-reverse-note-order t
         org-refile-use-outline-path nil
@@ -814,15 +815,20 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      '(("q" "Quotes" entry (file+headline "~/Dropbox/reference/quotes.org" "UNFILED")
+      '(("q" "Quotes" entry (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
          "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE" :immediate-finish 1)
 
-        ("u" "URL" item (file+headline "~/Dropbox/inbox.org" "Links")
-         "[[%^{URL}][%^{DESCRIPTION}]] %^{COMMENTS}\n" :immediate-finish 1)
+        ("u" "URL" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         "* %^{Description}
+- [[%^{URL}][%^{Description}]]
 
-        ("p" "Project" entry (file "~/Dropbox/inbox.org") "* TODO %^{PROJECT}")
+%^{Comments}\n" :immediate-finish 1)
 
-        ("a" "Article" entry (file+headline "~/Dropbox/inbox.org" "Literature")
+        ("p" "Project")
+        ("pp" "Personal Project" entry (file "~/Dropbox/notes/inbox.org") "* TODO %^{PROJECT}")
+        ("pw" "Work Project" entry (file "~/Dropbox/notes/work.org") "* TODO %^{PROJECT}")
+
+        ("a" "Article" entry (file+headline "~/Dropbox/notes/work.org" "Literature")
          "* TODO %^{Title}
 :PROPERTIES:
 :CREATED: %U
@@ -836,41 +842,41 @@ Abstract:
         ;; Todos (tasks within inbox)
         ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
         ("t" "Todo")
-        ("tt" "Todo" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+        ("tt" "Todo" entry (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}" :immediate-finish 1)
-        ("tT" "Todo with pasted clipboard" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+        ("tT" "Todo with pasted clipboard" entry (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n%c" :immediate-finish 1)
-        ("ts" "Todo with date" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+        ("ts" "Todo with date" entry (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n\nSCHEDULED: %^t" :immediate-finish 1)
-        ("td" "Todo with deadline" entry (file+headline "~/Dropbox/inbox.org" "Tasks")
+        ("td" "Todo with deadline" entry (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n\nDEADLINE: %^t" :immediate-finish 1)
 
 
         ;; Journal
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("j" "Journal entry")
-        ("jj" "Quick entry" item (file+datetree "~/Dropbox/journal.org")
+        ("jj" "Quick entry" item (file+datetree "~/Dropbox/notes/journal.org")
          "%^{Journal}" :immediate-finish 1)
-        ("jJ" "Full entry" item (file+datetree "~/Dropbox/journal.org")
+        ("jJ" "Full entry" item (file+datetree "~/Dropbox/notes/journal.org")
          "%?")
 
         ;; LOGBOOK
         ("l" "Logbook entry")
-        ("ll" "Quick entry" item (file+datetree "~/Dropbox/logbook.org")
+        ("ll" "Quick entry" item (file+datetree "~/Dropbox/notes/logbook.org")
          "%^{Logbook}" :immediate-finish 1)
-        ("lL" "Full entry" item (file+datetree "~/Dropbox/logbook.org")
+        ("lL" "Full entry" item (file+datetree "~/Dropbox/notes/logbook.org")
          "%?")
 
         ;; Note in Inbox
         ("n" "Note in Inbox")
-        ("nn" "Note" item (file+headline "~/Dropbox/inbox.org" "Notes")
-         "%^{NOTE}" :immediate-finish 1)
-        ("nN" "Note with clipboard" item (file+headline "~/Dropbox/inbox.org" "Notes")
-         "%^{NOTE} %c")
-        ("ne" "Note" entry (file+headline "~/Dropbox/inbox.org" "Notes")
+        ("nn" "Note" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         "* %^{NOTE}" :immediate-finish 1)
+        ("nN" "Note with clipboard" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         "* %^{NOTE} %c")
+        ("ne" "Note" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
          "* %^{Title}\n%?")
 
-        ("c" "Code Snippet" entry (file+headline "~/Dropbox/inbox.org" "Code Snippets")
+        ("c" "Code Snippet" entry (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
         ))
 #+END_SRC
@@ -1087,10 +1093,11 @@ T - tag prefix
   ("o" delete-other-windows "Keep only this window" :column "Windows"))
 
 (defhydra cd/files (:exit t)
-  ("i" (find-file "~/Dropbox/inbox.org") "Inbox")
-  ("j" (find-file "~/Dropbox/journal.org") "Journal")
-  ("l" (find-file "~/Dropbox/logbook.org") "Logbook")
-  ("a" (find-file "~/Dropbox/archive.org") "Archive")
+  ("i" (find-file "~/Dropbox/notes/inbox.org") "Inbox")
+  ("w" (find-file "~/Dropbox/notes/work.org") "Work")
+  ("j" (find-file "~/Dropbox/notes/journal.org") "Journal")
+  ("l" (find-file "~/Dropbox/notes/logbook.org") "Logbook")
+  ("a" (find-file "~/Dropbox/notes/archive.org") "Archive")
   ("f" counsel-find-file "Find file")
   ("F" counsel-file-jump "Find file (recursive)")
   ("b" ivy-switch-buffer "Switch Buffer")
