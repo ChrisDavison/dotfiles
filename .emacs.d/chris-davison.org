@@ -379,7 +379,13 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
   :config
   (setq company-tooltip-align-annotations t
         company-global-modes '(not org-mode))
-  (add-hook 'prog-mode-hook 'company-mode))
+  (add-hook 'prog-mode-hook 'global-company-mode))
+
+(defvar my/company-point nil)
+(advice-add 'company-complete-common :before (lambda () (setq my/company-point (point))))
+(advice-add 'company-complete-common :after (lambda ()
+                                              (when (equal my/company-point (point))
+                                                (yas-expand))))
 #+END_SRC
 ** CSV
 #+BEGIN_SRC emacs-lisp
