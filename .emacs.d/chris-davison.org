@@ -263,6 +263,39 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
       ))
 (add-hook 'find-file-hook 'auto-insert)
 #+END_SRC
+** Move files
+#+begin_src emacs-lisp
+(defun rename-this-buffer-and-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name))
+        (read-file-name-function 'read-file-name-default))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond ((get-buffer new-name)
+               (error "A buffer named '%s' already exists!" new-name))
+              (t
+               (rename-file filename new-name 1)
+               (rename-buffer new-name)
+               (set-visited-file-name new-name)
+               (set-buffer-modified-p nil)
+               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+
+(defun delete-this-buffer-and-file (force)
+  "Delete the file connected to this buffer and kill it, FORCE is universal argument."
+  (interactive "P")
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "'%s' is not a file buffer" name)
+      (when (or force (yes-or-no-p (format  "Delete '%s', Are you sure? " filename)))
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "Deleted '%s'" filename)))))
+#+end_src
 * Languages
 ** Terminal Improvements
 *** Windows Shell Config
