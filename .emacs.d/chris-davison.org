@@ -13,10 +13,10 @@ You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-da
 ;; This sets up the load path so that we can override it
 (package-initialize)
 (package-refresh-contents)
-(setq use-package-always-ensure t)
+
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 #+END_SRC
 
 We also use the ~use-package~ library to make adding new packages, and configuring them, much easier.
@@ -25,6 +25,9 @@ We also use the ~use-package~ library to make adding new packages, and configuri
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 (require 'use-package)
+(setq use-package-always-ensure t)
+(setq use-package-enable-imenu-support t)
+(setq lexical-binding t)
 #+END_SRC
 
 ** Personal Information
@@ -200,6 +203,8 @@ redo), and go down different branches.
 ;; snippets
 (when (fboundp 'yas-global-mode) 
   (yas-global-mode +1))
+
+
 #+END_SRC
 ** Text filling (paragraph reflowing)
 #+BEGIN_SRC emacs-lisp
@@ -443,6 +448,7 @@ Auto-completion for rust, using racer
   (add-hook 'racer-mode-hook 'eldoc-mode)
   (add-hook 'rust-mode-hook 'cargo-minor-mode)
   (add-hook 'racer-mode-hook 'company-mode))
+
 #+END_SRC
 ** Python configuration
 Use elpy for python
@@ -1168,14 +1174,6 @@ Disable themes before loading a new theme
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode)
-  :config
-(setq doom-modeline-height 40)
-(setq doom-modeline-bar-width 3)
-)
-(use-package doom-themes :ensure t)
 (use-package kaolin-themes)
 (load-theme 'kaolin-dark t)
 #+END_SRC
@@ -1186,6 +1184,7 @@ Disable themes before loading a new theme
       menu-bar-mode nil
       inhibit-startup-screen t
       inhibit-startup-echo-area-message t)
+(add-hook 'after-init-hook '(lambda () (menu-bar-mode -1)))
 
 ;; Hide tool bar,  scroll bar and borders
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -1245,7 +1244,6 @@ the current window and the windows state prior to that."
         (set-window-configuration modi/toggle-one-window--window-configuration)
         (switch-to-buffer modi/toggle-one-window--buffer-name)))))
   (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
-
 
 #+END_SRC
 ** Code-folding
