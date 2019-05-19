@@ -756,11 +756,18 @@ You can easily /capture/ information using various different templates (includin
         org-refile-use-cache nil
         org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
         org-blank-before-new-entry nil)
-  ;; (add-hook 'org-mode-hook 'auto-fill-mode)
-  ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-indent-mode)
+  (add-hook 'org-mode-hook 'org-autolist-mode)
   (setq fill-column 80))
+
+
+(defun cd/org-agenda-all ()
+  (interactive)
+  (let ((old-agenda-list org-agenda-files))
+    (setq org-agenda-files '("~/Dropbox/notes/"))
+    (org-agenda-list)
+    (setq org-agenda-files old-agenda-list)))
 
 
 #+END_SRC
@@ -1151,7 +1158,7 @@ List some pretty fonts, and grab the first one that's available.
         "Fantasque Sans Mono" 
         "Roboto Mono"
         "DejaVu Sans Mono" 
-        "Fira Mono"
+        "Fira Code"
         "Liberation Mono"))
 (setq cd-fonts-available
       (cl-remove-if
