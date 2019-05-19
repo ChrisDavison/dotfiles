@@ -16,7 +16,6 @@ You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-da
 
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 #+END_SRC
 
 We also use the ~use-package~ library to make adding new packages, and configuring them, much easier.
@@ -29,6 +28,11 @@ We also use the ~use-package~ library to make adding new packages, and configuri
 (setq use-package-enable-imenu-support t)
 (setq lexical-binding t)
 #+END_SRC
+** Enable 'diminish'
+Doing this early, so that all future use-package declarations can use it.
+#+begin_src emacs-lisp
+(use-package diminish :ensure t)
+#+end_src
 
 ** Personal Information
 #+BEGIN_SRC emacs-lisp
@@ -61,7 +65,7 @@ Define a few constants to make it easy to modify behaviour by-system.
 ;; Make /apropos/ bring up everything, rather than requiring separate keybinds
 (setq apropos-do-all t)
 
-(setq-default initial-scratch-message ";; Scratch pad\n\n")
+(setq-default initial-scratch-message ";; SCRATCH")
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
@@ -98,6 +102,7 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 ** Show help popup if you stop halfway through a keybind sequence
 #+BEGIN_SRC emacs-lisp
 (use-package guide-key :ensure t :defer t
+  :diminish
   :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
   :config (guide-key-mode 1))
 #+END_SRC
@@ -152,6 +157,7 @@ redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree :ensure t :defer t
+  :diminish
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps nil
@@ -185,6 +191,7 @@ redo), and go down different branches.
 
 ;; Use lettercase to determine words in camelcase text
 (global-subword-mode 1)
+(diminish 'subword-mode)
 
 ;; expand region
 (use-package expand-region :ensure t)
@@ -203,6 +210,7 @@ redo), and go down different branches.
 ;; snippets
 (when (fboundp 'yas-global-mode) 
   (yas-global-mode +1))
+(diminish 'yas-minor-mode)
 
 
 #+END_SRC
@@ -301,7 +309,7 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
         (kill-buffer buffer)
         (message "Deleted '%s'" filename)))))
 #+end_src
-* Languages
+* Programming Language Support
 ** Terminal Improvements
 *** Windows Shell Config
 Use git-bash as windows shell
@@ -382,21 +390,14 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
 (use-package company :ensure t :defer t
   :bind ("TAB" . company-indent-or-complete-common)
   :config
-  (setq company-tooltip-align-annotations t
-        company-global-modes '(not org-mode))
-  (add-hook 'prog-mode-hook 'global-company-mode))
+  (setq company-tooltip-align-annotations t)
+  (global-company-mode))
 
 (defvar my/company-point nil)
 (advice-add 'company-complete-common :before (lambda () (setq my/company-point (point))))
 (advice-add 'company-complete-common :after (lambda ()
                                               (when (equal my/company-point (point))
                                                 (yas-expand))))
-#+END_SRC
-** CSV
-#+BEGIN_SRC emacs-lisp
-(use-package csv-mode :defer t
-  :mode ("\\.[Cc][Ss][Vv]\\'" . csv-mode)
-  :config (setq csv-separators '("," ";" "|" " ")))
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
@@ -410,7 +411,7 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
   (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
 ** Lisps -- Clojure and Cider
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 ;; Cider for interactive clojure programming
 (use-package flycheck-clojure :ensure t :defer t)
 (use-package cider :ensure t :defer t
@@ -453,7 +454,6 @@ Auto-completion for rust, using racer
 ** Python configuration
 Use elpy for python
 #+BEGIN_SRC emacs-lisp
-;; (use-package ob-ipython :ensure t)
 (use-package elpy :ensure t :defer t
   :config
   (add-hook 'python-mode-hook (lambda () (elpy-enable)))
@@ -476,10 +476,6 @@ Use elpy for python
 
 ** WIP Latex config
 #+BEGIN_SRC emacs-lisp
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle no
 (use-package auctex :ensure t :defer t
   :config
   (setq TeX-auto-save t
@@ -488,47 +484,39 @@ Use elpy for python
         ispell-program-name "aspell"
         ispell-dictionary "english")
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-buffer))
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+  (add-hook 'LaTeX-mode-hook '(lambda () (outline-minor-mode 1))
+            (add-hook 'latex-mode-hook 'visual-line-mode)))
 
-(defun turn-on-outline-minor-mode ()
-  (outline-minor-mode 1))
+  ;; Manage citations
+  (require 'tex-site)
+  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  (add-hook 'latex-mode-hook 'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 
-(add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
-(add-hook 'latex-mode-hook 'visual-line-mode)
-
-(setq outline-minor-mode-prefix "\C-c \C-o") ; Or something else
-
-;; Manage citations
-(require 'tex-site)
-(autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-(autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-(autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
-(add-hook 'latex-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-
-(setq LaTeX-eqnarray-label "eq"
-      LaTeX-equation-label "eq"
-      LaTeX-figure-label "fig"
-      LaTeX-table-label "tab"
-      LaTeX-myChapter-label "chap"
-      TeX-auto-save t
-      TeX-newline-function 'reindent-then-newline-and-indent
-      TeX-parse-self t
-      TeX-style-path
-      '("style/" "auto/"
-        "/usr/share/emacs21/site-lisp/auctex/style/"
-        "/var/lib/auctex/emacs21/"
-        "/usr/local/share/emacs/site-lisp/auctex/style/")
-      LaTeX-section-hook
-      '(LaTeX-section-heading
-        LaTeX-section-title
-        LaTeX-section-toc
-        LaTeX-section-section
-        LaTeX-section-label))
+  (setq LaTeX-eqnarray-label "eq"
+        LaTeX-equation-label "eq"
+        LaTeX-figure-label "fig"
+        LaTeX-table-label "tab"
+        LaTeX-myChapter-label "chap"
+        TeX-auto-save t
+        TeX-newline-function 'reindent-then-newline-and-indent
+        TeX-parse-self t
+        TeX-style-path '("style/" "auto/"
+                         "/usr/share/emacs21/site-lisp/auctex/style/"
+                         "/var/lib/auctex/emacs21/"
+                         "/usr/local/share/emacs/site-lisp/auctex/style/")
+        LaTeX-section-hook '(LaTeX-section-heading
+                             LaTeX-section-title
+                             LaTeX-section-toc
+                             LaTeX-section-section
+                             LaTeX-section-label))
 #+END_SRC
 ** Julia
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package julia-mode :ensure t :defer t)
 (use-package julia-repl :ensure t :defer t
   :config
@@ -552,12 +540,17 @@ Use elpy for python
   (add-hook 'html-mode-hook 'rainbow-mode)
   (add-hook 'sass-mode-hook 'rainbow-mode))
 #+END_SRC
+** Elixir
+#+begin_src emacs-lisp
+(use-package alchemist :ensure t)
+#+end_src
 * Navigation
 ** General Navigation config
 Navigation of prtty much any /menu-type/ thing
 #+BEGIN_SRC emacs-lisp
 
 (use-package ivy :ensure t :defer t
+  :diminish
   :bind
   (:map ivy-mode-map
         ("C-c h" . ivy-switch-buffer)
@@ -614,7 +607,6 @@ Cycle through windows (e.g. panes)
 (with-eval-after-load 'buffer (fullframe ibuffer ibuffer-quit))
 
 (use-package ibuffer-vc :ensure t)
-
 (defun ibuffer-set-up-preferred-filters ()
   (ibuffer-vc-set-filter-groups-by-vc-root)
   (unless (eq ibuffer-sorting-mode 'filename/process)
@@ -634,7 +626,6 @@ Cycle through windows (e.g. panes)
   ;; can't be autoloaded
   (require 'ibuffer-vc))
 
-
 ;; Modify the default ibuffer-formats (toggle with `)
 (setq ibuffer-formats
       '((mark modified read-only vc-status-mini " "
@@ -647,8 +638,7 @@ Cycle through windows (e.g. panes)
               (name 18 18 :left :elide) " "
               (size-h 9 -1 :right) " "
               (mode 16 16 :left :elide) " "
-              filename-and-process)
-        ))
+              filename-and-process)))
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
@@ -656,6 +646,7 @@ Cycle through windows (e.g. panes)
 #+BEGIN_SRC emacs-lisp
 ;; Show current and total matches while searching
 (use-package anzu :defer t
+  :diminish
   :ensure t
   :bind (([remap query-replace-regexp] . anzu-query-replace-regexp)
          ([remap query-replace] . anzu-query-replace)
@@ -703,13 +694,22 @@ You can easily /capture/ information using various different templates (includin
 
 /Agenda/ lets you schedule and deadline tasks.
 ** General Org Config
+
 #+BEGIN_SRC emacs-lisp
+(defun cd/org-open-link-same ()
+  (interactive)
+  (let ((old-setup org-link-frame-setup))
+    (setq org-link-frame-setup '((file . find-file)))
+    (org-open-at-point)
+    (setq org-link-frame-setup old-setup)))
+
 (use-package org
   :ensure t
   :bind (("<f1>" . org-capture)
          ("<f2>" . org-agenda)
          ("<f3>" . org-agenda-list)
-         ("C-c l" . org-store-link))
+         ("C-c l" . org-store-link)
+         ("C-c S-O" . cd/org-open-link-same))
   :config
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
@@ -738,7 +738,6 @@ You can easily /capture/ information using various different templates (includin
                            "~/Dropbox/notes/work.org"
                            "~/Dropbox/notes/logbook.org"
                            "~/Dropbox/notes/journal.org"
-                           "~/Dropbox/notes/habits.org"
                            "~/Dropbox/notes/life-progress.org")
         org-log-done 'time
         org-ellipsis "…"
@@ -758,9 +757,9 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry nil)
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-indent-mode)
-  (add-hook 'org-mode-hook 'org-autolist-mode)
   (setq fill-column 80))
-
+(diminish 'org-indent-mode)
+(use-package org-present :ensure t :defer t)
 
 (defun cd/org-agenda-all ()
   (interactive)
@@ -900,10 +899,6 @@ Abstract:
 (add-hook 'org-mode-hook 
           (lambda () 
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
-#+END_SRC
-** Automatic list markers
-#+BEGIN_SRC emacs-lisp
-(use-package org-autolist)
 #+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
@@ -1063,7 +1058,8 @@ T - tag prefix
   ("/" ibuffer-filter-disable "disable")
   ("b" hydra-ibuffer-main/body "back" :color blue))
 
-(define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+(add-hook 'after-init-hook (lambda () 
+    (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)))
 
 (add-hook 'ibuffer-hook 'hydra-ibuffer-main/body)
 #+END_SRC
@@ -1106,7 +1102,7 @@ T - tag prefix
   ("S-<up>" enlarge-window "Enlarge" :column "Windows" :exit nil)
   ("S-<down>" shrink-window "Shrink" :column "Windows" :exit nil)
   ("=" balance-windows "Equalise" :column "Windows")
-    ("d" delete-window "Close window" :column "Windows")
+  ("d" delete-window "Close window" :column "Windows")
   ("o" delete-other-windows "Keep only this window" :column "Windows"))
 
 (defhydra cd/files (:exit t)
@@ -1146,8 +1142,16 @@ T - tag prefix
   ("a" apropos "Apropos" :column "Utils")
   ("p" cd/paragraphs-and-lines/body "Paragraphs and lines" :column "Utils"))
 
+(defhydra cd/elixir (:exit t :hint nil)
+  ("r" (if (region-active-p) 
+           'alchemist-iex-send-region 'alchemist-iex-send-last-sexp) 
+   "Send region")
+  ("R" alchemist-iex-send-region-and-go "Send region and Go")
+  ("s" alchemist-iex-run "Start repl"))
+
 (define-key global-map (kbd "M-c") 'hydra-cd-util/body)
 (define-key global-map (kbd "C-z") 'hydra-cd-util/body)
+(define-key elixir-mode-map (kbd "M-e") 'cd/elixir/body)
 #+END_SRC
 * Appearance
 ** Font
@@ -1194,7 +1198,8 @@ Disable themes before loading a new theme
 
 #+BEGIN_SRC emacs-lisp
 (use-package kaolin-themes)
-(load-theme 'kaolin-dark t)
+;; (load-theme 'kaolin-dark t)
+(load-theme 'kaolin-bubblegum t)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
@@ -1289,25 +1294,4 @@ the current window and the windows state prior to that."
 
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
-#+END_SRC
-* WIP Language Server Protocol 
-Not enabling this yet, as I'm not sure how well it incorporates across platforms and with my current languages.
-
-LSP vs elpy?
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package lsp-mode :ensure t)
-#+END_SRC
-* WIP Diminish/delight modes
-#+BEGIN_SRC emacs-lisp
-(use-package diminish :ensure t)
-(diminish 'anzu-mode)
-(diminish 'ivy-mode)
-(diminish 'undo-tree-mode)
-(diminish 'guide-key-mode)
-(diminish 'org-indent-mode)
-(diminish 'yas-minor-mode)
-(diminish 'visual-line-mode)
-(diminish 'subword-mode)
-(diminish 'org-autolist-mode)
-(diminish 'eldoc-mode)
 #+END_SRC
