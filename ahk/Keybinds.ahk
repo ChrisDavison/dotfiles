@@ -22,6 +22,9 @@ SetCapsLockState, alwaysoff
 +^Home::Send  {Media_Play_Pause}
 CapsLock::F13
 
+!^XButton1::Send  {Volume_Down}
+!^XButton2::Send {Volume_Up}
+
 ; UTILITY
 ^#!SPACE::WinSet, Alwaysontop, , A
 ^F12::reload
