@@ -2,57 +2,39 @@
 #+PROPERTY: header-args emacs-lisp :tangle yes :results silent
 
 * Configuration
-** How this works...
+
 You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-davison.el~.  This file can either be loaded from an ~init.el~ (using ~(load "chris-davison.el" t)~), or by directly symlinking ~chris-davison.el~ to ~init.el~.  The symlinking may be a bit iffy on platforms like windows...
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (load "chris-davison.el" t)
 #+END_SRC
-** Startup
+
+This sets up the load path so that we can override it.  We also install /use-package/ to make all package config easier, and /diminish/, so that I can diminish while installing packages.
+
 #+BEGIN_SRC emacs-lisp
-;; This sets up the load path so that we can override it
 (package-initialize)
 (package-refresh-contents)
-
-(setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-#+END_SRC
 
-We also use the ~use-package~ library to make adding new packages, and configuring them, much easier.
-
-#+BEGIN_SRC emacs-lisp
+(setq package-enable-at-startup t)
 (unless (package-installed-p 'use-package)
+  (package-refresh-contents)
   (package-install 'use-package))
-(require 'use-package)
+(eval-when-compile (require 'use-package))
+(use-package diminish :ensure t)
 (setq use-package-always-ensure t)
 (setq use-package-enable-imenu-support t)
 (setq lexical-binding t)
-#+END_SRC
-** Enable 'diminish'
-Doing this early, so that all future use-package declarations can use it.
-#+begin_src emacs-lisp
-(use-package diminish :ensure t)
-#+end_src
 
-** Personal Information
-#+BEGIN_SRC emacs-lisp
 (setq
  user-full-name "Chris Davison"
  user-mail-address "c.jr.davison@gmail.com"
  user-emacs-directory "~/code/dotfiles/.emacs.d")
 #+END_SRC
-** Plugins ignored
-These are plugins that I used to use, and may go back to, but didn't really get used in my workflow.
 
-- darkroom (zen-ish mode)
-- ace-jump (just used isearch)
-- smartparens (not doing that much lisp for the extra mental overhead)
 * General init
 Define a few constants to make it easy to modify behaviour by-system.
 #+BEGIN_SRC emacs-lisp
-(setq package-enable-at-startup nil)
-(package-initialize)
-
 ;; Make list-packages take up the entire window
 (use-package fullframe :ensure t :defer t
   :config (fullframe list-packages quit-window))
@@ -81,6 +63,7 @@ Define a few constants to make it easy to modify behaviour by-system.
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 #+END_SRC
+
 ** Echo path of the current file
 #+BEGIN_SRC emacs-lisp
 (defun filepath ()
@@ -88,6 +71,7 @@ Define a few constants to make it easy to modify behaviour by-system.
   (interactive)
   (message (buffer-file-name)))
 #+END_SRC
+
 ** Try to make everything UTF8
 From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html][here]]
 #+BEGIN_SRC emacs-lisp
@@ -99,15 +83,17 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+END_SRC
-** Show help popup if you stop halfway through a keybind sequence
+
+** Popup to help with keybinds
 #+BEGIN_SRC emacs-lisp
 (use-package guide-key :ensure t :defer t
   :diminish
   :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
   :config (guide-key-mode 1))
 #+END_SRC
+
 * History, Sessions, and Undo
-** General history/session config
+
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq delete-old-versions -1)
@@ -134,7 +120,6 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
         recentf-max-menu-items 15)
   (recentf-mode))
 
-
 ;; Always save the desktop, the current workspace config
 (setq desktop-path (list user-emacs-directory)
       desktop-auto-save-timeout 600
@@ -147,13 +132,11 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 ;; Don't create lockfiles.  They're often a hassle
 (setq create-lockfiles nil)
 #+END_SRC
-** Undo Tree - Visualise branches of undos
-People often struggle with the Emacs undo model, where there's
-really no concept of "redo" - you simply undo the undo.
 
-This lets you use =C-x u= (=undo-tree-visualize=) to visually walk
-through the changes you've made, undo back to a certain point (or
-redo), and go down different branches.
+* Undo Tree - Visualise branches of undos
+People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
+
+This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree :ensure t :defer t
@@ -163,19 +146,21 @@ redo), and go down different branches.
   (setq undo-tree-visualizer-timestamps nil
         undo-tree-visualizer-diff t))
 #+END_SRC
-** Magit - Git in Emacs
+
+* Magit - Git in Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package magit :ensure t :defer t
   :config
   (setq
    ;; Magit needs to call git multiple times
-   ;; only refreshing the main buffer can improve performance
+   ;; only refreshing the  buffer can improve performance
    magit-refresh-status-buffer nil
    ;; Emacs has its own version control.  We don't need to run both
    ;; as that'll be detrimental for performance
    vc-handled-backends (delq 'Git vc-handled-backends))
   :bind (("C-x g" . magit-status)))
 #+END_SRC
+
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
@@ -208,13 +193,15 @@ redo), and go down different branches.
 (use-package iedit :ensure t :defer t)
 
 ;; snippets
-(when (fboundp 'yas-global-mode) 
+(use-package yasnippet :demand t :defer t
+  :diminish yas-minor-mode)
+(when (fboundp 'yas-global-mode)
   (yas-global-mode +1))
 (diminish 'yas-minor-mode)
 
-
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
-** Text filling (paragraph reflowing)
+** Text filling (paragraph reflowing) and indentation
 #+BEGIN_SRC emacs-lisp
 (defun unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and make it into a single line of text."
@@ -223,17 +210,11 @@ redo), and go down different branches.
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
-(define-key global-map "\M-Q" 'unfill-paragraph)
-#+END_SRC
-** Managing indentation
-#+BEGIN_SRC emacs-lisp
-;; aggressive indentation
+
 (use-package aggressive-indent :ensure t :defer t
   :config (global-aggressive-indent-mode))
-
-(define-key global-map (kbd "C->") 'indent-rigidly-right-to-tab-stop)
-(define-key global-map (kbd "C-<") 'indent-rigidly-left-to-tab-stop)
 #+END_SRC
+
 ** Offer to create parent dirs if they do not exist
 [[http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/][From this blog]]
 #+BEGIN_SRC emacs-lisp
@@ -274,7 +255,6 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
         ((python-mode . "Python") nil
         "#!/usr/bin/env python3")
       ))
-(add-hook 'find-file-hook 'auto-insert)
 #+END_SRC
 ** Move files
 #+begin_src emacs-lisp
@@ -309,9 +289,35 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
         (kill-buffer buffer)
         (message "Deleted '%s'" filename)))))
 #+end_src
-* Programming Language Support
-** Terminal Improvements
-*** Windows Shell Config
+* Programming Language Support - Company and Flycheck
+Company will *COMP*lete *ANY*thing. Flycheck basically runs linters and stuff, and lets you know problems in your code.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company :ensure t :defer t
+  :bind ("TAB" . company-indent-or-complete-common)
+  :config
+  (setq company-tooltip-align-annotations t)
+  (global-company-mode))
+
+(defvar my/company-point nil)
+(advice-add 'company-complete-common :before
+            (lambda () (setq my/company-point (point))))
+(advice-add 'company-complete-common :after
+            (lambda ()
+              (when (equal my/company-point (point))
+                (yas-expand))))
+
+(use-package flycheck :ensure t :defer t
+  :config
+  (setq-default
+   flycheck-disabled-checkers
+   (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
+   flycheck-temp-prefix ".flycheck")
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+#+END_SRC
+* Terminal Improvements
+** Windows Shell Config
 Use git-bash as windows shell
 #+BEGIN_SRC emacs-lisp
 (defun cd/set-windows-shell ()
@@ -328,7 +334,7 @@ Use git-bash as windows shell
 
 (cd/set-windows-shell)
 #+END_SRC
-*** Improvements for ansi-term
+** Improvements for ansi-term
 #+BEGIN_SRC emacs-lisp
 (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
   "Close an ansi-term buffer if I quit the terminal."
@@ -363,7 +369,7 @@ Use git-bash as windows shell
   (define-key term-raw-map "\C-y" 'my-term-paste))
 (add-hook 'term-mode-hook 'my-term-hook)
 #+END_SRC
-** Markdown
+* Lang - Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode :ensure t :defer t
   :config
@@ -385,32 +391,7 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
     (insert ")")))
 (global-set-key (kbd "<f5>") 'cd/yank-md)
 #+END_SRC
-** Company -- COMPlete ANYthing
-#+BEGIN_SRC emacs-lisp
-(use-package company :ensure t :defer t
-  :bind ("TAB" . company-indent-or-complete-common)
-  :config
-  (setq company-tooltip-align-annotations t)
-  (global-company-mode))
-
-(defvar my/company-point nil)
-(advice-add 'company-complete-common :before (lambda () (setq my/company-point (point))))
-(advice-add 'company-complete-common :after (lambda ()
-                                              (when (equal my/company-point (point))
-                                                (yas-expand))))
-#+END_SRC
-** Flycheck
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck :ensure t :defer t
-  :config
-  (setq-default 
-   flycheck-disabled-checkers
-   (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
-   flycheck-temp-prefix ".flycheck")
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  (add-hook 'after-init-hook #'global-flycheck-mode))
-#+END_SRC
-** Lisps -- Clojure and Cider
+* Lang - LISP -- Clojure and Cider
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; Cider for interactive clojure programming
 (use-package flycheck-clojure :ensure t :defer t)
@@ -426,14 +407,14 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
       (with-eval-after-load 'flycheck
         (flycheck-clojure-setup)))))
 #+END_SRC
-** Golang
+* Lang - Go
 #+BEGIN_SRC emacs-lisp
 (use-package go-mode :ensure t :defer t
   :config
   (add-hook 'before-save-hook 'gofmt-before-save)
   (setq gofmt-command "goimports"))
 #+END_SRC
-** Rust / Racer config
+* Lang - Rust / Racer config
 Auto-completion for rust, using racer
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode :ensure t :defer t)
@@ -451,7 +432,7 @@ Auto-completion for rust, using racer
   (add-hook 'racer-mode-hook 'company-mode))
 
 #+END_SRC
-** Python configuration
+* Lang - Python
 Use elpy for python
 #+BEGIN_SRC emacs-lisp
 (use-package elpy :ensure t :defer t
@@ -474,7 +455,7 @@ Use elpy for python
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
 #+END_SRC
 
-** WIP Latex config
+* TODO Lang - Latex
 #+BEGIN_SRC emacs-lisp
 (use-package auctex :ensure t :defer t
   :config
@@ -515,7 +496,7 @@ Use elpy for python
                              LaTeX-section-section
                              LaTeX-section-label))
 #+END_SRC
-** Julia
+* TODO Lang - Julia
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package julia-mode :ensure t :defer t)
 (use-package julia-repl :ensure t :defer t
@@ -528,27 +509,31 @@ Use elpy for python
 
 ;; (setq julia-repl-executable-records '((default "julia")))
 #+END_SRC
-** Web-stuff
+* Lang - Web-stuff
 #+BEGIN_SRC emacs-lisp
 (use-package sass-mode :ensure t :defer t)
 (use-package js2-mode :ensure t :defer t)
 
 ;; Colourize CSS literals
 (use-package rainbow-mode :ensure t :defer t
-  :config 
+  :config
   (add-hook 'css-mode-hook 'rainbow-mode)
   (add-hook 'html-mode-hook 'rainbow-mode)
   (add-hook 'sass-mode-hook 'rainbow-mode))
 #+END_SRC
-** Elixir
+* Lang - Elixir
 #+begin_src emacs-lisp
 (use-package alchemist :ensure t)
 #+end_src
-* Navigation
-** General Navigation config
-Navigation of prtty much any /menu-type/ thing
-#+BEGIN_SRC emacs-lisp
+* Navigation (ivy, counsel, swiper, imenu anywhere))
 
+Navigation of pretty much any /menu-type/ thing.
+
+- =Ivy= and =counsel= make things like ~M-x~ and grep easier.
+- =swiper= is a popup search of the current buffer.
+- =imenu-anywhere= will search for headings/functions recursively over all files of the same /mode/
+
+#+BEGIN_SRC emacs-lisp
 (use-package ivy :ensure t :defer t
   :diminish
   :bind
@@ -563,6 +548,7 @@ Navigation of prtty much any /menu-type/ thing
         ivy-initial-inputs-alist nil
         ivy-re-builders-alist
         '((t . ivy--regex-plus))))
+
 (use-package counsel :ensure t :defer t
   :bind*
   (("C-x f" . counsel-find-file)
@@ -572,35 +558,27 @@ Navigation of prtty much any /menu-type/ thing
    ("C-c b" . counsel-descbinds)
    ("M-x" . counsel-M-x))
   :config
-  (setq counsel-grep-base-command 
+  (setq counsel-grep-base-command
         "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package swiper :ensure t :defer t)
-
-;; do imenu over every file with the same major mode, recursively
 (use-package imenu-anywhere :ensure t :defer t)
 #+END_SRC
-** Navigate between windows
-Give HUD prompt when changing window
+* Navigate between windows
+Give HUD prompt when changing window, and keybind to cycle through windows.
+
 #+BEGIN_SRC emacs-lisp
 ;; Prompt with a hud when switching windows, if more than 2 windows
 (use-package switch-window :defer t
   :ensure t
   :bind ("C-x o" . switch-window))
-#+END_SRC
 
-Navigate between windows with ~shift+<direction>~
-#+BEGIN_SRC emacs-lisp
-(windmove-default-keybindings)
-#+END_SRC
-
-Cycle through windows (e.g. panes)
-#+BEGIN_SRC emacs-lisp
 ;; cycle through 'windows' (e.g. panes)
 (define-key global-map (kbd "M-`") 'next-multiframe-window)
 (define-key global-map (kbd "C-M-`") 'previous-multiframe-window)
 #+END_SRC
-** ibuffer -- show version control status of file
+
+* ibuffer -- show version control status of file
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
 (use-package fullframe :ensure t :defer t)
@@ -642,7 +620,7 @@ Cycle through windows (e.g. panes)
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
-** isearch -- live preview of search and replace
+* isearch -- live preview of search and replace
 #+BEGIN_SRC emacs-lisp
 ;; Show current and total matches while searching
 (use-package anzu :defer t
@@ -667,11 +645,11 @@ Cycle through windows (e.g. panes)
     (when (memq window-system '(mac ns))
       (exec-path-from-shell-initialize))
     (exec-path-from-shell-copy-env "GOPATH"))
-  
+
   (setq mac-command-modifier 'meta
         mac-option-modifier 'none
         default-input-method "MacOSX")
-    
+
   ;;Make the mouse wheel/trackpad less jerky
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 5) ((control))))
   (dolist (multiple '("" "double-" "triple-"))
@@ -721,8 +699,9 @@ You can easily /capture/ information using various different templates (includin
         org-catch-invisible-edits 'show-and-error
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
-        org-replace-disputed-keys t 
+        org-replace-disputed-keys t
         inhibit-compacting-font-caches t
+        org-hide-emphasis-markers t
         org-todo-keywords
         '(
           (sequence "TODO" "WIP" "|" "DONE")
@@ -744,9 +723,9 @@ You can easily /capture/ information using various different templates (includin
         org-archive-location "~/Dropbox/notes/archive.org::")
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
-                               (R . t)
                                (sqlite . t)
-                               (perl . t)))
+                               (elixir . t)
+                               (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil)
   ;; Settings for refiling
   (setq org-reverse-note-order t
@@ -757,7 +736,8 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry nil)
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-indent-mode)
-  (setq fill-column 80))
+  (setq fill-column 80)
+  (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal))
 (diminish 'org-indent-mode)
 (use-package org-present :ensure t :defer t)
 
@@ -827,77 +807,54 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      '(("q" "Quotes" entry (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
-         "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE" :immediate-finish 1)
+      '(
+        ("t" "Todo (ME)" entry
+         (file "~/Dropbox/notes/inbox.org")
+         "* TODO %^{TASK}")
 
-        ("u" "URL" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{Description}
-- [[%^{URL}][%^{Description}]]
+        ("w" "Todo (WORK)" entry
+         (file "~/Dropbox/notes/work.org")
+         "* TODO %^{PROJECT}")
 
-%^{Comments}\n" :immediate-finish 1)
-
-        ("p" "Project")
-        ("pp" "Personal Project" entry (file "~/Dropbox/notes/inbox.org") "* TODO %^{PROJECT}")
-        ("pw" "Work Project" entry (file "~/Dropbox/notes/work.org") "* TODO %^{PROJECT}")
-
-        ("a" "Article" entry (file+headline "~/Dropbox/notes/work.org" "Literature")
-         "* TODO %^{Title}
-:PROPERTIES:
-:CREATED: %U
-:END:
-
-Abstract:
-%?"
-         :prepend t
-         :created t)
-
-        ;; Todos (tasks within inbox)
-        ;; Header-bullet of -TODO- <TASK>, under the TASKS L1 header
-        ("t" "Todo")
-        ("tt" "Todo" entry (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}" :immediate-finish 1)
-        ("tT" "Todo with pasted clipboard" entry (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}\n%c" :immediate-finish 1)
-        ("ts" "Todo with date" entry (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}\n\nSCHEDULED: %^t" :immediate-finish 1)
-        ("td" "Todo with deadline" entry (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}\n\nDEADLINE: %^t" :immediate-finish 1)
-
-
-        ;; Journal
-        ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("j" "Journal entry")
-        ("jj" "Quick entry" item (file+datetree "~/Dropbox/notes/journal.org")
-         "%^{Journal}" :immediate-finish 1)
-        ("jJ" "Full entry" item (file+datetree "~/Dropbox/notes/journal.org")
-         "%?")
-
-        ;; LOGBOOK
-        ("l" "Logbook entry")
-        ("ll" "Quick entry" item (file+datetree "~/Dropbox/notes/logbook.org")
-         "%^{Logbook}" :immediate-finish 1)
-        ("lL" "Full entry" item (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?")
-
-        ;; Note in Inbox
-        ("n" "Note in Inbox")
-        ("nn" "Note" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{NOTE}" :immediate-finish 1)
-        ("nN" "Note with clipboard" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{NOTE} %c")
-        ("ne" "Note" entry (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("n" "Note" entry
+         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
          "* %^{Title}\n%?")
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
+        ("j" "Journal" item
+         (file+datetree "~/Dropbox/notes/journal.org")
+         "%?")
 
-        ("c" "Code Snippet" entry (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
-         "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")
-        ))
+        ("l" "Logbook" item
+         (file+datetree "~/Dropbox/notes/logbook.org")
+         "%?")
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("Q" "Quote" entry
+         (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
+         "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
+         :immediate-finish 1)
+
+        ("u" "URL" item
+         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         "[[%^{URL}][%^{Description}]]"
+         :immediate-finish 1)
+
+        ("a" "Article" entry
+         (file+headline "~/Dropbox/notes/work.org" "Literature")
+         "* TODO %^{Title}\n\nAbstract: %?"
+         :prepend t :created t)
+
+        ("c" "Code Snippet" entry
+         (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
+         "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n")))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp
 (defun custom_org_auto_check()
   (org-update-checkbox-count t))
-(add-hook 'org-mode-hook 
-          (lambda () 
+(add-hook 'org-mode-hook
+          (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
 * Hydra -- General utility HUDs
@@ -905,7 +862,7 @@ Abstract:
 (use-package hydra :ensure t :defer t)
 #+END_SRC
 
-** Dired
+* Hydra -- Dired
 #+BEGIN_SRC emacs-lisp
 (defhydra hydra-dired (:hint nil :color pink)
   "
@@ -966,7 +923,7 @@ T - tag prefix
   (define-key dired-mode-map "." 'hydra-dired/body))
 
 #+END_SRC
-** Ibuffer
+* Hydra -- Ibuffer
 #+BEGIN_SRC emacs-lisp
 (defhydra hydra-ibuffer-main (:color pink :hint nil)
   "
@@ -1058,26 +1015,13 @@ T - tag prefix
   ("/" ibuffer-filter-disable "disable")
   ("b" hydra-ibuffer-main/body "back" :color blue))
 
-(add-hook 'after-init-hook (lambda () 
+(add-hook 'after-init-hook (lambda ()
     (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)))
 
 (add-hook 'ibuffer-hook 'hydra-ibuffer-main/body)
 #+END_SRC
-** My utility binds
+* Hydra -- My utility binds
 #+BEGIN_SRC emacs-lisp
-(defhydra cd/zoom (:exit nil)
-  "Text scale"
-  ("+" text-scale-increase "Zoom in" :column "Zoom")
-  ("-" text-scale-decrease "Zoom out" :column "Zoom")
-  ("." nil "quit"))
-
-(defhydra cd/indent (:exit nil)
-  (">" indent-rigidly-right-to-tab-stop "Indent to tabstop")
-  ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
-  ("<right>" indent-rigidly-right-to-tab-stop "Indent to tabstop")
-  ("<left>" indent-rigidly-left-to-tab-stop "Dedent to tabstop")
-  ("." nil))
-
 (defhydra cd/paragraphs-and-lines (:exit t)
   ("<up>" delete-indentation "Join line UP" :exit nil)
   ("<down>" (join-line -1) "Join line DOWN" :exit nil)
@@ -1087,18 +1031,18 @@ T - tag prefix
 (defhydra cd/links (:exit t)
   ("c" insert-link-with-description-prompt "From clipboard" :column "Insert")
   ("l" org-insert-link "Prompted" :column "Insert")
-  ("s" org-store-link "Store" :column "Store"))
+  ("s" org-store-link "Store" :column "Store")
+  ("o" org-open-at-point "Open link" :column "Handle")
+  ("O" cd/org-open-link-same "Open in same window" :column "Handle"))
 
 (defhydra cd/windowmove (:exit t)
-  ("<left>" windmove-left "Left" :column "Move")
-  ("<right>" windmove-right "Right" :column "Move")
-  ("<up>" windmove-up "Up" :column "Move")
-  ("<down>" windmove-down "Down" :column "Move")
   ("R" (progn (split-window-right) (windmove-right)) "Split right" :column "Move")
   ("D" (progn (split-window-below) (windmove-down)) "Split down" :column "Move")
   ("n" cd/move-to-next-narrow "Next narrowed subtree" :column "Move" :exit nil)
   ("p" cd/move-to-previous-narrow "Previous narrowed subtree" :column "Move" :exit nil)
 
+  (">" indent-rigidly-right-to-tab-stop "Indent to tabstop" :column "Windows" :exit nil)
+  ("<" indent-rigidly-left-to-tab-stop "Dedent to tabstop" :column "Windows" :exit nil)
   ("S-<up>" enlarge-window "Enlarge" :column "Windows" :exit nil)
   ("S-<down>" shrink-window "Shrink" :column "Windows" :exit nil)
   ("=" balance-windows "Equalise" :column "Windows")
@@ -1117,12 +1061,10 @@ T - tag prefix
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config")
   ("d" dired "Dired"))
 
-(defhydra hydra-fold (:pre (hs-minor-mode 1))
+(defhydra hydra-fold (:pre (hs-minor-mode 1) :hint t :exit t)
   "fold"
-  ("t" fold-dwim-toggle "toggle")
-  ("h" fold-dwim-hide-all "hide-all")
-  ("s" fold-dwim-show-all "show-all")
-  ("q" nil "quit"))
+  ("t" yafolding-toggle-element "Toggle")
+  ("T" yafolding-toggle-all "Toggle ALL"))
 
 (defhydra hydra-cd-util (:hint nil :exit t)
   ("<tab>" cd/indent/body "Indent" :column "Appearance")
@@ -1143,8 +1085,8 @@ T - tag prefix
   ("p" cd/paragraphs-and-lines/body "Paragraphs and lines" :column "Utils"))
 
 (defhydra cd/elixir (:exit t :hint nil)
-  ("r" (if (region-active-p) 
-           'alchemist-iex-send-region 'alchemist-iex-send-last-sexp) 
+  ("r" (if (region-active-p)
+           'alchemist-iex-send-region 'alchemist-iex-send-last-sexp)
    "Send region")
   ("R" alchemist-iex-send-region-and-go "Send region and Go")
   ("s" alchemist-iex-run "Start repl"))
@@ -1153,55 +1095,7 @@ T - tag prefix
 (define-key global-map (kbd "C-z") 'hydra-cd-util/body)
 (define-key elixir-mode-map (kbd "M-e") 'cd/elixir/body)
 #+END_SRC
-* Appearance
-** Font
-List some pretty fonts, and grab the first one that's available.
-#+BEGIN_SRC emacs-lisp
-(setq cd-font-options 
-      '("Ubuntu Mono" 
-        "Fantasque Sans Mono" 
-        "Roboto Mono"
-        "DejaVu Sans Mono" 
-        "Fira Code"
-        "Liberation Mono"))
-(setq cd-fonts-available
-      (cl-remove-if
-       (lambda (font)
-         (not (member font (font-family-list)))) cd-font-options))
-(when cd-fonts-available
-  (set-frame-font (car cd-fonts-available) 1))
-
-(defvar current-font-idx 0)
-(defun next-font ()
-  (interactive)
-  (setq current-font-idx 
-        (% (+ 1 current-font-idx) 
-           (length cd-fonts-available)))
-  (let ((next-font-name (nth current-font-idx cd-fonts-available)))
-    (set-frame-font next-font-name 1)
-    (message next-font-name)))
-
-
-(setq line-spacing 0)
-(setq cd-font-height
-      (if (eq system-type 'windows-nt) 160 200))
-(set-face-attribute 'default nil :height cd-font-height)
-(setq auto-window-vscroll nil)
-#+END_SRC
-** Colour themes
-Disable themes before loading a new theme
-#+BEGIN_SRC emacs-lisp
-(defadvice load-theme (before theme-dont-propagate activate)
-  (mapc #'disable-theme custom-enabled-themes))
-(setq custom-safe-themes t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package kaolin-themes)
-;; (load-theme 'kaolin-dark t)
-(load-theme 'kaolin-bubblegum t)
-#+END_SRC
-** Suppress GUI features
+* Suppress GUI features
 #+BEGIN_SRC emacs-lisp
 (setq use-file-dialog nil
       use-dialog-box nil
@@ -1219,13 +1113,63 @@ Disable themes before loading a new theme
   (add-to-list 'initial-frame-alist no-border))
 #+END_SRC
 
+* Font
+List some pretty fonts, and grab the first one that's available.
+#+BEGIN_SRC emacs-lisp
+(setq cd-font-options
+      '("Fantasque Sans Mono"
+        "Ubuntu Mono"
+        "Roboto Mono"
+        "DejaVu Sans Mono"
+        "Fira Code"
+        "Liberation Mono"))
+(setq cd-fonts-available
+      (cl-remove-if
+       (lambda (font)
+         (not (member font (font-family-list)))) cd-font-options))
+(when cd-fonts-available
+  (set-frame-font (car cd-fonts-available) 1))
+
+(defvar current-font-idx 0)
+(defun next-font ()
+  (interactive)
+  (setq current-font-idx
+        (% (+ 1 current-font-idx)
+           (length cd-fonts-available)))
+  (let ((next-font-name (nth current-font-idx cd-fonts-available)))
+    (set-frame-font next-font-name 1)
+    (message next-font-name)))
+
+
+(setq line-spacing 0)
+(setq cd-font-height
+      (if (eq system-type 'windows-nt) 160 200))
+(set-face-attribute 'default nil :height cd-font-height)
+(setq auto-window-vscroll nil)
+#+END_SRC
+* Colour themes
+Disable themes before loading a new theme
+#+BEGIN_SRC emacs-lisp
+(defadvice load-theme (before theme-dont-propagate activate)
+  (mapc #'disable-theme custom-enabled-themes))
+(setq custom-safe-themes t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package kaolin-themes)
+(use-package color-theme-sanityinc-solarized)
+;;(load-theme 'kaolin-dark t)
+;;(load-theme 'kaolin-bubblegum t)
+(load-theme 'sanityinc-solarized-dark t)
+#+END_SRC
+* Appearance
 ** Line highlighting, linum, colnum, and cursor
 #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
 (blink-cursor-mode 0)
 (setq linum-format "%d ")
 
-;; Line number and column 
+;; Line number and column
 (line-number-mode 1)
 (column-number-mode 1)
 #+END_SRC
@@ -1273,6 +1217,8 @@ the current window and the windows state prior to that."
 ** Code-folding
 #+BEGIN_SRC emacs-lisp
 ;; Code folding
+(use-package yafolding :ensure t)
+(add-hook 'prog-mode-hook 'yafolding-mode)
 (use-package fold-dwim :ensure t :defer t)
 (use-package fold-dwim-org :ensure t :defer t)
 (add-hook 'prog-mode-hook 'fold-dwim-org/minor-mode)
@@ -1286,7 +1232,7 @@ the current window and the windows state prior to that."
 (highlight-indentation-mode -1)
 
 ;; Soft-wrap at a column.
-;; Not currently setting this globally, as still unsure about 
+;; Not currently setting this globally, as still unsure about
 ;; hard wrap vs soft-wrap vs soft-wrap with ruler
 (use-package visual-fill-column :ensure t
   :config
