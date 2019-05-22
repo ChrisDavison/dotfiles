@@ -753,8 +753,7 @@ You can easily /capture/ information using various different templates (includin
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/notes/inbox.org"
                            "~/Dropbox/notes/work.org"
-                           "~/Dropbox/notes/logbook.org"
-                           "~/Dropbox/notes/life-progress.org")
+                           "~/Dropbox/notes/logbook.org")
         org-log-done 'time
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
@@ -784,8 +783,6 @@ You can easily /capture/ information using various different templates (includin
     (setq org-agenda-files '("~/Dropbox/notes/"))
     (org-agenda-list)
     (setq org-agenda-files old-agenda-list)))
-
-
 #+END_SRC
 ** Insert a link from clipboard
 Prompt for description. Basically slightly quicker than having to ~C-y~ when creating a link.
@@ -902,8 +899,11 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
           (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
-** org-return-dwim
-#+begin_src emacs-lisp
+** TODO org-return-dwim
+
+NOT tangling this for now as I'm finding it a bit weird to get used to. May keep in all the stuff about lists etc, but remove the configuration for headers, or at least simplify it.
+
+#+begin_src emacs-lisp :tangle no
 
 (defun unpackaged/org-element-descendant-of (type element)
   "Return non-nil if ELEMENT is a descendant of TYPE.
