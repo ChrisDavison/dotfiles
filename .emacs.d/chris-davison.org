@@ -163,6 +163,30 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   :bind (("C-x g" . magit-status)))
 #+END_SRC
 
+A better magit status. Only show magit, and if the currently active file had changes, go to it's unstaged changes section.
+#+begin_src emacs-lisp
+(defun unpackaged/magit-status ()
+  "Open a `magit-status' buffer and close the other window so only Magit is visible.
+If a file was visited in the buffer that was active when this
+command was called, go to its unstaged changes section."
+  (interactive)
+  (let* ((buffer-file-path (when buffer-file-name
+                             (file-relative-name buffer-file-name
+                                                 (locate-dominating-file buffer-file-name ".git"))))
+         (section-ident `((file . ,buffer-file-path) (unstaged) (status))))
+    (magit-status)
+    (delete-other-windows)
+    (when buffer-file-path
+      (goto-char (point-min))
+      (cl-loop until (when (equal section-ident (magit-section-ident (magit-current-section)))
+                       (magit-section-show (magit-current-section))
+                       (recenter)
+                       t)
+               do (condition-case nil
+                      (magit-section-forward)
+                    (error (cl-return (magit-status-goto-initial-section-1))))))))
+#+end_src
+
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
