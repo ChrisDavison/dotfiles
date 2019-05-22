@@ -754,7 +754,6 @@ You can easily /capture/ information using various different templates (includin
         org-agenda-files '("~/Dropbox/notes/inbox.org"
                            "~/Dropbox/notes/work.org"
                            "~/Dropbox/notes/logbook.org"
-                           "~/Dropbox/notes/journal.org"
                            "~/Dropbox/notes/life-progress.org")
         org-log-done 'time
         org-ellipsis "…"
@@ -860,10 +859,6 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          "* %^{Title}\n%?\n%?")
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("j" "Journal" item
-         (file+datetree "~/Dropbox/notes/journal.org")
-         "%?")
-
         ("l" "Logbook" item
          (file+datetree "~/Dropbox/notes/logbook.org")
          "%?")
@@ -886,7 +881,18 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
         ("c" "Code Snippet" entry
          (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
-         :immediate-finish 1)))
+         :immediate-finish 1)
+
+        ("f" "Film" entry
+         (file "~/Dropbox/notes/films-to-watch.org")
+         "* TODO %^{Title}\n:PROPERTIES:\n:DIRECTOR: \n:YEAR: %^{YEAR}\n:END:\n\n %?"
+         :prepend t :created t)
+
+        ("b" "Book" entry
+         (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
+         "* TODO %^{Title}\n:PROPERTIES:\n:AUTHOR: \n:YEAR: %^{YEAR}\n:END:\n\n"
+         :prepend t :created t)
+        ))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp
@@ -1176,18 +1182,17 @@ T - tag prefix
 
 (defhydra cd/hydra/files (:exit t :hint nil :color pink)
   "
-  _i_nbox _w_ork _j_ournal _l_ogbook _a_rchive _c_onfig
+  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig
   "
   ("i" (find-file "~/Dropbox/notes/inbox.org"))
   ("w" (find-file "~/Dropbox/notes/work.org"))
-  ("j" (find-file "~/Dropbox/notes/journal.org"))
   ("l" (find-file "~/Dropbox/notes/logbook.org"))
   ("a" (find-file "~/Dropbox/notes/archive.org"))
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
 (defhydra cd/hydra/main (:hint nil :exit t)
   "
-  _f_old _F_OLD ~ _z_oom _w_indow ~ Join_<up>_/_<down>_
+  _f_old _F_OLD ~ _z_oom ~ (_w_indow) ~ Join_<up>_/_<down>_
   _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks
   "
   ("f" yafolding-toggle-element)
