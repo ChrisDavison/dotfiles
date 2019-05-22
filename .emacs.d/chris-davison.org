@@ -1061,38 +1061,44 @@ T - tag prefix
 #+END_SRC
 * Hydra -- My utility binds
 #+BEGIN_SRC emacs-lisp
-(defhydra cd/hydra/windowmove (:exit t)
-  ("R" (progn (split-window-right) (windmove-right)) "Split RIGHT")
-  ("D" (progn (split-window-below) (windmove-down)) "Split DOWN")
-  ("n" cd/move-to-next-narrow "Next Subtree" :exit nil)
-  ("p" cd/move-to-previous-narrow "Previous Subtree" :exit nil)
-  (">" indent-rigidly-right-to-tab-stop "TAB right" :exit nil)
-  ("<" indent-rigidly-left-to-tab-stop "TAB left" :exit nil))
+(defhydra cd/hydra/windowmove (:exit t :hint nil)
+  "
+  Split _R_ight/_D_own :: _n_ext/_p_rev narrowed subtree :: _<_|_>_indent
+  "
+  ("R" (progn (split-window-right) (windmove-right)))
+  ("D" (progn (split-window-below) (windmove-down)))
+  ("n" cd/move-to-next-narrow :exit nil)
+  ("p" cd/move-to-previous-narrow :exit nil)
+  (">" indent-rigidly-right-to-tab-stop :exit nil)
+  ("<" indent-rigidly-left-to-tab-stop :exit nil))
 
-(defhydra cd/hydra/files (:exit t)
-  ("i" (find-file "~/Dropbox/notes/inbox.org") "Inbox")
-  ("w" (find-file "~/Dropbox/notes/work.org") "Work")
-  ("j" (find-file "~/Dropbox/notes/journal.org") "Journal")
-  ("l" (find-file "~/Dropbox/notes/logbook.org") "Logbook")
-  ("a" (find-file "~/Dropbox/notes/archive.org") "Archive")
-  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "Config"))
+(defhydra cd/hydra/files (:exit t :hint nil :color pink)
+  "
+  _i_nbox _w_ork _j_ournal _l_ogbook _a_rchive _c_onfig
+  "
+  ("i" (find-file "~/Dropbox/notes/inbox.org"))
+  ("w" (find-file "~/Dropbox/notes/work.org"))
+  ("j" (find-file "~/Dropbox/notes/journal.org"))
+  ("l" (find-file "~/Dropbox/notes/logbook.org"))
+  ("a" (find-file "~/Dropbox/notes/archive.org"))
+  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
-(defhydra cd/fold (:exit t)
-  ("f" yafolding-toggle-element "Toggle")
-  ("F" yafolding-toggle-all "Toggle ALL"))
-
-(defhydra cd/hydra/main (:exit t)
-  ("f" cd/fold/body "Fold")
-  ("C-z" (modi/toggle-one-window nil) "Zoom")
-  ("w" cd/hydra/windowmove/body "Windows")
-  ("s" counsel-grep-or-swiper "Swiper")
-  ("r" anzu-query-replace-regexp "Replace")
-  ("i" ivy-imenu-anywhere "imenu Anywhere")
-  ("e" iedit-mode "iedit")
-  ("c" (progn (mark-whole-buffer) (kill-ring-save 0 0 t)) "Copy buffer")
-  ("b" cd/hydra/files/body "Bookmarks (files)")
-  ("<up>" delete-indentation "Join UP" :exit nil)
-  ("<down>" (join-line -1) "Join DOWN" :exit nil))
+(defhydra cd/hydra/main (:hint nil :exit t)
+  "
+  _f_old _F_OLD ~ _z_oom _w_indow ~ Join_<up>_/_<down>_
+  _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks
+  "
+  ("f" yafolding-toggle-element)
+  ("F" yafolding-toggle-all)
+  ("z" (modi/toggle-one-window nil))
+  ("w" cd/hydra/windowmove/body)
+  ("s" counsel-grep-or-swiper)
+  ("r" anzu-query-replace-regexp)
+  ("i" ivy-imenu-anywhere)
+  ("e" iedit-mode)
+  ("b" cd/hydra/files/body)
+  ("<up>" delete-indentation :exit nil)
+  ("<down>" (join-line -1) :exit nil))
 
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
 #+END_SRC
