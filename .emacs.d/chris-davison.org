@@ -760,7 +760,6 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
-                               (elixir . t)
                                (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil)
   ;; Settings for refiling
@@ -770,12 +769,12 @@ You can easily /capture/ information using various different templates (includin
         org-refile-use-cache nil
         org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
         org-blank-before-new-entry nil)
-  (add-hook 'org-mode-hook 'visual-line-mode)
-  (add-hook 'org-mode-hook 'org-indent-mode)
-  (setq fill-column 80)
-  (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal))
+  (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
+  :hook ((org-mode . visual-line-mode)
+         (org-mode . org-indent-mode)))
+
 (diminish 'org-indent-mode)
-(use-package org-present :ensure t :defer t)
+
 
 (defun cd/org-agenda-all ()
   (interactive)
@@ -853,7 +852,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" entry
          (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{Title}\n%?\n%?")
+         "* %^{Title}\n%?")
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" item
@@ -1193,7 +1192,7 @@ T - tag prefix
 (defhydra cd/hydra/main (:hint nil :exit t)
   "
   _f_old _F_OLD ~ _z_oom ~ (_w_indow) ~ Join_<up>_/_<down>_
-  _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks
+  _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks ~ org _a_genda
   "
   ("f" yafolding-toggle-element)
   ("F" yafolding-toggle-all)
@@ -1204,6 +1203,8 @@ T - tag prefix
   ("i" ivy-imenu-anywhere)
   ("e" iedit-mode)
   ("b" cd/hydra/files/body)
+  ("o" cd/hydra/files/body)
+  ("a" org-agenda)
   ("<up>" delete-indentation :exit nil)
   ("<down>" (join-line -1) :exit nil))
 
@@ -1356,12 +1357,24 @@ the current window and the windows state prior to that."
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
 
-(use-package smart-mode-line :ensure t :defer t
-  :config (add-hook 'after-init-hook 'sml/setup))
+(use-package smart-mode-line :ensure t :config )
+(add-hook 'after-init-hook 'sml/setup)
 #+END_SRC
 * WIP TESTING GROUND
 
 #+NAME: TESTING
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package company-box :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun cd/python-comment-header ()
+  (interactive)
+  (let* ((header (read-string "Header: "))
+         (border (s-repeat (length header) "="))
+         (indentation (s-repeat (python-indent-calculate-indentation) " ")))
+    (insert "# " border
+            "\n" indentation "# " header
+            "\n" indentation "# " border))))
+)
 #+END_SRC
