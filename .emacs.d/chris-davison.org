@@ -486,6 +486,8 @@ Use elpy for python
              (shell)
              (cd/set-windows-shell))
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
+
+(add-to-list 'python-shell-exec-path "~/.envs/ml/bin/")
 #+END_SRC
 * TODO Lang - Latex
 #+BEGIN_SRC emacs-lisp
