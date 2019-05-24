@@ -857,7 +857,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 (setq org-capture-templates
       '(
         ("t" "Todo (ME)" entry
-         (file "~/Dropbox/notes/inbox.org")
+         (file+headline "~/Dropbox/notes/inbox.org" "TASKS")
          "* TODO %^{TASK}\n%?" :empty-lines-after 1)
 
         ("w" "Todo (WORK)" entry
@@ -900,12 +900,12 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 
         ("f" "Film" entry
          (file "~/Dropbox/notes/films-to-watch.org")
-         "* TODO %^{Title}\n:PROPERTIES:\n:DIRECTOR: \n:YEAR: %^{YEAR}\n:END:\n\n %?"
+         "* TODO %^{Title} (%^{YEAR})\n%?"
          :prepend t :created t)
 
         ("b" "Book" entry
          (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
-         "* TODO %^{Title}\n:PROPERTIES:\n:AUTHOR: \n:YEAR: %^{YEAR}\n:END:\n\n"
+         "* Buy %^{Title}\n*Author(s)*: %^{AUTHORS}\n%?"
          :prepend t :created t)
         ))
 #+END_SRC
