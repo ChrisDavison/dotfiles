@@ -880,7 +880,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          :immediate-finish 1)
 
         ("u" "URL" item
-         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         (file+olp "~/Dropbox/notes/inbox.org" "Notes" "Links")
          "[[%^{URL}][%^{Description}]]"
          :immediate-finish 1)
 
