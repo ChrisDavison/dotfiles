@@ -768,7 +768,7 @@ You can easily /capture/ information using various different templates (includin
         org-refile-use-outline-path nil
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
-        org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+        org-refile-targets '((org-agenda-files . (:maxlevel . 5)))
         org-blank-before-new-entry nil)
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)
