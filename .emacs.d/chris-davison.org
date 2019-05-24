@@ -845,21 +845,21 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
       '(
         ("t" "Todo (ME)" entry
          (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}\n%?")
+         "* TODO %^{TASK}\n%?" :empty-lines-after 1)
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
-         "* TODO %^{PROJECT}\n%?")
+         "* TODO %^{PROJECT}\n%?" :empty-lines-after 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" entry
          (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{Title}\n%?")
+         "* %^{Title}\n%?" :empty-lines 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" item
          (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?")
+         "%?" :tree-type week)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
