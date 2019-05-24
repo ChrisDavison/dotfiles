@@ -742,12 +742,10 @@ You can easily /capture/ information using various different templates (includin
         org-replace-disputed-keys t
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers t
-        org-todo-keywords
-        '(
-          (sequence "TODO" "WIP" "|" "DONE")
-          (sequence "|" "CANCELLED")
-          (sequence "|" "BACKBURNER")
-          )
+        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
+                           (sequence "|" "CANCELLED")
+                           (sequence "|" "BACKBURNER"))
+        org-agenda-skip-scheduled-if-done t
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
@@ -755,6 +753,7 @@ You can easily /capture/ information using various different templates (includin
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/notes/inbox.org"
                            "~/Dropbox/notes/work.org"
+                           "~/Dropbox/notes/calendar.org"
                            "~/Dropbox/notes/logbook.org")
         org-log-done 'time
         org-ellipsis "…"
@@ -776,15 +775,15 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)))
 
-  (diminish 'org-indent-mode)
+(diminish 'org-indent-mode)
 
 
-  (defun cd/org-agenda-all ()
-    (interactive)
-    (let ((old-agenda-list org-agenda-files))
-      (setq org-agenda-files '("~/Dropbox/notes/"))
-      (org-agenda-list)
-      (setq org-agenda-files old-agenda-list)))
+(defun cd/org-agenda-all ()
+  (interactive)
+  (let ((old-agenda-list org-agenda-files))
+    (setq org-agenda-files '("~/Dropbox/notes/"))
+    (org-agenda-list)
+    (setq org-agenda-files old-agenda-list)))
 #+END_SRC
 ** Insert a link from clipboard
 Prompt for description. Basically slightly quicker than having to ~C-y~ when creating a link.
@@ -894,6 +893,10 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
          "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
          :immediate-finish 1)
+
+        ("e" "Calendar Event" entry
+         (file "~/Dropbox/notes/calendar.org")
+         "* %^T %^{EVENT}\n%?")
 
         ("f" "Film" entry
          (file "~/Dropbox/notes/films-to-watch.org")
@@ -1197,12 +1200,13 @@ T - tag prefix
 
 (defhydra cd/hydra/files (:exit t :hint nil :color pink)
   "
-  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig
+  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig _e_vents
   "
   ("i" (find-file "~/Dropbox/notes/inbox.org"))
   ("w" (find-file "~/Dropbox/notes/work.org"))
   ("l" (find-file "~/Dropbox/notes/logbook.org"))
   ("a" (find-file "~/Dropbox/notes/archive.org"))
+  ("e" (find-file "~/Dropbox/notes/calendar.org"))
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
 (defhydra cd/hydra/main (:hint nil :exit t)
