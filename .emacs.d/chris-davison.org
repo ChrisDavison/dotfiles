@@ -1374,9 +1374,9 @@ the current window and the windows state prior to that."
   (interactive)
   (let* ((header (read-string "Header: "))
          (border (s-repeat (length header) "="))
-         (indentation (s-repeat (python-indent-calculate-indentation) " ")))
+         (indentation (s-repeat (current-column) " ")))
     (insert "# " border
             "\n" indentation "# " header
-            "\n" indentation "# " border))))
-)
+            "\n" indentation "# " border)))))
+(define-key python-mode-map (kbd "C-c C-h") 'cd/python-comment-header)
 #+END_SRC
