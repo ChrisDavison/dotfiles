@@ -448,15 +448,11 @@ Auto-completion for rust, using racer
 (use-package flymake-rust :ensure t :defer t)
 (use-package flycheck-rust :ensure t :defer t)
 (use-package cargo :ensure t :defer t)
-(use-package racer :defer t
-  :ensure t
-  :config
-  (setq racer-cmd "/Users/davison/prog/z__NOT_MINE/racer/target/release/racer")
-  (setq racer-rust-src-path "/Users/davison/prog/z__NOT_MINE/rust_1.3_src/src/")
-  (add-hook 'rust-mode-hook 'racer-mode)
-  (add-hook 'racer-mode-hook 'eldoc-mode)
-  (add-hook 'rust-mode-hook 'cargo-minor-mode)
-  (add-hook 'racer-mode-hook 'company-mode))
+(use-package racer :defer t :ensure t)
+(add-hook 'rust-mode-hook 'racer-mode)
+(add-hook 'racer-mode-hook 'eldoc-mode)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(add-hook 'racer-mode-hook 'company-mode)
 
 #+END_SRC
 * Lang - Python
@@ -487,7 +483,8 @@ Use elpy for python
              (cd/set-windows-shell))
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
 
-(add-to-list 'python-shell-exec-path "~/.envs/ml/bin/")
+(when (boundp 'python-shell-exec-path)
+  (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/"))
 #+END_SRC
 * TODO Lang - Latex
 #+BEGIN_SRC emacs-lisp
@@ -622,13 +619,11 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 (use-package fullframe :ensure t :defer t)
 (with-eval-after-load 'buffer (fullframe ibuffer ibuffer-quit))
 
-(use-package ibuffer-vc :ensure t)
-(defun ibuffer-set-up-preferred-filters ()
-  (ibuffer-vc-set-filter-groups-by-vc-root)
-  (unless (eq ibuffer-sorting-mode 'filename/process)
-    (ibuffer-do-sort-by-filename/process)))
+;; (defun ibuffer-set-up-preferred-filters ()
+;;   (unless (eq ibuffer-sorting-mode 'filename/process)
+;;     (ibuffer-do-sort-by-filename/process)))
 
-(add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
+;; (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 
 (with-eval-after-load 'ibuffer
   ;; Use human readable Size column instead of original one
@@ -637,20 +632,11 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
     (cond
      ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
      ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-     (t (format "%8d" (buffer-size)))))
-  ;; Explicitly require ibuffer-vc to get its column definitions, which
-  ;; can't be autoloaded
-  (require 'ibuffer-vc))
+     (t (format "%8d" (buffer-size))))))
 
 ;; Modify the default ibuffer-formats (toggle with `)
 (setq ibuffer-formats
       '((mark modified read-only vc-status-mini " "
-              (name 18 18 :left :elide) " "
-              (size-h 9 -1 :right) " "
-              (mode 16 16 :left :elide) " "
-              (vc-status 16 16 :left) " "
-              filename-and-process)
-        (mark modified read-only vc-status-mini " "
               (name 18 18 :left :elide) " "
               (size-h 9 -1 :right) " "
               (mode 16 16 :left :elide) " "
@@ -742,19 +728,16 @@ You can easily /capture/ information using various different templates (includin
         org-replace-disputed-keys t
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers t
-        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
-                           (sequence "|" "CANCELLED")
-                           (sequence "|" "BACKBURNER"))
+        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-agenda-skip-scheduled-if-done t
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files '("~/Dropbox/notes/inbox.org"
-                           "~/Dropbox/notes/work.org"
-                           "~/Dropbox/notes/calendar.org"
-                           "~/Dropbox/notes/logbook.org")
+        org-agenda-files '("~/Dropbox/notes")
+org-agenda-time-grid '((daily require-timed remove-match)
+(900 1300 1700) "......" "----------")
         org-log-done 'time
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
@@ -778,12 +761,12 @@ You can easily /capture/ information using various different templates (includin
 (diminish 'org-indent-mode)
 
 
-(defun cd/org-agenda-all ()
-  (interactive)
-  (let ((old-agenda-list org-agenda-files))
-    (setq org-agenda-files '("~/Dropbox/notes/"))
-    (org-agenda-list)
-    (setq org-agenda-files old-agenda-list)))
+;; (defun cd/org-agenda-all ()
+;;   (interactive)
+;;   (let ((old-agenda-list org-agenda-files))
+;;     (setq org-agenda-files '("~/Dropbox/notes/"))
+;;     (org-agenda-list)
+;;     (setq org-agenda-files old-agenda-list)))
 #+END_SRC
 ** Insert a link from clipboard
 Prompt for description. Basically slightly quicker than having to ~C-y~ when creating a link.
@@ -1120,7 +1103,7 @@ T - tag prefix
   ("." nil "toggle hydra" :color blue))
 
 (defhydra hydra-ibuffer-mark (:color teal :columns 5
-                              :after-exit (hydra-ibuffer-main/body))
+                                     :after-exit (hydra-ibuffer-main/body))
   "Mark"
   ("*" ibuffer-unmark-all "unmark all")
   ("M" ibuffer-mark-by-mode "mode")
@@ -1135,9 +1118,9 @@ T - tag prefix
   ("b" hydra-ibuffer-main/body "back" :color blue))
 
 (defhydra hydra-ibuffer-action (:color teal :columns 4
-                                :after-exit
-                                (if (eq major-mode 'ibuffer-mode)
-                                    (hydra-ibuffer-main/body)))
+                                       :after-exit
+                                       (if (eq major-mode 'ibuffer-mode)
+                                           (hydra-ibuffer-main/body)))
   "Action"
   ("A" ibuffer-do-view "view")
   ("E" ibuffer-do-eval "eval")
@@ -1180,8 +1163,10 @@ T - tag prefix
   ("/" ibuffer-filter-disable "disable")
   ("b" hydra-ibuffer-main/body "back" :color blue))
 
-(add-hook 'after-init-hook (lambda ()
-    (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)))
+(when (boundp 'ibuffer-mode-map)
+  (add-hook 'after-init-hook (lambda ()
+                               (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body))))
+
 
 (add-hook 'ibuffer-hook 'hydra-ibuffer-main/body)
 #+END_SRC
@@ -1278,7 +1263,7 @@ List some pretty fonts, and grab the first one that's available.
 
 (setq line-spacing 0)
 (setq cd-font-height
-      (if (eq system-type 'windows-nt) 160 200))
+      (if (eq system-type 'windows-nt) 140 160))
 (set-face-attribute 'default nil :height cd-font-height)
 (setq auto-window-vscroll nil)
 #+END_SRC
@@ -1292,12 +1277,10 @@ Disable themes before loading a new theme
 
 #+BEGIN_SRC emacs-lisp
 (use-package kaolin-themes)
-(use-package color-theme-sanityinc-solarized)
 ;;(load-theme 'kaolin-dark t)
 ;;(load-theme 'kaolin-bubblegum t)
-(load-theme 'kaolin-temple t)
-;;(load-theme 'kaolin-valley-light t)
-;;(load-theme 'sanityinc-solarized-dark t)
+(load-theme 'kaolin-light t)
+;;(load-theme 'kaolin-temple t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
@@ -1395,7 +1378,7 @@ the current window and the windows state prior to that."
          (indentation (s-repeat (current-column) " ")))
     (insert "# " border
             "\n" indentation "# " header
-            "\n" indentation "# " border)))))
+            "\n" indentation "# " border)))
 (define-key python-mode-map (kbd "C-c C-h") 'cd/python-comment-header)
 #+END_SRC
 
@@ -1406,16 +1389,22 @@ the current window and the windows state prior to that."
     ("btw" "by the way" nil 0)
     ("wether" "whether" nil 3)
     ("mustd" "μ±σ" nil 1)
+    ("@@p" "c.jr.davison@gmail.com" nil 1)
+    ("@@w" "christopher.davison@strath.ac.uk" nil 1)
     ))
 (define-abbrev-table 'latex-mode-abbrev-table
   '(
-    ("mustd" "\\(\\mu \\pm \\sigma\\)" nil 0)
+    ("mustd" "\\(\\mpu \\pm \\sigma\\)" nil 0)
     ))
 #+END_SRC
-
 Use multiple cursors
 
 #+BEGIN_SRC emacs-lisp
 (use-package multiple-cursors :ensure t :defer t
-:hook ((prog-mode . multiple-cursors-mode)))
+  :hook ((prog-mode . multiple-cursors-mode)))
 #+END_SRC
+
+#+begin_src emacs-lisp
+(setq company--disabled-backends '(company-etags company-gtags))
+#+end_src
+p
