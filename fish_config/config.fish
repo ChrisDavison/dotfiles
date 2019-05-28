@@ -1,5 +1,5 @@
 set -Ux TERM xterm-256color
-set -Ux EDITOR "code -w"
+set -Ux EDITOR "emacs"
 set -Ux GOPATH $HOME/go
 set -Ux GOBIN $HOME/bin
 set -Ux FZF_DEFAULT_COMMAND rg --files --no-ignore --hidden --follow --glob "!.git/*"

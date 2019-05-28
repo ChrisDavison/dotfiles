@@ -4,7 +4,7 @@ SETUVAR ASMRFILE:/Users/davison/Dropbox/asmr\x2ecsv
 SETUVAR --export CODEDIR:/Users/davison/code
 SETUVAR --export DATADIR:/Users/davison/Dropbox
 SETUVAR DONEFILE:/Users/davison/Dropbox/notes/done\x2emd
-SETUVAR --export EDITOR:code\x20\x2dw
+SETUVAR --export EDITOR:emacs
 SETUVAR --export FZF_ALT_C_COMMAND:fd\x1e\x2dt\x1ed\x1e\x2e\x1e/Users/davison
 SETUVAR --export FZF_DEFAULT_COMMAND:rg\x1e\x2d\x2dfiles\x1e\x2d\x2dno\x2dignore\x1e\x2d\x2dhidden\x1e\x2d\x2dfollow\x1e\x2d\x2dglob\x1e\x21\x2egit/\x2a
 SETUVAR --export GOBIN:/Users/davison/bin
