@@ -815,16 +815,16 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
       '(
         ("t" "Todo (ME)" entry
          (file+headline "~/Dropbox/notes/inbox.org" "TASKS")
-         "* TODO %^{TASK}\n%?" :empty-lines-after 1)
+         "* TODO %^{TASK}\n%?" :empty-lines-after 2)
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
-         "* TODO %^{PROJECT}\n%?" :empty-lines-after 1)
+         "* TODO %^{PROJECT}\n%?" :empty-lines-after 2)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" entry
          (file+headline "~/Dropbox/notes/inbox.org" "Notes")
-         "* %^{Title}\n%?" :empty-lines 1)
+         "* %^{Title}\n%?" :empty-lines-after 2)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" item
@@ -1063,10 +1063,18 @@ T - tag prefix
   ("e" (find-file "~/Dropbox/notes/calendar.org"))
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
+(defhydra cd/org-refile-to-file (:exit t :hint nil)
+  "Refiling"
+  ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
+  ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
+  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List")
+)
+
 (defhydra cd/hydra/main (:hint nil :exit t)
   "
   _f_old _F_OLD ~ _z_oom ~ (_w_indow) ~ Join_<up>_/_<down>_
   _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks ~ org _a_genda
+  _R_efile to file
   "
   ("f" yafolding-toggle-element)
   ("F" yafolding-toggle-all)
@@ -1074,6 +1082,7 @@ T - tag prefix
   ("w" cd/hydra/windowmove/body)
   ("s" counsel-grep-or-swiper)
   ("r" anzu-query-replace-regexp)
+  ("R" cd/org-refile-to-file/body)
   ("i" ivy-imenu-anywhere)
   ("e" iedit-mode)
   ("b" cd/hydra/files/body)
@@ -1129,7 +1138,9 @@ List some pretty fonts, and grab the first one that's available.
     (set-frame-font next-font-name 1)
     (message next-font-name)))
 
-
+(defun set-font-size (points)
+  "Set the font size to X points"
+  (set-face-attribute 'default nil :height points))
 (setq line-spacing 0)
 (setq cd-font-height
       (if (eq system-type 'windows-nt) 140 180))
@@ -1414,4 +1425,15 @@ Use multiple cursors
 
 #+BEGIN_SRC emacs-lisp
 (message (s-concat "Config loaded: " (emacs-init-time)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun refile-to-file (&optional target &optional n_depth)
+  (interactive)
+  (let ((filename (or target (read-file-name "Refile to:")))
+        (old-refile-targets org-refile-targets)
+        (depth (or n_depth 3)))
+    (progn (setq org-refile-targets '((filename . (:maxlevel . depth))))
+           (org-refile)
+           (setq org-refile-targets old-refile-targets))))
 #+END_SRC
