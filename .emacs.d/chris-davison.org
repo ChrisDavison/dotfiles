@@ -418,22 +418,6 @@ Use a /let/ binding so that I can Ctrl-g to cancel without leaving characters la
     (insert ")")))
 (global-set-key (kbd "<f5>") 'cd/yank-md)
 #+END_SRC
-* Lang - LISP -- Clojure and Cider
-#+BEGIN_SRC emacs-lisp :tangle no
-;; Cider for interactive clojure programming
-(use-package flycheck-clojure :ensure t :defer t)
-(use-package cider :ensure t :defer t
-  :config
-  (setq nrepl-popup-stacktraces nil)
-  (with-eval-after-load 'cider
-    (add-hook 'cider-mode-hook 'eldoc-mode)
-    (add-hook 'cider-repl-mode-hook 'subword-mode)
-    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
-    (add-hook 'cider-repl-mode-hook 'paredit-mode)
-    (with-eval-after-load 'clojure-mode
-      (with-eval-after-load 'flycheck
-        (flycheck-clojure-setup)))))
-#+END_SRC
 * Lang - Go
 #+BEGIN_SRC emacs-lisp
 (use-package go-mode :ensure t :defer t
@@ -526,19 +510,6 @@ Use elpy for python
                              LaTeX-section-toc
                              LaTeX-section-section
                              LaTeX-section-label))
-#+END_SRC
-* TODO Lang - Julia
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package julia-mode :ensure t :defer t)
-(use-package julia-repl :ensure t :defer t
-  :config
-  (add-hook 'julia-mode-hook 'julia-repl-mode))
-
-(add-to-list 'load-path "C:/Julia-1.1.0/bin")
-(if (eq system-type 'windows-nt)
-    (setq julia-repl-executable-records '((default "julia.exe" :basedir "C:/Julia-1.1.0/bin" ))))
-
-;; (setq julia-repl-executable-records '((default "julia")))
 #+END_SRC
 * Lang - Web-stuff
 #+BEGIN_SRC emacs-lisp
@@ -736,8 +707,8 @@ You can easily /capture/ information using various different templates (includin
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/notes")
-org-agenda-time-grid '((daily require-timed remove-match)
-(900 1300 1700) "......" "----------")
+        org-agenda-time-grid '((daily require-timed remove-match)
+                               (900 1300 1700) "......" "----------")
         org-log-done 'time
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
@@ -751,7 +722,10 @@ org-agenda-time-grid '((daily require-timed remove-match)
         org-refile-use-outline-path nil
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
-        org-refile-targets '((org-agenda-files . (:maxlevel . 5)))
+        org-refile-targets '(
+                             (nil . (:maxlevel . 3)) ;; Refile in the current file
+                             (org-agenda-files . (:maxlevel . 3)) ;; Or any agenda file
+                             )
         org-blank-before-new-entry nil)
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)
@@ -900,111 +874,6 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
           (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
-** TODO org-return-dwim
-
-NOT tangling this for now as I'm finding it a bit weird to get used to. May keep in all the stuff about lists etc, but remove the configuration for headers, or at least simplify it.
-
-#+begin_src emacs-lisp :tangle no
-
-(defun unpackaged/org-element-descendant-of (type element)
-  "Return non-nil if ELEMENT is a descendant of TYPE.
-TYPE should be an element type, like `item' or `paragraph'.
-ELEMENT should be a list like that returned by `org-element-context'."
-  (-when-let* ((parent (org-element-property :parent element)))
-    (or (eq type (car parent))
-        (unpackaged/org-element-descendant-of type parent))))
-
-(defun unpackaged/org-return-dwim (&optional default)
-  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
-
-On headings, move point to position after entry content.  In
-lists, insert a new item or end the list, with checkbox if
-appropriate.  In tables, insert a new row or end the table."
-  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-  (interactive "P")
-  (if default
-      (org-return)
-    (cond
-     ;; Act depending on context around point.
-
-     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
-     ;; followed.
-
-     ;; ((eq 'link (car (org-element-context)))
-     ;;  ;; Link: Open it.
-     ;;  (org-open-at-point-global))
-
-     ((org-at-heading-p)
-      ;; Heading: Move to position after entry content.
-      ;; NOTE: This is probably the most interesting feature of this function.
-      (let ((heading-start (org-entry-beginning-position)))
-        (goto-char (org-entry-end-position))
-        (cond ((and (org-at-heading-p)
-                    (= heading-start (org-entry-beginning-position)))
-               ;; Entry ends on its heading; add newline after
-               (end-of-line)
-               (insert "\n\n"))
-              (t
-               ;; Entry ends after its heading; back up
-               (forward-line -1)
-               (end-of-line)
-               (when (org-at-heading-p)
-                 ;; At the same heading
-                 (forward-line)
-                 (insert "\n")
-                 (forward-line -1))
-               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
-                 (insert "\n"))
-               (forward-line -1)))))
-
-     ((org-at-item-checkbox-p)
-      ;; Checkbox: Insert new item with checkbox.
-      (org-insert-todo-heading nil))
-
-     ((org-in-item-p)
-      ;; Plain list.  Yes, this gets a little complicated...
-      (let ((context (org-element-context)))
-        (if (or (eq 'plain-list (car context))  ; First item in list
-                (and (eq 'item (car context))
-                     (not (eq (org-element-property :contents-begin context)
-                              (org-element-property :contents-end context))))
-                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
-            ;; Non-empty item: Add new item.
-            (org-insert-item)
-          ;; Empty item: Close the list.
-          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
-          (delete-region (line-beginning-position) (line-end-position))
-          (insert "\n"))))
-
-     ((when (fboundp 'org-inlinetask-in-task-p)
-        (org-inlinetask-in-task-p))
-      ;; Inline task: Don't insert a new heading.
-      (org-return))
-
-     ((org-at-table-p)
-      (cond ((save-excursion
-               (beginning-of-line)
-               ;; See `org-table-next-field'.
-               (cl-loop with end = (line-end-position)
-                        for cell = (org-element-table-cell-parser)
-                        always (equal (org-element-property :contents-begin cell)
-                                      (org-element-property :contents-end cell))
-                        while (re-search-forward "|" end t)))
-             ;; Empty row: end the table.
-             (delete-region (line-beginning-position) (line-end-position))
-             (org-return))
-            (t
-             ;; Non-empty row: call `org-return'.
-             (org-return))))
-     (t
-      ;; All other cases: call `org-return'.
-      (org-return)))))
-
-;; If -when-let* isn't bound (e.g. no dash installed)
-;; just use the default return behaviour
-(when (fboundb '-when-let*)
-  (define-key org-mode-map (kbd "RET") 'unpackaged/org-return-dwim))
-#+end_src
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
@@ -1263,7 +1132,7 @@ List some pretty fonts, and grab the first one that's available.
 
 (setq line-spacing 0)
 (setq cd-font-height
-      (if (eq system-type 'windows-nt) 140 160))
+      (if (eq system-type 'windows-nt) 140 180))
 (set-face-attribute 'default nil :height cd-font-height)
 (setq auto-window-vscroll nil)
 #+END_SRC
@@ -1363,6 +1232,141 @@ the current window and the windows state prior to that."
 (use-package smart-mode-line :ensure t :config )
 (add-hook 'after-init-hook 'sml/setup)
 #+END_SRC
+* DISABLED
+** TODO Lang - Julia
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package julia-mode :ensure t :defer t)
+(use-package julia-repl :ensure t :defer t
+  :config
+  (add-hook 'julia-mode-hook 'julia-repl-mode))
+
+(add-to-list 'load-path "C:/Julia-1.1.0/bin")
+(if (eq system-type 'windows-nt)
+    (setq julia-repl-executable-records '((default "julia.exe" :basedir "C:/Julia-1.1.0/bin" ))))
+
+;; (setq julia-repl-executable-records '((default "julia")))
+#+END_SRC
+** TODO org-return-dwim
+
+NOT tangling this for now as I'm finding it a bit weird to get used to. May keep in all the stuff about lists etc, but remove the configuration for headers, or at least simplify it.
+
+#+begin_src emacs-lisp :tangle no
+
+(defun unpackaged/org-element-descendant-of (type element)
+  "Return non-nil if ELEMENT is a descendant of TYPE.
+TYPE should be an element type, like `item' or `paragraph'.
+ELEMENT should be a list like that returned by `org-element-context'."
+  (-when-let* ((parent (org-element-property :parent element)))
+    (or (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
+
+(defun unpackaged/org-return-dwim (&optional default)
+  "A helpful replacement for `org-return'.  With prefix, call `org-return'.
+
+On headings, move point to position after entry content.  In
+lists, insert a new item or end the list, with checkbox if
+appropriate.  In tables, insert a new row or end the table."
+  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+  (interactive "P")
+  (if default
+      (org-return)
+    (cond
+     ;; Act depending on context around point.
+
+     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+     ;; followed.
+
+     ;; ((eq 'link (car (org-element-context)))
+     ;;  ;; Link: Open it.
+     ;;  (org-open-at-point-global))
+
+     ((org-at-heading-p)
+      ;; Heading: Move to position after entry content.
+      ;; NOTE: This is probably the most interesting feature of this function.
+      (let ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (cond ((and (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               ;; Entry ends on its heading; add newline after
+               (end-of-line)
+               (insert "\n\n"))
+              (t
+               ;; Entry ends after its heading; back up
+               (forward-line -1)
+               (end-of-line)
+               (when (org-at-heading-p)
+                 ;; At the same heading
+                 (forward-line)
+                 (insert "\n")
+                 (forward-line -1))
+               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
+                 (insert "\n"))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      ;; Checkbox: Insert new item with checkbox.
+      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      ;; Plain list.  Yes, this gets a little complicated...
+      (let ((context (org-element-context)))
+        (if (or (eq 'plain-list (car context))  ; First item in list
+                (and (eq 'item (car context))
+                     (not (eq (org-element-property :contents-begin context)
+                              (org-element-property :contents-end context))))
+                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
+            ;; Non-empty item: Add new item.
+            (org-insert-item)
+          ;; Empty item: Close the list.
+          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert "\n"))))
+
+     ((when (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      ;; Inline task: Don't insert a new heading.
+      (org-return))
+
+     ((org-at-table-p)
+      (cond ((save-excursion
+               (beginning-of-line)
+               ;; See `org-table-next-field'.
+               (cl-loop with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property :contents-begin cell)
+                                      (org-element-property :contents-end cell))
+                        while (re-search-forward "|" end t)))
+             ;; Empty row: end the table.
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return))
+            (t
+             ;; Non-empty row: call `org-return'.
+             (org-return))))
+     (t
+      ;; All other cases: call `org-return'.
+      (org-return)))))
+
+;; If -when-let* isn't bound (e.g. no dash installed)
+;; just use the default return behaviour
+(when (fboundb '-when-let*)
+  (define-key org-mode-map (kbd "RET") 'unpackaged/org-return-dwim))
+#+end_src
+** Lang - LISP -- Clojure and Cider
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Cider for interactive clojure programming
+(use-package flycheck-clojure :ensure t :defer t)
+(use-package cider :ensure t :defer t
+  :config
+  (setq nrepl-popup-stacktraces nil)
+  (with-eval-after-load 'cider
+    (add-hook 'cider-mode-hook 'eldoc-mode)
+    (add-hook 'cider-repl-mode-hook 'subword-mode)
+    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
+    (add-hook 'cider-repl-mode-hook 'paredit-mode)
+    (with-eval-after-load 'clojure-mode
+      (with-eval-after-load 'flycheck
+        (flycheck-clojure-setup)))))
+#+END_SRC
 * WIP TESTING GROUND
 
 #+NAME: TESTING
@@ -1407,4 +1411,7 @@ Use multiple cursors
 #+begin_src emacs-lisp
 (setq company--disabled-backends '(company-etags company-gtags))
 #+end_src
-p
+
+#+BEGIN_SRC emacs-lisp
+(message (s-concat "Config loaded: " (emacs-init-time)))
+#+END_SRC
