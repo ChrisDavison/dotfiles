@@ -4,8 +4,22 @@
 
 ;;; Code:
 (setq gc-cons-threshold 100000000)
-(load "~/code/dotfiles/.emacs.d/chris-davison.el" t)
-(message "Startup: %s" (emacs-init-time))
+
+;; Utility functions to check if my org file has been tangled recently
+(defun file-mod-time (filename)
+  (file-attribute-modification-time (file-attributes filename)))
+
+(defconst cd/config-org "~/code/dotfiles/.emacs.d/chris-davison.org" "Path to my configuration")
+(defconst cd/config-el "~/code/dotfiles/.emacs.d/chris-davison.el" "Output filename for my configuration")
+(when
+    (time-less-p
+     (file-mod-time cd/config-el)
+     (file-mod-time cd/config-org))
+  (progn
+    (require 'org)
+    (org-babel-tangle-file cd/config-org cd/config-el)))
+(load cd/config-el t)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
