@@ -584,17 +584,11 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 (define-key global-map (kbd "C-M-`") 'previous-multiframe-window)
 #+END_SRC
 
-* ibuffer -- show version control status of file
+* ibuffer
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
 (use-package fullframe :ensure t :defer t)
 (with-eval-after-load 'buffer (fullframe ibuffer ibuffer-quit))
-
-;; (defun ibuffer-set-up-preferred-filters ()
-;;   (unless (eq ibuffer-sorting-mode 'filename/process)
-;;     (ibuffer-do-sort-by-filename/process)))
-
-;; (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 
 (with-eval-after-load 'ibuffer
   ;; Use human readable Size column instead of original one
@@ -614,6 +608,12 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
               filename-and-process)))
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+(setq ibuffer-saved-filter-groups
+      '(("home"
+         ("emacs-config" (or (filename . ".emacs.d") (filename . "chris-davison.org") (filename . "chris-davison.el")))
+         ("Notes" (and (mode . org-mode) (filename . "Dropbox/notes/")))
+          )))
 #+END_SRC
 * isearch -- live preview of search and replace
 #+BEGIN_SRC emacs-lisp
@@ -630,6 +630,8 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 
 ;; DEL during isearch should edit the search string, not jump back to the previous result
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+(setq search-whitespace-regexp "[ \t\r\n-_]+")
 #+END_SRC
 
 * OSX
@@ -847,8 +849,8 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          :prepend t :created t)
 
         ("c" "Code Snippet" entry
-         (file+headline "~/Dropbox/notes/inbox.org" "Code Snippets")
-         "* %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
+         (file+heamdline "~/Dropbox/notes/inbox.org" "Notes")
+         "* CODE: %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
          :immediate-finish 1)
 
         ("e" "Calendar Event" entry
@@ -863,6 +865,11 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
         ("b" "Book" entry
          (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
          "* Buy %^{Title}\n*Author(s)*: %^{AUTHORS}\n%?"
+         :prepend t :created t)
+
+        ("$" "Buy" entry
+         (file "~/Dropbox/notes/shopping.org")
+         "* Buy %^{What}\n%t %?"
          :prepend t :created t)
         ))
 #+END_SRC
@@ -1054,13 +1061,14 @@ T - tag prefix
 
 (defhydra cd/hydra/files (:exit t :hint nil :color pink)
   "
-  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig _e_vents
+  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig _e_vents _$_hopping
   "
   ("i" (find-file "~/Dropbox/notes/inbox.org"))
   ("w" (find-file "~/Dropbox/notes/work.org"))
   ("l" (find-file "~/Dropbox/notes/logbook.org"))
   ("a" (find-file "~/Dropbox/notes/archive.org"))
   ("e" (find-file "~/Dropbox/notes/calendar.org"))
+  ("$" (find-file "~/Dropbox/notes/shopping.org"))
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
 (defhydra cd/org-refile-to-file (:exit t :hint nil)
@@ -1143,7 +1151,7 @@ List some pretty fonts, and grab the first one that's available.
   (set-face-attribute 'default nil :height points))
 (setq line-spacing 0)
 (setq cd-font-height
-      (if (eq system-type 'windows-nt) 140 180))
+      (if (eq system-type 'windows-nt) 140 200))
 (set-face-attribute 'default nil :height cd-font-height)
 (setq auto-window-vscroll nil)
 #+END_SRC
@@ -1430,7 +1438,7 @@ Use multiple cursors
 #+BEGIN_SRC emacs-lisp
 (defun refile-to-file (&optional target &optional n_depth)
   (interactive)
-  (let ((filename (or target (read-file-name "Refile to:")))
+  (let ((filename (or target (read-file-name "Refile to: ")))
         (old-refile-targets org-refile-targets)
         (depth (or n_depth 3)))
     (progn (setq org-refile-targets '((filename . (:maxlevel . depth))))
