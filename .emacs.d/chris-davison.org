@@ -227,6 +227,8 @@ command was called, go to its unstaged changes section."
 (diminish 'yas-minor-mode)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(global-set-key (kbd "C-S-SPC") 'cycle-spacing)
 #+END_SRC
 ** Text filling (paragraph reflowing) and indentation
 #+BEGIN_SRC emacs-lisp
@@ -479,37 +481,36 @@ Use elpy for python
         TeX-save-query nil
         ispell-program-name "aspell"
         ispell-dictionary "english")
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
-  (add-hook 'LaTeX-mode-hook '(lambda () (outline-minor-mode 1))
-            (add-hook 'latex-mode-hook 'visual-line-mode)))
+  :hook ((LaTeX-mode . flyspell-mode)
+         (LaTeX-mode . flyspell-buffer)
+         (LaTeX-mode . outline-minor-mode)
+         (LaTeX-mode . visual-line-mode)
+         (LaTeX-mode . turn-on-reftex)))
 
-  ;; Manage citations
-  (require 'tex-site)
-  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
-  (add-hook 'latex-mode-hook 'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;; Manage citations
+(require 'tex-site)
+(autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+(autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+(autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
 
-  (setq LaTeX-eqnarray-label "eq"
-        LaTeX-equation-label "eq"
-        LaTeX-figure-label "fig"
-        LaTeX-table-label "tab"
-        LaTeX-myChapter-label "chap"
-        TeX-auto-save t
-        TeX-newline-function 'reindent-then-newline-and-indent
-        TeX-parse-self t
-        TeX-style-path '("style/" "auto/"
-                         "/usr/share/emacs21/site-lisp/auctex/style/"
-                         "/var/lib/auctex/emacs21/"
-                         "/usr/local/share/emacs/site-lisp/auctex/style/")
-        LaTeX-section-hook '(LaTeX-section-heading
-                             LaTeX-section-title
-                             LaTeX-section-toc
-                             LaTeX-section-section
-                             LaTeX-section-label))
+(setq LaTeX-eqnarray-label "eq"
+      LaTeX-equation-label "eq"
+      LaTeX-figure-label "fig"
+      LaTeX-table-label "tab"
+      LaTeX-myChapter-label "chap"
+      TeX-auto-save t
+      TeX-newline-function 'reindent-then-newline-and-indent
+      TeX-parse-self t
+      TeX-style-path '("style/" "auto/"
+                       "/usr/share/emacs21/site-lisp/auctex/style/"
+                       "/var/lib/auctex/emacs21/"
+                       "/usr/local/share/emacs/site-lisp/auctex/style/")
+      LaTeX-section-hook '(LaTeX-section-heading
+                           LaTeX-section-title
+                           LaTeX-section-toc
+                           LaTeX-section-section
+                           LaTeX-section-label))
 #+END_SRC
 * Lang - Web-stuff
 #+BEGIN_SRC emacs-lisp
@@ -1075,14 +1076,13 @@ T - tag prefix
   "Refiling"
   ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
   ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
-  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List")
-)
+  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List"))
 
 (defhydra cd/hydra/main (:hint nil :exit t)
   "
   _f_old _F_OLD ~ _z_oom ~ (_w_indow) ~ Join_<up>_/_<down>_
   _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks ~ org _a_genda
-  _R_efile to file
+  _R_efile to file  | Indent line _<_/_>_
   "
   ("f" yafolding-toggle-element)
   ("F" yafolding-toggle-all)
@@ -1096,6 +1096,8 @@ T - tag prefix
   ("b" cd/hydra/files/body)
   ("o" cd/hydra/files/body)
   ("a" org-agenda)
+  (">" indent-rigidly-right-to-tab-stop)
+  ("<" indent-rigidly-left-to-tab-stop)
   ("<up>" delete-indentation :exit nil)
   ("<down>" (join-line -1) :exit nil))
 
@@ -1122,13 +1124,14 @@ T - tag prefix
 * Font
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
-(setq cd-font-options
-      '("Fantasque Sans Mono"
-        "Ubuntu Mono"
-        "Roboto Mono"
-        "DejaVu Sans Mono"
-        "Fira Code"
-        "Liberation Mono"))
+(setq cd-font-options '(
+                        "Liberation Mono"
+                        "Fantasque Sans Mono"
+                        "Ubuntu Mono"
+                        "Roboto Mono"
+                        "DejaVu Sans Mono"
+                        "Fira Code"
+                        ))
 (setq cd-fonts-available
       (cl-remove-if
        (lambda (font)
@@ -1149,7 +1152,7 @@ List some pretty fonts, and grab the first one that's available.
 (defun set-font-size (points)
   "Set the font size to X points"
   (set-face-attribute 'default nil :height points))
-(setq line-spacing 0)
+(setq line-spacing 0.2)
 (setq cd-font-height
       (if (eq system-type 'windows-nt) 140 200))
 (set-face-attribute 'default nil :height cd-font-height)

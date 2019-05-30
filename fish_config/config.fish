@@ -42,7 +42,7 @@ alias c=clear
 alias v=nvim
 alias rf="repofetch"
 alias rs="reposstat"
-alias a="asmr.py"
+alias a="asmr"
 alias t="$EDITOR $TODOFILE"
 alias tt="cat -n $TODOFILE"
 
