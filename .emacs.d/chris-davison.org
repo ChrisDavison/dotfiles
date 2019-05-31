@@ -1186,10 +1186,15 @@ Disable themes before loading a new theme
 
 #+BEGIN_SRC emacs-lisp
 (use-package kaolin-themes)
+(use-package color-theme-sanityinc-tomorrow)
+;; DARK
 ;;(load-theme 'kaolin-dark t)
 ;;(load-theme 'kaolin-bubblegum t)
-(load-theme 'kaolin-light t)
 ;;(load-theme 'kaolin-temple t)
+
+;; LIGHT
+;;(load-theme 'kaolin-light t)
+(load-theme 'sanityinc-tomorrow-day t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
