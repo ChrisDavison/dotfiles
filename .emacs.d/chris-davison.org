@@ -839,9 +839,9 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          "* %^{Title}\n%?" :empty-lines-after 2)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("l" "Logbook" item
+        ("l" "Logbook" plain
          (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?" :tree-type week)
+         "%?" :tree-type week :empty-lines-before 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
@@ -859,13 +859,13 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          :prepend t :created t)
 
         ("c" "Code Snippet" entry
-         (file+heamdline "~/Dropbox/notes/inbox.org" "Notes")
+         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
          "* CODE: %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
          :immediate-finish 1)
 
         ("e" "Calendar Event" entry
-         (file "~/Dropbox/notes/calendar.org")
-         "* %^T %^{EVENT}\n%?")
+         (file+headline "~/Dropbox/notes/calendar.org" "UNFILED")
+         "* TODO %^{EVENT}\nSCHEDULED: %^T\n%?")
 
         ("f" "Film" entry
          (file "~/Dropbox/notes/films-to-watch.org")
