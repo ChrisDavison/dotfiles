@@ -612,9 +612,18 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 
 (setq ibuffer-saved-filter-groups
       '(("home"
-         ("emacs-config" (or (filename . ".emacs.d") (filename . "chris-davison.org") (filename . "chris-davison.el")))
-         ("Notes" (and (mode . org-mode) (filename . "Dropbox/notes/")))
-          )))
+         ("Thesis" (filename . "code/thesis/"))
+         ("Code" (filename . "code/"))
+         ("Main Notes" (or (filename . "inbox.org")
+                           (filename . "work.org")
+                           (filename . "logbook.org")
+                           (filename . "projects.org")
+                           (filename . "calendar.org")))
+         ("Other Notes" (and
+                         (mode . org-mode)
+                         (filename . "Dropbox/notes/")))
+         )))
+(add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-switch-to-saved-filter-groups "home")))
 #+END_SRC
 * isearch -- live preview of search and replace
 #+BEGIN_SRC emacs-lisp
