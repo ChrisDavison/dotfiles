@@ -891,6 +891,15 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
           (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
 #+END_SRC
+** Custom agenda views
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-agenda-custom-commands
+             '("A" "Agenda WITHOUT archive"
+               ((agenda ""))
+               ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+             )
+
+#+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
