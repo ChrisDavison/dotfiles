@@ -318,6 +318,25 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
         (kill-buffer buffer)
         (message "Deleted '%s'" filename)))))
 #+end_src
+** Multiple cursors
+Use multiple cursors
+
+#+BEGIN_SRC emacs-lisp
+(use-package multiple-cursors :ensure t :defer t
+  :hook ((prog-mode . multiple-cursors-mode)))
+#+END_SRC
+** Clear modification flag after saving
+This is a bit of a hack to get around my current problem of the modification flag staying set, even after saving, meaning I need to visit buffers and manually toggle.
+
+This function is just a wrapper around ~save-buffer~, to follow that call with a modification flag clear.
+
+#+BEGIN_SRC emacs-lisp
+(defun save-buffer-and-clear-modify ()
+  (interactive)
+  (save-buffer)
+  (set-buffer-modified-p nil))
+(global-set-key (kbd "C-x C-s") 'save-buffer-and-clear-modify)
+#+END_SRC
 * Programming Language Support - Company and Flycheck
 Company will *COMP*lete *ANY*thing. Flycheck basically runs linters and stuff, and lets you know problems in your code.
 
@@ -471,6 +490,19 @@ Use elpy for python
 
 (when (boundp 'python-shell-exec-path)
   (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/"))
+
+;; Prompt to insert a 'commented header' to delineate code
+;; will insert a #-boxed line, read from a prompt
+(defun cd/python-comment-header ()
+  (interactive)
+  (let* ((header (read-string "Header: "))
+         (border (s-repeat (length header) "="))
+         (indentation (s-repeat (current-column) " ")))
+    (insert "# " border
+            "\n" indentation "# " header
+            "\n" indentation "# " border)))
+(when (fboundp 'python-mode-map)
+  (define-key python-mode-map (kbd "C-c C-h") 'cd/python-comment-header))
 #+END_SRC
 * TODO Lang - Latex
 #+BEGIN_SRC emacs-lisp
@@ -842,7 +874,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain
          (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?" :tree-type week :empty-lines-before 1)
+         "%?" :tree-type week)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
@@ -908,6 +940,31 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 (global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "A")))
 (global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "ct")))
 #+END_SRC
+** Enable drag-and-drop of files into org-files
+This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
+
+In this case, I've set it up to copy to a local 'assets' folder.  If ~org-download-heading-lvl~ is non-nil, it would create a subfolder based on the Nth heading.
+#+BEGIN_SRC emacs-lisp
+(use-package org-download :ensure t :defer t
+  :config
+  (setq-default org-download-image-dir "./assets")
+  (setq-default org-download-heading-lvl nil))
+(add-hook 'dired-mode-hook 'org-download-enable)
+#+END_SRC
+** Refile to a specific file
+
+This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
+
+#+BEGIN_SRC emacs-lisp
+(defun refile-to-file (&optional target &optional n_depth)
+  (interactive)
+  (let ((filename (or target (read-file-name "Refile to: ")))
+        (old-refile-targets org-refile-targets)
+        (depth (or n_depth 3)))
+    (progn (setq org-refile-targets '((filename . (:maxlevel . depth))))
+           (org-refile)
+           (setq org-refile-targets old-refile-targets))))
+#+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
@@ -966,7 +1023,6 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
   ("<" indent-rigidly-left-to-tab-stop)
   ("<up>" delete-indentation :exit nil)
   ("<down>" (join-line -1) :exit nil))
-
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
 #+END_SRC
 * Suppress GUI features
@@ -1268,24 +1324,6 @@ appropriate.  In tables, insert a new row or end the table."
         (flycheck-clojure-setup)))))
 #+END_SRC
 * WIP TESTING GROUND
-
-#+NAME: TESTING
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package company-box :ensure t :defer t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun cd/python-comment-header ()
-  (interactive)
-  (let* ((header (read-string "Header: "))
-         (border (s-repeat (length header) "="))
-         (indentation (s-repeat (current-column) " ")))
-    (insert "# " border
-            "\n" indentation "# " header
-            "\n" indentation "# " border)))
-(define-key python-mode-map (kbd "C-c C-h") 'cd/python-comment-header)
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'global-abbrev-table
   '(
@@ -1301,28 +1339,7 @@ appropriate.  In tables, insert a new row or end the table."
     ("mustd" "\\(\\mpu \\pm \\sigma\\)" nil 0)
     ))
 #+END_SRC
-Use multiple cursors
-
-#+BEGIN_SRC emacs-lisp
-(use-package multiple-cursors :ensure t :defer t
-  :hook ((prog-mode . multiple-cursors-mode)))
-#+END_SRC
 
 #+begin_src emacs-lisp
 (setq company--disabled-backends '(company-etags company-gtags))
 #+end_src
-
-#+BEGIN_SRC emacs-lisp
-(message (s-concat "Config loaded: " (emacs-init-time)))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun refile-to-file (&optional target &optional n_depth)
-  (interactive)
-  (let ((filename (or target (read-file-name "Refile to: ")))
-        (old-refile-targets org-refile-targets)
-        (depth (or n_depth 3)))
-    (progn (setq org-refile-targets '((filename . (:maxlevel . depth))))
-           (org-refile)
-           (setq org-refile-targets old-refile-targets))))
-#+END_SRC
