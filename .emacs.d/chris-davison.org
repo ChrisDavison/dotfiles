@@ -1386,3 +1386,12 @@ appropriate.  In tables, insert a new row or end the table."
 (diminish 'abbrev-mode)
 (diminish 'flyspell-mode)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'company-backends 'company-yasnippet)
+#+END_SRC
+
+Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
+#+BEGIN_SRC emacs-lisp
+(setcar (nthcdr 4 org-emphasis-regexp-components) 2)
+#+END_SRC
