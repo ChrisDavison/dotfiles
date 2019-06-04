@@ -868,7 +868,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" entry
-         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         (file "~/Dropbox/notes/inbox.org")
          "* %^{Title}\n%?" :empty-lines-after 2)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
@@ -882,7 +882,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          :immediate-finish 1)
 
         ("u" "URL" entry
-         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         (file "~/Dropbox/notes/inbox.org")
          "* [[%^{URL}][%^{Description}]]"
          :immediate-finish 1)
 
@@ -892,7 +892,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
          :prepend t :created t)
 
         ("c" "Code Snippet" entry
-         (file+headline "~/Dropbox/notes/inbox.org" "Notes")
+         (file "~/Dropbox/notes/inbox.org")
          "* CODE: %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
          :immediate-finish 1)
 
