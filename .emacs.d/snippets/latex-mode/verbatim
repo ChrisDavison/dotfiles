@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: verbatim text wrapper
+# key: \verb
+# --
+\\verbatim{$0}

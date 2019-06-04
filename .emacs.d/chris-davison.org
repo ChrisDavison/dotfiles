@@ -490,19 +490,6 @@ Use elpy for python
 
 (when (boundp 'python-shell-exec-path)
   (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/"))
-
-;; Prompt to insert a 'commented header' to delineate code
-;; will insert a #-boxed line, read from a prompt
-(defun cd/python-comment-header ()
-  (interactive)
-  (let* ((header (read-string "Header: "))
-         (border (s-repeat (length header) "="))
-         (indentation (s-repeat (current-column) " ")))
-    (insert "# " border
-            "\n" indentation "# " header
-            "\n" indentation "# " border)))
-(when (fboundp 'python-mode-map)
-  (define-key python-mode-map (kbd "C-c C-h") 'cd/python-comment-header))
 #+END_SRC
 * TODO Lang - Latex
 #+BEGIN_SRC emacs-lisp
@@ -787,18 +774,6 @@ You can easily /capture/ information using various different templates (includin
 ;;     (org-agenda-list)
 ;;     (setq org-agenda-files old-agenda-list)))
 #+END_SRC
-** Insert a link from clipboard
-Prompt for description. Basically slightly quicker than having to ~C-y~ when creating a link.
-#+BEGIN_SRC emacs-lisp
-;; (use-package ox-reveal :ensure t)
-(defun insert-link-with-description-prompt ()
-  "Yank into an org link."
-  (interactive)
-  (let ((description (read-string "Description: ")))
-    (insert "[[")
-    (yank)
-    (insert (s-concat "][" description "]]"))))
-#+END_SRC
 ** Fix indentation for org source blocks
 #+BEGIN_SRC emacs-lisp
 (defun cd/org-cleanup ()
@@ -864,12 +839,12 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
-         "* TODO %^{PROJECT}\n%?" :empty-lines-after 2)
+         "* TODO %^{Task}\n%?" :empty-lines-after 2)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" entry
          (file "~/Dropbox/notes/inbox.org")
-         "* %^{Title}\n%?" :empty-lines-after 2)
+         "* %^{Note}\n%?" :empty-lines-after 2)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain
@@ -878,7 +853,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
-         "* %^{Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
+         "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
          :immediate-finish 1)
 
         ("u" "URL" entry
@@ -888,7 +863,7 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 
         ("a" "Article" entry
          (file+headline "~/Dropbox/notes/work.org" "Literature")
-         "* TODO %^{Title}\n\nAbstract: %?"
+         "* TODO %^{Article}\n\nAbstract: %?"
          :prepend t :created t)
 
         ("c" "Code Snippet" entry
@@ -902,12 +877,12 @@ Prompt for description. Basically slightly quicker than having to ~C-y~ when cre
 
         ("f" "Film" entry
          (file "~/Dropbox/notes/films-to-watch.org")
-         "* TODO %^{Title} (%^{YEAR})\n%?"
+         "* TODO %^{Film} (%^{YEAR})\n%?"
          :prepend t :created t)
 
         ("b" "Book" entry
          (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
-         "* Buy %^{Title}\n*Author(s)*: %^{AUTHORS}\n%?"
+         "* Buy %^{Book}\n*Author(s)*: %^{AUTHORS}\n%?"
          :prepend t :created t)
 
         ("$" "Buy" entry
@@ -984,12 +959,6 @@ This is a general helper function that will refile the subtree at point to a spe
   (">" indent-rigidly-right-to-tab-stop :exit nil)
   ("<" indent-rigidly-left-to-tab-stop :exit nil))
 
-(defhydra cd/latex/hydra (:exit t)
-  ""
-  ("i" cd/latex/italic "italic")
-  ("b" cd/latex/bold "bold")
-  ("v" cd/latex/verb "verbatim"))
-
 (defhydra cd/hydra/files (:exit t :hint nil :color pink)
   "
   _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig _e_vents _$_hopping
@@ -1025,7 +994,6 @@ This is a general helper function that will refile the subtree at point to a spe
   ("e" iedit-mode)
   ("b" cd/hydra/files/body)
   ("o" cd/hydra/files/body)
-  ("l" cd/latex/hydra/body)
   ("a" org-agenda)
   (">" indent-rigidly-right-to-tab-stop)
   ("<" indent-rigidly-left-to-tab-stop)
@@ -1334,48 +1302,19 @@ appropriate.  In tables, insert a new row or end the table."
 * WIP TESTING GROUND
 #+BEGIN_SRC emacs-lisp
 (define-abbrev-table 'global-abbrev-table
-  '(
-    ("afaict" "as far as I can tell" nil 1)
+  '(("afaict" "as far as I can tell" nil 1)
     ("btw" "by the way" nil 0)
     ("wether" "whether" nil 3)
     ("mustd" "μ±σ" nil 1)
     ("@@p" "c.jr.davison@gmail.com" nil 1)
-    ("@@w" "christopher.davison@strath.ac.uk" nil 1)
-    ))
+    ("@@w" "christopher.davison@strath.ac.uk" nil 1)))
 (define-abbrev-table 'latex-mode-abbrev-table
-  '(
-    ("mustd" "\\(\\mpu \\pm \\sigma\\)" nil 0)
-    ))
+  '(("mustd" "\\(\\mpu \\pm \\sigma\\)" nil 0)))
 #+END_SRC
 
 #+begin_src emacs-lisp
 (setq company--disabled-backends '(company-etags company-gtags))
 #+end_src
-
-#+BEGIN_SRC emacs-lisp
-(defun cd/latex/wrap (&optional pre post)
-  (interactive)
-  (let* ((start (region-beginning))
-         (end (region-end))
-         (prefix (if pre pre (read-string "Pre: ")))
-         (postfix (if post post (read-string "Post: "))))
-         (kill-region start end)
-         (insert prefix)
-         (yank)
-         (insert postfix)))
-
-  (defun cd/latex/italic ()
-    (interactive)
-    (cd/latex/wrap "\\textit{" "}"))
-
-  (defun cd/latex/bold ()
-    (interactive)
-    (cd/latex/wrap "\\textbf{" "}"))
-
-  (defun cd/latex/verb ()
-    (interactive)
-    (cd/latex/wrap "\\verbatim{" "}"))
-    #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (diminish 'company-mode)
