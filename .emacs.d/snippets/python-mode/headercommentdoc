@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Delimiting comment, boxed in comment markers, followed with text.
+# key: headert
+# --
+#${1:$(make-string (+ 3 (string-width yas-text)) ?\#)}
+# ${1:title} #
+#${1:$(make-string (+ 3 (string-width yas-text)) ?\#)}
+# $0
