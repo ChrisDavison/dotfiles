@@ -1343,3 +1343,38 @@ appropriate.  In tables, insert a new row or end the table."
 #+begin_src emacs-lisp
 (setq company--disabled-backends '(company-etags company-gtags))
 #+end_src
+
+#+BEGIN_SRC emacs-lisp
+(defun cd/latex/wrap (&optional pre post)
+  (interactive)
+  (let* ((start (region-beginning))
+         (end (region-end))
+         (prefix (if pre pre (read-string "Pre: ")))
+         (postfix (if post post (read-string "Post: "))))
+         (kill-region start end)
+         (insert prefix)
+         (yank)
+         (insert postfix)))
+
+  (defun cd/latex/italic ()
+    (interactive)
+    (cd/latex/wrap "\\textit{" "}"))
+
+  (defun cd/latex/bold ()
+    (interactive)
+    (cd/latex/wrap "\\textbf{" "}"))
+
+  (defun cd/latex/verb ()
+    (interactive)
+    (cd/latex/wrap "\\verbatim{" "}"))
+    #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(diminish 'company-mode)
+(diminish 'outline-minor-mode)
+(diminish 'reftex-mode)
+(diminish 'visual-line-mode)
+(diminish 'org-indent-mode)
+(diminish 'abbrev-mode)
+(diminish 'flyspell-mode)
+#+END_SRC
