@@ -345,7 +345,25 @@ Company will *COMP*lete *ANY*thing. Flycheck basically runs linters and stuff, a
   :bind ("TAB" . company-indent-or-complete-common)
   :config
   (setq company-tooltip-align-annotations t)
-  (global-company-mode))
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3))
+(add-hook 'after-init-hook 'global-company-mode)
+
+(use-package company-quickhelp :ensure t :defer t
+  :config (company-quickhelp-mode))
+
+(use-package company-racer :ensure t :defer t)
+
+(setq company-backends
+      (list
+        'company-files
+        'company-anaconda
+        'company-racer
+        'company-clang
+        'company-yasnippet
+        'company-dabbrev-code
+        'company-dabbrev
+        ))
 
 (defvar my/company-point nil)
 (advice-add 'company-complete-common :before
@@ -455,9 +473,11 @@ Auto-completion for rust, using racer
 (use-package cargo :ensure t :defer t)
 (use-package racer :defer t :ensure t)
 (add-hook 'rust-mode-hook 'racer-mode)
+(add-hook 'rust-mode-hook 'company-mode)
 (add-hook 'racer-mode-hook 'eldoc-mode)
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'racer-mode-hook 'company-mode)
+(add-hook 'rust-mode-hook '(lambda () (add-to-list 'company-backends 'company-racer)))
 
 #+END_SRC
 * Lang - Python
@@ -762,7 +782,8 @@ You can easily /capture/ information using various different templates (includin
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
-         (org-mode . abbrev-mode)))
+         (org-mode . abbrev-mode)
+         (org-mode . org-bullets-mode)))
 
 (diminish 'org-indent-mode)
 
@@ -904,7 +925,7 @@ You can easily /capture/ information using various different templates (includin
 (setq org-agenda-custom-commands
       '(
         ("A" "Agenda WITHOUT archive"
-         ((agenda "" ((org-agenda-span 1))))
+         ((agenda "" ((org-agenda-span 7))))
          ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
         ("c" . "My custom views")
         ("ct" "Today and TODO|WIP"
@@ -943,10 +964,7 @@ This is a general helper function that will refile the subtree at point to a spe
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
-#+END_SRC
 
-** My utility hydra
-#+BEGIN_SRC emacs-lisp
 (defhydra cd/hydra/windowmove (:exit t :hint nil)
   "
   Split _R_ight/_D_own :: _n_ext/_p_rev narrowed subtree :: _<_|_>_indent :: _o_ther frame
@@ -960,47 +978,36 @@ This is a general helper function that will refile the subtree at point to a spe
   ("<" indent-rigidly-left-to-tab-stop :exit nil))
 
 (defhydra cd/hydra/files (:exit t :hint nil :color pink)
-  "
-  _i_nbox _w_ork _l_ogbook _a_rchive _c_onfig _e_vents _$_hopping
-  "
-  ("i" (find-file "~/Dropbox/notes/inbox.org"))
-  ("w" (find-file "~/Dropbox/notes/work.org"))
-  ("l" (find-file "~/Dropbox/notes/logbook.org"))
-  ("a" (find-file "~/Dropbox/notes/archive.org"))
-  ("e" (find-file "~/Dropbox/notes/calendar.org"))
-  ("$" (find-file "~/Dropbox/notes/shopping.org"))
-  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
+  ("i" (find-file "~/Dropbox/notes/inbox.org") "inbox")
+  ("w" (find-file "~/Dropbox/notes/work.org") "work")
+  ("l" (find-file "~/Dropbox/notes/logbook.org") "logbook")
+  ("a" (find-file "~/Dropbox/notes/archive.org") "archive")
+  ("e" (find-file "~/Dropbox/notes/calendar.org") "calendar")
+  ("$" (find-file "~/Dropbox/notes/shopping.org") "shopping")
+  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org") "config"))
 
 (defhydra cd/org-refile-to-file (:exit t :hint nil)
-  "Refiling"
   ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
   ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
   ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List"))
 
-(defhydra cd/hydra/main (:hint nil :exit t)
-  "
-  _f_old _F_OLD ~ _z_oom ~ (_w_indow) ~ Join_<up>_/_<down>_
-  _s_wipe _i_menu ~ _r_eplace i_e_dit ~ _b_ookmarks ~ org _a_genda
-  _R_efile to file  | Indent line _<_/_>_ | _l_atex
-  "
-  ("f" yafolding-toggle-element)
-  ("F" yafolding-toggle-all)
-  ("z" (modi/toggle-one-window nil))
-  ("w" cd/hydra/windowmove/body)
-  ("s" counsel-grep-or-swiper)
-  ("r" anzu-query-replace-regexp)
-  ("R" cd/org-refile-to-file/body)
-  ("i" ivy-imenu-anywhere)
-  ("e" iedit-mode)
-  ("b" cd/hydra/files/body)
-  ("o" cd/hydra/files/body)
-  ("a" org-agenda)
-  (">" indent-rigidly-right-to-tab-stop)
-  ("<" indent-rigidly-left-to-tab-stop)
-  ("<up>" delete-indentation :exit nil)
-  ("<down>" (join-line -1) :exit nil))
+(defhydra cd/hydra/main (:exit t)
+  ("f" yafolding-toggle-element "fold")
+  ("F" yafolding-toggle-all "fold ALL")
+  ("z" (modi/toggle-one-window nil) "zoom")
+  ("w" cd/hydra/windowmove/body "WINDOW")
+  ("s" counsel-grep-or-swiper "search")
+  ("r" anzu-query-replace-regexp "replace")
+  ("R" cd/org-refile-to-file/body "REFILE")
+  ("i" ivy-imenu-anywhere "imenu")
+  ("e" iedit-mode "iedit")
+  ("o" cd/hydra/files/body "OPEN")
+  ("a" org-agenda "agenda")
+  ("<up>" delete-indentation "join-up" :exit nil )
+  ("<down>" (join-line -1) "join-down" :exit nil ))
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
 #+END_SRC
+
 * Suppress GUI features
 #+BEGIN_SRC emacs-lisp
 (setq use-file-dialog nil
@@ -1333,4 +1340,11 @@ appropriate.  In tables, insert a new row or end the table."
 Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
 #+BEGIN_SRC emacs-lisp
 (setcar (nthcdr 4 org-emphasis-regexp-components) 2)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq  org-bullets-bullet-list
+       '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
+
+;; OLD VALUES ("◉" "○" "✸" "✿")
 #+END_SRC
