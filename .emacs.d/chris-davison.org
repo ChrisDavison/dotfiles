@@ -756,6 +756,7 @@ You can easily /capture/ information using various different templates (includin
         org-hide-emphasis-markers t
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-prewarning-if-scheduled t
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
@@ -789,14 +790,6 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . org-bullets-mode)))
 
 (diminish 'org-indent-mode)
-
-
-;; (defun cd/org-agenda-all ()
-;;   (interactive)
-;;   (let ((old-agenda-list org-agenda-files))
-;;     (setq org-agenda-files '("~/Dropbox/notes/"))
-;;     (org-agenda-list)
-;;     (setq org-agenda-files old-agenda-list)))
 #+END_SRC
 ** Fix indentation for org source blocks
 #+BEGIN_SRC emacs-lisp
