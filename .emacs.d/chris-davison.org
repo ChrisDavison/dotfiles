@@ -161,6 +161,9 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
    ;; as that'll be detrimental for performance
    vc-handled-backends (delq 'Git vc-handled-backends))
   :bind (("C-x g" . magit-status)))
+
+(use-package forge
+  :after magit)
 #+END_SRC
 
 A better magit status. Only show magit, and if the currently active file had changes, go to it's unstaged changes section.
