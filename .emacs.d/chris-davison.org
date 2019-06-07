@@ -1171,9 +1171,6 @@ the current window and the windows state prior to that."
 
 (use-package smart-mode-line :ensure t :config )
 (add-hook 'after-init-hook 'sml/setup)
-
-;; Minimise the 'fringe' (border) on edges of window
-(fringe-mode 1)
 #+END_SRC
 * DISABLED
 ** TODO Lang - Julia
