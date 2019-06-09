@@ -6,7 +6,7 @@ shopt -s extglob
 shopt -s dotglob
 shopt -s nullglob
 
-export PS1="\n\W » "
+export PS1="\W :: "
 
 source_or_error(){
     if [ -f "$1" ]; then
