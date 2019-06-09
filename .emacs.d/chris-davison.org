@@ -219,8 +219,9 @@ command was called, go to its unstaged changes section."
 
 ;; Interactive editing...over word or region, C-; to edit.  Just modify the symbol, then repeat
 ;; C-; to exit.
-(use-package iedit :ensure t :defer t
-  :config (add-hook 'prog-mode-hook 'iedit-mode))
+(use-package iedit :ensure t :defer t)
+(add-hook 'prog-mode-hook 'iedit-mode)
+(global-set-key (kbd "C-;") 'iedit-mode)
 
 ;; snippets
 (use-package yasnippet :demand t :defer t
@@ -497,6 +498,7 @@ Use elpy for python
   (add-hook 'python-mode-hook 'anaconda-mode))
 (use-package company-anaconda :ensure t :defer t)
 (eval-after-load "company" '(add-to-list 'company-backends 'company-anaconda))
+(setq python-indent-offset 4)
 
 (defun ipython()
   (interactive)
