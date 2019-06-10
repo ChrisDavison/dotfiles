@@ -494,8 +494,7 @@ Use elpy for python
 ;;         python-shell-interpreter-args "--simple-prompt -i"))
 (use-package pyvenv :ensure t :defer t)
 (use-package anaconda-mode :ensure t :defer t
-  :config
-  (add-hook 'python-mode-hook 'anaconda-mode))
+  :hook ((python-mode . anaconda-mode)))
 (use-package company-anaconda :ensure t :defer t)
 (eval-after-load "company" '(add-to-list 'company-backends 'company-anaconda))
 (setq python-indent-offset 4)
