@@ -220,7 +220,6 @@ command was called, go to its unstaged changes section."
 ;; Interactive editing...over word or region, C-; to edit.  Just modify the symbol, then repeat
 ;; C-; to exit.
 (use-package iedit :ensure t :defer t)
-(add-hook 'prog-mode-hook 'iedit-mode)
 (global-set-key (kbd "C-;") 'iedit-mode)
 
 ;; snippets
