@@ -881,7 +881,7 @@ You can easily /capture/ information using various different templates (includin
         ("a" "Article" entry
          (file+headline "~/Dropbox/notes/work.org" "Literature")
          "* TODO %^{Article}\n\nAbstract: %?"
-         :prepend t :created t)
+         :prepend t)
 
         ("c" "Code Snippet" entry
          (file "~/Dropbox/notes/inbox.org")
@@ -895,17 +895,17 @@ You can easily /capture/ information using various different templates (includin
         ("f" "Film" entry
          (file "~/Dropbox/notes/films-to-watch.org")
          "* TODO %^{Film} (%^{YEAR})\n%?"
-         :prepend t :created t)
+         :prepend t)
 
         ("b" "Book" entry
          (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
          "* Buy %^{Book}\n*Author(s)*: %^{AUTHORS}\n%?"
-         :prepend t :created t)
+         :prepend t)
 
         ("$" "Buy" entry
          (file "~/Dropbox/notes/shopping.org")
          "* Buy %^{What}\n%t %?"
-         :prepend t :created t)
+         :prepend t)
 
         ("g" "Games")
         ("gp" "PC" entry
@@ -919,12 +919,7 @@ You can easily /capture/ information using various different templates (includin
         ("gt" "Tabletop" entry
          (file+headline "~/Dropbox/notes/gaming.org" "Tabletop")
          "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
-         :prepend t :created t)
-
-        ("m" "ML Parameter run" entry
-         (file+headline "~/Dropbox/notes/work.org" "ML Runs")
-         "* %t %^{Algorithm} - %^{Description}\n- %?"
-         :prepend t :created t)
+         :prepend t)
         ))
 #+END_SRC
 ** Update checkboxes on save
