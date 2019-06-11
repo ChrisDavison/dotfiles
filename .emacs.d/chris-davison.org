@@ -642,14 +642,6 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
      ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
      (t (format "%8d" (buffer-size))))))
 
-;; Modify the default ibuffer-formats (toggle with `)
-(setq ibuffer-formats
-      '((mark modified read-only vc-status-mini " "
-              (name 18 18 :left :elide) " "
-              (size-h 9 -1 :right) " "
-              (mode 16 16 :left :elide) " "
-              filename-and-process)))
-(setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (setq ibuffer-saved-filter-groups
@@ -1357,4 +1349,19 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
        '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
 
 ;; OLD VALUES ("◉" "○" "✸" "✿")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun mydired-sort ()
+  "Sort dired listings with directories first."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2) ;; beyond dir. header
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+  (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (mydired-sort))
 #+END_SRC
