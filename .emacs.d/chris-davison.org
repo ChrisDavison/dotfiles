@@ -907,6 +907,20 @@ You can easily /capture/ information using various different templates (includin
          "* Buy %^{What}\n%t %?"
          :prepend t :created t)
 
+        ("g" "Games")
+        ("gp" "PC" entry
+         (file+headline "~/Dropbox/notes/gaming.org" "PC")
+         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
+         :prepend t :created t)
+        ("gn" "Nintendo Switch" entry
+         (file+headline "~/Dropbox/notes/gaming.org" "Nintendo Switch")
+         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
+         :prepend t :created t)
+        ("gt" "Tabletop" entry
+         (file+headline "~/Dropbox/notes/gaming.org" "Tabletop")
+         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
+         :prepend t :created t)
+
         ("m" "ML Parameter run" entry
          (file+headline "~/Dropbox/notes/work.org" "ML Runs")
          "* %t %^{Algorithm} - %^{Description}\n- %?"
