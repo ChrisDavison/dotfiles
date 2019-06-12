@@ -902,15 +902,15 @@ You can easily /capture/ information using various different templates (includin
         ("g" "Games")
         ("gp" "PC" entry
          (file+headline "~/Dropbox/notes/gaming.org" "PC")
-         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
-         :prepend t :created t)
+         "* %^{TODO Keyword} %^{PC game}\n:%?"
+         :prepend t)
         ("gn" "Nintendo Switch" entry
          (file+headline "~/Dropbox/notes/gaming.org" "Nintendo Switch")
-         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
-         :prepend t :created t)
+         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n"
+         :prepend t)
         ("gt" "Tabletop" entry
          (file+headline "~/Dropbox/notes/gaming.org" "Tabletop")
-         "* %^{What}\n:PROPERTIES:\n:STATUS: Buy\n:END:%?"
+         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n"
          :prepend t)
         ))
 #+END_SRC
@@ -1081,15 +1081,7 @@ Disable themes before loading a new theme.  THis can cause some issues when usin
 
 #+BEGIN_SRC emacs-lisp
 (setq custom-safe-themes t)    ;; themes are 'safe'
-(use-package kaolin-themes)
 (use-package color-theme-sanityinc-tomorrow)
-;; DARK
-;;(load-theme 'kaolin-dark t)
-;;(load-theme 'kaolin-bubblegum t)
-;;(load-theme 'kaolin-temple t)
-
-;; LIGHT
-;;(load-theme 'kaolin-light t)
 (load-theme 'sanityinc-tomorrow-day t)
 #+END_SRC
 * Appearance
@@ -1170,8 +1162,8 @@ the current window and the windows state prior to that."
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
 
-(use-package smart-mode-line :ensure t :config )
-(add-hook 'after-init-hook 'sml/setup)
+;; (use-package smart-mode-line :ensure t :config )
+;; (add-hook 'after-init-hook 'sml/setup)
 #+END_SRC
 * DISABLED
 ** TODO Lang - Julia
@@ -1364,4 +1356,14 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
   (after dired-after-updating-hook first () activate)
   "Sort dired listings with directories first before adding marks."
   (mydired-sort))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package mixed-pitch :ensure t :defer t)
+(add-hook 'org-mode-hook 'mixed-pitch-mode)
+(add-hook 'LaTeX-mode-hook 'mixed-pitch-mode)
+(custom-theme-set-faces
+ 'user
+ '(variable-pitch ((t (:family "Ubuntu" :height 180 :weight light))))
+ '(fixed-pitch ((t (:family "Ubuntu Mono" :slant normal :weight normal :height 1.0 :width normal)))))
 #+END_SRC
