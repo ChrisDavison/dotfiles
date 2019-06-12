@@ -531,6 +531,7 @@ Use elpy for python
 
 ;; Manage citations
 (require 'tex-site)
+(diminish 'reftex-mode)
 (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
 (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
 (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
@@ -1359,11 +1360,20 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package mixed-pitch :ensure t :defer t)
+(use-package mixed-pitch :ensure t :defer t :diminish t)
 (add-hook 'org-mode-hook 'mixed-pitch-mode)
 (add-hook 'LaTeX-mode-hook 'mixed-pitch-mode)
 (custom-theme-set-faces
  'user
- '(variable-pitch ((t (:family "Ubuntu" :height 180 :weight light))))
+ '(variable-pitch ((t (:family "Ubuntu" :height 200 :weight light))))
  '(fixed-pitch ((t (:family "Ubuntu Mono" :slant normal :weight normal :height 1.0 :width normal)))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq cursor-type 'bar)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy :ensure t :defer t)
+(global-set-key (kbd "C-:") 'avy-goto-char-2)
 #+END_SRC
