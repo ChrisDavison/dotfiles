@@ -1363,10 +1363,15 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
 (use-package mixed-pitch :ensure t :defer t :diminish t)
 (add-hook 'org-mode-hook 'mixed-pitch-mode)
 (add-hook 'LaTeX-mode-hook 'mixed-pitch-mode)
-(custom-theme-set-faces
- 'user
- '(variable-pitch ((t (:family "Ubuntu" :height 200 :weight light))))
- '(fixed-pitch ((t (:family "Ubuntu Mono" :slant normal :weight normal :height 1.0 :width normal)))))
+(if (eq system-type 'windows-nt)
+    (custom-theme-set-faces
+     'user
+     '(variable-pitch ((t (:family "Ubuntu" :height 140 :weight light))))
+     '(fixed-pitch ((t (:family "Ubuntu Mono" :slant normal :weight normal :height 1.0 :width normal)))))
+  (custom-theme-set-faces
+   'user
+   '(variable-pitch ((t (:family "Ubuntu" :height 200 :weight light))))
+   '(fixed-pitch ((t (:family "Ubuntu Mono" :slant normal :weight normal :height 1.0 :width normal))))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
