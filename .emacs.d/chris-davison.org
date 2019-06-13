@@ -1382,3 +1382,8 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
 (use-package avy :ensure t :defer t)
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
 #+END_SRC
+
+Need ~htmlize~ so that I can export org buffers to HTML.
+#+BEGIN_SRC emacs-lisp
+(use-package htmlize :ensure t :defer t)
+#+END_SRC
