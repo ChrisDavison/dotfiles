@@ -22,10 +22,10 @@ This sets up the load path so that we can override it.  We also install /use-pac
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(setq-default use-package-enable-imenu-support t)
+(setq use-package-always-ensure t)
 (eval-when-compile (require 'use-package))
 (use-package diminish :ensure t)
-(setq use-package-always-ensure t)
-(setq use-package-enable-imenu-support t)
 (setq lexical-binding t)
 
 (setq
@@ -733,6 +733,7 @@ You can easily /capture/ information using various different templates (includin
          ("C-c l" . org-store-link)
          ("C-c S-O" . cd/org-open-link-same))
   :config
+
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
         org-src-window-setup 'current-window
@@ -745,6 +746,7 @@ You can easily /capture/ information using various different templates (includin
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
         org-replace-disputed-keys t
+        org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers t
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
@@ -774,8 +776,7 @@ You can easily /capture/ information using various different templates (includin
         org-refile-targets '(
                              (nil . (:maxlevel . 3)) ;; Refile in the current file
                              (org-agenda-files . (:maxlevel . 3)) ;; Or any agenda file
-                             )
-        org-blank-before-new-entry nil)
+                             ))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
