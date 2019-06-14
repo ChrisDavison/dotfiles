@@ -58,3 +58,5 @@ alias gss="git stash show --text"
 alias gsc="git stash clear"
 alias gsp="git stash pop"
 alias gwch="git whatchanged -p --abbrev-commit --pretty=medium"
+
+source ~/.envs/ml/bin/activate.fish
