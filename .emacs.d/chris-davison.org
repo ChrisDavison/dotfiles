@@ -893,12 +893,12 @@ You can easily /capture/ information using various different templates (includin
 
         ("b" "Book" entry
          (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
-         "* Buy %^{Book}\n*Author(s)*: %^{AUTHORS}\n%?"
+         "* BUY %^{Book}\n*Author(s)*: %^{AUTHORS}\n%?"
          :prepend t)
 
         ("$" "Buy" entry
          (file "~/Dropbox/notes/shopping.org")
-         "* Buy %^{What}\n%t %?"
+         "* TODO %^{What}\n%t %?"
          :prepend t)
 
         ("g" "Games")
@@ -926,9 +926,10 @@ You can easily /capture/ information using various different templates (includin
 #+END_SRC
 ** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp
+(setq org-tag-alist '(("important" . ?i)
+                      ("urgent" . ?u)))
 (setq org-agenda-custom-commands
-      '(
-        ("A" "Agenda WITHOUT archive"
+      '(("A" "Agenda WITHOUT archive"
          ((agenda "" ((org-agenda-span 7))))
          ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
         ("c" . "My custom views")
@@ -936,7 +937,12 @@ You can easily /capture/ information using various different templates (includin
          ((agenda "" ((org-agenda-span 1)))
           (todo "TODO|WIP"))
          ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+        ("1" "Q1" tags-todo "+important+urgent")
+        ("2" "Q2" tags-todo "+important-urgent")
+        ("3" "Q3" tags-todo "-important+urgent")
+        ("4" "Q4" tags-todo "-important-urgent")
         ))
+
 (global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "A")))
 (global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "ct")))
 #+END_SRC
@@ -1033,20 +1039,11 @@ This is a general helper function that will refile the subtree at point to a spe
 * Font
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
-(setq cd-font-options '(
-                        "Liberation Mono"
-                        "Fantasque Sans Mono"
-                        "Ubuntu Mono"
-                        "Roboto Mono"
-                        "DejaVu Sans Mono"
-                        "Fira Code"
-                        ))
-(setq cd-fonts-available
-      (cl-remove-if
-       (lambda (font)
-         (not (member font (font-family-list)))) cd-font-options))
-(when cd-fonts-available
-  (set-frame-font (car cd-fonts-available) 1))
+(setq cd-fonts
+      (cl-remove-if (lambda (font) (not (member font (font-family-list))))
+       '("Ubuntu Mono" "Liberation Mono" "Fantasque Sans Mono" "Roboto Mono" "DejaVu Sans Mono" "Fira Code")))
+(when cd-fonts
+  (set-frame-font (car cd-fonts) 1))
 
 (defvar current-font-idx 0)
 (defun next-font ()
@@ -1062,9 +1059,7 @@ List some pretty fonts, and grab the first one that's available.
   "Set the font size to X points"
   (set-face-attribute 'default nil :height points))
 (setq line-spacing 0.2)
-(setq cd-font-height
-      (if (eq system-type 'windows-nt) 140 200))
-(set-face-attribute 'default nil :height cd-font-height)
+(set-face-attribute 'default nil :height (if (eq system-type 'windows-nt) 140 200))
 (setq auto-window-vscroll nil)
 #+END_SRC
 * Colour themes
@@ -1387,4 +1382,10 @@ Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
 Need ~htmlize~ so that I can export org buffers to HTML.
 #+BEGIN_SRC emacs-lisp
 (use-package htmlize :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq-default prettify-symbols-alist
+                '(("#+BEGIN_SRC"     . "λ")
+                  ("#+END_SRC"       . "∎")))
 #+END_SRC
