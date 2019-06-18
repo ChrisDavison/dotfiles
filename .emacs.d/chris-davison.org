@@ -749,7 +749,7 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers t
-        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
+        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE"))
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-startup-indented t
@@ -845,7 +845,7 @@ You can easily /capture/ information using various different templates (includin
 (setq org-capture-templates
       '(
         ("t" "Todo (ME)" entry
-         (file+headline "~/Dropbox/notes/inbox.org" "TASKS")
+         (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines-after 2)
 
         ("w" "Todo (WORK)" entry
@@ -863,8 +863,8 @@ You can easily /capture/ information using various different templates (includin
          "%?" :tree-type week)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
-         (file+headline "~/Dropbox/notes/quotes.org" "UNFILED")
-         "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
+         (file "~/Dropbox/notes/quotes.org")
+         "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
          :immediate-finish 1)
 
         ("u" "URL" entry
