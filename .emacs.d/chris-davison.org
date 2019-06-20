@@ -782,7 +782,8 @@ You can easily /capture/ information using various different templates (includin
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
-         (org-mode . org-bullets-mode)))
+         (org-mode . org-bullets-mode)
+))
 
 (diminish 'org-indent-mode)
 #+END_SRC
@@ -1082,7 +1083,8 @@ Disable themes before loading a new theme.  THis can cause some issues when usin
 (use-package color-theme-sanityinc-tomorrow)
 (use-package doneburn)
 (use-package flucui-themes)
-(load-theme 'doneburn t)
+;; (load-theme 'doneburn t)
+(load-theme 'flucui-light t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
