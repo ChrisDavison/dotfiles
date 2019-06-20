@@ -228,6 +228,7 @@ command was called, go to its unstaged changes section."
 (when (fboundp 'yas-global-mode)
   (yas-global-mode +1))
 (diminish 'yas-minor-mode)
+(use-package yasnippet-snippets :demant t :defer t)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
@@ -1079,7 +1080,9 @@ Disable themes before loading a new theme.  THis can cause some issues when usin
 #+BEGIN_SRC emacs-lisp
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package color-theme-sanityinc-tomorrow)
-(load-theme 'sanityinc-tomorrow-day t)
+(use-package doneburn)
+(use-package flucui-themes)
+(load-theme 'doneburn t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
