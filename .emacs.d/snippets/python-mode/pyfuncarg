@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Function documentation for arg or return
+# key: pyfuncarg
+# --
+${1:name} : ${2:type}
+        ${3:description}

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: Function Documentation
+# key: pyfuncdoc
+# --
+"""${1:Function description}
+
+Returns
+=======
+
+Arguments
+=========
+
+"""
