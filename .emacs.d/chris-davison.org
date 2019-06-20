@@ -973,6 +973,12 @@ This is a general helper function that will refile the subtree at point to a spe
            (org-refile)
            (setq org-refile-targets old-refile-targets))))
 #+END_SRC
+
+** Add custom link protocols
+
+#+BEGIN_SRC emacs-lisp
+(org-add-link-type "gh" '(lambda (path) (browse-url (s-concat "www.github.com/" path))))
+#+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
