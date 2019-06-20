@@ -41,10 +41,8 @@ alias ltg="lt --git-ignore"
 alias c=clear
 alias v=nvim
 alias rf="repofetch"
-alias rs="reposstat"
+alias rs="repostat"
 alias a="asmr"
-alias t="$EDITOR $TODOFILE"
-alias tt="cat -n $TODOFILE"
 
 # Git aliases
 alias g="git"
