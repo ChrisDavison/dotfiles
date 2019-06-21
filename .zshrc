@@ -24,3 +24,5 @@ source_or_error /usr/local/bin/virtualenvwrapper.sh
 
 # ~/bin/randomquote || echo "No bin/randomquote"
 export PATH="/usr/local/sbin:$PATH"
+
+source ~/.envs/ml/bin/activate

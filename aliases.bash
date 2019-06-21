@@ -24,11 +24,10 @@ alias v="$EDITOR"
 alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias rf="repofetch"
-alias rs="reposstat"
+alias rs="repostat"
 alias a="asmr"
 alias t="${EDITOR:-vi} $TODOFILE"
 alias tt="cat -n $TODOFILE"
-alias j="${EDITOR:-vi} ~/Dropbox/notes/journal.md"
 alias sql3="sqlite3 -header -column"
 
 # Git aliases

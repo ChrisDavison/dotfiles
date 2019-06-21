@@ -32,6 +32,10 @@ This sets up the load path so that we can override it.  We also install /use-pac
  user-full-name "Chris Davison"
  user-mail-address "c.jr.davison@gmail.com"
  user-emacs-directory "~/code/dotfiles/.emacs.d")
+
+(defun re-eval-config-org ()
+  (interactive)
+  (load (car (org-babel-tangle-file "~/code/dotfiles/.emacs.d/chris-davison.org")) t))
 #+END_SRC
 
 * General init
