@@ -939,7 +939,7 @@ You can easily /capture/ information using various different templates (includin
   (org-update-checkbox-count t))
 (add-hook 'org-mode-hook
           (lambda ()
-             (add-hook 'after-save-hook 'custom_org_auto_check nil 'make-it-local)))
+             (add-hook 'after-save-hook 'custom_org_auto_check)))
 #+END_SRC
 ** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp
