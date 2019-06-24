@@ -1199,9 +1199,6 @@ the current window and the windows state prior to that."
 
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
-
-(use-package smart-mode-line :ensure t :config )
-(add-hook 'after-init-hook 'sml/setup)
 #+END_SRC
 * WIP TESTING GROUND
 #+BEGIN_SRC emacs-lisp
