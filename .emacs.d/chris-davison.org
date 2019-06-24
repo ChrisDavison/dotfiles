@@ -1227,3 +1227,8 @@ the current window and the windows state prior to that."
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
+
+A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
+#+BEGIN_SRC emacs-lisp
+(use-package rg :ensure t :defer t)
+#+END_SRC
