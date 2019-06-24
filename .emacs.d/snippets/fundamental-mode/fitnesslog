@@ -2,4 +2,4 @@
 # name: fitnesslog
 # key: fitnesslog
 # --
-`(format-time-string "%Y-%m-%d")`,${1:effort?},${2:peak},${3:avg},${4:duration},${5:sleep},${6:activity},${7:rested?}
+`(format-time-string "%Y-%m-%d")`,${1:effort?},${2:peak},${3:avg},${4:duration},${5:sleep},${6:activity},${7:rested?},${8:rhr}
