@@ -1030,6 +1030,8 @@ This is a general helper function that will refile the subtree at point to a spe
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
   ("s" counsel-grep-or-swiper "search")
+  ("g" rg "grep")
+  ("G" rg-literal "literal grep")
   ("r" anzu-query-replace-regexp "replace")
   ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
