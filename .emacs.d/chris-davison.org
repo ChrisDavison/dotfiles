@@ -1070,7 +1070,7 @@ List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
       (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-       '("Ubuntu Mono" "Liberation Mono" "Roboto Mono" "Fira Code")))
+       '("Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
 (when cd-fonts
   (set-frame-font (car cd-fonts) 1))
 
