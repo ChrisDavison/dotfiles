@@ -864,6 +864,9 @@ You can easily /capture/ information using various different templates (includin
         ("t" "Todo (ME)" entry
          (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines-after 2)
+        ("v" "Vague Todo (ME)" item
+         (file+headline "~/Dropbox/notes/inbox.org" "Tasks")
+         "[ ] %^{Todo}" :immediate-finish t)
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
