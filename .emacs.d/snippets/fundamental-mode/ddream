@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: Outline of a dream, with goals and questions to target self-discipline
+# key: ddream
+# --
+* ${1:dream}
+
+*Goal -* ${2:goal} [/]
+
+- [ ] $0
+
+/Is this goal worth it?/
+
+/Are the rewards worth the risk?/
+
+/How does this affect my daily life?/
+
+/What are the downsides?/
+
+/How will this affect my family, friends, and work?/
