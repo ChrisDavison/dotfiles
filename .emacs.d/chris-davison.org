@@ -874,8 +874,8 @@ You can easily /capture/ information using various different templates (includin
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" plain
-         (file "~/Dropbox/notes/notes.org")
-         "%^{Note}\n%?" :empty-lines-before 1)
+         (file+headline "~/Dropbox/notes/notes.org" "Notes")
+         "%?" :empty-lines-before 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain
@@ -963,8 +963,8 @@ You can easily /capture/ information using various different templates (includin
         ("4" "Q4" tags-todo "-important-urgent")
         ))
 
-(global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "A")))
-(global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "ct")))
+(global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "A")))
+(global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "ct")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
