@@ -866,7 +866,7 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^{TASK}\n%?" :empty-lines-after 2)
         ("v" "Vague Todo (ME)" item
          (file+headline "~/Dropbox/notes/inbox.org" "Short Tasks")
-         "[ ] %^{Todo}" :immediate-finish t)
+         "[ ] %?" :immediate-finish t)
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
@@ -889,7 +889,7 @@ You can easily /capture/ information using various different templates (includin
 
         ("u" "URL" entry
          (file "~/Dropbox/notes/inbox.org")
-         "* [[%^{URL}][%^{Description}]]"
+         "* [[%x][%^{Description}]]"
          :immediate-finish 1)
 
         ("a" "Article" entry
