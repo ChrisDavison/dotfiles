@@ -866,7 +866,10 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^{TASK}\n%?" :empty-lines-after 2)
         ("v" "Vague Todo (ME)" item
          (file+headline "~/Dropbox/notes/inbox.org" "Short Tasks")
-         "[ ] %?" :immediate-finish t)
+         "[ ] %?")
+        ("k" "Knowledge" item
+         (file+headline "~/Dropbox/notes/inbox.org" "Knowledge to add to Anki")
+         "[ ] %?")
 
         ("w" "Todo (WORK)" entry
          (file "~/Dropbox/notes/work.org")
@@ -911,11 +914,6 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^{Film} (%^{YEAR})\n%?"
          :prepend t)
 
-        ("b" "Book" entry
-         (file+headline "~/Dropbox/notes/reading-list.org" "UNFILED")
-         "* BUY %^{Book}\n*Author(s)*: %^{AUTHORS}\n%?"
-         :prepend t)
-
         ("$" "Buy" entry
          (file "~/Dropbox/notes/shopping.org")
          "* TODO %^{What}\n%t %?"
@@ -957,13 +955,16 @@ You can easily /capture/ information using various different templates (includin
          ((agenda "" ((org-agenda-span 1)))
           (todo "TODO|WIP"))
          ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+        ("cp" "Today and TODO|WIP"
+         ((agenda "" ((org-agenda-span 1))))
+         ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
         ("1" "Q1" tags-todo "+important+urgent")
         ("2" "Q2" tags-todo "+important-urgent")
         ("3" "Q3" tags-todo "-important+urgent")
         ("4" "Q4" tags-todo "-important-urgent")
         ))
 
-(global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "A")))
+(global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "cp")))
 (global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "ct")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
