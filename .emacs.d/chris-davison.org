@@ -794,8 +794,10 @@ You can easily /capture/ information using various different templates (includin
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
         org-refile-targets '(
-                             (nil . (:maxlevel . 3)) ;; Refile in the current file
-                             (org-agenda-files . (:maxlevel . 3)) ;; Or any agenda file
+                             ;; Refile in the current file
+                             (nil . (:maxlevel . 3))
+                             ;; Or any agenda file
+                             (org-agenda-files . (:maxlevel . 3))
                              ))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)

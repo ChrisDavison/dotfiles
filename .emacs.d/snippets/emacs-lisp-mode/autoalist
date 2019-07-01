@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Auto alist entry
+# key: autoalist
+# --
+((${1:mode}-mode . "${2:name}") nil
+        "$0")
