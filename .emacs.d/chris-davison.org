@@ -803,9 +803,7 @@ You can easily /capture/ information using various different templates (includin
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
-         (org-mode . org-bullets-mode)
-         ))
-
+         (org-mode . org-bullets-mode)))
 (setq  org-bullets-bullet-list
        '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
 
@@ -994,12 +992,12 @@ In this case, I've set it up to copy to a local 'assets' folder.  If ~org-downlo
 This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
 
 #+BEGIN_SRC emacs-lisp
-(defun refile-to-file (&optional target &optional n_depth)
+(defun refile-to-file (&optional target n_depth)
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
         (old-refile-targets org-refile-targets)
-        (depth (or n_depth 3)))
-    (progn (setq org-refile-targets '((filename . (:maxlevel . depth))))
+        (depth (read-number "Heading depth: ")))
+    (progn (setq org-refile-targets `((filename . (:maxlevel . ,depth))))
            (org-refile)
            (setq org-refile-targets old-refile-targets))))
 #+END_SRC
@@ -1036,9 +1034,10 @@ This is a general helper function that will refile the subtree at point to a spe
   ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
 
 (defhydra cd/org-refile-to-file (:exit t :hint nil)
-  ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
-  ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
-  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List"))
+  ("R" refile-to-file "PROMPT")
+  ("w" (refile-to-file "~/Dropbox/notes/work.org" 3) "Work")
+  ("p" (refile-to-file "~/Dropbox/notes/projects.org" 3) "Projects")
+  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org" 3) "Reading List"))
 
 (defhydra cd/hydra/main (:exit t)
   ("f" yafolding-toggle-element "fold")
@@ -1249,4 +1248,17 @@ the current window and the windows state prior to that."
 A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
 #+BEGIN_SRC emacs-lisp
 (use-package rg :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(diminish 'undo-tree-mode)
+(diminish 'anzu-mode)
+(diminish 'ivy-mode)
+(diminish 'org-indent-mode)
+(diminish 'company-mode)
+(diminish 'yas-minor-mode)
+(diminish 'abbrev-mode)
+(diminish 'subword-mode)
+(diminish 'visual-line-mode)
+(diminish 'eldoc-mode)
 #+END_SRC
