@@ -759,6 +759,7 @@ You can easily /capture/ information using various different templates (includin
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil
+        org-pretty-entities t
         org-edit-src-content-indentation 0
         org-catch-invisible-edits 'show-and-error
         org-imenu-depth 3
@@ -767,7 +768,7 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers t
-        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE"))
+        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-startup-indented t
@@ -873,9 +874,6 @@ You can easily /capture/ information using various different templates (includin
         ("t" "Todo (ME)" entry
          (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines-after 2)
-        ("v" "Vague Todo (ME)" item
-         (file+headline "~/Dropbox/notes/inbox.org" "Short Tasks")
-         "[ ] %?")
         ("k" "Knowledge" item
          (file+headline "~/Dropbox/notes/inbox.org" "Knowledge to add to Anki")
          "[ ] %?")
@@ -892,7 +890,7 @@ You can easily /capture/ information using various different templates (includin
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain
          (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?" :tree-type week)
+         "%?" :tree-type week :empty-lines-before 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file "~/Dropbox/notes/quotes.org")
@@ -908,6 +906,10 @@ You can easily /capture/ information using various different templates (includin
          (file+headline "~/Dropbox/notes/work.org" "Literature")
          "* TODO %^{Article}\n\nAbstract: %?"
          :prepend t)
+
+        ("A" "ASMR" entry
+         (file "~/Dropbox/notes/asmr.org")
+         "** [[%^{Link}][%^{Description}]]")
 
         ("c" "Code Snippet" entry
          (file "~/Dropbox/notes/inbox.org")
@@ -1014,6 +1016,7 @@ This is a general helper function that will refile the subtree at point to a spe
 (defhydra cd/hydra/windowmove (:exit t)
   ("r" (progn (split-window-right) (windmove-right)) "Split right")
   ("d" (progn (split-window-below) (windmove-down)) "Split down")
+  ("R" rotate-layout "Rotate Layout" :exit nil)
   ("n" cd/move-to-next-narrow "Next narrow" :exit nil)
   ("p" cd/move-to-previous-narrow "Prev narrow" :exit nil)
   ("o" other-frame "Other window")
@@ -1261,4 +1264,9 @@ A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occ
 (diminish 'subword-mode)
 (diminish 'visual-line-mode)
 (diminish 'eldoc-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rotate :ensure t :defer t
+  :bind (("C-c r" . rotate-layout)))
 #+END_SRC
