@@ -770,6 +770,7 @@ You can easily /capture/ information using various different templates (includin
         org-hide-emphasis-markers t
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-agenda-skip-scheduled-if-done t
+        org-agenda-start-with-log-mode t
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-startup-indented t
         org-hide-leading-stars t
@@ -1265,4 +1266,9 @@ A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occ
 #+BEGIN_SRC emacs-lisp
 (use-package rotate :ensure t :defer t
   :bind (("C-c r" . rotate-layout)))
+#+END_SRC
+
+When double clicking a file, or launching from terminal, always use the same instance of Emacs, rather than opening a new frame.
+#+BEGIN_SRC emacs-lisp
+(setq ns-pop-up-frames nil)
 #+END_SRC
