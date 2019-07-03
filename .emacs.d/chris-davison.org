@@ -958,16 +958,13 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(("A" "Agenda WITHOUT archive"
-         ((agenda "" ((org-agenda-span 7))))
-         ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+         ((agenda "" ((org-agenda-span 7)))))
         ("c" . "My custom views")
         ("ct" "Today and TODO|WIP"
          ((agenda "" ((org-agenda-span 1)))
-          (todo "TODO|WIP"))
-         ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+          (todo "TODO|WIP")))
         ("cp" "Today and TODO|WIP"
-         ((agenda "" ((org-agenda-span 1))))
-         ((org-agenda-tag-filter-preset '("-ARCHIVE"))))
+         ((agenda "" ((org-agenda-span 1)))))
         ("w" "Work and Thesis"
          ((todo "TODO|WIP" ((org-agenda-files '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))))
         ))
