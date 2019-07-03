@@ -873,11 +873,14 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(
-        ("t" "Todo (ME)" entry
+        ("t" "Task" item
+         (file+headline "~/Dropbox/notes/inbox.org" "Tasks")
+         "[ ] %t %^{TASK}\n" :empty-lines 1 :immediate-finish t)
+        ("T" "TODO (ME)" entry
          (file "~/Dropbox/notes/inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("k" "Knowledge" item
-         (file+headline "~/Dropbox/notes/inbox.org" "Knowledge to add to Anki")
+         (file+headline "~/Dropbox/notes/inbox.org" "Add Knowledge to *Anki*")
          "[ ] %?")
 
         ("w" "WORK")
@@ -917,24 +920,18 @@ You can easily /capture/ information using various different templates (includin
          (file "~/Dropbox/notes/asmr.org")
          "** [[%^{Link}][%^{Description}]]")
 
-        ("c" "Code Snippet" entry
-         (file "~/Dropbox/notes/inbox.org")
-         "* CODE: %^{Snippet Topic}\n#+BEGIN_SRC %^{Language}\n%c\n#+END_SRC\n"
-         :immediate-finish 1)
-
         ("e" "Calendar Event" entry
          (file+headline "~/Dropbox/notes/calendar.org" "UNFILED")
          "* TODO %^{EVENT}\nSCHEDULED: %^T\n%?")
 
-        ("f" "Film" entry
+        ("f" "Film" item
          (file "~/Dropbox/notes/films-to-watch.org")
-         "* TODO %^{Film} (%^{YEAR})\n%?"
-         :prepend t)
+         "[ ] %^{Film} (%^{YEAR})\n")
 
-        ("$" "Buy" entry
+        ("$" "Buy" item
          (file "~/Dropbox/notes/shopping.org")
-         "* TODO %^{What}\n%t %?"
-         :prepend t)
+         "[ ] %t %^{What}\n"
+         :prepend t :immediate-finish t)
 
         ("g" "Games")
         ("gp" "PC" entry
