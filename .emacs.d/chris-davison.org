@@ -761,6 +761,7 @@ You can easily /capture/ information using various different templates (includin
         org-confirm-babel-evaluate nil
         org-pretty-entities t
         org-edit-src-content-indentation 0
+        org-list-description-max-indent 5
         org-catch-invisible-edits 'show-and-error
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
@@ -874,24 +875,28 @@ You can easily /capture/ information using various different templates (includin
       '(
         ("t" "Todo (ME)" entry
          (file "~/Dropbox/notes/inbox.org")
-         "* TODO %^{TASK}\n%?" :empty-lines-after 2)
+         "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("k" "Knowledge" item
          (file+headline "~/Dropbox/notes/inbox.org" "Knowledge to add to Anki")
          "[ ] %?")
 
-        ("w" "Todo (WORK)" entry
+        ("w" "WORK")
+        ("wt" "Task" item
+         (file+headline "~/Dropbox/notes/work.org" "TASKS")
+         "[ ] %^{Task}" :immediate-finish t)
+        ("wp" "Project" entry
          (file "~/Dropbox/notes/work.org")
-         "* TODO %^{Task}\n%?" :empty-lines-after 2)
+         "* TODO %^{Task}\n%?" :empty-lines 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("n" "Note" plain
          (file+headline "~/Dropbox/notes/notes.org" "Notes")
-         "%?" :empty-lines-before 1)
+         "%?" :empty-lines 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain
          (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?" :tree-type week :empty-lines-before 1)
+         "%?" :tree-type week :empty-lines 1)
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("Q" "Quote" entry
          (file "~/Dropbox/notes/quotes.org")
