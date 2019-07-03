@@ -28,6 +28,7 @@ alias rs="repostat"
 alias t="${EDITOR:-vi} $TODOFILE"
 alias tt="cat -n $TODOFILE"
 alias sql3="sqlite3 -header -column"
+alias em="open -a /Applications/Emacs.app"
 
 # Git aliases
 alias g="git"
