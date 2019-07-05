@@ -781,7 +781,7 @@ You can easily /capture/ information using various different templates (includin
         org-agenda-files '("~/Dropbox/notes")
         org-agenda-time-grid '((daily require-timed remove-match)
                                (900 1300 1700) "......" "----------")
-        org-log-done 'time
+        org-log-done nil
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
   ;; Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
@@ -872,81 +872,60 @@ You can easily /capture/ information using various different templates (includin
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
-      '(
-        ("t" "Task" item
-         (file+headline "~/Dropbox/notes/inbox.org" "Tasks")
-         "[ ] %t %^{TASK}\n" :empty-lines 1 :immediate-finish t)
-        ("T" "TODO (ME)" entry
-         (file "~/Dropbox/notes/inbox.org")
+      `(
+        ("t" "Todos")
+        ("tt" "Task" item (file+headline "inbox.org" "Tasks")
+         "[ ] %^{TASK}" :immediate-finish t)
+        ("td" "Task (Dated)" item (file+headline "inbox.org" "Tasks")
+         "[ ] %^t %^{TASK}" :immediate-finish t)
+        ("tT" "Project" entry (file "inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
-        ("k" "Knowledge" item
-         (file+headline "~/Dropbox/notes/inbox.org" "Add Knowledge to *Anki*")
-         "[ ] %?")
-
-        ("w" "WORK")
-        ("wt" "Task" item
-         (file+headline "~/Dropbox/notes/work.org" "TASKS")
+        ("tA" "Add to Anki" item (file+headline "inbox.org" "Tasks")
+         "[ ] *(Anki)*  %^{knowledge}" :immediate-finish t)
+        ("tb" "Buy" item (file+headline "inbox.org" "Tasks")
+         "[ ] *($)* %^{Buy}" :immediate-finish t)
+        ("tw" "WORK Task" item (file+headline "work.org" "TASKS")
          "[ ] %^{Task}" :immediate-finish t)
-        ("wp" "Project" entry
-         (file "~/Dropbox/notes/work.org")
+        ("tW" "WORK Project" entry (file "work.org")
          "* TODO %^{Task}\n%?" :empty-lines 1)
 
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ("n" "Note" plain
-         (file+headline "~/Dropbox/notes/notes.org" "Notes")
+        ;; CALENDAR STUFF;;
+        ("c" "Calendar")
+        ("cc" "Calendar Event" entry (file+headline "calendar.org" "Calendar")
+         "* TODO %^t %^{EVENT}")
+        ("ca" "Archive (Noteable work done)" item (file+headline "calendar.org" "Work Done")
+         "%u %^{TASK}" :immediate-finish t)
+
+        ("n" "Note" plain (file+headline "notes.org" "Notes")
          "%?" :empty-lines 1)
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("l" "Logbook" plain
-         (file+datetree "~/Dropbox/notes/logbook.org")
-         "%?" :tree-type week :empty-lines 1)
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ("Q" "Quote" entry
-         (file "~/Dropbox/notes/quotes.org")
+        ("l" "Logbook" plain (file+headline "logbook.org" ,(format-time-string "%Y-%m-%d %A"))
+         "%?" :empty-lines 1)
+
+        ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
          :immediate-finish 1)
 
-        ("u" "URL" entry
-         (file "~/Dropbox/notes/inbox.org")
+        ("u" "URL" entry (file "inbox.org")
          "* [[%x][%^{Description}]]"
          :immediate-finish 1)
 
-        ("a" "Article" entry
-         (file+headline "~/Dropbox/notes/work.org" "Literature")
+        ("a" "Article" entry (file+headline "work.org" "Literature")
          "* TODO %^{Article}\n\nAbstract: %?"
          :prepend t)
 
-        ("A" "ASMR" entry
-         (file "~/Dropbox/notes/asmr.org")
-         "** [[%^{Link}][%^{Description}]]")
-
-        ("e" "Calendar Event" entry
-         (file+headline "~/Dropbox/notes/calendar.org" "UNFILED")
-         "* TODO %^{EVENT}\nSCHEDULED: %^T\n%?")
-
-        ("f" "Film" item
-         (file "~/Dropbox/notes/films-to-watch.org")
+        ;; MEDIA
+        ("f" "Film" item (file "films-to-watch.org")
          "[ ] %^{Film} (%^{YEAR})\n")
 
-        ("$" "Buy" item
-         (file "~/Dropbox/notes/shopping.org")
-         "[ ] %t %^{What}\n"
-         :prepend t :immediate-finish t)
-
         ("g" "Games")
-        ("gp" "PC" entry
-         (file+headline "~/Dropbox/notes/gaming.org" "PC")
-         "* %^{TODO Keyword} %^{PC game}\n:%?"
-         :prepend t)
-        ("gn" "Nintendo Switch" entry
-         (file+headline "~/Dropbox/notes/gaming.org" "Nintendo Switch")
-         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n"
-         :prepend t)
-        ("gt" "Tabletop" entry
-         (file+headline "~/Dropbox/notes/gaming.org" "Tabletop")
-         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n"
-         :prepend t)
-        ))
+        ("gp" "PC" entry (file+headline "gaming.org" "PC")
+         "* %^{TODO Keyword} %^{PC game}\n:%?")
+        ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
+         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
+        ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
+         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp
@@ -959,8 +938,7 @@ You can easily /capture/ information using various different templates (includin
 ** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
-      '(("A" "Agenda WITHOUT archive"
-         ((agenda "" ((org-agenda-span 7)))))
+      '(
         ("c" . "My custom views")
         ("ct" "Today and TODO|WIP"
          ((agenda "" ((org-agenda-span 1)))
@@ -1019,19 +997,6 @@ This is a general helper function that will refile the subtree at point to a spe
   (">" indent-rigidly-right-to-tab-stop "Indent" :exit nil)
   ("<" indent-rigidly-left-to-tab-stop "De-dent" :exit nil))
 
-(defhydra cd/hydra/files (:exit t :hint nil :color pink)
-  "
-  _n_otes _i_nbox _w_ork _l_ogbook _a_rchive _e_vents _$_hopping _c_onfig
-  "
-  ("n" (find-file "~/Dropbox/notes/notes.org"))
-  ("i" (find-file "~/Dropbox/notes/inbox.org"))
-  ("w" (find-file "~/Dropbox/notes/work.org"))
-  ("l" (find-file "~/Dropbox/notes/logbook.org"))
-  ("a" (find-file "~/Dropbox/notes/archive.org"))
-  ("e" (find-file "~/Dropbox/notes/calendar.org"))
-  ("$" (find-file "~/Dropbox/notes/shopping.org"))
-  ("c" (find-file "~/code/dotfiles/.emacs.d/chris-davison.org")))
-
 (defhydra cd/org-refile-to-file (:exit t :hint nil)
   ("R" refile-to-file "PROMPT")
   ("w" (refile-to-file "~/Dropbox/notes/work.org" 3) "Work")
@@ -1039,20 +1004,16 @@ This is a general helper function that will refile the subtree at point to a spe
   ("r" (refile-to-file "~/Dropbox/notes/reading-list.org" 3) "Reading List"))
 
 (defhydra cd/hydra/main (:exit t)
-  ("f" yafolding-toggle-element "fold")
-  ("F" yafolding-toggle-all "fold ALL")
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
   ("s" counsel-grep-or-swiper "search")
   ("g" rg "grep")
-  ("G" rg-literal "literal grep")
   ("r" anzu-query-replace-regexp "replace")
   ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
-  ("o" cd/hydra/files/body "OPEN")
-  ("a" org-agenda "agenda")
   ("m" discover-my-major "major bindings")
+  ("t" (progn (org-capture nil "tt")) "InboxTask")
   ("<up>" delete-indentation "join-up" :exit nil )
   ("<down>" (join-line -1) "join-down" :exit nil ))
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
@@ -1137,7 +1098,9 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package color-theme-sanityinc-tomorrow)
 (use-package doneburn-theme)
-(load-theme 'doneburn t)
+(use-package doom-themes)
+;;(load-theme 'doneburn t)
+(load-theme 'doom-molokai t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
