@@ -509,8 +509,11 @@ Use elpy for python
              (cd/set-windows-shell))
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
 
-(when (boundp 'python-shell-exec-path)
-  (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/"))
+(if (eq system-type 'windows-nt)
+    (when (boundp 'python-shell-exec-path)
+      (add-to-list 'python-shell-exec-path "c:/ProgramData/Miniconda3/"))
+  (when (boundp 'python-shell-exec-path)
+    (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/")))
 #+END_SRC
 ** TODO Latex
 #+BEGIN_SRC emacs-lisp
@@ -896,7 +899,7 @@ You can easily /capture/ information using various different templates (includin
         ("ca" "Archive (Noteable work done)" item (file+headline "calendar.org" "Work Done")
          "%u %^{TASK}" :immediate-finish t)
 
-        ("n" "Note" plain (file+headline "notes.org" "Notes")
+        ("n" "Note" plain (file+headline "inbox.org" "Notes")
          "%?" :empty-lines 1)
 
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
@@ -911,9 +914,8 @@ You can easily /capture/ information using various different templates (includin
          "* [[%x][%^{Description}]]"
          :immediate-finish 1)
 
-        ("a" "Article" entry (file+headline "work.org" "Literature")
-         "* TODO %^{Article}\n\nAbstract: %?"
-         :prepend t)
+        ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
+         "* TODO %^{Article}\n%u\n\nAbstract: %?")
 
         ;; MEDIA
         ("f" "Film" item (file "films-to-watch.org")
