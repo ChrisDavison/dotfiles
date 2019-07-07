@@ -785,6 +785,8 @@ You can easily /capture/ information using various different templates (includin
         org-agenda-time-grid '((daily require-timed remove-match)
                                (900 1300 1700) "......" "----------")
         org-log-done nil
+        org-log-into-drawer "LOGBOOK"
+        org-log-done-with-time nil
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
   ;; Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
@@ -1101,8 +1103,8 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package color-theme-sanityinc-tomorrow)
 (use-package doneburn-theme)
 (use-package doom-themes)
-;;(load-theme 'doneburn t)
-(load-theme 'doom-molokai t)
+(load-theme 'doneburn t)
+;;(load-theme 'doom-molokai t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
