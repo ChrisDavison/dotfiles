@@ -610,37 +610,37 @@ Navigation of pretty much any /menu-type/ thing.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ivy :ensure t :defer t
-             :bind
-             (:map ivy-mode-map
-                   ("C-c h" . ivy-switch-buffer)
-                   ("C-c s" . swiper))
-             :config
-             (ivy-mode 1)
-             (setq ivy-use-virtual-buffers t
-                   ivy-height 15
-                   ivy-count-format ""
-                   ivy-initial-inputs-alist nil
-                   ivy-re-builders-alist
-                   '((t . ivy--regex-plus))))
+  :bind (:map ivy-mode-map
+			  ("C-c h" . ivy-switch-buffer)
+			  ("C-x b" . ivy-switch-buffer)
+			  ("C-c s" . swiper))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t
+		ivy-height 15
+		ivy-count-format ""
+		ivy-initial-inputs-alist nil
+		ivy-re-builders-alist '((swiper . ivy--regex-plus)
+								(t . ivy--regex-fuzzy))))
 
 (use-package counsel :ensure t :defer t
-             :bind*
-             (("C-x f" . counsel-find-file)
-              ("C-c i" . counsel-imenu)
-              ("C-c a" . counsel-rg)
-              ("C-c g s" . counsel-grep-or-swiper)
-              ("C-c b" . counsel-descbinds)
-              ("M-x" . counsel-M-x))
-             :config
-             (setq counsel-grep-base-command
-                   "rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
+  :bind*
+  (("C-x f" . counsel-find-file)
+   ("C-c i" . counsel-imenu)
+   ("C-c a" . counsel-rg)
+   ("C-c g s" . counsel-grep-or-swiper)
+   ("C-c b" . counsel-descbinds)
+   ("M-x" . counsel-M-x))
+  :config
+  (setq counsel-grep-base-command
+		"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package swiper :ensure t :defer t)
 (use-package imenu-anywhere :ensure t :defer t)
 
 (use-package dumb-jump :ensure t
-             :config
-             (add-hook 'prog-mode-hook 'dumb-jump-mode))
+  :config
+  (add-hook 'prog-mode-hook 'dumb-jump-mode))
 
 (use-package avy :ensure t :defer t)
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
@@ -785,7 +785,8 @@ You can easily /capture/ information using various different templates (includin
         org-agenda-time-grid '((daily require-timed remove-match)
                                (900 1300 1700) "......" "----------")
         org-log-done nil
-        org-log-into-drawer "LOGBOOK"
+        org-log-repeat nil
+        org-log-into-drawer nil
         org-log-done-with-time nil
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
@@ -888,7 +889,7 @@ You can easily /capture/ information using various different templates (includin
         ("td" "Task (Dated)" item (file+headline "inbox.org" "Tasks")
          "[ ] %^t %^{TASK}" :immediate-finish t :unnarrowed t)
         ("tT" "Project" entry (file "inbox.org")
-         "* TODO %^{TASK}\n%?" :empty-lines 1 :unnarrowed t)
+         "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("tA" "Add to Anki" item (file+headline "inbox.org" "Tasks")
          "[ ] *(Anki)*  %^{knowledge}" :immediate-finish t :unnarrowed t)
         ("tb" "Buy" item (file+headline "inbox.org" "Tasks")
@@ -897,19 +898,19 @@ You can easily /capture/ information using various different templates (includin
         ("ww" "WORK Task" item (file+headline "work.org" "TASKS")
          "[ ] %^{Task}" :immediate-finish t :unnarrowed t)
         ("wW" "WORK Project" entry (file "work.org")
-         "* TODO %^{Task}\n%?" :empty-lines 1 :unnarrowed t)
+         "* TODO %^{Task}\n%?" :empty-lines 1)
         ("wt" "Thesis task" item (file+olp "thesis.org" "UNFILED")
          "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
 
         ;; CALENDAR STUFF;;
 
         ("cc" "Calendar Event" entry (file+headline "calendar.org" "Calendar")
-         "* TODO %^t %^{EVENT}" :unnarrowed t)
+         "* TODO %^t %^{EVENT}")
         ("ca" "Archive (Noteable work done)" item (file+headline "calendar.org" "Work Done")
-         "%u %^{TASK}" :immediate-finish t :unnarrowed t)
+         "%u %^{TASK}" :immediate-finish t)
 
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
-         "%?" :empty-lines 1 :unnarrowed t)
+         "%?" :empty-lines 1)
 
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain (file+headline "logbook.org" ,(format-time-string "%Y-%m-%d %A"))
@@ -917,25 +918,25 @@ You can easily /capture/ information using various different templates (includin
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
-         :immediate-finish 1 :unnarrowed t)
+         :immediate-finish 1)
 
         ("u" "URL" entry (file "inbox.org")
          "* [[%x][%^{Description}]]"
-         :immediate-finish 1 :unnarrowed t)
+         :immediate-finish 1)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
-         "* TODO %^{Article}\n%u\n\nAbstract: %?" :unnarrowed t)
+         "* TODO %^{Article}\n%u\n\nAbstract: %?")
 
         ;; MEDIA
         ("f" "Film" item (file "films-to-watch.org")
-         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed t)
+         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed )
 
         ("gp" "PC" entry (file+headline "gaming.org" "PC")
-         "* %^{TODO Keyword} %^{PC game}\n:%?" :unnarrowed t)
+         "* %^{TODO Keyword} %^{PC game}\n:%?")
         ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
-         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n" :unnarrowed t)
+         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
         ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
-         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n" :unnarrowed t)))
+         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1021,6 +1022,7 @@ This is a general helper function that will refile the subtree at point to a spe
 (defhydra cd/hydra/main (:exit t)
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
+  ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
   ("g" rg "grep")
   ("r" anzu-query-replace-regexp "replace")
@@ -1198,7 +1200,7 @@ the current window and the windows state prior to that."
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
 #+END_SRC
-* WIP TESTING GROUND
+* TESTING GROUND
 #+BEGIN_SRC emacs-lisp
 (defun mydired-sort ()
   "Sort dired listings with directories first."
@@ -1212,6 +1214,8 @@ the current window and the windows state prior to that."
   (after dired-after-updating-hook first () activate)
   "Sort dired listings with directories first before adding marks."
   (mydired-sort))
+
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1220,10 +1224,6 @@ the current window and the windows state prior to that."
 (global-set-key (kbd "C-h f") #'helpful-callable)
 (global-set-key (kbd "C-h v") #'helpful-variable)
 (global-set-key (kbd "C-h k") #'helpful-key)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
 
 A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
@@ -1264,9 +1264,4 @@ When double clicking a file, or launching from terminal, always use the same ins
   (let (org-log-done org-log-states) ; turn off logging
     (org-todo (if (= n-not-done 0) "DONE" (if (> n-done 0) "WIP" "TODO")))))
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm :ensure t :defer t)
-(global-set-key (kbd "C-x b") 'helm-mini)
 #+END_SRC
