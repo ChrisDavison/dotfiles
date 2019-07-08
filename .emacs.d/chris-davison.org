@@ -494,7 +494,7 @@ Use elpy for python
 (add-hook 'python-mode-hook 'anaconda-mode)
 (use-package company-anaconda :ensure t :defer t)
 (eval-after-load "company" '(add-to-list 'company-backends 'company-anaconda))
-(setq python-indent-offset 4)
+(setq-default python-indent-offset 4)
 
 (defun ipython()
   (interactive)
@@ -799,12 +799,10 @@ You can easily /capture/ information using various different templates (includin
   ;; Settings for refiling
   (setq org-reverse-note-order t
         org-refile-use-outline-path nil
+        org-outline-path-complete-in-steps nil
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
         org-refile-targets '(
-                             ;; Refile in the current file
-                             (nil . (:maxlevel . 3))
-                             ;; Or any agenda file
                              (org-agenda-files . (:maxlevel . 3))
                              ))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
@@ -878,61 +876,69 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       `(
+        ;; Put the capture groups/clusters here, rather than above the specific bindings
+        ;; so that I can easily see the high level mappings that I'm currently using.
         ("t" "Todos")
+        ("c" "Calendar")
+        ("w" "Work")
+        ("g" "Games")
+
         ("tt" "Task" item (file+headline "inbox.org" "Tasks")
-         "[ ] %^{TASK}" :immediate-finish t)
+         "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
         ("td" "Task (Dated)" item (file+headline "inbox.org" "Tasks")
-         "[ ] %^t %^{TASK}" :immediate-finish t)
+         "[ ] %^t %^{TASK}" :immediate-finish t :unnarrowed t)
         ("tT" "Project" entry (file "inbox.org")
-         "* TODO %^{TASK}\n%?" :empty-lines 1)
+         "* TODO %^{TASK}\n%?" :empty-lines 1 :unnarrowed t)
         ("tA" "Add to Anki" item (file+headline "inbox.org" "Tasks")
-         "[ ] *(Anki)*  %^{knowledge}" :immediate-finish t)
+         "[ ] *(Anki)*  %^{knowledge}" :immediate-finish t :unnarrowed t)
         ("tb" "Buy" item (file+headline "inbox.org" "Tasks")
-         "[ ] *($)* %^{Buy}" :immediate-finish t)
-        ("tw" "WORK Task" item (file+headline "work.org" "TASKS")
-         "[ ] %^{Task}" :immediate-finish t)
-        ("tW" "WORK Project" entry (file "work.org")
-         "* TODO %^{Task}\n%?" :empty-lines 1)
+         "[ ] *($)* %^{Buy}" :immediate-finish t :unnarrowed t)
+
+        ("ww" "WORK Task" item (file+headline "work.org" "TASKS")
+         "[ ] %^{Task}" :immediate-finish t :unnarrowed t)
+        ("wW" "WORK Project" entry (file "work.org")
+         "* TODO %^{Task}\n%?" :empty-lines 1 :unnarrowed t)
+        ("wt" "Thesis task" item (file+olp "thesis.org" "UNFILED")
+         "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
 
         ;; CALENDAR STUFF;;
-        ("c" "Calendar")
+
         ("cc" "Calendar Event" entry (file+headline "calendar.org" "Calendar")
-         "* TODO %^t %^{EVENT}")
+         "* TODO %^t %^{EVENT}" :unnarrowed t)
         ("ca" "Archive (Noteable work done)" item (file+headline "calendar.org" "Work Done")
-         "%u %^{TASK}" :immediate-finish t)
+         "%u %^{TASK}" :immediate-finish t :unnarrowed t)
 
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
-         "%?" :empty-lines 1)
+         "%?" :empty-lines 1 :unnarrowed t)
 
         ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
         ("l" "Logbook" plain (file+headline "logbook.org" ,(format-time-string "%Y-%m-%d %A"))
-         "%?" :empty-lines 1)
+         "%?" :empty-lines 1 :unnarrowed t)
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
-         :immediate-finish 1)
+         :immediate-finish 1 :unnarrowed t)
 
         ("u" "URL" entry (file "inbox.org")
          "* [[%x][%^{Description}]]"
-         :immediate-finish 1)
+         :immediate-finish 1 :unnarrowed t)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
-         "* TODO %^{Article}\n%u\n\nAbstract: %?")
+         "* TODO %^{Article}\n%u\n\nAbstract: %?" :unnarrowed t)
 
         ;; MEDIA
         ("f" "Film" item (file "films-to-watch.org")
-         "[ ] %^{Film} (%^{YEAR})\n")
+         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed t)
 
-        ("g" "Games")
         ("gp" "PC" entry (file+headline "gaming.org" "PC")
-         "* %^{TODO Keyword} %^{PC game}\n:%?")
+         "* %^{TODO Keyword} %^{PC game}\n:%?" :unnarrowed t)
         ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
-         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
+         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n" :unnarrowed t)
         ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
-         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")))
+         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n" :unnarrowed t)))
 #+END_SRC
 ** Update checkboxes on save
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun custom_org_auto_check()
   (org-update-checkbox-count t))
 (add-hook 'org-mode-hook
@@ -972,14 +978,17 @@ In this case, I've set it up to copy to a local 'assets' folder.  If ~org-downlo
 This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
 
 #+BEGIN_SRC emacs-lisp
-(defun refile-to-file (&optional target n_depth)
+(defun refile-to-file (&optional target)
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
-        (old-refile-targets org-refile-targets)
-        (depth (read-number "Heading depth: ")))
-    (progn (setq org-refile-targets `((filename . (:maxlevel . ,depth))))
+        (old-refile-targets org-refile-targets))
+    (progn (setq org-refile-targets `((filename . (:maxlevel . 6))))
            (org-refile)
            (setq org-refile-targets old-refile-targets))))
+
+(defun refile-to-this-file ()
+  (interactive)
+  (refile-to-file (buffer-name)))
 #+END_SRC
 
 ** Add custom link protocols
@@ -1003,9 +1012,11 @@ This is a general helper function that will refile the subtree at point to a spe
 
 (defhydra cd/org-refile-to-file (:exit t :hint nil)
   ("R" refile-to-file "PROMPT")
-  ("w" (refile-to-file "~/Dropbox/notes/work.org" 3) "Work")
-  ("p" (refile-to-file "~/Dropbox/notes/projects.org" 3) "Projects")
-  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org" 3) "Reading List"))
+  ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
+  ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
+  ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List")
+  ("." refile-to-this-file "THIS FILE")
+)
 
 (defhydra cd/hydra/main (:exit t)
   ("z" (modi/toggle-one-window nil) "zoom")
@@ -1046,9 +1057,14 @@ List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
       (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-       '("Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
+                    '("Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
 (when cd-fonts
   (set-frame-font (car cd-fonts) 1))
+
+(defun set-pretty-font ()
+  "Set a font from one of the available fonts that I like"
+  (interactive)
+  (set-frame-font (ivy-read "Pick font:" cd-fonts) 1))
 
 (defvar current-font-idx 0)
 (defun next-font ()
@@ -1100,11 +1116,10 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 
 #+BEGIN_SRC emacs-lisp
 (setq custom-safe-themes t)    ;; themes are 'safe'
-(use-package color-theme-sanityinc-tomorrow)
 (use-package doneburn-theme)
-(use-package doom-themes)
-(load-theme 'doneburn t)
-;;(load-theme 'doom-molokai t)
+(use-package zenburn-theme)
+;; (load-theme 'doneburn t)
+(load-theme 'zenburn t)
 #+END_SRC
 * Appearance
 ** Line highlighting, linum, colnum, and cursor
@@ -1237,4 +1252,21 @@ A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occ
 When double clicking a file, or launching from terminal, always use the same instance of Emacs, rather than opening a new frame.
 #+BEGIN_SRC emacs-lisp
 (setq ns-pop-up-frames nil)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(fringe-mode 1)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done."
+  (let (org-log-done org-log-states) ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" (if (> n-done 0) "WIP" "TODO")))))
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm :ensure t :defer t)
+(global-set-key (kbd "C-x b") 'helm-mini)
 #+END_SRC
