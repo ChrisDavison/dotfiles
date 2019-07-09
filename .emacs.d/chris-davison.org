@@ -889,19 +889,15 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("ta" "Add to Anki" item (file+headline "inbox.org" "Tasks")
          "[ ] *(Anki)* %^{knowledge}" :immediate-finish t :unnarrowed t)
-        ("tb" "Buy" item (file+olp "inbox.org" "Stuff to Buy" "Small Stuff / Refile")
-         "[ ] %^{Buy}" :immediate-finish t :unnarrowed t)
-        ("tc" "Custom task (free writing)" item (file+headline "inbox.org" "Tasks")
-         "[ ] %?" :unnarrowed t)
-        ("tu" "URL" item (file+headline "inbox.org" "Tasks")
-         "[ ] [[%c][%^{DESCRIPTION}]]" :unnarrowed t)
+        ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
+         "* %^{Buy}\n%?")
+        ("tu" "URL" entry (file+headline "inbox.org" "Tasks")
+         "* [[%c][%^{DESCRIPTION}]]" :unnarrowed t)
 
-        ("ww" "WORK Task" item (file+headline "work.org" "TASKS")
-         "[ ] %^{Task}" :immediate-finish t :unnarrowed t)
-        ("wW" "WORK Project" entry (file "work.org")
+        ("ww" "WORK Task" entry (file+headline "work.org" "Tasks")
          "* TODO %^{Task}\n%?" :empty-lines 1)
-        ("wt" "Thesis task" item (file+olp "thesis.org" "UNFILED")
-         "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
+        ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
+         "* TODO %^{TASK}" :unnarrowed t)
 
         ;; CALENDAR STUFF;;
 
