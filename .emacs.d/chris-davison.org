@@ -885,16 +885,12 @@ You can easily /capture/ information using various different templates (includin
         ("w" "Work")
         ("g" "Games")
 
-        ("tt" "Task" item (file+headline "inbox.org" "Tasks")
-         "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
-        ("td" "Task (Dated)" item (file+headline "inbox.org" "Tasks")
-         "[ ] %^t %^{TASK}" :immediate-finish t  :unnarrowed t)
-        ("tT" "Project" entry (file "inbox.org")
+        ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("ta" "Add to Anki" item (file+headline "inbox.org" "Tasks")
          "[ ] *(Anki)* %^{knowledge}" :immediate-finish t :unnarrowed t)
-        ("tb" "Buy" item (file+headline "inbox.org" "Tasks")
-         "[ ] *($)* %^{Buy}" :immediate-finish t :unnarrowed t)
+        ("tb" "Buy" item (file+olp "inbox.org" "Stuff to Buy" "Small Stuff / Refile")
+         "[ ] %^{Buy}" :immediate-finish t :unnarrowed t)
         ("tc" "Custom task (free writing)" item (file+headline "inbox.org" "Tasks")
          "[ ] %?" :unnarrowed t)
         ("tu" "URL" item (file+headline "inbox.org" "Tasks")
@@ -1101,8 +1097,10 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package zenburn-theme)
-(load-theme 'doneburn t)
+(use-package darkokai-theme)
+;; (load-theme 'doneburn t)
 ;; (load-theme 'zenburn t)
+(load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
