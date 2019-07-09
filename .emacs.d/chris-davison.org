@@ -111,8 +111,8 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
   :config (guide-key-mode 1))
 #+END_SRC
 
-* History, Sessions, and Undo
-
+* Persistence (history, sessions, version control)
+** General session and history settings
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
       delete-old-versions -1
@@ -150,20 +150,7 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 (setq create-lockfiles nil)
 #+END_SRC
 
-* Undo Tree - Visualise branches of undos
-People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
-
-This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
-
-#+BEGIN_SRC emacs-lisp
-(use-package undo-tree :ensure t :defer t
-  :config
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps nil
-        undo-tree-visualizer-diff t))
-#+END_SRC
-
-* Magit - Git in Emacs
+** Magit - Git in Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package magit :ensure t :defer t
   :config
@@ -345,10 +332,11 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
 ** Multiple cursors
 Use multiple cursors
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package multiple-cursors :ensure t :defer t
   :hook ((prog-mode . multiple-cursors-mode)))
 #+END_SRC
+
 ** Clear modification flag after saving
 This is a bit of a hack to get around my current problem of the modification flag staying set, even after saving, meaning I need to visit buffers and manually toggle.
 
@@ -361,46 +349,31 @@ This function is just a wrapper around ~save-buffer~, to follow that call with a
   (set-buffer-modified-p nil))
 (global-set-key (kbd "C-x C-s") 'save-buffer-and-clear-modify)
 #+END_SRC
-* Programming Language Support - Company and Flycheck
-Company will *COMP*lete *ANY*thing. Flycheck basically runs linters and stuff, and lets you know problems in your code.
+** Undo Tree - Visualise branches of undos
+People often struggle with the Emacs undo model, where there's really no concept of "redo" - you simply undo the undo.
+
+This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
-(use-package company :ensure t :defer t
-  :bind ("TAB" . company-indent-or-complete-common)
+(use-package undo-tree :ensure t :defer t
   :config
-  (setq company-tooltip-align-annotations t
-        company-idle-delay 0
-        company-minimum-prefix-length 3
-        company-backends (list 'company-files
-                               'company-anaconda
-                               'company-racer
-                               'company-clang
-                               'company-yasnippet
-                               'company-dabbrev-code
-                               'company-dabbrev)))
-  (add-hook 'after-init-hook 'global-company-mode)
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps nil
+        undo-tree-visualizer-diff t))
+#+END_SRC
+* isearch -- live preview of search and replace
+#+BEGIN_SRC emacs-lisp
+;; Show current and total matches while searching
+(use-package anzu :defer t :ensure t
+  ;; Replace and regexp-replace are inverted, as I regexp-replace more
+  :bind (([remap query-replace] . anzu-query-replace-regexp)
+         ([remap query-replace-regexp] . anzu-query-replace))
+  :config (global-anzu-mode t))
 
-  (use-package company-quickhelp :ensure t :defer t
-    :config (company-quickhelp-mode))
+;; DEL during isearch should edit the search string, not jump back to the previous result
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
-  (use-package company-racer :ensure t :defer t)
-
-  (defvar my/company-point nil)
-  (advice-add 'company-complete-common :before
-              (lambda () (setq my/company-point (point))))
-  (advice-add 'company-complete-common :after
-              (lambda ()
-                (when (equal my/company-point (point))
-                  (yas-expand))))
-
-  (use-package flycheck :ensure t :defer t
-    :config
-    (setq-default
-     flycheck-disabled-checkers
-     (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
-     flycheck-temp-prefix ".flycheck")
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+(setq search-whitespace-regexp "[ \t\r\n-_]+")
 #+END_SRC
 * Terminal Improvements
 ** Windows Shell Config
@@ -455,6 +428,50 @@ Use git-bash as windows shell
 (add-hook 'term-mode-hook 'my-term-hook)
 #+END_SRC
 * PROGRAMMING LANGUAGES
+** Completion (for multiple languages)
+Company will *COMP*lete *ANY*thing.
+
+#+BEGIN_SRC emacs-lisp
+(use-package company :ensure t :defer t
+  :bind ("TAB" . company-indent-or-complete-common)
+  :config
+  (setq company-tooltip-align-annotations t
+        company-idle-delay 0
+        company-minimum-prefix-length 3
+        company-backends (list 'company-files
+                               'company-anaconda
+                               'company-racer
+                               'company-clang
+                               'company-yasnippet
+                               'company-dabbrev-code
+                               'company-dabbrev)))
+  (add-hook 'after-init-hook 'global-company-mode)
+
+  (use-package company-quickhelp :ensure t :defer t
+    :config (company-quickhelp-mode))
+
+  (use-package company-racer :ensure t :defer t)
+
+  (defvar my/company-point nil)
+  (advice-add 'company-complete-common :before
+              (lambda () (setq my/company-point (point))))
+  (advice-add 'company-complete-common :after
+              (lambda ()
+                (when (equal my/company-point (point))
+                  (yas-expand))))
+#+END_SRC
+** Syntax/error checking/linting, on the /fly/ (flycheck)
+Flycheck basically runs linters and stuff, and lets you know problems in your code.
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck :ensure t :defer t
+    :config
+    (setq-default
+     flycheck-disabled-checkers
+     (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
+     flycheck-temp-prefix ".flycheck")
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+END_SRC
 ** Markdown
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode :ensure t :defer t
@@ -484,7 +501,6 @@ Auto-completion for rust, using racer
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'racer-mode-hook 'company-mode)
 (add-hook 'rust-mode-hook '(lambda () (add-to-list 'company-backends 'company-racer)))
-
 #+END_SRC
 ** Python
 Use elpy for python
@@ -567,12 +583,12 @@ Use elpy for python
   (add-hook 'html-mode-hook 'rainbow-mode)
   (add-hook 'sass-mode-hook 'rainbow-mode))
 #+END_SRC
-** Elixir
-#+begin_src emacs-lisp
+** TODO Elixir
+#+begin_src emacs-lisp :tangle no
 (use-package alchemist :ensure t)
 #+end_src
-** Julia
-#+BEGIN_SRC emacs-lisp
+** TODO Julia
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package julia-mode :ensure t :defer t)
 (use-package julia-repl :ensure t :defer t
   :config
@@ -584,8 +600,8 @@ Use elpy for python
 
 ;; (setq julia-repl-executable-records '((default "julia")))
 #+END_SRC
-** LISP -- Clojure and Cider
-#+BEGIN_SRC emacs-lisp
+** TODO LISP -- Clojure and Cider
+#+BEGIN_SRC emacs-lisp :tangle no
 ;; Cider for interactive clojure programming
 (use-package flycheck-clojure :ensure t :defer t)
 (use-package cider :ensure t :defer t
@@ -600,8 +616,8 @@ Use elpy for python
       (with-eval-after-load 'flycheck
         (flycheck-clojure-setup)))))
 #+END_SRC
-* Navigation (ivy, counsel, swiper, imenu anywhere))
-
+* Navigation (windows, menus, buffers)
+** Ivy (counsel, swiper, ivy) for navigation most menu-type things
 Navigation of pretty much any /menu-type/ thing.
 
 - =Ivy= and =counsel= make things like ~M-x~ and grep easier.
@@ -620,8 +636,7 @@ Navigation of pretty much any /menu-type/ thing.
 		ivy-height 15
 		ivy-count-format ""
 		ivy-initial-inputs-alist nil
-		ivy-re-builders-alist '((swiper . ivy--regex-plus)
-								(t . ivy--regex-fuzzy))))
+		ivy-re-builders-alist '((t . ivy--regex-plus))))
 
 (use-package counsel :ensure t :defer t
   :bind*
@@ -645,7 +660,7 @@ Navigation of pretty much any /menu-type/ thing.
 (use-package avy :ensure t :defer t)
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
 #+END_SRC
-* Navigate between windows
+** Switch between windows
 Give HUD prompt when changing window, and keybind to cycle through windows.
 
 #+BEGIN_SRC emacs-lisp
@@ -659,7 +674,7 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 (define-key global-map (kbd "C-M-`") 'previous-multiframe-window)
 #+END_SRC
 
-* ibuffer
+** ibuffer - view all open buffers
 #+BEGIN_SRC emacs-lisp
 ;; Interactively modify buffer list
 (use-package fullframe :ensure t :defer t)
@@ -690,20 +705,6 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
                          (filename . "Dropbox/notes/")))
          )))
 (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-switch-to-saved-filter-groups "home")))
-#+END_SRC
-* isearch -- live preview of search and replace
-#+BEGIN_SRC emacs-lisp
-;; Show current and total matches while searching
-(use-package anzu :defer t :ensure t
-  ;; Replace and regexp-replace are inverted, as I regexp-replace more
-  :bind (([remap query-replace] . anzu-query-replace-regexp)
-         ([remap query-replace-regexp] . anzu-query-replace))
-  :config (global-anzu-mode t))
-
-;; DEL during isearch should edit the search string, not jump back to the previous result
-(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
-
-(setq search-whitespace-regexp "[ \t\r\n-_]+")
 #+END_SRC
 
 * OSX
@@ -887,13 +888,17 @@ You can easily /capture/ information using various different templates (includin
         ("tt" "Task" item (file+headline "inbox.org" "Tasks")
          "[ ] %^{TASK}" :immediate-finish t :unnarrowed t)
         ("td" "Task (Dated)" item (file+headline "inbox.org" "Tasks")
-         "[ ] %^t %^{TASK}" :immediate-finish t :unnarrowed t)
+         "[ ] %^t %^{TASK}" :immediate-finish t  :unnarrowed t)
         ("tT" "Project" entry (file "inbox.org")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
-        ("tA" "Add to Anki" item (file+headline "inbox.org" "Tasks")
-         "[ ] *(Anki)*  %^{knowledge}" :immediate-finish t :unnarrowed t)
+        ("ta" "Add to Anki" item (file+headline "inbox.org" "Tasks")
+         "[ ] *(Anki)* %^{knowledge}" :immediate-finish t :unnarrowed t)
         ("tb" "Buy" item (file+headline "inbox.org" "Tasks")
          "[ ] *($)* %^{Buy}" :immediate-finish t :unnarrowed t)
+        ("tc" "Custom task (free writing)" item (file+headline "inbox.org" "Tasks")
+         "[ ] %?" :unnarrowed t)
+        ("tu" "URL" item (file+headline "inbox.org" "Tasks")
+         "[ ] [[%c][%^{DESCRIPTION}]]" :unnarrowed t)
 
         ("ww" "WORK Task" item (file+headline "work.org" "TASKS")
          "[ ] %^{Task}" :immediate-finish t :unnarrowed t)
@@ -918,11 +923,7 @@ You can easily /capture/ information using various different templates (includin
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
-         :immediate-finish 1)
-
-        ("u" "URL" entry (file "inbox.org")
-         "* [[%x][%^{Description}]]"
-         :immediate-finish 1)
+         :immediate-finish t)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
          "* TODO %^{Article}\n%u\n\nAbstract: %?")
@@ -1036,25 +1037,8 @@ This is a general helper function that will refile the subtree at point to a spe
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
 #+END_SRC
 
-* Suppress GUI features
-#+BEGIN_SRC emacs-lisp
-(setq use-file-dialog nil
-      use-dialog-box nil
-      menu-bar-mode nil
-      inhibit-startup-screen t
-      inhibit-startup-echo-area-message t)
-(add-hook 'after-init-hook '(lambda () (menu-bar-mode -1)))
-
-;; Hide tool bar,  scroll bar and borders
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
-
-(let ((no-border '(internal-border-width . 0)))
-  (add-to-list 'default-frame-alist no-border)
-  (add-to-list 'initial-frame-alist no-border))
-#+END_SRC
-
-* Font
+* Appearance
+** Handle the fonts I like
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
@@ -1078,15 +1062,12 @@ List some pretty fonts, and grab the first one that's available.
     (set-frame-font next-font-name 1)
     (message next-font-name)))
 
-(defun set-font-size (points)
-  "Set the font size to X points"
-  (set-face-attribute 'default nil :height points))
 (setq line-spacing 0.2)
 (set-face-attribute 'default nil :height (if (eq system-type 'windows-nt) 140 200))
 (setq auto-window-vscroll nil)
 #+END_SRC
 
-** COMMENT Mixed-pitch mode (monospace in code, proportional in prose)
+** Mix monospace and proportional fonts (code vs prose)
 #+BEGIN_SRC emacs-lisp
 (use-package mixed-pitch :ensure t :defer t)
 (add-hook 'org-mode-hook 'mixed-pitch-mode)
@@ -1102,7 +1083,7 @@ List some pretty fonts, and grab the first one that's available.
    '(fixed-pitch ((t (:family "Roboto Mono" :italic nil :weight normal :height 1.0 :width normal))))))
 (add-hook 'prog-mode-hook '(lambda () (set-face-italic-p 'italic nil)))
 #+END_SRC
-* Colour themes
+** Colour themes
 
 Disable themes before loading a new theme.  This can cause some issues when using things like 'powerline', as powerline is technically a theme.  Because smart-mode-line was later in my emacs config, my actual colour theme ended up getting disabled.  Disabling this for now until I decide if I really need it.
 #+BEGIN_SRC emacs-lisp
@@ -1120,10 +1101,27 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package zenburn-theme)
-;; (load-theme 'doneburn t)
-(load-theme 'zenburn t)
+(load-theme 'doneburn t)
+;; (load-theme 'zenburn t)
 #+END_SRC
-* Appearance
+** Suppress GUI features
+#+BEGIN_SRC emacs-lisp
+(setq use-file-dialog nil
+      use-dialog-box nil
+      menu-bar-mode nil
+      inhibit-startup-screen t
+      inhibit-startup-echo-area-message t)
+(add-hook 'after-init-hook '(lambda () (menu-bar-mode -1)))
+
+;; Hide tool bar,  scroll bar and borders
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'set-scroll-bar-mode) (set-scroll-bar-mode nil))
+
+(let ((no-border '(internal-border-width . 0)))
+  (add-to-list 'default-frame-alist no-border)
+  (add-to-list 'initial-frame-alist no-border))
+#+END_SRC
+
 ** Line highlighting, linum, colnum, and cursor
 #+BEGIN_SRC emacs-lisp
 (global-hl-line-mode 1)
@@ -1219,8 +1217,8 @@ the current window and the windows state prior to that."
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(use-package discover-my-major :ensure t :defer t)
-(use-package helpful :ensure t :defer t)
+(use-package helpful :ensure t :defer t
+  :config (setq helpful-max-buffers 2))
 (global-set-key (kbd "C-h f") #'helpful-callable)
 (global-set-key (kbd "C-h v") #'helpful-variable)
 (global-set-key (kbd "C-h k") #'helpful-key)
@@ -1264,4 +1262,9 @@ When double clicking a file, or launching from terminal, always use the same ins
   (let (org-log-done org-log-states) ; turn off logging
     (org-todo (if (= n-not-done 0) "DONE" (if (> n-done 0) "WIP" "TODO")))))
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters :ensure t
+  :hook ((prog-mode . rainbow-delimiters-mode)))
 #+END_SRC
