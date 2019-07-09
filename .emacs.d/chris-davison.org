@@ -745,7 +745,6 @@ You can easily /capture/ information using various different templates (includin
     (org-open-at-point)
     (setq org-link-frame-setup old-setup)))
 
-
 (use-package org
   :ensure t
   :pin org
@@ -758,8 +757,8 @@ You can easily /capture/ information using various different templates (includin
 
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
-        org-src-window-setup 'current-window
-        org-agenda-window-setup 'current-window
+        org-src-window-setup 'only-window
+        org-agenda-window-setup 'only-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil
@@ -811,7 +810,8 @@ You can easily /capture/ information using various different templates (includin
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
-         (org-mode . org-bullets-mode)))
+         (org-mode . org-bullets-mode)
+         (org-mode . (lambda () (set-face-italic 'italic t)))))
 (setq  org-bullets-bullet-list
        '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
 
@@ -878,58 +878,52 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       `(
-        ;; Put the capture groups/clusters here, rather than above the specific bindings
-        ;; so that I can easily see the high level mappings that I'm currently using.
         ("t" "Todos")
-        ("c" "Calendar")
-        ("w" "Work")
-        ("g" "Games")
-
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK}\n%?" :empty-lines 1)
-        ("ta" "Add to Anki" item (file+headline "inbox.org" "Tasks")
-         "[ ] *(Anki)* %^{knowledge}" :immediate-finish t :unnarrowed t)
+         "* TODO %^{TASK} [/]\n%?" :empty-lines 1 :unnarrowed t)
+        ("tu" "URL" entry (file+headline "inbox.org" "Tasks")
+         "* TODO [[%c][%^{DESCRIPTION}]]" :unnarrowed t :empty-lines 1)
+        ("ta" "Add to Anki" item (file+headline "inbox.org" "Add to Anki")
+         "[ ] %^{knowledge}" :immediate-finish t :unnarrowed t)
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
          "* %^{Buy}\n%?")
-        ("tu" "URL" entry (file+headline "inbox.org" "Tasks")
-         "* [[%c][%^{DESCRIPTION}]]" :unnarrowed t)
-
-        ("ww" "WORK Task" entry (file+headline "work.org" "Tasks")
-         "* TODO %^{Task}\n%?" :empty-lines 1)
-        ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
-         "* TODO %^{TASK}" :unnarrowed t)
-
-        ;; CALENDAR STUFF;;
-
-        ("cc" "Calendar Event" entry (file+headline "calendar.org" "Calendar")
-         "* TODO %^t %^{EVENT}")
-        ("ca" "Archive (Noteable work done)" item (file+headline "calendar.org" "Work Done")
-         "%u %^{TASK}" :immediate-finish t)
 
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
          "%?" :empty-lines 1)
 
-        ;; Datetree of YYYY / YYYY-MM MONTHNAME / YYYY-MM-DD DAYNAME
-        ("l" "Logbook" plain (file+headline "logbook.org" ,(format-time-string "%Y-%m-%d %A"))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("w" "Work")
+        ("ww" "WORK Task" entry (file+headline "work.org" "Tasks")
+         "* TODO %^{Task} [/]\n%?" :empty-lines 1)
+        ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
+         "* TODO %^{TASK} [/]" :unnarrowed t)
+
+        ("l" "Logbook" plain
+         (file+headline "logbook.org" ,(format-time-string "[%Y-%m-%d %a]"))
          "%?" :empty-lines 1 :unnarrowed t)
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("g" "Games")
+        ("gp" "PC" entry (file+headline "gaming.org" "PC")
+         "* %^{TODO Keyword} %^{PC game}\n:%?")
+        ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
+         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
+        ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
+         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")
+
+        ("f" "Film" item (file "films-to-watch.org")
+         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed )
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("c" "Calendar" entry (file+headline "calendar.org" "Calendar")
+         "* TODO %^t %^{EVENT}")
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
          :immediate-finish t)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
-         "* TODO %^{Article}\n%u\n\nAbstract: %?")
-
-        ;; MEDIA
-        ("f" "Film" item (file "films-to-watch.org")
-         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed )
-
-        ("gp" "PC" entry (file+headline "gaming.org" "PC")
-         "* %^{TODO Keyword} %^{PC game}\n:%?")
-        ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
-         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
-        ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
-         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")))
+         "* TODO %^{Article}\n%u\n\nAbstract: %?")))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -947,10 +941,20 @@ You can easily /capture/ information using various different templates (includin
         ("ct" "Today and TODO|WIP"
          ((agenda "" ((org-agenda-span 1)))
           (todo "TODO|WIP")))
-        ("cp" "Today and TODO|WIP"
+        ("cp" "Today"
          ((agenda "" ((org-agenda-span 1)))))
-        ("w" "Work and Thesis"
+
+        ("w" . "Work Schedules")
+        ("ww" "Work and Thesis"
          ((todo "TODO|WIP" ((org-agenda-files '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))))
+        ("wu" "Unscheduled Work and Thesis"
+         ((todo ""
+                ((org-agenda-overriding-header "\nUnscheduled Work and Thesis")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+                 (org-agenda-files
+                  '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))
+          nil
+          nil))
         ))
 
 (global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "cp")))
@@ -985,11 +989,6 @@ This is a general helper function that will refile the subtree at point to a spe
   (refile-to-file (buffer-name)))
 #+END_SRC
 
-** Add custom link protocols
-
-#+BEGIN_SRC emacs-lisp
-(org-add-link-type "gh" '(lambda (path) (browse-url (s-concat "www.github.com/" path))))
-#+END_SRC
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
@@ -1009,21 +1008,25 @@ This is a general helper function that will refile the subtree at point to a spe
   ("w" (refile-to-file "~/Dropbox/notes/work.org") "Work")
   ("p" (refile-to-file "~/Dropbox/notes/projects.org") "Projects")
   ("r" (refile-to-file "~/Dropbox/notes/reading-list.org") "Reading List")
-  ("." refile-to-this-file "THIS FILE")
-)
+  ("." refile-to-this-file "THIS FILE"))
 
-(defhydra cd/hydra/main (:exit t)
+(defhydra cd/searches (:exit t :hint nil)
+  ("c" (occur "\\[ \\]")  "checkboxes")
+  ("C" (org-occur "\\[ \\]")  "Org-checkboxes"))
+
+(defhydra cd/hydra/main (:exit t :columns 3)
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
   ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
+  ("S" cd/searches/body "Searches")
   ("g" rg "grep")
   ("r" anzu-query-replace-regexp "replace")
   ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
+  ("o" cd/org-open-link-same "org-open")
   ("m" discover-my-major "major bindings")
-  ("t" (progn (org-capture nil "tt")) "InboxTask")
   ("<up>" delete-indentation "join-up" :exit nil )
   ("<down>" (join-line -1) "join-down" :exit nil ))
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
@@ -1080,7 +1083,11 @@ List some pretty fonts, and grab the first one that's available.
 Disable themes before loading a new theme.  This can cause some issues when using things like 'powerline', as powerline is technically a theme.  Because smart-mode-line was later in my emacs config, my actual colour theme ended up getting disabled.  Disabling this for now until I decide if I really need it.
 #+BEGIN_SRC emacs-lisp
 (defadvice load-theme (before theme-dont-propagate activate)
-  (disable-all-themes))
+  (disable-all-themes)
+  )
+
+(defadvice load-theme (after run-after-load-theme-hook activate)
+  (set-face-italic 'italic t))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1261,4 +1268,13 @@ When double clicking a file, or launching from terminal, always use the same ins
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters :ensure t
   :hook ((prog-mode . rainbow-delimiters-mode)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun checkboxes ()
+  (interactive)
+  (org-occur "\\[ \\]"))
+(defun occur-checkboxes ()
+  (interactive)
+  (occur "\\[ \\]"))
 #+END_SRC
