@@ -880,11 +880,9 @@ You can easily /capture/ information using various different templates (includin
       `(
         ("t" "Todos")
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK} [/]\n%?" :empty-lines 1 :unnarrowed t)
-        ("tu" "URL" entry (file+headline "inbox.org" "Tasks")
-         "* TODO [[%c][%^{DESCRIPTION}]]" :unnarrowed t :empty-lines 1)
+         "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("ta" "Add to Anki" item (file+headline "inbox.org" "Add to Anki")
-         "[ ] %^{knowledge}" :immediate-finish t :unnarrowed t)
+         "[ ] %^{knowledge}" :immediate-finish t)
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
          "* %^{Buy}\n%?")
 
@@ -896,23 +894,23 @@ You can easily /capture/ information using various different templates (includin
         ("ww" "WORK Task" entry (file+headline "work.org" "Tasks")
          "* TODO %^{Task} [/]\n%?" :empty-lines 1)
         ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
-         "* TODO %^{TASK} [/]" :unnarrowed t)
+         "* TODO %^{TASK} [/]")
 
         ("l" "Logbook" plain
          (file+headline "logbook.org" ,(format-time-string "[%Y-%m-%d %a]"))
-         "%?" :empty-lines 1 :unnarrowed t)
+         "%?" :empty-lines 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
         ("gp" "PC" entry (file+headline "gaming.org" "PC")
-         "* %^{TODO Keyword} %^{PC game}\n:%?")
+         "* %^{TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
         ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
-         "* %^{TODO Keyword} %^{Nintendo Switch game}\n:%?\n")
+         "* %^{TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
         ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
-         "* %^{TODO Keyword} %^{Tabletop game}\n%?\n")
+         "* %^{TODO|BUY} %^{Tabletop game}\n%?\n")
 
         ("f" "Film" item (file "films-to-watch.org")
-         "[ ] %^{Film} (%^{YEAR})\n" :unnarrowed )
+         "[ ] %^{Film} (%^{YEAR})\n")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("c" "Calendar" entry (file+headline "calendar.org" "Calendar")
@@ -1076,7 +1074,8 @@ List some pretty fonts, and grab the first one that's available.
    'user
    '(variable-pitch ((t (:family "Roboto" :height 200 :weight light))))
    '(fixed-pitch ((t (:family "Roboto Mono" :italic nil :weight normal :height 1.0 :width normal))))))
-(add-hook 'prog-mode-hook '(lambda () (set-face-italic-p 'italic nil)))
+(add-hook 'prog-mode-hook '(lambda () (set-face-italic-p 'italic t)))
+(add-hook 'org-mode-hook '(lambda () (set-face-italic-p 'italic t)))
 #+END_SRC
 ** Colour themes
 
@@ -1102,7 +1101,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package zenburn-theme)
 (use-package darkokai-theme)
 ;; (load-theme 'doneburn t)
-;; (load-theme 'zenburn t)
+;;(load-theme 'zenburn t)
 (load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
@@ -1231,16 +1230,19 @@ A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occ
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(diminish 'undo-tree-mode)
-(diminish 'anzu-mode)
-(diminish 'ivy-mode)
-(diminish 'org-indent-mode)
-(diminish 'company-mode)
-(diminish 'yas-minor-mode)
-(diminish 'abbrev-mode)
-(diminish 'subword-mode)
-(diminish 'visual-line-mode)
-(diminish 'eldoc-mode)
+(add-hook 'after-init-hook
+          '(progn
+             (diminish 'undo-tree-mode)
+             (diminish 'anzu-mode)
+             (diminish 'ivy-mode)
+             (diminish 'org-indent-mode)
+             (diminish 'company-mode)
+             (diminish 'yas-minor-mode)
+             (diminish 'abbrev-mode)
+             (diminish 'subword-mode)
+             (diminish 'visual-line-mode)
+             (diminish 'mixed-pitch-mode)
+             (diminish 'eldoc-mode)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1277,4 +1279,10 @@ When double clicking a file, or launching from terminal, always use the same ins
 (defun occur-checkboxes ()
   (interactive)
   (occur "\\[ \\]"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun sort-checkboxes ()
+  (interactive)
+  (org-sort-list nil ?X))
 #+END_SRC
