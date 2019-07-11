@@ -2,7 +2,7 @@
 # name: newlogbook
 # key: newlogbook
 # --
-* `(format-time-string "[%Y-%m-%d %a]")`
+* `(format-time-string "%Y-%m-%d %a")`
 
 ** TODO Daily Todos [/]
 SCHEDULED: `(format-time-string "<%Y-%m-%d %a>")`
