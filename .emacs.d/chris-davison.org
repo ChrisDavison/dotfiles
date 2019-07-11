@@ -9,7 +9,7 @@ You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-da
 (load "chris-davison.el" t)
 #+END_SRC
 
-This sets up the load path so that we can override it.  We also install /use-package/ to make all package config easier, and /diminish/, so that I can diminish while installing packages.
+This sets up the load path so that we can override it.  We also install /use-package/ to make all package config easier.
 
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
@@ -25,7 +25,6 @@ This sets up the load path so that we can override it.  We also install /use-pac
 (setq-default use-package-enable-imenu-support t)
 (setq use-package-always-ensure t)
 (eval-when-compile (require 'use-package))
-(use-package diminish :ensure t)
 (setq lexical-binding t)
 
 (setq
@@ -810,13 +809,15 @@ You can easily /capture/ information using various different templates (includin
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
-         (org-mode . org-bullets-mode)
          (org-mode . (lambda () (set-face-italic 'italic t)))))
-(setq  org-bullets-bullet-list
-       '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
-
 ;; Need ~htmlize~ so that I can export org buffers to HTML.
 (use-package htmlize :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-hook 'org-mode-hook 'org-bullets-mode)
+(setq  org-bullets-bullet-list
+       '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
 #+END_SRC
 
 ** Fix indentation for org source blocks
@@ -1060,23 +1061,6 @@ List some pretty fonts, and grab the first one that's available.
 (setq auto-window-vscroll nil)
 #+END_SRC
 
-** Mix monospace and proportional fonts (code vs prose)
-#+BEGIN_SRC emacs-lisp
-(use-package mixed-pitch :ensure t :defer t)
-(add-hook 'org-mode-hook 'mixed-pitch-mode)
-(add-hook 'LaTeX-mode-hook 'mixed-pitch-mode)
-(if (eq system-type 'windows-nt)
-    (custom-theme-set-faces
-     'user
-     '(variable-pitch ((t (:family "Roboto" :height 140 :weight light))))
-     '(fixed-pitch ((t (:family "Roboto Mono" :italic nil :weight normal :height 1.0 :width normal)))))
-  (custom-theme-set-faces
-   'user
-   '(variable-pitch ((t (:family "Roboto" :height 200 :weight light))))
-   '(fixed-pitch ((t (:family "Roboto Mono" :italic nil :weight normal :height 1.0 :width normal))))))
-(add-hook 'prog-mode-hook '(lambda () (set-face-italic-p 'italic t)))
-(add-hook 'org-mode-hook '(lambda () (set-face-italic-p 'italic t)))
-#+END_SRC
 ** Colour themes
 
 Disable themes before loading a new theme.  This can cause some issues when using things like 'powerline', as powerline is technically a theme.  Because smart-mode-line was later in my emacs config, my actual colour theme ended up getting disabled.  Disabling this for now until I decide if I really need it.
@@ -1098,11 +1082,9 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 #+BEGIN_SRC emacs-lisp
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
-(use-package zenburn-theme)
 (use-package darkokai-theme)
-;; (load-theme 'doneburn t)
-;;(load-theme 'zenburn t)
-(load-theme 'darkokai t)
+(load-theme 'doneburn t)
+;;(load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
@@ -1227,22 +1209,6 @@ the current window and the windows state prior to that."
 A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
 #+BEGIN_SRC emacs-lisp
 (use-package rg :ensure t :defer t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'after-init-hook
-          '(progn
-             (diminish 'undo-tree-mode)
-             (diminish 'anzu-mode)
-             (diminish 'ivy-mode)
-             (diminish 'org-indent-mode)
-             (diminish 'company-mode)
-             (diminish 'yas-minor-mode)
-             (diminish 'abbrev-mode)
-             (diminish 'subword-mode)
-             (diminish 'visual-line-mode)
-             (diminish 'mixed-pitch-mode)
-             (diminish 'eldoc-mode)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
