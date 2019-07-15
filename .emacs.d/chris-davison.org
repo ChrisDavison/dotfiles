@@ -770,7 +770,7 @@ You can easily /capture/ information using various different templates (includin
         org-replace-disputed-keys t
         org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
         inhibit-compacting-font-caches t
-        org-hide-emphasis-markers t
+        org-hide-emphasis-markers nil
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
         org-agenda-skip-scheduled-if-done t
         org-agenda-start-with-log-mode t
@@ -783,6 +783,7 @@ You can easily /capture/ information using various different templates (includin
         org-agenda-files '("~/Dropbox/notes")
         org-agenda-time-grid '((daily require-timed remove-match)
                                (900 1300 1700) "......" "----------")
+        org-agenda-confirm-kill nil
         org-log-done nil
         org-log-repeat nil
         org-log-into-drawer nil
@@ -882,23 +883,23 @@ You can easily /capture/ information using various different templates (includin
         ("t" "Todos")
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
-        ("ta" "Add to Anki" item (file+headline "inbox.org" "Add to Anki")
-         "[ ] %^{knowledge}" :immediate-finish t)
+        ("ta" "Add to Anki" entry (file+headline "inbox.org" "Add to Anki")
+         "* TODO %^{knowledge}")
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
-         "* %^{Buy}\n%?")
+         "* TODO %^{Buy}\n%?")
 
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
          "%?" :empty-lines 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("w" "Work")
-        ("ww" "WORK Task" entry (file+headline "work.org" "Tasks")
-         "* TODO %^{Task} [/]\n%?" :empty-lines 1)
+        ("ww" "WORK Task" entry (file+headline "inbox.org" "Work Tasks")
+         "* TODO %^{Task}\n%?" :empty-lines 1)
         ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
-         "* TODO %^{TASK} [/]")
+         "* TODO %^{TASK}")
 
         ("l" "Logbook" plain
-         (file+headline "logbook.org" ,(format-time-string "[%Y-%m-%d %a]"))
+         (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
          "%?" :empty-lines 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -918,8 +919,7 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^t %^{EVENT}")
 
         ("Q" "Quote" entry (file "quotes.org")
-         "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE"
-         :immediate-finish t)
+         "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
          "* TODO %^{Article}\n%u\n\nAbstract: %?")))
@@ -1025,6 +1025,7 @@ This is a general helper function that will refile the subtree at point to a spe
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
   ("o" cd/org-open-link-same "org-open")
+  ("O" org-mark-ring-goto "Return from link")
   ("m" discover-my-major "major bindings")
   ("<up>" delete-indentation "join-up" :exit nil )
   ("<down>" (join-line -1) "join-down" :exit nil ))
@@ -1198,6 +1199,7 @@ the current window and the windows state prior to that."
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
 
+Better 'help' buffers
 #+BEGIN_SRC emacs-lisp
 (use-package helpful :ensure t :defer t
   :config (setq helpful-max-buffers 2))
@@ -1211,6 +1213,7 @@ A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occ
 (use-package rg :ensure t :defer t)
 #+END_SRC
 
+Rotate between 'common' layouts (e.g. vertical to horizontal split)
 #+BEGIN_SRC emacs-lisp
 (use-package rotate :ensure t :defer t
   :bind (("C-c r" . rotate-layout)))
@@ -1221,10 +1224,12 @@ When double clicking a file, or launching from terminal, always use the same ins
 (setq ns-pop-up-frames nil)
 #+END_SRC
 
+Use a very narrow window border.
 #+BEGIN_SRC emacs-lisp
 (fringe-mode 1)
 #+END_SRC
 
+If a tree has a todo state and TODO children, then mark it as done when all children are done.
 #+BEGIN_SRC emacs-lisp
 (defun org-summary-todo (n-done n-not-done)
   "Switch entry to DONE when all subentries are done."
@@ -1238,6 +1243,7 @@ When double clicking a file, or launching from terminal, always use the same ins
   :hook ((prog-mode . rainbow-delimiters-mode)))
 #+END_SRC
 
+Simple function shortcuts to do an org-occur, or normal occur, for unticked checkboxes
 #+BEGIN_SRC emacs-lisp
 (defun checkboxes ()
   (interactive)
@@ -1247,8 +1253,17 @@ When double clicking a file, or launching from terminal, always use the same ins
   (occur "\\[ \\]"))
 #+END_SRC
 
+Shortcut function to move all checked checkboxes to the top of the list
 #+BEGIN_SRC emacs-lisp
 (defun sort-checkboxes ()
   (interactive)
   (org-sort-list nil ?X))
+#+END_SRC
+
+Reset all checkboxes in a repeating todo when the state change is toggled through ~DONE~
+#+BEGIN_SRC emacs-lisp
+(defun glasser-org-reset-check-on-repeat ()
+  (when (and (org-get-repeat) (member org-state org-done-keywords))
+    (org-reset-checkbox-state-subtree)))
+(add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
 #+END_SRC
