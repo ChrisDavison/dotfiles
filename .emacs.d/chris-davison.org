@@ -821,7 +821,7 @@ You can easily /capture/ information using various different templates (includin
 (diminish 'org-indent-mode)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq  org-bullets-bullet-list
        '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
@@ -1073,7 +1073,7 @@ List some pretty fonts, and grab the first one that's available.
 ** Colour themes
 
 Disable themes before loading a new theme.  This can cause some issues when using things like 'powerline', as powerline is technically a theme.  Because smart-mode-line was later in my emacs config, my actual colour theme ended up getting disabled.  Disabling this for now until I decide if I really need it.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defadvice load-theme (before theme-dont-propagate activate)
   (disable-all-themes)
   )
@@ -1092,8 +1092,9 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
-;; (load-theme 'doneburn t)
-(load-theme 'darkokai t)
+(load-theme 'doneburn t)
+(load-theme 'org-beautify t)
+;; (load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
