@@ -770,7 +770,7 @@ You can easily /capture/ information using various different templates (includin
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
         org-replace-disputed-keys t
-        org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
+        org-blank-before-new-entry '((heading . nil) (plain-list-item . auto))
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers nil
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
@@ -944,9 +944,8 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(
-        ("c" . "My custom views")
-        ("cp" "This week"
-         ((agenda "" ((org-agenda-span 7)))))
+        ("c" "Today & Tomorrow"
+         ((agenda "" ((org-agenda-span 2)))))
 
         ("w" . "Work Schedules")
         ("ww" "Work and Thesis"
@@ -1092,6 +1091,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
+(use-package org-beautify-theme)
 (load-theme 'doneburn t)
 (load-theme 'org-beautify t)
 ;; (load-theme 'darkokai t)
@@ -1276,4 +1276,11 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
   (when (and (org-get-repeat) (member org-state org-done-keywords))
     (org-reset-checkbox-state-subtree)))
 (add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-fontify-whole-heading-line t
+      org-fontify-done-headline t
+      org-fontify-quote-and-verse-blocks t)
+
 #+END_SRC
