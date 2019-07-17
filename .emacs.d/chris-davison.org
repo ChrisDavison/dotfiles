@@ -205,6 +205,7 @@ command was called, go to its unstaged changes section."
 
 ;; Use lettercase to determine words in camelcase text
 (global-subword-mode 1)
+(diminish 'subword)
 
 ;; expand region
 (use-package expand-region :ensure t)
@@ -222,9 +223,10 @@ command was called, go to its unstaged changes section."
 (global-set-key (kbd "C-;") 'iedit-mode)
 
 ;; snippets
-(use-package yasnippet :demand t :defer t)
+(use-package yasnippet :demand t :defer t :diminish)
 (when (fboundp 'yas-global-mode)
   (yas-global-mode +1))
+(diminish 'yas-minor-mode)
 (use-package yasnippet-snippets :demand t :defer t)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -354,7 +356,7 @@ People often struggle with the Emacs undo model, where there's really no concept
 This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
 #+BEGIN_SRC emacs-lisp
-(use-package undo-tree :ensure t :defer t
+(use-package undo-tree :ensure t :defer t :diminish
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-timestamps nil
@@ -363,7 +365,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
 * isearch -- live preview of search and replace
 #+BEGIN_SRC emacs-lisp
 ;; Show current and total matches while searching
-(use-package anzu :defer t :ensure t
+(use-package anzu :defer t :ensure t :diminish
   ;; Replace and regexp-replace are inverted, as I regexp-replace more
   :bind (([remap query-replace] . anzu-query-replace-regexp)
          ([remap query-replace-regexp] . anzu-query-replace))
@@ -431,7 +433,7 @@ Use git-bash as windows shell
 Company will *COMP*lete *ANY*thing.
 
 #+BEGIN_SRC emacs-lisp
-(use-package company :ensure t :defer t
+(use-package company :ensure t :defer t :diminish
   :bind ("TAB" . company-indent-or-complete-common)
   :config
   (setq company-tooltip-align-annotations t
@@ -624,7 +626,7 @@ Navigation of pretty much any /menu-type/ thing.
 - =imenu-anywhere= will search for headings/functions recursively over all files of the same /mode/
 
 #+BEGIN_SRC emacs-lisp
-(use-package ivy :ensure t :defer t
+(use-package ivy :ensure t :defer t :diminish
   :bind (:map ivy-mode-map
 			  ("C-c h" . ivy-switch-buffer)
 			  ("C-x b" . ivy-switch-buffer)
@@ -813,6 +815,8 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . (lambda () (set-face-italic 'italic t)))))
 ;; Need ~htmlize~ so that I can export org buffers to HTML.
 (use-package htmlize :ensure t :defer t)
+(diminish 'abbrev-mode)
+(diminish 'org-indent-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -937,11 +941,8 @@ You can easily /capture/ information using various different templates (includin
 (setq org-agenda-custom-commands
       '(
         ("c" . "My custom views")
-        ("ct" "Today and TODO|WIP"
-         ((agenda "" ((org-agenda-span 1)))
-          (todo "TODO|WIP")))
-        ("cp" "Today"
-         ((agenda "" ((org-agenda-span 1)))))
+        ("cp" "This week"
+         ((agenda "" ((org-agenda-span 7)))))
 
         ("w" . "Work Schedules")
         ("ww" "Work and Thesis"
@@ -954,10 +955,14 @@ You can easily /capture/ information using various different templates (includin
                   '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))
           nil
           nil))
-        ))
 
-(global-set-key (kbd "<f4>") (lambda () (interactive) (org-agenda nil "cp")))
-(global-set-key (kbd "<f3>") (lambda () (interactive) (org-agenda nil "ct")))
+        ("ngt" "Non-gaming Todos"
+         ((todo "TODO|WIP" ((org-agenda-overriding-header "Non-gaming Todos")
+                            (org-agenda-files
+                             (seq-filter
+                              (lambda (x) (not (string-match "gaming" x)))
+                              (file-expand-wildcards "~/Dropbox/notes/*.org"))
+                             )))))))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1026,7 +1031,6 @@ This is a general helper function that will refile the subtree at point to a spe
   ("e" iedit-mode "iedit")
   ("o" cd/org-open-link-same "org-open")
   ("O" org-mark-ring-goto "Return from link")
-  ("m" discover-my-major "major bindings")
   ("<up>" delete-indentation "join-up" :exit nil )
   ("<down>" (join-line -1) "join-down" :exit nil ))
 (define-key global-map (kbd "C-z") 'cd/hydra/main/body)
@@ -1084,8 +1088,8 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
-(load-theme 'doneburn t)
-;;(load-theme 'darkokai t)
+;; (load-theme 'doneburn t)
+(load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
@@ -1174,12 +1178,13 @@ the current window and the windows state prior to that."
 ;; Soft-wrap at a column.
 ;; Not currently setting this globally, as still unsure about
 ;; hard wrap vs soft-wrap vs soft-wrap with ruler
-(use-package visual-fill-column :ensure t
+(use-package visual-fill-column :ensure t :diminish
   :config
   (setq visual-fill-column-width 80))
 
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
+(diminish 'visual-line-mode)
 #+END_SRC
 * TESTING GROUND
 #+BEGIN_SRC emacs-lisp
