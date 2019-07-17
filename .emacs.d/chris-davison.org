@@ -773,7 +773,9 @@ You can easily /capture/ information using various different templates (includin
         org-blank-before-new-entry '((heading . always) (plain-list-item . auto))
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers nil
-        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE" "CANCELLED"))
+        org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
+                           (sequence "|" "CANCELLED")
+                           (sequence "BACKBURNER" "|"))
         org-agenda-skip-scheduled-if-done t
         org-agenda-start-with-log-mode t
         org-agenda-skip-deadline-prewarning-if-scheduled t
@@ -887,6 +889,8 @@ You can easily /capture/ information using various different templates (includin
         ("t" "Todos")
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
          "* TODO %^{TASK}\n%?" :empty-lines 1)
+        ("tT" "Task TODAY" entry (file+headline "inbox.org" "Tasks")
+         "* TODO %^{TASK}\nSCHEDULED: %t\n%?" :empty-lines 1)
         ("ta" "Add to Anki" entry (file+headline "inbox.org" "Add to Anki")
          "* TODO %^{knowledge}")
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
