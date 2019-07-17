@@ -4,6 +4,6 @@
 # --
 * `(format-time-string "%Y-%m-%d %a" (time-add (current-time) 86400))`
 
-** TODO Daily Todos [/]
+** TODO Daily Todos
 SCHEDULED: `(format-time-string "<%Y-%m-%d %a>" (time-add (current-time) 86400))`
 `(clipboard-yank)`
