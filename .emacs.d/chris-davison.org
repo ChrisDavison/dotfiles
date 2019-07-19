@@ -944,7 +944,7 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(
-        ("c" "Today & Tomorrow"
+        ("1" "Today & Tomorrow"
          ((agenda "" ((org-agenda-span 2)))))
 
         ("w" . "Work Schedules")
@@ -966,6 +966,8 @@ You can easily /capture/ information using various different templates (includin
                               (lambda (x) (not (string-match "gaming" x)))
                               (file-expand-wildcards "~/Dropbox/notes/*.org"))
                              )))))))
+
+(global-set-key (kbd "<f3>") '(lambda () (interactive) (org-agenda nil "1")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1027,7 +1029,7 @@ This is a general helper function that will refile the subtree at point to a spe
   ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
   ("S" cd/searches/body "Searches")
-  ("g" rg "grep")
+  ("g" deadgrep "grep")
   ("r" anzu-query-replace-regexp "replace")
   ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
@@ -1045,7 +1047,7 @@ List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
       (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-                    '("Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
+                    '("CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
 (when cd-fonts
   (set-frame-font (car cd-fonts) 1))
 
@@ -1220,7 +1222,7 @@ Better 'help' buffers
 
 A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
 #+BEGIN_SRC emacs-lisp
-(use-package rg :ensure t :defer t)
+(use-package deadgrep :ensure t :defer t)
 #+END_SRC
 
 Rotate between 'common' layouts (e.g. vertical to horizontal split)
@@ -1282,5 +1284,4 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
 (setq org-fontify-whole-heading-line t
       org-fontify-done-headline t
       org-fontify-quote-and-verse-blocks t)
-
 #+END_SRC

@@ -11,13 +11,9 @@
 
 (defconst cd/config-org "~/code/dotfiles/.emacs.d/chris-davison.org" "Path to my configuration")
 (defconst cd/config-el "~/code/dotfiles/.emacs.d/chris-davison.el" "Output filename for my configuration")
-(when
-    (time-less-p
-     (file-mod-time cd/config-el)
-     (file-mod-time cd/config-org))
-  (progn
-    (require 'org)
-    (org-babel-tangle-file cd/config-org cd/config-el)))
+
+(require 'org)
+(org-babel-tangle-file cd/config-org cd/config-el)
 (load cd/config-el t)
 
 (custom-set-variables
