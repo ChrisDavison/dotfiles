@@ -62,6 +62,7 @@ Define a few constants to make it easy to modify behaviour by-system.
 (use-package cl-lib :ensure t :config (require 'cl-lib))
 (use-package s :ensure t :defer t)  ; Useful string functions
 (use-package f :ensure t :defer t)  ; Useful file and dir functions
+(use-package diminish :ensure t)
 
 ;; Make /apropos/ bring up everything, rather than requiring separate keybinds
 (setq apropos-do-all t)
@@ -233,6 +234,7 @@ command was called, go to its unstaged changes section."
 
 (global-set-key (kbd "C-S-SPC") 'cycle-spacing)
 #+END_SRC
+
 ** Text filling (paragraph reflowing) and indentation
 #+BEGIN_SRC emacs-lisp
 (defun unfill-paragraph (&optional region)
@@ -355,7 +357,7 @@ People often struggle with the Emacs undo model, where there's really no concept
 
 This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package undo-tree :ensure t :defer t :diminish
   :config
   (global-undo-tree-mode)
@@ -533,44 +535,44 @@ Use elpy for python
     (add-to-list 'python-shell-exec-path "~/.envs/ml/bin/")))
 #+END_SRC
 ** TODO Latex
-#+BEGIN_SRC emacs-lisp
-(use-package auctex :ensure t :defer t
-  :config
-  (setq TeX-auto-save t
-        TeX-parse-self t
-        TeX-save-query nil
-        ispell-program-name "aspell"
-        ispell-dictionary "english")
-  :hook ((LaTeX-mode . flyspell-mode)
-         (LaTeX-mode . flyspell-buffer)
-         (LaTeX-mode . outline-minor-mode)
-         (LaTeX-mode . visual-line-mode)
-         (LaTeX-mode . turn-on-reftex)))
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package auctex :ensure t :defer t
+    :config
+    (setq TeX-auto-save t
+          TeX-parse-self t
+          TeX-save-query nil
+          ispell-program-name "aspell"
+          ispell-dictionary "english")
+    :hook ((LaTeX-mode . flyspell-mode)
+           (LaTeX-mode . flyspell-buffer)
+           (LaTeX-mode . outline-minor-mode)
+           (LaTeX-mode . visual-line-mode)
+           (LaTeX-mode . turn-on-reftex)))
 
-;; Manage citations
-(require 'tex-site)
-(autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-(autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-(autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  ;; Manage citations
+  ;; (require 'tex-site)
+  ;; (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  ;; (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  ;; (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  ;; (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
 
-(setq LaTeX-eqnarray-label "eq"
-      LaTeX-equation-label "eq"
-      LaTeX-figure-label "fig"
-      LaTeX-table-label "tab"
-      LaTeX-myChapter-label "chap"
-      TeX-auto-save t
-      TeX-newline-function 'reindent-then-newline-and-indent
-      TeX-parse-self t
-      TeX-style-path '("style/" "auto/"
-                       "/usr/share/emacs21/site-lisp/auctex/style/"
-                       "/var/lib/auctex/emacs21/"
-                       "/usr/local/share/emacs/site-lisp/auctex/style/")
-      LaTeX-section-hook '(LaTeX-section-heading
-                           LaTeX-section-title
-                           LaTeX-section-toc
-                           LaTeX-section-section
-                           LaTeX-section-label))
+  ;; (setq LaTeX-eqnarray-label "eq"
+  ;;       LaTeX-equation-label "eq"
+  ;;       LaTeX-figure-label "fig"
+  ;;       LaTeX-table-label "tab"
+  ;;       LaTeX-myChapter-label "chap"
+  ;;       TeX-auto-save t
+  ;;       TeX-newline-function 'reindent-then-newline-and-indent
+  ;;       TeX-parse-self t
+  ;;       TeX-style-path '("style/" "auto/"
+  ;;                        "/usr/share/emacs21/site-lisp/auctex/style/"
+  ;;                        "/var/lib/auctex/emacs21/"
+  ;;                        "/usr/local/share/emacs/site-lisp/auctex/style/")
+  ;;       LaTeX-section-hook '(LaTeX-section-heading
+  ;;                            LaTeX-section-title
+  ;;                            LaTeX-section-toc
+  ;;                            LaTeX-section-section
+  ;;                            LaTeX-section-label))
 #+END_SRC
 ** Web-stuff
 #+BEGIN_SRC emacs-lisp
@@ -578,11 +580,11 @@ Use elpy for python
 (use-package js2-mode :ensure t :defer t)
 
 ;; Colourize CSS literals
-(use-package rainbow-mode :ensure t :defer t
-  :config
-  (add-hook 'css-mode-hook 'rainbow-mode)
-  (add-hook 'html-mode-hook 'rainbow-mode)
-  (add-hook 'sass-mode-hook 'rainbow-mode))
+;; (use-package rainbow-mode :ensure t :defer t
+;;   :config
+;;   (add-hook 'css-mode-hook 'rainbow-mode)
+;;   (add-hook 'html-mode-hook 'rainbow-mode)
+;;   (add-hook 'sass-mode-hook 'rainbow-mode))
 #+END_SRC
 ** TODO Elixir
 #+begin_src emacs-lisp :tangle no
@@ -751,7 +753,6 @@ You can easily /capture/ information using various different templates (includin
   :pin org
   :bind (("<f1>" . org-capture)
          ("<f2>" . org-agenda)
-         ("<f3>" . org-agenda-list)
          ("C-c l" . org-store-link)
          ("C-c S-O" . cd/org-open-link-same))
   :config
@@ -822,6 +823,7 @@ You can easily /capture/ information using various different templates (includin
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+(use-package org-bullets :ensure t)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (setq  org-bullets-bullet-list
        '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
@@ -888,11 +890,11 @@ You can easily /capture/ information using various different templates (includin
       `(
         ("t" "Todos")
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK}\n%?" :empty-lines 1)
+         "* TODO %^{TASK}" :empty-lines 1)
         ("tT" "Task TODAY" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK}\nSCHEDULED: %t\n%?" :empty-lines 1)
-        ("ta" "Add to Anki" entry (file+headline "inbox.org" "Add to Anki")
-         "* TODO %^{knowledge}")
+         "* TODO %^{TASK}\nSCHEDULED: %t\n" :empty-lines 1)
+        ("ta" "Add to Anki" entry (file "inbox.org")
+         "* TODO (Anki) %^{knowledge}" :immediate-finish t)
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
          "* TODO %^{Buy}\n%?")
 
@@ -902,9 +904,9 @@ You can easily /capture/ information using various different templates (includin
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("w" "Work")
         ("ww" "WORK Task" entry (file+headline "inbox.org" "Work Tasks")
-         "* TODO %^{Task}\n%?" :empty-lines 1)
+         "* TODO %^{Task}" :empty-lines 1 :immediate-finish t)
         ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
-         "* TODO %^{TASK}")
+         "* TODO %^{TASK}" :immediate-finish t)
 
         ("l" "Logbook" plain
          (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
@@ -945,6 +947,8 @@ You can easily /capture/ information using various different templates (includin
 (setq org-agenda-custom-commands
       '(
         ("1" "Today & Tomorrow"
+         ((agenda "" ((org-agenda-span 1)))))
+        ("2" "Today & Tomorrow"
          ((agenda "" ((org-agenda-span 2)))))
 
         ("w" . "Work Schedules")
@@ -1026,6 +1030,7 @@ This is a general helper function that will refile the subtree at point to a spe
 (defhydra cd/hydra/main (:exit t :columns 3)
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
+  ("W" writeroom-mode "Writeroom")
   ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
   ("S" cd/searches/body "Searches")
@@ -1034,6 +1039,7 @@ This is a general helper function that will refile the subtree at point to a spe
   ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
+  ("j" avy-goto-word-1 "Jump to word")
   ("o" cd/org-open-link-same "org-open")
   ("O" org-mark-ring-goto "Return from link")
   ("<up>" delete-indentation "join-up" :exit nil )
@@ -1076,8 +1082,7 @@ List some pretty fonts, and grab the first one that's available.
 Disable themes before loading a new theme.  This can cause some issues when using things like 'powerline', as powerline is technically a theme.  Because smart-mode-line was later in my emacs config, my actual colour theme ended up getting disabled.  Disabling this for now until I decide if I really need it.
 #+BEGIN_SRC emacs-lisp :tangle no
 (defadvice load-theme (before theme-dont-propagate activate)
-  (disable-all-themes)
-  )
+  (disable-all-themes))
 
 (defadvice load-theme (after run-after-load-theme-hook activate)
   (set-face-italic 'italic t))
@@ -1093,9 +1098,8 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
-(use-package org-beautify-theme)
 (load-theme 'doneburn t)
-(load-theme 'org-beautify t)
+(doom-modeline-mode)
 ;; (load-theme 'darkokai t)
 #+END_SRC
 ** Suppress GUI features
@@ -1192,6 +1196,10 @@ the current window and the windows state prior to that."
 ;; Replace lambda and AND etc with pretty symbols
 (global-prettify-symbols-mode +1)
 (diminish 'visual-line-mode)
+#+END_SRC
+** "Zen" mode (distraction free)
+#+BEGIN_SRC emacs-lisp
+(use-package writeroom-mode :ensure t :defer t)
 #+END_SRC
 * TESTING GROUND
 #+BEGIN_SRC emacs-lisp
