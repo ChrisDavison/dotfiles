@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: Outline of a dream, with goals and questions to target self-discipline
+# name: 'Dream' of self-discipline
 # key: ddream
 # --
 * ${1:dream}
