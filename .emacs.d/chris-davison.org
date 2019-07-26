@@ -441,29 +441,32 @@ Company will *COMP*lete *ANY*thing.
   :bind ("TAB" . company-indent-or-complete-common)
   :config
   (setq company-tooltip-align-annotations t
-        company-idle-delay 0
+        company-idle-delay 0.5
         company-minimum-prefix-length 3
         company-backends (list 'company-files
                                'company-anaconda
                                'company-racer
                                'company-clang
+                               'company-ispell
                                'company-yasnippet
                                'company-dabbrev-code
                                'company-dabbrev)))
-  (add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
 
-  (use-package company-quickhelp :ensure t :defer t
-    :config (company-quickhelp-mode))
+(use-package company-quickhelp :ensure t :defer t
+  :config (company-quickhelp-mode))
 
-  (use-package company-racer :ensure t :defer t)
+(use-package company-racer :ensure t :defer t)
 
-  (defvar my/company-point nil)
-  (advice-add 'company-complete-common :before
-              (lambda () (setq my/company-point (point))))
-  (advice-add 'company-complete-common :after
-              (lambda ()
-                (when (equal my/company-point (point))
-                  (yas-expand))))
+(defvar my/company-point nil)
+(advice-add 'company-complete-common :before
+            (lambda () (setq my/company-point (point))))
+(advice-add 'company-complete-common :after
+            (lambda ()
+              (when (equal my/company-point (point))
+                (yas-expand))))
+
+(add-hook 'org-mode-hook '(lambda () (add-to-list 'company-backends 'company-ispell)))
 #+END_SRC
 ** Syntax/error checking/linting, on the /fly/ (flycheck)
 Flycheck basically runs linters and stuff, and lets you know problems in your code.
@@ -771,6 +774,10 @@ You can easily /capture/ information using various different templates (includin
         org-edit-src-content-indentation 0
         org-list-description-max-indent 5
         org-catch-invisible-edits 'show-and-error
+        org-fontify-whole-heading-line t
+        org-fontify-done-headline t
+        org-fontify-quote-and-verse-blocks t
+        org-insert-heading-respect-content t
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
         org-replace-disputed-keys t
@@ -892,9 +899,9 @@ You can easily /capture/ information using various different templates (includin
       `(
         ("t" "Todos")
         ("tt" "Task" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK}" :empty-lines 1)
+         "* TODO %^{TASK}\n%?" :empty-lines 1)
         ("tT" "Task TODAY" entry (file+headline "inbox.org" "Tasks")
-         "* TODO %^{TASK}\nSCHEDULED: %t\n" :empty-lines 1)
+         "* TODO %^{TASK}\nSCHEDULED: %t\n\n%?" :empty-lines 1)
         ("ta" "Add to Anki" entry (file "inbox.org")
          "* TODO (Anki) %^{knowledge}" :immediate-finish t)
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
@@ -903,12 +910,15 @@ You can easily /capture/ information using various different templates (includin
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
          "%?" :empty-lines 1)
 
+        ("L" "link" plain (file+headline "inbox.org" "Notes")
+         "[[%^{URL}][%^{Description}]] %?" :empty-lines 1)
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("w" "Work")
         ("ww" "WORK Task" entry (file+headline "inbox.org" "Work Tasks")
-         "* TODO %^{Task}" :empty-lines 1 :immediate-finish t)
+         "* TODO %^{Task}\n%?" :empty-lines 1)
         ("wt" "Thesis task" entry (file+olp "thesis.org" "UNFILED")
-         "* TODO %^{TASK}" :immediate-finish t)
+         "* TODO %^{TASK}\n%?")
 
         ("l" "Logbook" plain
          (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
@@ -1007,6 +1017,21 @@ This is a general helper function that will refile the subtree at point to a spe
   (interactive)
   (refile-to-file (buffer-name)))
 #+END_SRC
+** Custom keybind functions
+#+BEGIN_SRC emacs-lisp
+(defun org-insert-indented-header ()
+  (interactive)
+  (org-insert-heading-respect-content)
+  (org-do-demote))
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-indented-header)
+#+END_SRC
+** Reset all checkboxes in a repeating todo when the state change is toggled through ~DONE~
+#+BEGIN_SRC emacs-lisp
+(defun glasser-org-reset-check-on-repeat ()
+  (when (and (org-get-repeat) (member org-state org-done-keywords))
+    (org-reset-checkbox-state-subtree)))
+(add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
+#+END_SRC
 
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
@@ -1036,10 +1061,9 @@ This is a general helper function that will refile the subtree at point to a spe
 (defhydra cd/hydra/main (:exit t :columns 3)
   ("z" (modi/toggle-one-window nil) "zoom")
   ("w" cd/hydra/windowmove/body "WINDOW")
-  ("W" writeroom-mode "Writeroom")
   ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
-  ("S" cd/searches/body "Searches")
+  ("S" ispell-word "Spell")
   ("g" deadgrep "grep")
   ("r" anzu-query-replace-regexp "replace")
   ("R" cd/org-refile-to-file/body "REFILE")
@@ -1204,10 +1228,6 @@ the current window and the windows state prior to that."
 (global-prettify-symbols-mode +1)
 (diminish 'visual-line-mode)
 #+END_SRC
-** "Zen" mode (distraction free)
-#+BEGIN_SRC emacs-lisp
-(use-package writeroom-mode :ensure t :defer t)
-#+END_SRC
 * TESTING GROUND
 #+BEGIN_SRC emacs-lisp
 (defun mydired-sort ()
@@ -1287,28 +1307,11 @@ Shortcut function to move all checked checkboxes to the top of the list
   (org-sort-list nil ?X))
 #+END_SRC
 
-Reset all checkboxes in a repeating todo when the state change is toggled through ~DONE~
 #+BEGIN_SRC emacs-lisp
-(defun glasser-org-reset-check-on-repeat ()
-  (when (and (org-get-repeat) (member org-state org-done-keywords))
-    (org-reset-checkbox-state-subtree)))
-(add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
+(global-set-key (kbd "M-4") 'company-ispell)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-fontify-whole-heading-line t
-      org-fontify-done-headline t
-      org-fontify-quote-and-verse-blocks t)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(defun org-insert-indented-header ()
-  (interactive)
-  (org-insert-heading-respect-content)
-  (org-do-demote))
-(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-indented-header)
-#+END_SRCs
-
-#+BEGIN_SRC emacs-lisp
-(setq org-insert-heading-respect-content t)
+(setq ispell-personal-dictionary (expand-file-name "~/code/dotfiles/ispell_dict")
+      ispell-complete-word-dict (expand-file-name "~/code/dotfiles/ispell_dict"))
 #+END_SRC
