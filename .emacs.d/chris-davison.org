@@ -364,6 +364,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
   (setq undo-tree-visualizer-timestamps nil
         undo-tree-visualizer-diff t))
 #+END_SRC
+
 * isearch -- live preview of search and replace
 #+BEGIN_SRC emacs-lisp
 ;; Show current and total matches while searching
@@ -378,6 +379,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
 
 (setq search-whitespace-regexp "[ \t\r\n-_]+")
 #+END_SRC
+
 * Terminal Improvements
 ** Windows Shell Config
 Use git-bash as windows shell
@@ -732,6 +734,7 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
   (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
   )
 #+END_SRC
+
 * Org-mode
 Org-mode is a really powerful notetaking tool.
 
@@ -759,7 +762,7 @@ You can easily /capture/ information using various different templates (includin
 
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
-        org-src-window-setup 'only-window
+        org-src-window-setup 'reorganize-frame
         org-agenda-window-setup 'only-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -786,8 +789,7 @@ You can easily /capture/ information using various different templates (includin
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
         org-agenda-files '("~/Dropbox/notes")
-        org-agenda-time-grid '((daily require-timed remove-match)
-                               (900 1300 1700) "......" "----------")
+        org-agenda-time-grid nil
         org-agenda-confirm-kill nil
         org-log-done nil
         org-log-repeat nil
@@ -946,10 +948,12 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(
-        ("1" "Today & Tomorrow"
+        ("1" "Today"
          ((agenda "" ((org-agenda-span 1)))))
-        ("2" "Today & Tomorrow"
+        ("2" "Two days"
          ((agenda "" ((org-agenda-span 2)))))
+        ("3" "Three days"
+         ((agenda "" ((org-agenda-span 3)))))
 
         ("w" . "Work Schedules")
         ("ww" "Work and Thesis"
@@ -959,7 +963,7 @@ You can easily /capture/ information using various different templates (includin
                 ((org-agenda-overriding-header "\nUnscheduled Work and Thesis")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
                  (org-agenda-files
-                  '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))
+                  '("~/Dropbox/notes/work.org"p "~/Dropbox/notes/thesis.org"))))
           nil
           nil))
 
@@ -971,7 +975,9 @@ You can easily /capture/ information using various different templates (includin
                               (file-expand-wildcards "~/Dropbox/notes/*.org"))
                              )))))))
 
-(global-set-key (kbd "<f3>") '(lambda () (interactive) (org-agenda nil "1")))
+(global-set-key
+ (kbd "<f3>")
+ '(lambda () (interactive) (org-agenda nil "3")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1098,7 +1104,8 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
-(load-theme 'doneburn t)
+;; (load-theme 'doneburn t)
+(load-theme 'doom-tomorrow-night t)
 (doom-modeline-mode)
 ;; (load-theme 'darkokai t)
 #+END_SRC
@@ -1292,4 +1299,16 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
 (setq org-fontify-whole-heading-line t
       org-fontify-done-headline t
       org-fontify-quote-and-verse-blocks t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-insert-indented-header ()
+  (interactive)
+  (org-insert-heading-respect-content)
+  (org-do-demote))
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-indented-header)
+#+END_SRCs
+
+#+BEGIN_SRC emacs-lisp
+(setq org-insert-heading-respect-content t)
 #+END_SRC
