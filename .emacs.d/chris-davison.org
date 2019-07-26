@@ -1312,6 +1312,20 @@ Shortcut function to move all checked checkboxes to the top of the list
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name "~/code/dotfiles/ispell_dict")
-      ispell-complete-word-dict (expand-file-name "~/code/dotfiles/ispell_dict"))
+(require 'org-element)
+
+(defun org-file-from-subtree (&optional name)
+  "Cut the subtree currently being edited and create a new file
+from it.
+
+If called with the universal argument, prompt for new filename,
+otherwise use the subtree title"
+  (interactive "P")
+  (let ((filename (expand-file-name (read-file-name "New file name:"))))
+    (org-cut-subtree)
+    (find-file filename)
+    (org-mode)
+    (yank)
+    (org-store-link)))
+(define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
 #+END_SRC
