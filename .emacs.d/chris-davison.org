@@ -5,18 +5,21 @@
 
 You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-davison.el~.  This file can either be loaded from an ~init.el~ (using ~(load "chris-davison.el" t)~), or by directly symlinking ~chris-davison.el~ to ~init.el~.  The symlinking may be a bit iffy on platforms like windows...
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(load "chris-davison.el" t)
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+# (load "chris-davison.el" t)
+# #+END_SRC
 
 This sets up the load path so that we can override it.  We also install /use-package/ to make all package config easier.
 
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
+
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
 (package-refresh-contents)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(unless (assoc-default "org" package-archives)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (setq package-enable-at-startup t)
 (unless (package-installed-p 'use-package)
@@ -432,6 +435,7 @@ Use git-bash as windows shell
   (define-key term-raw-map "\C-y" 'my-term-paste))
 (add-hook 'term-mode-hook 'my-term-hook)
 #+END_SRC
+
 * PROGRAMMING LANGUAGES
 ** Completion (for multiple languages)
 Company will *COMP*lete *ANY*thing.
@@ -445,7 +449,7 @@ Company will *COMP*lete *ANY*thing.
         company-minimum-prefix-length 3
         company-backends (list 'company-files
                                'company-anaconda
-                               'company-racer
+                               ;; 'company-racer
                                'company-clang
                                'company-ispell
                                'company-yasnippet
@@ -456,7 +460,7 @@ Company will *COMP*lete *ANY*thing.
 (use-package company-quickhelp :ensure t :defer t
   :config (company-quickhelp-mode))
 
-(use-package company-racer :ensure t :defer t)
+;; (use-package company-racer :ensure t :defer t)
 
 (defvar my/company-point nil)
 (advice-add 'company-complete-common :before
@@ -624,6 +628,7 @@ Use elpy for python
       (with-eval-after-load 'flycheck
         (flycheck-clojure-setup)))))
 #+END_SRC
+
 * Navigation (windows, menus, buffers)
 ** Ivy (counsel, swiper, ivy) for navigation most menu-type things
 Navigation of pretty much any /menu-type/ thing.
@@ -774,9 +779,7 @@ You can easily /capture/ information using various different templates (includin
         org-edit-src-content-indentation 0
         org-list-description-max-indent 5
         org-catch-invisible-edits 'show-and-error
-        org-fontify-whole-heading-line t
         org-fontify-done-headline t
-        org-fontify-quote-and-verse-blocks t
         org-insert-heading-respect-content t
         org-imenu-depth 3
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
@@ -785,8 +788,7 @@ You can easily /capture/ information using various different templates (includin
         inhibit-compacting-font-caches t
         org-hide-emphasis-markers nil
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
-                           (sequence "|" "CANCELLED")
-                           (sequence "BACKBURNER" "|"))
+                           (sequence "|" "DEAD"))
         org-agenda-skip-scheduled-if-done t
         org-agenda-start-with-log-mode t
         org-agenda-skip-deadline-prewarning-if-scheduled t
@@ -905,7 +907,7 @@ You can easily /capture/ information using various different templates (includin
         ("ta" "Add to Anki" entry (file "inbox.org")
          "* TODO (Anki) %^{knowledge}" :immediate-finish t)
         ("tb" "Buy" entry (file+headline "inbox.org" "Stuff to Buy")
-         "* TODO %^{Buy}\n%?")
+         "* %^{Buy}\n%?")
 
         ("n" "Note" plain (file+headline "inbox.org" "Notes")
          "%?" :empty-lines 1)
@@ -1128,8 +1130,13 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (setq custom-safe-themes t)    ;; themes are 'safe'
 (use-package doneburn-theme)
 (use-package darkokai-theme)
+(use-package org-beautify-theme)
+(use-package doom-themes)
+(use-package doom-modeline :ensure t)
 ;; (load-theme 'doneburn t)
+;; (load-theme 'tango t)
 (load-theme 'doom-tomorrow-night t)
+(load-theme 'org-beautify t)
 (doom-modeline-mode)
 ;; (load-theme 'darkokai t)
 #+END_SRC
@@ -1256,8 +1263,8 @@ Better 'help' buffers
 #+END_SRC
 
 A nice interface to ripgrep (choose specific filetypes, directory etc...and 'occur'-like buffer)
-#+BEGIN_SRC emacs-lisp
-(use-package deadgrep :ensure t :defer t)
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package deadgrep :defer t)
 #+END_SRC
 
 Rotate between 'common' layouts (e.g. vertical to horizontal split)
@@ -1328,4 +1335,12 @@ otherwise use the subtree title"
     (yank)
     (org-store-link)))
 (define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-subtree-count-words ()
+  (interactive)
+  (progn
+    (org-mark-subtree)
+    (count-words-region (region-beginning) (region-end))))
 #+END_SRC

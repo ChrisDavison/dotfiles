@@ -23,7 +23,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (doom-modeline doom-themes delight diminish zenburn-theme yasnippet-snippets visual-fill-column virtualenvwrapper use-package undo-tree switch-window solarized-theme smartscan smartparens seoul256-theme scss-mode sass-mode rainbow-mode rainbow-delimiters racer pandoc-mode org-bullets nodejs-repl molokai-theme material-theme magit lua-mode kaolin-themes julia-repl julia-mode json-mode js2-mode js-comint imenu-anywhere iedit ibuffer-vc htmlize guide-key go-mode fullframe fold-dwim-org flymake-rust flycheck-rust flycheck-clojure flx expand-region exec-path-from-shell esup emmet-mode elpy dired-single darkroom cyberpunk-2019-theme csv-mode creamsody-theme counsel coffee-mode cargo auctex anzu all-the-icons aggressive-indent adaptive-wrap ace-jump-mode ace-isearch))))
+    (org-bullets doom-themes rainbow-delimiters rotate deadgrep helpful visual-fill-column fold-dwim-org fold-dwim yafolding yasnippet-snippets use-package switch-window sass-mode racer pyvenv org-download org-beautify-theme js2-mode imenu-anywhere iedit hydra htmlize guide-key go-mode fullframe forge flymake-rust flycheck-rust expand-region exec-path-from-shell dumb-jump doom-modeline doneburn-theme diminish darkokai-theme counsel company-quickhelp company-anaconda cargo avy anzu aggressive-indent))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
