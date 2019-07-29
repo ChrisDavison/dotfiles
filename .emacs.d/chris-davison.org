@@ -759,6 +759,7 @@ You can easily /capture/ information using various different templates (includin
     (org-open-at-point)
     (setq org-link-frame-setup old-setup)))
 
+(load-library "find-lisp")
 (use-package org
   :ensure t
   :pin org
@@ -797,7 +798,7 @@ You can easily /capture/ information using various different templates (includin
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files '("~/Dropbox/notes")
+        org-agenda-files (find-lisp-find-files "~/Dropbox/notes" "\.org$")
         org-agenda-time-grid nil
         org-agenda-confirm-kill nil
         org-log-done nil
@@ -1062,6 +1063,7 @@ This is a general helper function that will refile the subtree at point to a spe
 
 (defhydra cd/hydra/main (:exit t :columns 3)
   ("z" (modi/toggle-one-window nil) "zoom")
+  ("C-z" company-try-hard "Company TryHard")
   ("w" cd/hydra/windowmove/body "WINDOW")
   ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
@@ -1330,10 +1332,11 @@ otherwise use the subtree title"
   (interactive "P")
   (let ((filename (expand-file-name (read-file-name "New file name:"))))
     (org-cut-subtree)
-    (find-file filename)
-    (org-mode)
-    (yank)
-    (org-store-link)))
+    (find-file-noselect filename)
+    (with-temp-file filename
+      (org-mode)
+      (yank))
+    (find-file filename)))
 (define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
 #+END_SRC
 
@@ -1343,4 +1346,9 @@ otherwise use the subtree title"
   (progn
     (org-mark-subtree)
     (count-words-region (region-beginning) (region-end))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-try-hard :ensure t :defer t)
+(define-key company-active-map (kbd "C-z") 'company-try-hard)
 #+END_SRC
