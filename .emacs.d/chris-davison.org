@@ -955,8 +955,8 @@ You can easily /capture/ information using various different templates (includin
           (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check)))
 #+END_SRC
-** Agenda view WITHOUT archived
-#+BEGIN_SRC emacs-lisp
+** DEAD Agenda view WITHOUT archived
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-custom-commands
       '(
         ("1" "Today"
