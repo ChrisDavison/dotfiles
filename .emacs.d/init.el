@@ -23,7 +23,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-bullets doom-themes rainbow-delimiters rotate deadgrep helpful visual-fill-column fold-dwim-org fold-dwim yafolding yasnippet-snippets use-package switch-window sass-mode racer pyvenv org-download org-beautify-theme js2-mode imenu-anywhere iedit hydra htmlize guide-key go-mode fullframe forge flymake-rust flycheck-rust expand-region exec-path-from-shell dumb-jump doom-modeline doneburn-theme diminish darkokai-theme counsel company-quickhelp company-anaconda cargo avy anzu aggressive-indent))))
+    (company-try-hard hide-lines rainbow-delimiters rotate helpful visual-fill-column fold-dwim-org fold-dwim yafolding doom-modeline doom-themes darkokai-theme doneburn-theme hydra org-download org-bullets htmlize exec-path-from-shell switch-window avy dumb-jump imenu-anywhere counsel ivy js2-mode sass-mode company-anaconda anaconda-mode pyvenv racer cargo flycheck-rust flymake-rust rust-mode go-mode flycheck company-quickhelp company anzu aggressive-indent yasnippet-snippets yasnippet iedit expand-region forge magit guide-key diminish f s fullframe use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
