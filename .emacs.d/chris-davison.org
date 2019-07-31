@@ -767,7 +767,7 @@ You can easily /capture/ information using various different templates (includin
 (use-package org
   :ensure t
   :pin org
-  :bind (("<f1>" . org-capture)
+  :bind (("<f1>" . (progn (refresh-capture-templates) (org-capture)))
          ("<f2>" . org-agenda)
          ("C-c l" . org-store-link)
          ("C-c S-O" . cd/org-open-link-same))
@@ -902,28 +902,28 @@ You can easily /capture/ information using various different templates (includin
 #+END_SRC
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
+(setq cd-org-capture-templates
       `(
         ("t" "Todos")
         ("tt" "TASK TO REFILE" item
-         (file+headline "inbox.org" "Tasks")
-         ("%^{TASK}"))
+         (file "inbox.org")
+         ("%^{TASK}") :empty-lines-before 1)
         ("ta" "Add to Anki" item
-         (file+headline "inbox.org" "Tasks")
-         ("(ANKI) %^{Add to Anki}"))
+         (file"inbox.org")
+         ("(ANKI) %^{Add to Anki}") :empty-lines-before 1)
         ("tt" "Buy" item
-         (file+headline "inbox.org" "Tasks")
-         ("(BUY) %^{Buy}"))
+         (file "inbox.org")
+         ("(BUY) %^{Buy}") :empty-lines-before 1)
 
-        ("n" "Note" plain (file+headline "inbox.org" "Notes")
-         "%?" :empty-lines 1)
+        ("n" "Note" item (file "inbox.org")
+         "%?" :empty-lines-before 1)
 
-        ("L" "link" plain (file+headline "inbox.org" "Notes")
-         "[[%^{URL}][%^{Description}]] %?" :empty-lines 1)
+        ("L" "link" item (file "inbox.org")
+         "[[%^{URL}][%^{Description}]] %?" :empty-lines-before 1)
 
         ("l" "Logbook" plain
          (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
-         "%?" :empty-lines 1)
+         "%?" :empty-lines-before 1)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
@@ -935,7 +935,7 @@ You can easily /capture/ information using various different templates (includin
          "* %^{TODO|BUY} %^{Tabletop game}\n%?\n")
 
         ("f" "Film" item (file "films-to-watch.org")
-         "[ ] %^{Film} (%^{YEAR})\n")
+         "%^{Film} (%^{YEAR})\n")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("c" "Calendar" entry (file+headline "calendar.org" "Calendar")
@@ -946,6 +946,11 @@ You can easily /capture/ information using various different templates (includin
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
          "* TODO %^{Article}\n%u\n\nAbstract: %?")))
+
+(defun refresh-capture-templates ()
+  (interactive)
+  (setq org-capture-templates cd-org-capture-templates))
+(refresh-capture-templates)
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -955,7 +960,7 @@ You can easily /capture/ information using various different templates (includin
           (lambda ()
              (add-hook 'after-save-hook 'custom_org_auto_check)))
 #+END_SRC
-** DEAD Agenda view WITHOUT archived
+** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-agenda-custom-commands
       '(
