@@ -766,13 +766,7 @@ You can easily /capture/ information using various different templates (includin
 (load-library "find-lisp")
 (use-package org
   :ensure t
-  :pin org
-  :bind (("<f1>" . (progn (refresh-capture-templates) (org-capture)))
-         ("<f2>" . org-agenda)
-         ("C-c l" . org-store-link)
-         ("C-c S-O" . cd/org-open-link-same))
   :config
-
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
         org-src-window-setup 'reorganize-frame
@@ -836,6 +830,11 @@ You can easily /capture/ information using various different templates (includin
 (use-package htmlize :ensure t :defer t)
 (diminish 'abbrev-mode)
 (diminish 'org-indent-mode)
+
+(global-set-key (kbd "<f1>") '(lambda () (interactive) (progn (refresh-capture-templates) (org-capture))))
+(global-set-key (kbd "<f2>") 'org-agenda)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c S-O") 'cd/org-open-link-same)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -905,37 +904,30 @@ You can easily /capture/ information using various different templates (includin
 (setq cd-org-capture-templates
       `(
         ("t" "Todos")
-        ("tt" "TASK TO REFILE" item
-         (file "inbox.org")
+        ("tt" "TASK TO REFILE" item (file "inbox.org")
          ("%^{TASK}") :empty-lines-before 1)
-        ("ta" "Add to Anki" item
-         (file"inbox.org")
+        ("ta" "Add to Anki" item (file"inbox.org")
          ("(ANKI) %^{Add to Anki}") :empty-lines-before 1)
-        ("tt" "Buy" item
-         (file "inbox.org")
+        ("tt" "Buy" item (file "inbox.org")
          ("(BUY) %^{Buy}") :empty-lines-before 1)
 
-        ("n" "Note" item (file "inbox.org")
-         "%?" :empty-lines-before 1)
+        ("n" "Note" item (file "inbox.org") "%?")
+        ("L" "link" item (file "inbox.org") "[[%^{URL}][%^{Description}]] %?")
 
-        ("L" "link" item (file "inbox.org")
-         "[[%^{URL}][%^{Description}]] %?" :empty-lines-before 1)
-
-        ("l" "Logbook" plain
+        ("l" "Logbook" item
          (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
-         "%?" :empty-lines-before 1)
+         "%?")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
         ("gp" "PC" entry (file+headline "gaming.org" "PC")
-         "* %^{TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
+         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
         ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
-         "* %^{TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
+         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
         ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
-         "* %^{TODO|BUY} %^{Tabletop game}\n%?\n")
+         "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
 
-        ("f" "Film" item (file "films-to-watch.org")
-         "%^{Film} (%^{YEAR})\n")
+        ("f" "Film" item (file "films-to-watch.org") "%^{Film} (%^{YEAR})\n")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("c" "Calendar" entry (file+headline "calendar.org" "Calendar")
@@ -1098,7 +1090,6 @@ otherwise use the subtree title"
   ("z" (modi/toggle-one-window nil) "zoom")
   ("C-z" company-try-hard "Company TryHard")
   ("w" cd/hydra/windowmove/body "WINDOW")
-  ("b" counsel-bookmark "Bookmarks")
   ("s" counsel-grep-or-swiper "search")
   ("S" ispell-word "Spell")
   ("g" deadgrep "grep")
