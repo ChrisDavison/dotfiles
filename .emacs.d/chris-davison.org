@@ -1069,7 +1069,6 @@ otherwise use the subtree title"
   ("S" ispell-word "Spell")
   ("g" deadgrep "grep")
   ("r" anzu-query-replace-regexp "replace")
-  ("R" cd/org-refile-to-file/body "REFILE")
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
   ("j" avy-goto-word-1 "Jump to word")
