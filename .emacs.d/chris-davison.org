@@ -730,15 +730,7 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
   (setq mac-command-modifier 'meta
         mac-option-modifier 'none
         default-input-method "MacOSX")
-
-  ;; Give emacs some of the expected OS X keybinds
-  (global-set-key (kbd "M-h") 'ns-do-hide-emacs)
-  (global-set-key (kbd "M-˙") 'ns-do-hide-others)
-  (with-eval-after-load 'nxml-mode (define-key nxml-mode-map (kbd "M-h") nil))
-  (global-set-key (kbd "M-ˍ") 'ns-do-hide-others) ;; what describe-key reports for cmd-option-h
-  (global-set-key (kbd "M-<up>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
-  (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen) ;;Bind Meta-<UP> to fullscreen toggling
-  )
+  (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen))
 #+END_SRC
 
 * Org-mode
