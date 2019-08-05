@@ -78,7 +78,7 @@ endif
 
 if !has('nvim') && &ttimeoutlen == -1
     set ttimeout
-    set ttimeoutlen = 100
+    set ttimeoutlen=100
 endif
 
 if has('win32')
@@ -121,4 +121,8 @@ let g:SuperTabDefaultCompletionType = "context"
 
 if executable('rg')
     set grepprg=rg\ --vimgrep
+endif
+
+if has('gui')
+    set gfn=CamingoCode-Regular:h18
 endif
