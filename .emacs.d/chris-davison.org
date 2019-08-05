@@ -782,7 +782,7 @@ You can easily /capture/ information using various different templates (includin
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files (find-lisp-find-files "~/Dropbox/notes" "\.org$")
+        org-agenda-files '("~/Dropbox/notes" "~/Dropbox/notes/literature" "~/Dropbox/notes/book-writeups/")
         org-agenda-time-grid nil
         org-agenda-confirm-kill nil
         org-log-done nil
@@ -900,8 +900,12 @@ You can easily /capture/ information using various different templates (includin
         ("n" "Note" item (file "inbox.org") "%?")
         ("L" "link" item (file "inbox.org") "[[%^{URL}][%^{Description}]] %?")
 
-        ("l" "Logbook" item
+        ("l" "Logbook")
+        ("ll" "Logbook" item
          (file+headline ,(format-time-string "logbook-%Y.org") ,(format-time-string "%Y-%m-%d %a"))
+         "%?")
+        ("lL" "Logbook" item
+         (file ,(format-time-string "~/Dropbox/notes/logbook/%Y/%m/%Y-%m-%d.org"))
          "%?")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1133,7 +1137,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package doom-themes)
 (use-package doom-modeline :ensure t)
 
-(load-theme 'doneburn t)
+(load-theme 'doom-nord t)
 (doom-modeline-mode)
 ;; (load-theme 'darkokai t)
 #+END_SRC
@@ -1314,4 +1318,11 @@ Shortcut function to move all checked checkboxes to the top of the list
 
 #+BEGIN_SRC emacs-lisp
 (use-package hide-lines :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun logbook ()
+  (interactive)
+  (find-file (format-time-string "~/Dropbox/notes/logbook/%Y/%m/%d.org"))
+  (save-buffer-and-clear-modify))
 #+END_SRC
