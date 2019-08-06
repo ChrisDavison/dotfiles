@@ -35,7 +35,5 @@ Plug 'natebosch/vim-lsc'
 Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
-Plug 'rpdelaney/vim-pgn'
-Plug 'kana/vim-narrow'
 Plug 'tomasr/molokai'
 call plug#end()
