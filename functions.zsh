@@ -266,3 +266,11 @@ todo(){
 todos(){
     rg "^\s*\-\s+\[ \]\s+(.*)$" -r '$1' "$HOME/Dropbox/inbox.md" --color=never | column -s':' -t
 }
+
+n(){
+    notesfile="$HOME/Dropbox/notes/notes.txt"
+    if [ ! -f "$notesfile" ]; then
+        touch $notesfile
+    fi
+    echo "$@" >> $notesfile
+}
