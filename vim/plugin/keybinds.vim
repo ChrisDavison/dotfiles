@@ -26,6 +26,8 @@ nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
+nnoremap j      gj
+nnoremap k      gk
 
 " =====[ MY commands ]=====
 nnoremap <M-r>      :RotateScheduleWord<Cr>
