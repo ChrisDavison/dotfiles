@@ -267,10 +267,22 @@ todos(){
     rg "^\s*\-\s+\[ \]\s+(.*)$" -r '$1' "$HOME/Dropbox/inbox.md" --color=never | column -s':' -t
 }
 
+# Add a note
 n(){
     notesfile="$HOME/Dropbox/notes/notes.txt"
     if [ ! -f "$notesfile" ]; then
         touch $notesfile
     fi
-    echo "$@" >> $notesfile
+    echo "- $@" >> $notesfile
+}
+
+# View notes
+nn(){
+    bat -l md "$HOME/Dropbox/notes/notes.txt"
+}
+
+# Clear out notes
+nnd() {
+    rm "$HOME/Dropbox/notes/notes.txt"
+    touch "$HOME/Dropbox/notes/notes.txt"
 }
