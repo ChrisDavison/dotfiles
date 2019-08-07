@@ -11,6 +11,7 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'elixir-editors/vim-elixir'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'  " More performant fold refreshing
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'dahu/vim-fanfingtastic'  " Let f/F work across line endings
@@ -36,4 +37,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
 Plug 'tomasr/molokai'
+
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 call plug#end()
