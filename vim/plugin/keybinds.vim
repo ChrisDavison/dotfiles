@@ -5,6 +5,12 @@ nnoremap <leader>ep :edit ~/code/dotfiles/vim/plugin/
 nnoremap <leader>b :ls<Cr>:b
 nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
 
+if exists('g:loaded_fzf')
+    nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
+    nnoremap <leader>ep :Files ~/code/dotfiles/vim/plugin<CR>
+    nnoremap <leader>b :Buffers<CR>
+endif
+
 " =====[ Uppercase the current word (from anywhere within the <word>) ]=====
 inoremap <C-u>   <esc>mzgUiw`za
 
@@ -30,6 +36,11 @@ nnoremap j      gj
 nnoremap k      gk
 
 " =====[ MY commands ]=====
-nnoremap <M-r>      :RotateScheduleWord<Cr>
-inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
-nnoremap <C-y>      :call ToggleConceal()<CR>
+if exists('g:schedule_loaded')
+    nnoremap <M-r>      :RotateScheduleWord<Cr>
+    inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
+endif
+
+if exists('g:loaded_toggleconceal')
+    nnoremap <C-y>      :call ToggleConceal()<CR>
+endif
