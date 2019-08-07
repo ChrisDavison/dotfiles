@@ -26,7 +26,7 @@ nnoremap <silent><buffer> <C-n>      :ThesisNotes<CR>
 
 iabbrev CITE ^[cite -]<LEFT>
 
-if exists('g:toggle_conceal_loaded')
+if exists('g:loaded_toggleconceal')
     call ToggleConceal()
     call ToggleConceal()
 endif
