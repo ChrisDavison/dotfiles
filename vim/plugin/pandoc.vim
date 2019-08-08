@@ -4,6 +4,7 @@ augroup pandoc
     au Filetype pandoc setlocal foldmethod=expr
     au Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
     au Filetype pandoc setlocal nospell 
+    " au Filetype pandoc :lchdir %:p:h
     au Filetype pandoc nnoremap D dip
 augroup END
 
