@@ -40,4 +40,5 @@ Plug 'tomasr/molokai'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'fmoralesc/vim-extended-autochdir'
 call plug#end()
