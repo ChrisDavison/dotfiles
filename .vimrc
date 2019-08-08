@@ -9,9 +9,9 @@ syntax enable
 filetype plugin indent on
 
 set nocompatible
-set autochdir
+" set autochdir
 set wrap lbr
-let &showbreak = '↳ '
+let &showbreak = '-> '
 set cpo+=n
 set autoindent
 set backspace=indent,eol,start
@@ -43,7 +43,7 @@ set backupdir=~/.temp,.
 set directory=~/.temp,.
 set wildmenu
 set wildmode=list:longest,full
-set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
 set splitbelow splitright
 set laststatus=2
 set statusline=%1*[%l:%c]\ %t\ (%{Dir1()})\ %0*%=%1*\ %Y%R\ %0*
@@ -127,5 +127,11 @@ if executable('rg')
 endif
 
 if has('gui')
-    set gfn=FantasqueSansMono-Regular:h24
+    if has('win32')
+        set gfn=Fantasque_Sans_Mono:h14
+    else
+        set gfn=FantasqueSansMono-Regular:h24
+    endif
 endif
+
+cd ~/Dropbox/notes
