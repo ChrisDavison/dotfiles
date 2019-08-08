@@ -55,8 +55,11 @@ set tabpagemax=5
 set sessionoptions-=options
 set viminfo^=!
 set t_ut= " Fix issues with background color on some terminals
+set relativenumber
 set fillchars=fold:\ 
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+
+set path+=**
 
 function! Dir1() " Get only the trailing directory for the statusline
     return fnamemodify(getcwd(), ":t")
@@ -124,5 +127,5 @@ if executable('rg')
 endif
 
 if has('gui')
-    set gfn=CamingoCode-Regular:h18
+    set gfn=FantasqueSansMono-Regular:h24
 endif
