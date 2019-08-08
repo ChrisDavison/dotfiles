@@ -13,9 +13,3 @@ let g:slime_target = "tmux"
 if !has('win32')
     let g:lsc_server_commands = {'python': 'pyls'}
 endif
-
-" Abbreviations
-iab impd import pandas as pd
-iab imnp import numpy as np
-iab imsp import scipy as sp
-iab ifmain if __name__ == "__main__":<CR>    main()
