@@ -87,9 +87,9 @@ nf() { # Find inside notes
     fi
     [[ -z "$@" ]] && echo "Must pass a query" && return 1;
     echo "Match is Filename, Directory, or Content"
-    fd "$@" "${loc}" -e md | sed -e "s/^/F,/"
-    fd "$@" "${loc}" -t d | sed -e "s/^/D,/"
-    rg "$@" "${loc}" -l | sed -e "s/^/C,/"
+    fd "$@" "${loc}" -e md | sed -e "s/^/F /"
+    fd "$@" "${loc}" -t d | sed -e "s/^/D /"
+    rg -F "$@" "${loc}" -l | sed -e "s/^/C /"
 }
 
 mdstructure(){ # Display links, images, keywords, or headers for MD files
@@ -112,18 +112,6 @@ mdstructure(){ # Display links, images, keywords, or headers for MD files
         files=`echo **/*.md`
     fi
     rg "$query" $files -g -o --no-heading --sort=path
-}
-
-todobackup() { # Backup only todo files to notes repo
-    cp "${NOTESDIR}/todo.md" "${NOTESBACKUPDIR}/todo.md"
-    cp "${NOTESDIR}/done.md" "${NOTESBACKUPDIR}/done.md"
-    pushd ${NOTESBACKUPDIR}
-    date=$(date +"%Y-%m-%dT%H%M%S")
-    echo "TODO backup ${date}"
-    git add .
-    git commit -m "TODO backup ${date}"
-    git push
-    popd
 }
 
 noext() { # Remove extension from file
@@ -181,13 +169,6 @@ listfuncs() { # List functions in this file
     cat $SHELLFUNCS | rg "\w+\(\)" | column -s'{' -t
 }
 
-aesenc() { # Symmetric encode a file with AES256
-    out="$1".asc
-    in="$1"
-    gpg --symmetric -a --cipher-algo aes256 --output "$out" "$in"
-    echo "$out created"
-}
-
 fh() { # Use FZF to preview history
     cat ~/.zsh_history | fzf -q "${1:-}" --preview='echo {} | bat' --preview-window=down:50%
 }
@@ -200,31 +181,6 @@ linkedtobin(){ # View all entires in ~/bin that are symlinks to my scripts
     ls -l ~/bin | awk -F' ' '/-> .*scripts.*/{print $7":"$9}' | column -s':' -t
 }
 
-up(){ # Jump up (..) by N (default 1) directories
-    LIMIT=$1
-    P=$PWD
-    export MPWD=$P
-    for ((i=1; i<=LIMIT; i++))
-    do
-        P=$P/..
-    done
-    cd $P
-}
-
-back(){ # Go back to the last directory before an 'up' call
-    LIMIT=$1
-    P=$MPWD
-    for ((i=1; i<=LIMIT; i++))
-    do
-        P=${P%/..}
-    done
-    cd $P
-    export MPWD=$P
-}
-
-ta(){ # Add a todo
-    echo "- $@" >> $TODOFILE
-}
 
 dashboardflask(){
     FLASK_APP=server.py FLASK_DEBUG=True flask run
@@ -259,12 +215,29 @@ add2md(){
     tail -n $(( $# + 2 )) $dest
 }
 
+todobackup() { # Backup only todo files to notes repo
+    cp "${NOTESDIR}/todo.md" "${NOTESBACKUPDIR}/todo.md"
+    cp "${NOTESDIR}/done.md" "${NOTESBACKUPDIR}/done.md"
+    pushd ${NOTESBACKUPDIR}
+    date=$(date +"%Y-%m-%dT%H%M%S")
+    echo "TODO backup ${date}"
+    git add .
+    git commit -m "TODO backup ${date}"
+    git push
+    popd
+}
+
+
 todo(){
     echo "-   [ ] $@" >> "$HOME/Dropbox/inbox.md"
 }
 
 todos(){
     rg "^\s*\-\s+\[ \]\s+(.*)$" -r '$1' "$HOME/Dropbox/inbox.md" --color=never | column -s':' -t
+}
+
+ta(){ # Add a todo
+    echo "- $@" >> $TODOFILE
 }
 
 # Add a note
