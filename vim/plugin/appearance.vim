@@ -7,8 +7,3 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 
-if has('windows')
-    set fillchars=vert:?
-    set fillchars+=fold:·
-endif
-
