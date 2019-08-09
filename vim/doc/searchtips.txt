@@ -1,0 +1,26 @@
+" vim: filetype=help foldmethod=marker foldmarker=<<<,>>> modifiable noreadonly
+*searchtips.txt*    Tips for Search and Replace
+
+|list_all_matches|             List all matches in a navigatable list
+|matches_for_current_file|   Navigate matches for the current file
+
+
+1. List all matches ..............................|list_all_matches|
+2. List matches for current file..................|matches_for_current_file|
+
+========
+
+List all matches in a navigatable list            *list_all_matches*
+
+You can list all matches using either {vimgrep} or {grep}. Vimgrep will use
+the internal regex engine, and grep will use whatever {grepprg} is set to.
+
+When you run these, they will populate the quickfix list, which is global to
+all instances of vim. Instead, you can prefix with {l} to get the
+location-list version, which is local to each vim instance/window.
+
+All matches for the current file                  *matches_for_current_file*
+
+Example: >
+  :vimgrep /pattern/ %
+ <

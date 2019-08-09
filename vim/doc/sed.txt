@@ -1,0 +1,8 @@
+" vim: filetype=help foldmethod=marker foldmarker=<<<,>>> modifiable noreadonly
+You need the noreadonly and modifiable keywords in the vim modeline above.
+Help files are by default regarded as readonly and nomodifiable files by vim.
+
+Notes about sed *sed* *sfsed* <<<
+
+Swapping word's in stream (I know, you don't need the cat)
+ cat Myfile.h|sed 's/foo/fyy/g'
