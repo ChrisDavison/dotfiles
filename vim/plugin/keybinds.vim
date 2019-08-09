@@ -7,6 +7,7 @@ nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
 
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>ep :Files ~/code/dotfiles/vim/plugin<CR>
+nnoremap <leader>es :Files ~/code/scripts/<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>p :Files<CR>
 
