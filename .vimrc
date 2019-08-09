@@ -56,7 +56,7 @@ set sessionoptions-=options
 set viminfo^=!
 set t_ut= " Fix issues with background color on some terminals
 set relativenumber
-set fillchars=fold:\ 
+set fillchars=fold:·
 let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
 
 set path+=**
