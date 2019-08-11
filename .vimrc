@@ -140,13 +140,13 @@ Plug 'tomasr/molokai'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-" Plug 'fmoralesc/vim-extended-autochdir'
 call plug#end()
 " }}}1
 " keybinds {{{1
 " =====[ Edit files and source vimrc ]=====
+nnoremap <leader>ev :edit ~/code/dotfiles/.vimrc<CR>
+
 " These versions are for when I don't have fzf and fzf.vim installed
-" nnoremap <leader>ev :edit ~/code/dotfiles/.vimrc<CR>
 " nnoremap <leader>en :edit ~/Dropbox/notes/**/*
 " nnoremap <leader>b :ls<Cr>:b
 " nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
@@ -163,7 +163,6 @@ inoremap <C-u>   <esc>mzgUiw`za
 nnoremap <silent> Q =ip
 
 " =====[ Generic useful stuff ]=====
-inoremap jj     <ESC>:w<CR>
 nnoremap <BS>   <C-^>
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
@@ -185,7 +184,7 @@ augroup vimrc
     au VimResized * wincmd= " equally resize splits on window resize
     au User GoyoEnter Limelight | exec "normal zz" | Typewrite
     au User GoyoLeave Limelight! | Typewrite!
-    au BufWritePost $MYVIMRC source $MYVIMRC
+    au BufWritePost .vimrc source %
 augroup END
 " }}}1
 " strip trailing whitespace {{{1
@@ -310,7 +309,7 @@ let g:rustfmt_autosave=1
 " bash / shellscript {{{1
 augroup shellscript
     autocmd!
-    au Filetype sh setlocal foldmethod=syntax 
+    au Filetype sh,zsh setlocal foldmethod=syntax 
 augroup END
 let g:sh_fold_enabled=5
 let g:is_bash=1
@@ -353,7 +352,11 @@ command! NOH silent! /aksjdkajsd<CR>
 command! CD exec "cd ".expand("%:h")
 command! RMD exec "!rm ".expand("%") | bp | bd #
 command! Notes edit ~/Dropbox/notes/notes.md | normal G
-command! Logbook exec "e " . expand(strftime("~/Dropbox/notes/logbook/%Y/%m/%Y-%m-%d.md")) | normal G
+command! Logbook exec "e " . expand(strftime("~/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")) | normal G
+
+nnoremap <leader>n :Notes<CR>
+nnoremap <leader>s  :Scratch<CR>
+nnoremap <leader>l  :Logbook<CR>
 " }}}1
 " typewriter mode {{{1
 let g:typewriter_mode_active=0
