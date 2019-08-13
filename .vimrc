@@ -343,6 +343,7 @@ cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
+cnoreabbrev bd Bd
 
 iabbrev meanstd μ±σ
 " }}}1
