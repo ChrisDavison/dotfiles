@@ -98,6 +98,8 @@ if !has('nvim') && &ttimeoutlen == -1
 endif
 " }}}1 Conditional settings
 " PLUGINS (3rd party) {{{1
+" ADD COMMENT HERE ON WHERE TO GET JUNEGUNN/PLUG
+" e.g. a direct link to the autoload plugin, that can be curl'd
 call plug#begin('~/code/dotfiles/vim/3rd_party')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
@@ -244,7 +246,9 @@ function! VimNewMarkdown(fname) abort
 endfunction
 augroup markdown
     autocmd!
-    au BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
+    " Disable the auto-fill of markdown header using filename
+    " May want to try and fix this so that my logbooks don't get titled?
+    " au BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     au BufWritePre *.md call StripTrailingWhitespace()
     au BufRead,BufNewFile *.md set filetype=pandoc
     au Filetype pandoc setlocal tw=80
