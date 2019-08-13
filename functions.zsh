@@ -259,3 +259,7 @@ nnd() {
     rm "$HOME/Dropbox/notes/notes.txt"
     touch "$HOME/Dropbox/notes/notes.txt"
 }
+
+logbook() {
+    $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
+}
