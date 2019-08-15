@@ -263,3 +263,7 @@ nnd() {
 logbook() {
     $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
 }
+
+recent_logbooks() {
+    fd . ~/Dropbox/notes/logbook | sort -r | head -n10 | xargs bat --style=header,grid
+}
