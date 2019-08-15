@@ -136,8 +136,7 @@ Plug 'wellle/targets.vim'
 Plug 'junegunn/seoul256.vim'  " Seoul256 theme
 Plug 'natebosch/vim-lsc'
 Plug 'kshenoy/vim-signature'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'skywind3000/gutentags_plus'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'tomasr/molokai'
 
 Plug 'SirVer/ultisnips'
@@ -277,6 +276,7 @@ let g:pandoc#syntax#conceal#use=1
 nnoremap <silent><buffer> <C-n>      :ThesisNotes<CR>
 
 iabbrev CITE ^[cite -]<LEFT>
+iabbrev <expr> DATE strftime("%F")
 
 if exists('g:loaded_toggleconceal')
     call ToggleConceal()
@@ -292,9 +292,9 @@ let g:pymode_python = 'python3'
 let g:slime_paste_file=tempname()
 let g:slime_python_ipython = 1
 let g:slime_target = "tmux"
-if !has('win32')
-    let g:lsc_server_commands = {'python': 'pyls'}
-endif
+" if !has('win32')
+"     let g:lsc_server_commands = {'python': 'pyls'}
+" endif
 " }}}1
 " rust {{{1
 augroup rust
@@ -354,7 +354,6 @@ command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Bd bp|bd #
 command! Wd write|Bd
 command! Scratch edit ~/.scratch | normal G
-command! NOH silent! /aksjdkajsd<CR>
 command! CD exec "cd ".expand("%:h")
 command! RMD exec "!rm ".expand("%") | bp | bd #
 command! Notes edit ~/Dropbox/notes/notes.md | normal G
@@ -384,26 +383,6 @@ function! s:ToggleTypewriting(bang)
     endif
 endfunction
 command! -bang Typewrite call <SID>ToggleTypewriting("<bang>")
-" }}}1
-" org-mode like scheduling/todo keywords {{{1
-let g:schedule_words = [ 'TODO' , 'WAITING', 'DONE', 'CANCELLED' ]
-function! RotateWord()
-    let N = len(g:schedule_words)
-    for word in g:schedule_words
-        let coln = match(getline(line(".")), word)
-        if coln > 0
-            let idx = index(g:schedule_words, word)
-            let next = g:schedule_words[(idx+1) % N]
-                        call cursor(0, coln+1)
-            exec "normal ciw" . next 
-            exec "normal $"
-            return
-        endif
-    endfor
-endfunction
-command! RotateScheduleWord call RotateWord()
-    nnoremap <M-r>      :RotateScheduleWord<Cr>
-    inoremap <M-r>      <C-o>:RotateScheduleWord<Cr>
 " }}}1
 " help in tabs (DISABLED) {{{1
 "function! ToggleHelpInTabs()
@@ -598,6 +577,11 @@ let g:SuperTabDefaultCompletionType = "context"
 if executable('rg')
     set grepprg=rg\ --vimgrep
 endif
+
+highlight nonascii guibg=Red ctermbg=1 term=standout
+au BufReadPost * syntax match nonascii "[^\u0000-\u007F]"
+
+command! NonUTF8 :lgr "[^\x00-\x7F]" *.md
 " }}}1
 
 cd ~/Dropbox/notes
