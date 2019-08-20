@@ -201,6 +201,7 @@ function! StripTrailingWhitespace()
         endif
     endif
 endfunction
+command! StripWhitespace call StripTrailingWhitespace()<CR>
 " }}}1
 " toggle concealling {{{1
 function! ToggleConceal()
@@ -248,7 +249,7 @@ augroup markdown
     " Disable the auto-fill of markdown header using filename
     " May want to try and fix this so that my logbooks don't get titled?
     " au BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
-    au BufWritePre *.md call StripTrailingWhitespace()
+    " au BufWritePre *.md call StripTrailingWhitespace()
     au BufRead,BufNewFile *.md set filetype=pandoc
     au Filetype pandoc setlocal tw=80
     au Filetype pandoc setlocal foldmethod=expr
