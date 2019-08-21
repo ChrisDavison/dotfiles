@@ -176,16 +176,13 @@ alias c="clear"
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
-alias tma=choose_tmux_session
 alias ipython="ipython --pprint --no-banner"
 alias rf="repofetch"
 alias rs="repostat"
-alias t="${EDITOR:-vi} $TODOFILE"
-alias tt="cat -n $TODOFILE"
-alias sql3="sqlite3 -header -column"
-alias em="open -a /Applications/Emacs.app"
 
-# Git aliases
+###############
+# GIT ALIASES #
+###############
 alias g="git"
 alias ga="git add"
 alias gaa="git add --all"
@@ -271,6 +268,7 @@ choose_tmux_session() {
         echo "No tmux sessions running."
     fi
 }
+alias tma=choose_tmux_session
 
 inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1;
@@ -304,7 +302,7 @@ noext() { # Remove extension from file
 }
 
 ppath() { # Pretty print $PATH
-    echo "$path" | tr ':' '\n'
+    echo "$PATH" | tr ':' '\n'
 }
 
 youtube() { # Get audio, video, or tidyurl from youtube
