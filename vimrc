@@ -61,7 +61,7 @@ set path+=**
 function! Dir1() " Get only the trailing directory for the statusline
     return fnamemodify(getcwd(), ":t")
 endfunction
-set statusline=%1*[%l:%c]\ %t\ (%{Dir1()})\ %0*%=%1*\ %Y%R\ %0*
+set statusline=%0*\ %l:%c\ \|\ %r\ %t\ (%{Dir1()})
 " }}}1
 " undo (save undo history across sessions) {{{1
 if has('persistent_undo')
