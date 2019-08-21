@@ -141,6 +141,7 @@ Plug 'tomasr/molokai'
 
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'lifepillar/vim-solarized8'
 call plug#end()
 " }}}1
 " keybinds {{{1
@@ -185,6 +186,7 @@ augroup vimrc
     au User GoyoEnter Limelight | exec "normal zz" | Typewrite
     au User GoyoLeave Limelight! | Typewrite!
     au BufWritePost .vimrc source %
+    au BufEnter .scratch set filetype=pandoc
 augroup END
 " }}}1
 " strip trailing whitespace {{{1
@@ -447,8 +449,8 @@ set t_Co=256
 set bg=dark
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
-" set termguicolors
-silent! colorscheme seoul256
+set termguicolors
+silent! colorscheme solarized8
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
