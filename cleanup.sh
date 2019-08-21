@@ -1,7 +1,8 @@
-[ -f "$HOME/.zshrc" ] && rm "$HOME/.zshrc" || echo "Error removing .zshrc"
-[ -f "$HOME/.vimrc" ] && rm "$HOME/.vimrc" || echo "Error removing .vimrc"
-[ -f "$HOME/.sqliterc" ] && rm "$HOME/.sqliterc" || echo "Error removing .sqliterc"
-[ -f "$HOME/.tmux.conf" ] && rm "$HOME/.tmux.conf" || echo "Error removing .tmux.conf"
-[ -f "$HOME/.gitconfig" ] && rm "$HOME/.gitconfig" || echo "Error removing .gitconfig"
-
-[ -d ~/.vim ] && rm -rf ~/.vim || echo "Error removing ~/.vim"
+for fn in bashrc gitconfig sqliterc tmux.conf vimrc vim; do
+    target="$HOME/.$fn"
+    if [ -f "$target" ]; then
+        rm "$target" || echo "Error removing '$target'"
+    elif [ -d "$target" ]; then
+        rm -rf "$target" || echo "Error removing '$target'"
+    fi
+done

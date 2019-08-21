@@ -1,24 +1,15 @@
-DIR="$1"
-if [ "$DIR" = "" ]; then
-    echo "Must pass dotfiles directory"
-    exit
-fi
-
-# symlink dotfiles
-linkOrError(){
-    target="$HOME"/"$1"
-    origin="${DIR}/$1"
-    if [ -f "${target}" ]; then
-        echo "Replacing ${target}"
-        rm "${target}"
+for fn in bashrc gitconfig sqliterc tmux.conf vimrc vim; do
+    full_fn=$(pwd)/$fn
+    target="$HOME/.$fn"
+    if [ -f "$target" ] || [ -d "$target" ]; then
+        read -r -p "'.$fn' exists in home.    Replace? [y/N] " response
+        case "$response" in
+            [yY][eE][sS]|[yY]) rm "$target" ;;
+            *) ;;
+        esac
     fi
-    ln -s "${origin}" "${target}"
-}
-linkOrError ".zshrc"
-linkOrError ".sqliterc"
-linkOrError ".tmux.conf"
-linkOrError ".gitconfig"
-linkOrError ".vimrc"
+    ln -s "$full_fn" "$target"
+done
 
 if [ "$OSTYPE" = "msys" ]; then
     vimdir="vimfiles"
@@ -27,7 +18,7 @@ else
 fi
 
 # JuneGunn's vim-plug
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+curl -fLo ~/$vimdir/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # FZF

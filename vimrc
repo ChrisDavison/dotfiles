@@ -145,7 +145,7 @@ call plug#end()
 " }}}1
 " keybinds {{{1
 " =====[ Edit files and source vimrc ]=====
-nnoremap <leader>ev :edit ~/code/dotfiles/.vimrc<CR>
+nnoremap <leader>ev :edit ~/code/dotfiles/vimrc<CR>
 
 " These versions are for when I don't have fzf and fzf.vim installed
 " nnoremap <leader>en :edit ~/Dropbox/notes/**/*
