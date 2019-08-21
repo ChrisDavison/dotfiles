@@ -334,7 +334,7 @@ linkedtobin(){ # View all entires in ~/bin that are symlinks to my scripts
     ls -l ~/bin | awk -F' ' '/-> .*scripts.*/{print $7":"$9}' | column -s':' -t
 }
 
-add2md(){
+add2md(){ # Add an asset to an md file as a link
     dest=$1
     dest_base=$(dirname $dest)
     file_dir="assets"
@@ -353,16 +353,20 @@ add2md(){
     tail -n $(( $# + 2 )) $dest
 }
 
-logbook() {
+logbook() { # Open todays logbook in $EDITOR
     $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
 }
 
-logbook_recent() {
+logbook_recent() { # Display the last 10 logbooks
     bat $(fd . ~/Dropbox/notes/logbook | sort -r | head -n10) --style=header,grid
 }
 alias lbr="logbook_recent"
 
-logbook_search() {
+logbook_search() { # Display logbooks with contents matching query
     bat $(rg "$@" ~/Dropbox/notes/logbook -l | sort -r) --style=header,grid
 }
 alias lbs="logbook_search"
+
+shfuncs() { # List shell functions, functions in bashrc
+    rg "^[a-zA-Z_]+\(" ~/.bashrc | column -t -s '{'
+}
