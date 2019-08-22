@@ -370,3 +370,7 @@ alias lbs="logbook_search"
 shfuncs() { # List shell functions, functions in bashrc
     rg "^[a-zA-Z_]+\(" ~/.bashrc | column -t -s '{'
 }
+
+nonascii() { # Ripgrep for non-ascii, greek, or "£"
+    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
+}
