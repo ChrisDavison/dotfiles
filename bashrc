@@ -374,3 +374,9 @@ shfuncs() { # List shell functions, functions in bashrc
 nonascii() { # Ripgrep for non-ascii, greek, or "£"
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
 }
+
+hex2dec() { # Convert passed hex values to decimal
+    for f in $@; do
+        printf "$f is %d\n" "$f"
+    done
+}
