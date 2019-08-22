@@ -198,6 +198,7 @@ alias gwch="git whatchanged -p --abbrev-commit --pretty=medium"
 alias gp="git pull"
 alias gr="git record"
 alias today="date +%F"
+alias tmux="tmux -2"
 
 #############################
 # SOURCE INSTALLED SOFTWARE #
@@ -263,7 +264,7 @@ export PS1="\w \`parse_git_branch\`: "
 choose_tmux_session() {
     if tmux list-sessions 2>&1 > /dev/null ; then
         selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
-        [[ -n "$selected" ]] && tmux attach -d -t "$selected"
+        [[ -n "$selected" ]] && tmux attach -2 -d -t "$selected"
     else
         echo "No tmux sessions running."
     fi

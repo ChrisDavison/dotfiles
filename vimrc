@@ -61,7 +61,7 @@ set path+=**
 function! Dir1() " Get only the trailing directory for the statusline
     return fnamemodify(getcwd(), ":t")
 endfunction
-set statusline=%0*\ %l:%c\ \|\ %r\ %t\ (%{Dir1()})
+set statusline=%0*\ <%l:%c>\ %t\ (%{Dir1()})
 " }}}1
 " undo (save undo history across sessions) {{{1
 if has('persistent_undo')
@@ -445,11 +445,11 @@ if has('gui')
     endif
 endif
 
-set t_Co=256
-set bg=dark
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
 set termguicolors
+set t_Co=256
+set bg=dark
 silent! colorscheme solarized8
 set guioptions-=m
 set guioptions-=T
@@ -465,7 +465,7 @@ if executable('rg')
 endif
 
 highlight nonascii guibg=Red ctermbg=1 term=standout
-au BufReadPost * syntax match nonascii "[^\u0000-\u007F]"
+au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
 
 command! NonUTF8 :lgr "[^\x00-\x7F]" *.md
 " }}}1
