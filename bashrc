@@ -173,6 +173,9 @@ else
 fi
 
 alias c="clear"
+alias cp="cp -rv"    # Always recursively and verbosely copy
+alias mv="mv -v"     # Always explain move actions
+alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
@@ -380,4 +383,9 @@ hex2dec() { # Convert passed hex values to decimal
     for f in $@; do
         printf "$f is %d\n" "$f"
     done
+}
+
+function cdl () {
+    builtin cd "$1"
+    ls
 }
