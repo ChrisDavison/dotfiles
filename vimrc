@@ -265,8 +265,6 @@ let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx'
 let g:pandoc#toc#close_after_navigating=0
 let g:pandoc#syntax#conceal#use=1
 
-nnoremap <silent><buffer> <C-n>      :ThesisNotes<CR>
-
 iabbrev CITE ^[cite -]<LEFT>
 iabbrev <expr> DATE strftime("%F")
 
@@ -321,8 +319,6 @@ augroup END
 let g:tex_flavor = "latex"
 let g:vimtex_fold_enabled=1
 let g:vimtex_compiler_progname='nvr'
-
-nnoremap <buffer> <C-n>      :ThesisNotes<CR>
 " }}}1
 " vimscript {{{1
 augroup vimscript
@@ -347,13 +343,13 @@ command! Wd write|Bd
 command! Scratch edit ~/.scratch | normal G
 command! CD exec "cd ".expand("%:h")
 command! RMD exec "!rm ".expand("%") | bp | bd #
-command! Notes edit ~/Dropbox/notes/notes.md | normal G
+" command! Notes edit ~/Dropbox/notes/notes.md | normal G
 command! Logbook exec "e " . expand(strftime("~/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")) | normal G
 command! Journal exec "e " . expand(strftime("~/Dropbox/notes/journal/%Y/%Y-%m-%d.md")) | normal G
 
 command! NF call fzf#run({'source': 'fd -e md . ~/Dropbox/', 'sink': 'e'})
 
-nnoremap <leader>n :Notes<CR>
+" nnoremap <leader>n :Notes<CR>
 nnoremap <leader>s  :Scratch<CR>
 nnoremap <leader>l  :Logbook<CR>
 nnoremap <leader>j  :Journal<CR>
