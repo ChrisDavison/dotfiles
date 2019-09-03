@@ -180,8 +180,8 @@ alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
-alias rf="repofetch"
-alias rs="repostat"
+alias rf="repoutil fetch"
+alias rs="repoutil stat"
 
 ###############
 # GIT ALIASES #
