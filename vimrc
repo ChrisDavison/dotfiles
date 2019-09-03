@@ -53,7 +53,7 @@ set viminfo^=!
 set t_ut= " Fix issues with background color on some terminals
 set relativenumber
 set fillchars=fold:·
-let g:netrw_list_hide= '.*\.swp$,.DS_Store,*/tmp/*,*.so,*.swp,*.zip,*.git,^\.\.\=/\=$'
+let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
 set path+=**
 " }}}1
@@ -138,9 +138,6 @@ Plug 'natebosch/vim-lsc'
 Plug 'kshenoy/vim-signature'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'tomasr/molokai'
-
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'lifepillar/vim-solarized8'
 call plug#end()
 " }}}1
@@ -175,6 +172,8 @@ nnoremap k      gk
 
 nnoremap K :silent! lgrep! "\b<C-R><C-W>\b"<CR>:lw<CR>
 nnoremap <leader>g :silent! lgrep! ""<LEFT>
+
+nnoremap <leader>n :Explore ~/Dropbox/notes<CR>
 " }}}1
 " random autocommands {{{1
 augroup vimrc
