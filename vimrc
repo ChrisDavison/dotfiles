@@ -447,7 +447,7 @@ endif
 set termguicolors
 set t_Co=256
 set bg=dark
-silent! colorscheme solarized8
+silent! colorscheme seoul256
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
