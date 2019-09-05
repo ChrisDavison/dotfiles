@@ -348,10 +348,16 @@ command! Journal exec "e " . expand(strftime("~/Dropbox/notes/journal/%Y/%Y-%m-%
 
 command! NF call fzf#run({'source': 'fd -e md . ~/Dropbox/', 'sink': 'e'})
 
+command! FMT exec "silent!normal mzgg=G`zmz"
+
+" Rg the word under the cursor
+command! FindWord exec "Rg " . expand("<cword>")
+
 " nnoremap <leader>n :Notes<CR>
 nnoremap <leader>s  :Scratch<CR>
 nnoremap <leader>l  :Logbook<CR>
 nnoremap <leader>j  :Journal<CR>
+nnoremap <leader>i  :e ~/Dropbox/notes/idea-index.md<CR>
 " }}}1
 " templates / skeletons for files {{{1
 function! ReadFileTemplate()
