@@ -348,7 +348,7 @@ command! Journal exec "e " . expand(strftime("~/Dropbox/notes/journal/%Y/%Y-%m-%
 
 command! NF call fzf#run({'source': 'fd -e md . ~/Dropbox/', 'sink': 'e'})
 
-command! FMT exec "silent!normal mzgg=G`zmz"
+command! FMT exec "silent!normal mzgg=G`zmzzz"
 
 " Rg the word under the cursor
 command! FindWord exec "Rg " . expand("<cword>")
