@@ -108,14 +108,8 @@ Plug 'lervag/vimtex'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
-
-let cd_use_pandoc=0
-if g:cd_use_pandoc
-    Plug 'vim-pandoc/vim-pandoc-syntax'
-    Plug 'vim-pandoc/vim-pandoc'
-else
-    Plug 'plasticboy/vim-markdown'
-endif
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-pandoc'
 Plug 'elixir-editors/vim-elixir'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -238,23 +232,19 @@ augroup END
 " }}}1
 " markdown/pandoc {{{1
 function! VimNewMarkdown(fname) abort
-    exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
+    let parent=expand('%:p:h:h:t')
+    if parent=="journal" || parent=="logbook"
+        
+    else
+        exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
+    endif
 endfunction
 augroup markdown
     autocmd!
     " Disable the auto-fill of markdown header using filename
     " May want to try and fix this so that my logbooks don't get titled?
-    " au BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
+    au BufNewFile *.md exec VimNewMarkdown(expand("<afile>"))
     " au BufWritePre *.md call StripTrailingWhitespace()
-    if cd_use_pandoc
-        au BufRead,BufNewFile *.md set filetype=pandoc
-    endif
-    au Filetype markdown setlocal tw=80
-    au Filetype markdown setlocal foldmethod=expr
-    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
-    au Filetype markdown setlocal nospell 
-    au Filetype markdown nnoremap D dip
-
     au Filetype pandoc setlocal tw=80
     au Filetype pandoc setlocal foldmethod=expr
     au Filetype pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
@@ -263,22 +253,20 @@ augroup markdown
 augroup END
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 
-if g:cd_use_pandoc
-    let g:pandoc#folding#fdc=0
-    let g:pandoc#formatting#mode="hA"
-    let g:pandoc#formatting#textwidth=80
-    let g:pandoc#spell#enabled=0
-    let g:pandoc#hypertext#autosave_on_edit_open_link=1
-    let g:pandoc#hypertext#create_if_no_alternates_exists=1
-    let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
-    let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables --columns=81"
-    let g:pandoc#formatting#extra_equalprg="--reference-links --reference-location=section --atx-headers"
-    let g:pandoc#syntax#style#use_definition_lists=0
-    let g:pandoc#syntax#conceal#use=0
-    let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx', 'ellipses', 'codeblock_start', 'codeblock_delim']
-    let g:pandoc#toc#close_after_navigating=0
-    let g:pandoc#syntax#conceal#use=1
-endif
+let g:pandoc#folding#fdc=0
+let g:pandoc#formatting#mode="hA"
+let g:pandoc#formatting#textwidth=80
+let g:pandoc#spell#enabled=0
+let g:pandoc#hypertext#autosave_on_edit_open_link=1
+let g:pandoc#hypertext#create_if_no_alternates_exists=1
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+let g:pandoc#formatting#equalprg="pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables --columns=81"
+let g:pandoc#formatting#extra_equalprg="--reference-links --reference-location=section --atx-headers"
+let g:pandoc#syntax#style#use_definition_lists=0
+let g:pandoc#syntax#conceal#use=0
+let g:pandoc#syntax#conceal#blacklist=['subscript', 'superscript', 'list', 'atx', 'ellipses', 'codeblock_start', 'codeblock_delim']
+let g:pandoc#toc#close_after_navigating=0
+let g:pandoc#syntax#conceal#use=1
 
 iabbrev CITE ^[cite -]<LEFT>
 iabbrev <expr> DATE strftime("%F")
