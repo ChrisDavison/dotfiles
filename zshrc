@@ -67,6 +67,7 @@ bindkey -R -M paste "^@"-"\M-^?" paste-insert
 # these are the codes sent around the pasted text in bracketed
 # paste mode.
 # do the first one with both -M viins and -M vicmd in vi mode
+set -o emacs
 bindkey '^[[200~' _start_paste
 bindkey -M paste '^[[201~' _end_paste
 # insert newlines rather than carriage returns when pasting newlines
