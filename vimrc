@@ -139,6 +139,7 @@ Plug 'kshenoy/vim-signature'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'tomasr/molokai'
 Plug 'lifepillar/vim-solarized8'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 " }}}1
 " keybinds {{{1
@@ -233,10 +234,8 @@ augroup END
 " markdown/pandoc {{{1
 function! VimNewMarkdown(fname) abort
     let parent=expand('%:p:h:h:t')
-    if parent=="journal" || parent=="logbook"
-        
-    else
-        exec ":normal 0i# " . substitute(fnamemodify(a:fname, ':t:r:gs/-/ /'), "\\<.", "\\u&", "g")
+    if !(parent=="journal" || parent=="logbook")
+        exec ":normal 0i# " . fnamemodify(a:fname, ':t:r:gs/-/ /')
     endif
 endfunction
 augroup markdown
