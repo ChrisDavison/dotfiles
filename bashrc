@@ -2,6 +2,7 @@
 # Maintainer: mrzool <http://mrzool.cc>
 # Repository: https://github.com/mrzool/bash-sensible
 # Version: 0.2.2
+set -o vi
 
 # Unique Bash version check
 if ((BASH_VERSINFO[0] < 4))
@@ -260,7 +261,8 @@ function parse_git_dirty {
 	fi
 }
 
-export PS1="\w \`parse_git_branch\`: "
+# export PS1="\w \`parse_git_branch\`: "
+export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 #######################
 # MY CUSTOM FUNCTIONS #
 #######################
@@ -396,4 +398,8 @@ hex2dec() { # Convert passed hex values to decimal
 function cdl () {
     builtin cd "$1"
     ls
+}
+
+refresh_dmenu() {
+    [ -f ~/.cache/dmenu_run ] && rm ~/.cache/dmenu_run && dmenu_path
 }

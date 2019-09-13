@@ -8,9 +8,9 @@
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
-gaps inner 15
-gaps outer 1
-for_window [class="^.*"] border pixel 1 
+#gaps inner 8
+#gaps outer 1
+for_window [class="^.*"] border pixel 2 
 default_border none
 
 set $mod Mod4
@@ -57,6 +57,10 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+
+# handle volume
+#bindsym $mod+F11 exec "pactl -- set-volume-sink 0 -10%"
+#bindsym $mod+F12 exec "pactl -- set-volume-sink 0 +10%"
 
 # move focused window
 bindsym $mod+Shift+j move left
@@ -172,6 +176,7 @@ bindsym $mod+r mode "resize"
 bar {
         status_command i3status
 }
+#exec-always --no-startup-id $HOME/code/dotfiles/i3/polybar-launch.sh
 
 mode "$mode_system" {
     bindsym l exec --no-startup-id i3exit lock, mode "default"
@@ -187,3 +192,19 @@ mode "$mode_system" {
 }
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 bindsym $mod+Pause mode "$mode_system"
+
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10%
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10%
+mode "$mode_volume" {
+    bindsym j exec amixer -q -D pulse sset Master 5%-
+    bindsym k exec amixer -q -D pulse sset Master 5%+
+    # back to normal: Enter or Escape
+    bindsym q mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+set $mode_volume Volume (j) Down, (k) Up, (q) Quit
+bindsym $mod+F12 mode "$mode_volume"
+
+exec --no-startup-id dropbox start
+exec --no-startup-id nitrogen --restore
