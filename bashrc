@@ -361,8 +361,16 @@ logbook() { # Open todays logbook in $EDITOR
     $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
 }
 
-logbook_recent() { # Display the last 10 logbooks
-    bat $(fd . ~/Dropbox/notes/logbook | sort -r | head -n10) --style=header,grid
+logbooks(){
+    a=${1:-1}
+    b=${2:-1}
+    fd . ~/Dropbox/notes/logbook -e md | sort -r | sed -n "$a","$b"p
+}
+
+logbook_recent() { # Display the last N logbooks (or from $1 to $2)
+    a=${1:-1}
+    b=${2:-10}
+    bat `logbooks $a $b` --style=header,grid
 }
 alias lbr="logbook_recent"
 
