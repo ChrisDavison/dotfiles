@@ -1,123 +1,113 @@
-# Sensible Bash - An attempt at saner Bash defaults
-# Maintainer: mrzool <http://mrzool.cc>
-# Repository: https://github.com/mrzool/bash-sensible
-# Version: 0.2.2
-set -o vi
+# ------------------- key bindings --------------------------------
 
-# Unique Bash version check
-if ((BASH_VERSINFO[0] < 4))
-then 
-  echo "sensible.bash: Looks like you're running an older version of Bash." 
-  echo "sensible.bash: You need at least bash-4.0 or some options will not work correctly." 
-  echo "sensible.bash: Keep your software up-to-date!"
-fi
+# Ctrl-x Ctrl-e is a default binding for editing the current command line with
+# $EDITOR in bash. Reproduce it for zsh.
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
 
-## GENERAL OPTIONS ##
+# fix the insert/delete/home/end keys
+typeset -A key
+key[Home]=${terminfo[khome]}
+key[End]=${terminfo[kend]}
+key[Insert]=${terminfo[kich1]}
+key[Delete]=${terminfo[kdch1]}
+[[ -n "${key[Home]}"   ]]  && bindkey "${key[Home]}"   beginning-of-line
+[[ -n "${key[End]}"    ]]  && bindkey "${key[End]}"    end-of-line
+[[ -n "${key[Insert]}" ]]  && bindkey "${key[Insert]}" overwrite-mode
+[[ -n "${key[Delete]}" ]]  && bindkey "${key[Delete]}" delete-char
 
-# Prevent file overwrite on stdout redirection
-# Use `>|` to force redirection to an existing file
-set -o noclobber
+# ------------------- options ------------------------
 
-# Update window size after every command
-shopt -s checkwinsize
+setopt notify    # immediate job notifications
+setopt autopushd # cd works like pushd
 
-# Automatically trim long paths in the prompt (requires Bash 4.x)
-PROMPT_DIRTRIM=2
 
-# Enable history expansion with space
-# E.g. typing !!<space> will replace the !! with your last command
-bind Space:magic-space
+# ------------------- shared history --------------------------------
 
-# Turn on recursive globbing (enables ** to recurse all directories)
-shopt -s globstar 2> /dev/null
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=${HISTFILE:-$HOME/.zsh_history}
+setopt share_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
 
-# Turn on extended globbing
-# ?(pattern-list)   Matches zero or one occurrence of the given patterns
-# *(pattern-list)   Matches zero or more occurrences of the given patterns
-# +(pattern-list)   Matches one or more occurrences of the given patterns
-# @(pattern-list)   Matches one of the given patterns
-# !(pattern-list)   Matches anything except one of the given patterns
-shopt -s extglob 2> /dev/null
 
-# Turn on dot globbing (implicitly match . at start of filename, or after slash)
-shopt -s dotglob 2> /dev/null
 
-# Turn on null globbing (glob with no matches returns empty arg list)
-shopt -s nullglob 2> /dev/null
+# ------------------- enable menu completion ------------------------
 
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob;
+autoload -U compinit && compinit
+zstyle ':completion:*' menu select
+# fix Shift-Tab in the completions menu
+bindkey '^[[Z' reverse-menu-complete
 
-## SMARTER TAB-COMPLETION (Readline bindings) ##
 
-# Perform file completion in a case insensitive fashion
-bind "set completion-ignore-case on"
+# ------------------ disable terminal flow control ------------------
 
-# Treat hyphens and underscores as equivalent
-bind "set completion-map-case on"
+# Many terminals use Ctrl-s and Ctrl-q for flow control by default. This
+# interferes with using Ctrl-r and Ctrl-s for history searching. Disable it.
+stty stop undef
 
-# Display matches for ambiguous patterns at first tab press
-bind "set show-all-if-ambiguous on"
 
-# Immediately add a trailing slash when autocompleting symlinks to directories
-bind "set mark-symlinked-directories on"
+# ------------------- safe paste mode -------------------------------
 
-## SANE HISTORY DEFAULTS ##
+# When pasting multiple lines into the terminal, create a single multi-line
+# command that you can edit, instead of executing everything all at once.
+# The following version is copied from oh-my-zsh.
 
-# Append to the history file, don't overwrite it
-shopt -s histappend
+# Code from Mikael Magnusson: http://www.zsh.org/mla/users/2011/msg00367.html
+#
+# Requires xterm, urxvt, iTerm2 or any other terminal that supports bracketed
+# paste mode as documented: http://www.xfree86.org/current/ctlseqs.html
 
-# Save multi-line commands as one command
-shopt -s cmdhist
+# create a new keymap to use while pasting
+bindkey -N paste
+# make everything in this keymap call our custom widget
+bindkey -R -M paste "^@"-"\M-^?" paste-insert
+# these are the codes sent around the pasted text in bracketed
+# paste mode.
+# do the first one with both -M viins and -M vicmd in vi mode
+bindkey '^[[200~' _start_paste
+bindkey -M paste '^[[201~' _end_paste
+# insert newlines rather than carriage returns when pasting newlines
+bindkey -M paste -s '^M' '^J'
 
-# Record each line as it gets issued
-PROMPT_COMMAND='history -a'
+zle -N _start_paste
+zle -N _end_paste
+zle -N zle-line-init _zle_line_init
+zle -N zle-line-finish _zle_line_finish
+zle -N paste-insert _paste_insert
 
-# Huge history. Doesn't appear to slow things down, so why not?
-HISTSIZE=500000
-HISTFILESIZE=100000
+# switch the active keymap to paste mode
+function _start_paste() {
+  bindkey -A paste main
+}
 
-# Avoid duplicate entries
-HISTCONTROL="erasedups:ignoreboth"
+# go back to our normal keymap, and insert all the pasted text in the
+# command line. this has the nice effect of making the whole paste be
+# a single undo/redo event.
+function _end_paste() {
+#use bindkey -v here with vi mode probably. maybe you want to track
+#if you were in ins or cmd mode and restore the right one.
+  bindkey -e
+  LBUFFER+=$_paste_content
+  unset _paste_content
+}
 
-# Don't record some commands
-export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
+function _paste_insert() {
+  _paste_content+=$KEYS
+}
 
-# Use standard ISO 8601 timestamp
-# %F equivalent to %Y-%m-%d
-# %T equivalent to %H:%M:%S (24-hours format)
-HISTTIMEFORMAT='%F %T '
+function _zle_line_init() {
+  # Tell terminal to send escape codes around pastes.
+  [[ $TERM == rxvt-unicode || $TERM == xterm || $TERM = xterm-256color || $TERM = screen || $TERM = screen-256color ]] && printf '\e[?2004h'
+}
 
-# Enable incremental history search with up/down arrows (also Readline goodness)
-# Learn more about this here: http://codeinthehole.com/writing/the-most-important-command-line-tip-incremental-history-searching-with-inputrc/
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
-bind '"\e[C": forward-char'
-bind '"\e[D": backward-char'
-
-## BETTER DIRECTORY NAVIGATION ##
-
-# Prepend cd to directory names automatically
-shopt -s autocd 2> /dev/null
-# Correct spelling errors during tab-completion
-shopt -s dirspell 2> /dev/null
-# Correct spelling errors in arguments supplied to cd
-shopt -s cdspell 2> /dev/null
-
-# This defines where cd looks for targets
-# Add the directories you want to have fast access to, separated by colon
-# Ex: CDPATH=".:~:~/projects" will look for targets in the current working directory, in home and in the ~/projects folder
-CDPATH="."
-
-# This allows you to bookmark your favorite places across the file system
-# Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
-shopt -s cdable_vars
-
-# Examples:
-# export dotfiles="$HOME/dotfiles"
-# export projects="$HOME/projects"
-# export documents="$HOME/Documents"
-# export dropbox="$HOME/Dropbox"
+function _zle_line_finish() {
+  # Tell it to stop when we leave zle, so pasting in other programs
+  # doesn't get the ^[[200~ codes around the pasted text.
+  [[ $TERM == rxvt-unicode || $TERM == xterm || $TERM = xterm-256color || $TERM = screen || $TERM = screen-256color ]] && printf '\e[?2004l'
+}
 
 
 ##########################
@@ -207,7 +197,7 @@ alias tmux="tmux -2"
 #############################
 # SOURCE INSTALLED SOFTWARE #
 #############################
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 [ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
 
@@ -262,6 +252,6 @@ function parse_git_dirty {
 }
 
 # export PS1="\w \`parse_git_branch\`: "
-export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
-
+# export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
+export PROMPT="[%1F%n%f@%2F%m %4F%1d%f] "
 source ~/code/dotfiles/functions.sh
