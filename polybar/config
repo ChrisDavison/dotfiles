@@ -87,7 +87,7 @@ font-1 = FontAwesome:style=Regular:size=10;3
 
 modules-left = powermenu i3
 modules-center = xwindow
-modules-right = wired-network wireless-network filesystem xbacklight memory cpu battery temperature date 
+modules-right = wired-network wireless-network pulseaudio xbacklight filesystem memory cpu battery temperature date 
 
 tray-position = right
 tray-padding = 0
