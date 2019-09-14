@@ -8,8 +8,8 @@
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
-gaps inner 8
-gaps outer 1
+gaps inner 10
+gaps outer 5
 for_window [class="^.*"] border pixel 3 
 default_border none
 
@@ -213,7 +213,11 @@ mode "$mode_volume" {
 set $mode_volume Volume (j) Down, (k) Up, (q) Quit
 bindsym $mod+F12 mode "$mode_volume"
 
-exec --no-startup-id dropbox start
-exec --no-startup-id nitrogen --restore
 exec_always --no-startup-id $HOME/code/dotfiles/polybar/polybar-launch.sh
+exec --no-startup-id dropbox start
+# exec_always --no-startup-id nm-applet
+exec --no-startup-id nitrogen --restore
 
+
+# Run locksusp using Ctrl+Win+l (win+l, and shift+win+l do focus/move)
+bindsym $mod+Ctrl+l exec i3locksusp
