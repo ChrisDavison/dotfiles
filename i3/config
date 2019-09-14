@@ -8,9 +8,9 @@
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
-# gaps inner 8
-# gaps outer 1
-for_window [class="^.*"] border pixel 2 
+gaps inner 8
+gaps outer 1
+for_window [class="^.*"] border pixel 3 
 default_border none
 
 set $mod Mod4
@@ -137,8 +137,16 @@ bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
 
+# move workspace to another display
+bindsym $mod+x move workspace to output up
+bindsym $mod+Shift+x move workspace to output down
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
+
+# reload the configuration file
+bindsym $mod+Shift+Ctrl+c exec "gnome-terminal -e $EDITOR $HOME/.config/i3/config"
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
@@ -173,10 +181,9 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-# bar j
+# bar {
 #         status_command i3status
 # }
-exec-always --no-startup-id $HOME/code/dotfiles/polybar/polybar-launch.sh &
 
 mode "$mode_system" {
     bindsym l exec --no-startup-id i3exit lock, mode "default"
@@ -208,3 +215,5 @@ bindsym $mod+F12 mode "$mode_volume"
 
 exec --no-startup-id dropbox start
 exec --no-startup-id nitrogen --restore
+exec_always --no-startup-id $HOME/code/dotfiles/polybar/polybar-launch.sh
+
