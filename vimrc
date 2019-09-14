@@ -29,7 +29,7 @@ set colorcolumn=0
 set hlsearch
 set ignorecase smartcase
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
-set clipboard=unnamed " Use system clipboard with vim clipboard
+set clipboard=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set scrolloff=1
 set sidescroll=1
