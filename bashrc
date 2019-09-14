@@ -203,6 +203,7 @@ alias gp="git pull"
 alias gr="git record"
 alias today="date +%F"
 alias tmux="tmux -2"
+alias sedit="sudo $EDITOR"
 
 #############################
 # SOURCE INSTALLED SOFTWARE #
