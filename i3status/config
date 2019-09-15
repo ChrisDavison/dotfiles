@@ -27,25 +27,26 @@ order += "battery 0"
 order += "disk /"
 order += "disk /media/media"
 order += "ethernet eth0"
+order += "wireless wlan0"
+order += "wireless wlp2s0"
 order += "tztime local"
 #order += "ipv6"
-#order += "run_watch DHCP"
+# order += "run_watch DHCP"
 #order += "run_watch VPN"
-#order += "wireless wlan0"
 
 volume master {
-#	format = " ♪: %volume  " 
+	format = " ♪ %volume  " 
 	device = "default"
 	mixer = "Master"
 	mixer_idx = 0
 	# termsyn font
-	format = "V%volume "
+	# format = "V%volume "
 }
 
 load {
-#	format = " Δ: %1min "
+	format = " Δ %1min "
 	# termsyn font
-	format = " Load %1min "
+	# format = " Load %1min "
 }
 
 cpu_usage {
@@ -89,6 +90,12 @@ wireless wlan0 {
 	format_down = " ☡ WiFi "
 }
 
+wireless wlp2s0 {
+	format_up = " WiFi %essid "
+	format_down = " ☡ WiFi "
+}
+
+
 ethernet eth0 {
 	# if you use %speed, i3status requires root privileges
 #	format_up =  " Ω: %ip  "
@@ -114,5 +121,10 @@ tztime local {
 }
 
 battery 0 {
-	format = " Bat dead at %emptytime (%remaining) "
+	format = " %status %percentage (%remaining rem) "
+    status_chr = "C"
+    status_bat = "B"
+    status_full = "F"
+    status_unk = "?"
+    path = "/sys/class/power_supply/BAT%d/uevent"
 }
