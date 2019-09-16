@@ -266,3 +266,5 @@ function parse_git_dirty {
 export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 
 source ~/code/dotfiles/functions.sh
+source /Users/davison/Downloads/alacritty/extra/completions/alacritty.bash
+source ~/.bash_completion/alacritty
