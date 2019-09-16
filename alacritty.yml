@@ -36,7 +36,7 @@ window:
     class: Alacritty # Window class (Linux only):
 
 scrolling:
-    history: 10000 # Number of scrollback lines. '0' disables
+    history: 100000 # Number of scrollback lines. '0' disables
     multiplier: 3 # Number of lines viewport moves when scrolled
     faux_multiplier: 3 # How many lines to scroll in the 'alternate' buffer (e.g. for man)
     auto_scroll: true # Scroll to the bottom when new text is written to the terminal.
