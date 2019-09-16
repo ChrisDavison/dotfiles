@@ -1,15 +1,8 @@
-# Configuration for Alacritty, the GPU enhanced terminal emulator.
+# Alacritty, the GPU enhanced terminal emulator.
 
-# Any items in the `env` entry below will be added as
-# environment variables. Some entries may override variables
-# set by alacritty itself.
-#env:
-    # TERM variable
-    #
-    # This value is used to set the `$TERM` environment variable for
-    # each instance of Alacritty. If it is not present, alacritty will
-    # check the local terminfo database and use `alacritty` if it is
-    # available, otherwise `xterm-256color` is used.
+#env: # Stuff to add to environment variables
+    # alacritty's own terminfo will be used if none specified (and it is available)
+    # otherwise xterm-256color
     #TERM: xterm-256color
 
 window:
@@ -20,8 +13,8 @@ window:
     #    x: 0
     #    y: 0
     padding: # Blank space around the window. Scaled by DPI. 
-        x: 0
-        y: 0
+        x: 1
+        y: 1
     dynamic_padding: true # spread padding evenly around the terminal
 
     # Window decorations
@@ -33,17 +26,10 @@ window:
     # Values for `decorations` (macOS only):
     #         - transparent: Title bar, transparent background and title bar buttons
     #         - buttonless: Title bar, transparent background, but no title bar buttons
-    decorations: full
+    decorations: none
 
     # Startup Mode (changes require restart)
-    #
-    # Values for `startup_mode`:
-    #     - Windowed
-    #     - Maximized
-    #     - Fullscreen
-    #
-    # Values for `startup_mode` (macOS only):
-    #     - SimpleFullscreen
+    # May be Windowed/Maximized/Fullscreen OR SimpleFullscreen (macOS only)
     startup_mode: Windowed
     
     title: Alacritty # Window title
@@ -274,53 +260,16 @@ schemes:
 colors: *seoul256
 #colors: *pencil_light
 
-# Visual Bell
-#
-# Any time the BEL code is received, Alacritty "rings" the visual bell. Once
-# rung, the terminal background will be set to white and transition back to the
-# default background color. You can control the rate of this transition by
-# setting the `duration` property (represented in milliseconds). You can also
-# configure the transition function by setting the `animation` property.
-#
-# Values for `animation`:
-#     - Ease
-#     - EaseOut
-#     - EaseOutSine
-#     - EaseOutQuad
-#     - EaseOutCubic
-#     - EaseOutQuart
-#     - EaseOutQuint
-#     - EaseOutExpo
-#     - EaseOutCirc
-#     - Linear
-#
-# Specifying a `duration` of `0` will disable the visual bell.
 visual_bell:
     animation: EaseOutExpo
-    duration: 0
+    duration: 0 # i.e. DISABLED
     color: '0xffffff'
 
-# Background opacity
-#
-# Window opacity as a floating point number from `0.0` to `1.0`.
-# The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
+background_opacity: 1.0  # REQUIRES RESTART
 
-# Mouse bindings
-#
-# Available fields:
-#     - mouse
-#     - action
-#     - mods (optional)
-#
-# Values for `mouse`:
-#     - Middle
-#     - Left
-#     - Right
-#     - Numeric identifier such as `5`
-#
-# All available `mods` and `action` values are documented in the key binding
-# section.
+# fields: mouse, action, mods (optional)
+# values for 'mouse': Middle/Left/Right/<numeric>
+# can use all mods and actions as documented in keybinds
 mouse_bindings:
     - { mouse: Middle, action: PasteSelection }
 
@@ -336,39 +285,25 @@ mouse:
     # If this is `true`, the cursor is temporarily hidden when typing.
     hide_when_typing: false
 
-    url:
-        # URL launcher
-        #
-        # This program is executed when clicking on a text which is recognized as a URL.
-        # The URL is always added to the command as the last parameter.
-        #
-        # When set to `None`, URL launching will be disabled completely.
-        #
-        # Default:
-        #     - (macOS) open
-        #     - (Linux) xdg-open
-        #     - (Windows) explorer
+    url: # Launch URLs when clicked...
+        # Uses explorer (win), open (macOS), or xdg-open (linux)
+        # the url is added to the command as the last parameter
+        
         #launcher:
         #    program: xdg-open
         #    args: []
 
-        # URL modifiers
-        #
-        # These are the modifiers that need to be held down for opening URLs when clicking
-        # on them. The available modifiers are documented in the key binding section.
+        # Require an additional keypress, such as Control?
+        # available modifiers listed in keybinding section
         modifiers: None
 
 selection:
     semantic_escape_chars: ",│`|:\"' ()[]{}<>"
+    save_to_clipboard: true # Save selection to PRIMARY clipboard
 
-    # When set to `true`, selected text will be copied to the primary clipboard.
-    save_to_clipboard: true
-
-# Allow terminal applications to change Alacritty's window title.
-dynamic_title: true
+dynamic_title: true  # Terminal applications can change Alacritty's title
 
 cursor:
-    
     style: Block # Block/Underline/Beam
     unfocused_hollow: true # Use a hollow block when terminal is NOT focused
 
@@ -550,6 +485,7 @@ key_bindings:
     - { key: W,            mods: Command,                 action: Quit                         }
     - { key: F,            mods: Command|Control, action: ToggleFullscreen }
     - { key: Key3,            mods: Alt, chars: "#"} # Need to do this to get hashtag working on osx keyboard
+    - { key: N,            mods: Command,                 action: SpawnNewInstance }
 
     - { key: Paste,                                     action: Paste                                                        }
     - { key: Copy,                                        action: Copy                                                         }
