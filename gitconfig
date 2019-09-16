@@ -19,7 +19,6 @@
     submodule=log
 [code]
     excludesfiles=/Users/davison/.global_ignore
-    editor="code -w"
     pager="less -FRSX"
 [alias]
     uncommit=reset --soft HEAD^
