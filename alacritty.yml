@@ -45,19 +45,19 @@ scrolling:
 tabspaces: 4
 
 font: # CHANGES REQUIRE RESTART
-    use_thin_strokes: false # macOS ONLY. false is better for non-retina displays
+    use_thin_strokes: true # macOS ONLY. false is better for non-retina displays
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Ubuntu Mono
+        family: Iosevka Term
     italic:
-        family: Ubuntu Mono
+        family: Iosevka Term
     bold:
-        family: Ubuntu Mono
+        family: Iosevka Term
     size: 22.0
 
     offset:
-        x: 0 # letterspacing
+        x: 1 # letterspacing
         y: 0 # linespacing
 
     glyph_offset: # move glyphs WITHIN their cells
