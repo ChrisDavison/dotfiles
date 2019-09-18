@@ -32,13 +32,18 @@
 	branches=branch -a
     tags=tag
     stashes=stash list
-	#=============================================================
-    # Handling conflicts
-	# Checkout OUR (local) or THEIR (remote) version of a file
-	ours="!f() { git checkout --ours $@ && git add $@; }; f"
-	theirs="!f() { git checkout --theirs $@ && git add $@; }; f"
-	#=============================================================
-    # Push branch to/remove branch from remoteorigin/<branch>
+    sshow=stash show --text
+    scl=stash clear
+    a=add
+    aa=add --all
+    ap=add --patch
+    c=commit -v
+    ca=commit -v --amend
+    co=checkout
+    cob=checkout -b
+    wch=whatchanged -p --abbrev-commit --pretty=medium
+    # Push branch to remote
     publish="!git push -u origin $(git branch-name)"
+    # Remove branch from remote
     unpublish="!git push origin :$(git branch-name)"
 
