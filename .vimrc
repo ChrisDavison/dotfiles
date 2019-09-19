@@ -100,7 +100,7 @@ endif
 " PLUGINS (3rd party) {{{1
 " ADD COMMENT HERE ON WHERE TO GET JUNEGUNN/PLUG
 " e.g. a direct link to the autoload plugin, that can be curl'd
-call plug#begin('~/code/dotfiles/vim/3rd_party')
+call plug#begin('~/.vim/3rd_party')
 " programming languages
 Plug 'JuliaEditorSupport/julia-vim'
 Plug 'fatih/vim-go'
