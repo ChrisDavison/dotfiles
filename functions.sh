@@ -135,3 +135,7 @@ function cdl () {
 refresh_dmenu() {
     [ -f ~/.cache/dmenu_run ] && rm ~/.cache/dmenu_run && dmenu_path
 }
+
+git_aliases (){
+    git config --list | rg alias | column -s '=' -t | sort
+}

@@ -250,3 +250,4 @@ export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[
 
 source ~/code/dotfiles/functions.sh
 source ~/.bash_completion/alacritty
+alias config='/usr/bin/git --git-dir=/Users/davison/.cfg/ --work-tree=/Users/davison'
