@@ -47,3 +47,5 @@
     # Remove branch from remote
     unpublish="!git push origin :$(git branch-name)"
 
+[core]
+	excludesfile = /Users/davison/.global_ignore
