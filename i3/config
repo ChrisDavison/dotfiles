@@ -10,6 +10,8 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 gaps inner 10
 gaps outer 0
+smart_gaps on
+smart_borders on
 for_window [class="^.*"] border pixel 3 
 default_border none
 

@@ -456,7 +456,7 @@ endif
 set termguicolors
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme molokai
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
