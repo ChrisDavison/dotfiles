@@ -139,6 +139,7 @@ export CODEDIR="$HOME/code"
 export NOTESDIR="$HOME/Dropbox/notes"
 
 export PATH=$HOME/.vim/bundle/fzf/bin:$PATH;
+export PATH=$HOME/.bin:$PATH;
 export PATH=/usr/local/lib/node_modules:$PATH;
 export PATH=$GOBIN:$PATH;
 export PATH=$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/bin:$PATH;
@@ -188,6 +189,22 @@ alias today="date +%F"
 alias tmux="tmux -2"
 alias sedit="sudo $EDITOR"
 
+if [ ! $(uname -s) = 'Darwin' ];then
+    if grep -q Microsoft /proc/version; then
+        alias open='explorer.exe';
+    else
+        alias open='xdg-open';
+    fi
+fi
+
+function o() {
+    if [ $# -eq 0 ]; then
+		open .;
+	else
+		open "$@";
+	fi;
+}
+
 #############################
 # SOURCE INSTALLED SOFTWARE #
 #############################
@@ -200,5 +217,5 @@ alias sedit="sudo $EDITOR"
 ####################
 export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 
-source ~/code/dotfiles/functions.sh
+source ~/.functions
 source ~/.bash_completion/alacritty

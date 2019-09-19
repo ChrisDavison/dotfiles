@@ -139,3 +139,9 @@ refresh_dmenu() {
 git_aliases (){
     git config --list | rg alias | column -s '=' -t | sort
 }
+
+copy_dotfiles(){
+    pushd $CODEDIR/dotfiles > /dev/null
+    rsync -r --exclude-from=excludes.txt . ~
+    popd > /dev/null
+}

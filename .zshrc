@@ -256,4 +256,4 @@ function parse_git_dirty {
 # export PS1="\w \`parse_git_branch\`: "
 # export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 export PROMPT="[%1F%n%f@%2F%m %4F%1d%f] "
-source ~/code/dotfiles/functions.sh
+source ~/.functions
