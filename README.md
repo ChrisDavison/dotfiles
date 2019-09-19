@@ -3,13 +3,17 @@
 - [Getting clipboard (copy paste) to work with TMux on 
   OSX](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard)
 
-## External Resources
+To copy dotfiles into `$HOME`, run:
 
-### Terminal Emulator
+```sh
+rsync -rv --exclude-from=excludes.txt . ~
+```
 
--   [ITerm Color Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes)
--   [Terminal.app Color Schemes](https://github.com/lysyi3m/osx-terminal-themes)
+To install useful software, and my own repos, run:
 
-### Vim
+```sh
+./install_software.sh
+./install_repos.sh
+```
 
--   [junegunn/vim-plug for vim plugin management](https://github.com/junegunn/vim-plug)
+
