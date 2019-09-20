@@ -4,5 +4,7 @@ full_install.sh
 functions.sh
 install.sh
 ahk
+install.sh
 install_repos.sh
 install_software.sh
+excludes.txt

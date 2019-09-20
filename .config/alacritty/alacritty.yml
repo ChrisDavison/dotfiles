@@ -49,11 +49,11 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Iosevka Term
+        family: Cascadia Code
     italic:
-        family: Iosevka Term
+        family: Cascadia Code
     bold:
-        family: Iosevka Term
+        family: Cascadia Code
     size: 22.0
 
     offset:
