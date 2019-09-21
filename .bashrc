@@ -135,8 +135,10 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
-export CODEDIR="$HOME/code"
+export CODEDIR="$HOME/src"
 export NOTESDIR="$HOME/Dropbox/notes"
+export BUDGET_CONFIG="$HOME/Dropbox/house/income.csv"
+export BUDGET_COSTS="$HOME/Dropbox/house/costs.csv"
 
 export PATH=$HOME/.vim/bundle/fzf/bin:$PATH;
 export PATH=$HOME/.bin:$PATH;
@@ -151,6 +153,10 @@ export PATH=$HOME/bin:$PATH;
 export PATH=$HOME/.virtualenvs/:$PATH;
 export PATH=/usr/local/miniconda3/bin:$PATH;
 export PATH="/usr/local/sbin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
+
 
 ###########
 # ALIASES #
@@ -218,4 +224,3 @@ function o() {
 export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 
 source ~/.functions
-source ~/.bash_completion/alacritty
