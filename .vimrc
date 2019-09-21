@@ -111,6 +111,7 @@ Plug 'vim-python/python-syntax'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'elixir-editors/vim-elixir'
+Plug 'cespare/vim-toml'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
