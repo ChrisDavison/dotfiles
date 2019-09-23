@@ -41,7 +41,7 @@ font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
 modules-left = powermenu bspwm 
-modules-center = xwindow polypomo 
+modules-center = spotifyplaying polypomo 
 modules-right = wired-network wireless-network pulseaudio xbacklight memory cpu battery date
 
 ; NOT USING
@@ -310,7 +310,14 @@ exec = $HOME/.bin/batrem
 label = %output%
 format-prefix = bat
 format-prefix-foreground = ${colors.foreground-alt}
+tail = true
 interval = 20
+
+[module/spotifyplaying]
+type = custom/script
+exec = /home/davison/.bin/spotify_playing
+label = %output%
+interval = 10
 
 [module/polypomo]
 type = custom/script
