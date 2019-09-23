@@ -54,7 +54,7 @@ font: # CHANGES REQUIRE RESTART
         family: Cascadia Code
     bold:
         family: Cascadia Code
-    size: 22.0
+    size: 12.0
 
     offset:
         x: 1 # letterspacing
