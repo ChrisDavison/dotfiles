@@ -27,13 +27,13 @@ XF86AudioMute
     amixer -q -D pulse sset Master toggle
 
 XF86AudioPlay
-    playerctl play-pause
+    playerctl play --player=spotify
 XF86AudioPause
-    playerctl play-pause
+    playerctl pause --player=spotify
 XF86AudioNext
-    playerctl next
+    playerctl next --player=spotify
 XF86AudioPrev
-    playerctl prev
+    playerctl prev --player=spotify
 
 
 super + alt + a
