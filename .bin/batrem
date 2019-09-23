@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ `acpi | rg remaining | wc -l` -gt 0 ]; then
+    acpi | sed "s/.* \(\d+%\), \(.*\):\(.*\):.* remaining/\2h\3m (\1)/"
+else
+    acpi | sed "s/.* \([0-9]\+%\).*/Charging: (\1)/"
+fi
