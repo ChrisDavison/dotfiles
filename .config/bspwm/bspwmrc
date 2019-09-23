@@ -1,23 +1,43 @@
 #! /bin/sh
 
 sxhkd &
-polybar example &
 nitrogen --restore &
 nm-applet &
+udiskie &
+autorandr -c &
 dropbox start &
 
-bspc monitor -d I II III IV V VI VII VIII IX X
+INTERNAL=eDP1
+EXTERNAL=`xrandr -q | grep " connected" | grep -v "$INTERNAL" | sed "s/\(.*\) connected.*/\1/" `
 
-bspc config border_width         2
+if [ -z "$EXTERNAL" ]; then
+    xrandr --output $EXTERNAL --off
+    bspc monitor $INTERNAL -d 1 2 3 4 5 6 7 8 9 0
+else
+    xrandr --output $EXTERNAL --left-of $INTERNAL --auto --noprimary
+    xrandr --output $INTERNAL --primary
+    bspc monitor $EXTERNAL -d 1 2 3 4 5
+    bspc monitor $INTERNAL -d 6 7 8 9 0
+fi
+
+for m in `polybar --list-monitors | cut -d':' -f1`; do
+    MONITOR=$m polybar -r example &
+done
+
+bspc config border_width         3
+bspc config focused_border_color "#8620e6"
 bspc config window_gap          10
 
+bspc config remove_disabled_monitors true
+bspc config remove_unplugged_monitors true
+
 bspc config split_ratio          0.50
-bspc config borderless_monocle   true
+bspc config borderless_monocle   false
 bspc config gapless_monocle      true
 
-bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Gimp desktop='^6' state=floating follow=on
 bspc rule -a Chromium desktop='^2'
+bspc rule -a keepassxc desktop='^6'
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
-bspc rule -a "Firefox Developer Edition" desktop="^5" follow=on
