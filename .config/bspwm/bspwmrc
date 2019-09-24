@@ -36,8 +36,10 @@ bspc config borderless_monocle   false
 bspc config gapless_monocle      true
 
 bspc rule -a Gimp desktop='^6' state=floating follow=on
+bspc rule -a Anki state=floating follow=on
 bspc rule -a Chromium desktop='^2'
 bspc rule -a keepassxc desktop='^9'
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
+bspc rule -a Matplotlib desktop='^5' follow=on
