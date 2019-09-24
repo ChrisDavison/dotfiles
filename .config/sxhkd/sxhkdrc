@@ -6,40 +6,11 @@
 super + Return
 	alacritty
 super + @space
-    rofi -combi-modi window,drun -show combi
+    rofi 
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -u USR1 -x sxhkd
-
-# control brightness
-XF86MonBrightnessDown
-    xbacklight -dec 5% -time 0 -steps 1
-XF86MonBrightnessUp
-    xbacklight -inc 5% -time 0 -steps 1
-
-XF86AudioLowerVolume
-    amixer -q -D pulse sset Master 5%-
-XF86AudioRaiseVolume
-    amixer -q -D pulse sset Master 5%+
-XF86AudioMute
-    amixer -q -D pulse sset Master toggle
-
-XF86AudioPlay
-    playerctl play --player=spotify
-XF86AudioPause
-    playerctl pause --player=spotify
-XF86AudioNext
-    playerctl next --player=spotify
-XF86AudioPrev
-    playerctl prev --player=spotify
-
-
-super + alt + a
-    open "https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc"
-
-super + alt + i
-    alacritty -e workon ml && ipython
+	pkill -USR1 -x sxhkd
 
 # quit/restart bspwm
 super + alt + {q,r}
@@ -139,3 +110,42 @@ super + alt + shift + {h,j,k,l}
 # move a floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+
+#  _                _    _ _       _     _   
+# | |__   __ _  ___| | _| (_) __ _| |__ | |_ 
+# | '_ \ / _` |/ __| |/ / | |/ _` | '_ \| __|
+# | |_) | (_| | (__|   <| | | (_| | | | | |_ 
+# |_.__/ \__,_|\___|_|\_\_|_|\__, |_| |_|\__|
+#                            |___/           
+XF86MonBrightnessDown
+    xbacklight -dec 5% -time 0 -steps 1
+XF86MonBrightnessUp
+    xbacklight -inc 5% -time 0 -steps 1
+
+#                  _ _       
+#   __ _ _   _  __| (_) ___  
+#  / _` | | | |/ _` | |/ _ \ 
+# | (_| | |_| | (_| | | (_) |
+#  \__,_|\__,_|\__,_|_|\___/ 
+ XF86AudioLowerVolume
+    amixer -q -D pulse sset Master 5%-
+XF86AudioRaiseVolume
+    amixer -q -D pulse sset Master 5%+
+XF86AudioMute
+    amixer -q -D pulse sset Master toggle
+
+XF86AudioPlayPause
+    playerctl play-pause --player=spotify
+XF86AudioNext
+    playerctl next --player=spotify
+XF86AudioPrev
+    playerctl prev --player=spotify
+                          
+#                 _                  
+#   ___ _   _ ___| |_ ___  _ __ ___  
+#  / __| | | / __| __/ _ \| '_ ` _ \ 
+# | (__| |_| \__ \ || (_) | | | | | |
+#  \___|\__,_|___/\__\___/|_| |_| |_|
+super + ctrl + alt + l
+    i3locksusp
