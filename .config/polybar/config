@@ -243,9 +243,11 @@ battery = BAT0
 adapter = AC0
 full-at = 98
 
+label-charging = %percentage%%
 format-charging = <ramp-capacity> <label-charging> 
 
-format-discharging = <ramp-capacity> <label-discharging> 
+label-discharging = %percentage%%
+format-discharging = <ramp-capacity> <label-discharging>
 
 format-full = FULL
 
