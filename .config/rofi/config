@@ -1,11 +1,11 @@
 !copied from someone's dotfiles..tune myself
 !Rofi Settings
 rofi.lines: 12
-rofi.width: 40
-rofi.columns: 3
+rofi.width: 60
+rofi.columns: 2
 rofi.padding: 18
 rofi.location: 0
-rofi.font: Hack 11
+rofi.font: Cascadia Code 12
 rofi.sidebar-mode: true
 rofi.color-enabled: true
 rofi.modi: drun,run,window
