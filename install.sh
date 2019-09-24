@@ -95,6 +95,9 @@ install_plug() {
 
     curl -fLo $HOME/$vimdir/autoload/plug.vim -s --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    
+    mkdir -p $HOME/.config/nvim/autoload/
+    cp $HOME/$vimdir/autoload/plug.vim $HOME/.config/nvim/autoload/plug.vim
 }
 
 install_fzf() {
