@@ -463,6 +463,25 @@ set guioptions-=T
 set guioptions-=r
 set guioptions-=L
 " }}}1
+" typewriter mode {{{
+let g:typewriter_mode_active=0
+function! ToggleTypewriting()
+    if !g:typewriter_mode_active
+        nnoremap <silent> j @='jzz'<CR>
+        nnoremap <silent> k @='kzz'<CR>
+        vnoremap <silent> j @='jzz'<CR>
+        vnoremap <silent> k @='kzz'<CR>
+        let g:typewriter_mode_active=1
+    else
+        nnoremap <silent> j j
+        nnoremap <silent> k k
+        vnoremap <silent> j j
+        vnoremap <silent> k k
+        let g:typewriter_mode_active=0
+    endif
+endfunction
+command! Typewrite call ToggleTypewriting()
+" }}}
 " RANDOM STUFF TO TIDY {{{1
 " =====[ Config for downloaded plugins ]=====
 let g:SuperTabDefaultCompletionType = "context"

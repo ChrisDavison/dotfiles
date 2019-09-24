@@ -194,6 +194,7 @@ alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias sedit="sudo $EDITOR"
+alias envml="source $HOME/.envs/ml/bin/activate"
 
 if [ ! $(uname -s) = 'Darwin' ];then
     if grep -q Microsoft /proc/version; then
@@ -215,8 +216,8 @@ function o() {
 # SOURCE INSTALLED SOFTWARE #
 #############################
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 [ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
+source `which virtualenvwrapper.sh`
 
 ####################
 # MY CUSTOM PROMPT #

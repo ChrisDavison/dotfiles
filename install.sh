@@ -18,10 +18,22 @@ else
 fi
 ~/.fzf/install --all > /dev/null
 
-for f in .bin .config .emacs.d .vim .bashrc .gitconfig .sqliterc .tmux.conf .vimrc .zshrc ; do
+for f in .bashrc .gitconfig .sqliterc .tmux.conf .vimrc .zshrc ; do
     echo $f
     # Need to use gcp for gnu-coreutils on osx
     # do an OS-check to see if I can use cp on linux
-    gcp -Tabs ~/code/dotfiles/$f ~/$f
+    ln -s -b ~/src/dotfiles/$f ~/$f
 done
 
+ln -s ~/src/dotfiles/.vim ~/.vim
+ln -s ~/src/dotfiles/.emacs.d ~/.emacs.d
+
+for direc in .config/* ; do
+    ln -s -b ~/src/dotfiles/.config/$direc ~/.config/$direc
+done
+
+for bin in .bin/* ; do
+    echo $bin
+    ln -s -b ~/.bin/$bin ~/src/dotfiles/.bin/$bin
+    chmod +x $bin
+done
