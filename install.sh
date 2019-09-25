@@ -131,5 +131,5 @@ case $cmd in
     plug) install_plug ;;
     repos) install_personal_repos && install_work_repos ;;
     symlinks) install_symlinks ;;
-    *) usage; return 1 ;;
+    *) usage; exit 1 ;;
 esac
