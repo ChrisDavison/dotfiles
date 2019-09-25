@@ -1,7 +1,7 @@
 ; https://github.com/polybar/polybar
 
 [colors]
-background = #33222222
+background = #00222222
 background-alt = #444
 foreground = #dfdfdf
 foreground-alt = #555
@@ -40,8 +40,8 @@ font-0 = CascadiaCode:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
-modules-left = powermenu bspwm 
-modules-center = spotifyplaying polypomo 
+modules-left = powermenu bspwm i3
+modules-center = spotifyplaying 
 modules-right = wired-network wireless-network pulseaudio xbacklight memory cpu battery date
 
 ; NOT USING
@@ -51,6 +51,7 @@ modules-right = wired-network wireless-network pulseaudio xbacklight memory cpu 
 tray-position = right
 tray-padding = 0
 tray-background = ${colors.background}
+tray-transparent = true
 
 wm-restack = bspwm
 ; wm-restack = i3
@@ -320,16 +321,3 @@ exec = /home/davison/.bin/spotify_playing
 label = %output%
 interval = 10
 
-[module/polypomo]
-type = custom/script
-exec = $HOME/src/polypomo/polypomo --breaktime 300
-tail = true
-
-label = %output%
-click-left = $HOME/src/polypomo/polypomo toggle
-click-right = $HOME/src/polypomo/polypomo end
-click-middle = $HOME/src/polypomo/polypomo lock
-scroll-up = $HOME/src/polypomo/polypomo time +60
-scroll-down = $HOME/src/polypomo/polypomo time -60
-
-; vim:ft=dosini
