@@ -1,0 +1,6 @@
+**/3rd_party/
+**/autoload/
+**/.netrwhist
+**/__*.fish
+**/fisher.fish
+**/fzf*.fish
