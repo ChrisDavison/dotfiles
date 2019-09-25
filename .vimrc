@@ -112,6 +112,7 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'elixir-editors/vim-elixir'
 Plug 'cespare/vim-toml'
+Plug 'dag/vim-fish'
 " utility
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -145,7 +146,7 @@ call plug#end()
 " }}}1
 " keybinds {{{1
 " =====[ Edit files and source vimrc ]=====
-nnoremap <leader>ev :edit ~/code/dotfiles/vimrc<CR>
+nnoremap <leader>ev :edit ~/.vimrc<CR>
 
 " These versions are for when I don't have fzf and fzf.vim installed
 " nnoremap <leader>en :edit ~/Dropbox/notes/**/*
