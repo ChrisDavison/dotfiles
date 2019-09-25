@@ -174,5 +174,5 @@ XF86AudioPrev
 #  / __| | | / __| __/ _ \| '_ ` _ \ 
 # | (__| |_| \__ \ || (_) | | | | | |
 #  \___|\__,_|___/\__\___/|_| |_| |_|
-super + ctrl + alt + l
-    i3locksusp
+super + shift + q
+    dmenu_powermenu.sh
