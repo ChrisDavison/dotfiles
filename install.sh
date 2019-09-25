@@ -125,7 +125,6 @@ case $cmd in
         install_plug
         install_personal_repos
         install_work_repos
-        install_symlinks
         ;;
     fzf) install_fzf ;;
     plug) install_plug ;;

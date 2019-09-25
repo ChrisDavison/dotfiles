@@ -4,3 +4,5 @@
 **/__*.fish
 **/fisher.fish
 **/fzf*.fish
+fish/fishd.*
+**/fishd.*
