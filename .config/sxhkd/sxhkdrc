@@ -1,12 +1,21 @@
-#
-# wm independent hotkeys
-#
-
 # terminal emulator
 super + Return
 	alacritty
-super + @space
-    rofi 
+
+#      _                            
+#   __| |_ __ ___   ___ _ __  _   _ 
+#  / _` | '_ ` _ \ / _ \ '_ \| | | |
+# | (_| | | | | | |  __/ | | | |_| |
+#  \__,_|_| |_| |_|\___|_| |_|\__,_|
+super + d
+    dmenu_run -fn "Ubuntu Mono-14"
+super + alt + d
+    dmenu_desktop
+super + alt + w
+    dmenu_win_switcher
+super + alt + s
+    dmenu_screenshot.sh
+
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -20,9 +29,6 @@ super + alt + {q,r}
 super + {_,shift + }w
 	bspc node -{c,k}
 
-# alternate between the tiled and monocle layout
-super + m
-	bspc desktop -l next
 
 # send the newest marked node to the newest preselected node
 super + y
@@ -32,9 +38,15 @@ super + y
 super + g
 	bspc node -s biggest
 
-#
-# state/flags
-#
+#  _                         _   
+# | | __ _ _   _  ___  _   _| |_ 
+# | |/ _` | | | |/ _ \| | | | __|
+# | | (_| | |_| | (_) | |_| | |_ 
+# |_|\__,_|\__, |\___/ \__,_|\__|
+#          |___/                 
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
 
 # set the window state
 super + {t,shift + t,s,f}
@@ -44,10 +56,13 @@ super + {t,shift + t,s,f}
 super + ctrl + {m,x,y,z}
 	bspc node -g {marked,locked,sticky,private}
 
-#
-# focus/swap
-#
 
+#                              _     _             
+#   ___  _ __ __ _  __ _ _ __ (_)___(_)_ __   __ _ 
+#  / _ \| '__/ _` |/ _` | '_ \| / __| | '_ \ / _` |
+# | (_) | | | (_| | (_| | | | | \__ \ | | | | (_| |
+#  \___/|_|  \__, |\__,_|_| |_|_|___/_|_| |_|\__, |
+#            |___/                           |___/ 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
@@ -78,7 +93,12 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
-# PRESELECTION
+#                           _           _   _             
+#  _ __  _ __ ___  ___  ___| | ___  ___| |_(_) ___  _ __  
+# | '_ \| '__/ _ \/ __|/ _ \ |/ _ \/ __| __| |/ _ \| '_ \ 
+# | |_) | | |  __/\__ \  __/ |  __/ (__| |_| | (_) | | | |
+# | .__/|_|  \___||___/\___|_|\___|\___|\__|_|\___/|_| |_|
+# |_|                                                     
 # ...direction
 super + ctrl + {h,j,k,l}
 	bspc node -p {west,south,north,east}
@@ -123,19 +143,26 @@ XF86MonBrightnessDown
 XF86MonBrightnessUp
     xbacklight -inc 5% -time 0 -steps 1
 
-#                  _ _       
-#   __ _ _   _  __| (_) ___  
-#  / _` | | | |/ _` | |/ _ \ 
-# | (_| | |_| | (_| | | (_) |
-#  \__,_|\__,_|\__,_|_|\___/ 
- XF86AudioLowerVolume
+#             _                      
+# __   _____ | |_   _ _ __ ___   ___ 
+# \ \ / / _ \| | | | | '_ ` _ \ / _ \
+#  \ V / (_) | | |_| | | | | | |  __/
+#   \_/ \___/|_|\__,_|_| |_| |_|\___|
+XF86AudioLowerVolume
     amixer -q -D pulse sset Master 5%-
 XF86AudioRaiseVolume
     amixer -q -D pulse sset Master 5%+
 XF86AudioMute
     amixer -q -D pulse sset Master toggle
 
-XF86AudioPlayPause
+#                      _      
+#  _ __ ___  _   _ ___(_) ___ 
+# | '_ ` _ \| | | / __| |/ __|
+# | | | | | | |_| \__ \ | (__ 
+# |_| |_| |_|\__,_|___/_|\___|
+XF86AudioPlay
+    playerctl play-pause --player=spotify
+XF86AudioPause
     playerctl play-pause --player=spotify
 XF86AudioNext
     playerctl next --player=spotify
