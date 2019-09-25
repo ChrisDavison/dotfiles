@@ -16,8 +16,8 @@ if [ -z "$EXTERNAL" ]; then
 else
     xrandr --output $EXTERNAL --left-of $INTERNAL --auto --noprimary
     xrandr --output $INTERNAL --primary
-    bspc monitor $EXTERNAL -d 1 2 3 4 5
     bspc monitor $INTERNAL -d 6 7 8 9 0
+    bspc monitor $EXTERNAL -d 1 2 3 4 5  
 fi
 
 for m in `polybar --list-monitors | cut -d':' -f1`; do
@@ -26,13 +26,13 @@ done
 
 bspc config border_width         3
 bspc config focused_border_color "#8620e6"
-bspc config window_gap          10
+bspc config window_gap          14
 
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
 
 bspc config split_ratio          0.50
-bspc config borderless_monocle   false
+bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 
 bspc rule -a Gimp desktop='^6' state=floating follow=on

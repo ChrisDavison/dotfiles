@@ -115,10 +115,12 @@ super + ctrl + space
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-#
-# move/resize
-#
-
+#                              __             _         
+#  _ __ ___   _____   _____   / / __ ___  ___(_)_______ 
+# | '_ ` _ \ / _ \ \ / / _ \ / / '__/ _ \/ __| |_  / _ \
+# | | | | | | (_) \ V /  __// /| | |  __/\__ \ |/ /  __/
+# |_| |_| |_|\___/ \_/ \___/_/ |_|  \___||___/_/___\___|
+#                                                       
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
@@ -176,3 +178,6 @@ XF86AudioPrev
 #  \___|\__,_|___/\__\___/|_| |_| |_|
 super + shift + q
     dmenu_powermenu.sh
+
+super + shift + b
+    dmenu_bookmarks

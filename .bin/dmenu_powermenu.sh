@@ -13,12 +13,10 @@ opt=$(dmenu -l 10 -fn "Ubuntu Mono-18" -p "Power: " <<< $menu | cut -d' ' -f1)
 
 case "$opt" in
     lock) i3scrlock ;;
-    logout) i3-msg exit ;;
+    logout) gnome-session-quit --logout ;;
     reboot) systemctl reboot ;;
     shutdown) systemctl poweroff ;;
-    suspend)
-        i3scrlock && dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Suspend 
-        ;;
+    suspend) i3locksusp ;;
     *) exit 1 ;;
 esac
 
