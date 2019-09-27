@@ -219,6 +219,7 @@ augroup golang
     au Filetype go set foldmethod=syntax
 augroup END
 let g:go_fmt_command="goimports"
+let g:go_version_warning=0
 " }}}1
 " javascript {{{1
 let b:javascript_fold=1
