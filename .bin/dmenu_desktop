@@ -44,7 +44,7 @@ sub slurp {
 }
 
 my @entry_types;
-my $dmenu_cmd = 'dmenu -i -fn "Cascadia Code-14"';
+my $dmenu_cmd = 'dmenu -i -fn "Ubuntu Mono-14"';
 my $result = GetOptions(
     'dmenu=s' => \$dmenu_cmd,
     'entry-type=s' => \@entry_types,

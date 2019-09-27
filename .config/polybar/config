@@ -11,6 +11,8 @@ alert = #bd2c40
 white = #ffffff
 red = #cc241d
 purple = #8620e6
+bright_purple = #af59ff
+cyan = #21a4ad
 
 [bar/example]
 monitor = ${env:MONITOR:}
@@ -93,11 +95,11 @@ padding=20
 
 label-focused = %name%
 label-focused-foreground = ${colors.white}
-label-focused-background = ${colors.purple}
+label-focused-background = ${colors.bright_purple}
 label-focused-padding = ${settings.bspwm-padding}
 
 label-occupied = %name%
-label-occupied-foreground = ${colors.purple}
+label-occupied-foreground = ${colors.bright_purple}
 label-occupied-padding = ${settings.bspwm-padding}
 
 label-urgent = %name%!

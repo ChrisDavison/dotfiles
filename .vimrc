@@ -186,7 +186,7 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au User GoyoEnter Limelight | exec "normal zz" | Typewrite
-    au User GoyoLeave Limelight! | Typewrite!
+    au User GoyoLeave Limelight! | let g:typewriter_mode_enabled=1 | Typewrite
     au BufWritePost .vimrc source %
     au BufEnter .scratch set filetype=markdown
 augroup END
