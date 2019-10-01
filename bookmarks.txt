@@ -1,4 +1,5 @@
 Hacker News;https:///news.ycombinator.com
+Lobsters;https://lobste.rs
 BBC News;https://bbc.co.uk/news
 Youtube;https://www.youtube.com
 Wikipedia;https://www.wikipedia.com
