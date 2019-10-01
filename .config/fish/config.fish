@@ -14,6 +14,11 @@ set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux BUDGET_CONFIG "$HOME/Dropbox/house/income.csv"
 set -Ux BUDGET_COSTS "$HOME/Dropbox/house/costs.csv"
 
+set PATH $GOBIN $PATH
+set PATH $HOME/.bin $PATH
+set PATH $CODEDIR/scripts/ $PATH
+set PATH $HOME/.cargo/bin $PATH
+
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
 alias mv="mv -v"     # Always explain move actions
