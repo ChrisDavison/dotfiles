@@ -49,11 +49,11 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Hack
+        family: Ubuntu Mono
     italic:
-        family: Hack
+        family: Ubuntu Mono
     bold:
-        family: Hack
+        family: Ubuntu Mono
     size: 12.0
 
     offset:
