@@ -44,7 +44,7 @@ font-2 = FontAwesome:style=Regular:size=12;3
 
 modules-left = bspwm i3 xwindow
 modules-center = spotifyplaying 
-modules-right = wired-network wireless-network pulseaudio xbacklight memory cpu battery date
+modules-right = wired-network wireless-network pulseaudio backlight-acpi memory cpu battery date
 
 ; NOT USING
 ; filesystem (mount pointand memory used, e.g. '/:32%')
