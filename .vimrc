@@ -142,6 +142,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'tomasr/molokai'
 Plug 'lifepillar/vim-solarized8'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'arzg/vim-corvine'
 call plug#end()
 " }}}1
 " keybinds {{{1
@@ -459,7 +460,7 @@ endif
 set termguicolors
 set t_Co=256
 set bg=dark
-silent! colorscheme molokai
+silent! colorscheme seoul256
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r

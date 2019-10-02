@@ -225,3 +225,6 @@ source `which virtualenvwrapper.sh`
 export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
 
 source ~/.functions
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

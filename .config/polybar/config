@@ -128,24 +128,24 @@ label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
-label-focused = %index%
-label-focused-background = ${colors.background-alt}
-label-focused-padding = 2
+label-focused = %name%
+label-focused-background = ${colors.bright_purple}
+label-focused-padding = ${settings.bspwm-padding}
 
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%
-label-unfocused-padding = 2
-label-unfocused-background=#aa000000
+label-unfocused = %name%
+label-unfocused-padding = ${settings.bspwm-padding}
+label-unfocused-foreground = ${colors.bright_purple}
 
 ; visible = Active workspace on unfocused monitor
-label-visible = %index%
+label-visible = %name%
 label-visible-background = ${self.label-focused-background}
-label-visible-padding = ${self.label-focused-padding}
+label-visible-padding = ${settings.bspwm-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %index%
+label-urgent = %name%
 label-urgent-background = ${colors.alert}
-label-urgent-padding = 2
+label-urgent-padding =  ${settings.bspwm-padding}
 
 ; Separator in between workspaces
 ; label-separator = |

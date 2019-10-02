@@ -43,3 +43,4 @@ alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
+rvm default
