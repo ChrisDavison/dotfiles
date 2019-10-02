@@ -3,6 +3,8 @@
 ; ! ALT
 ; + SHIFT
 SetCapsLockState, alwaysoff
+^#!XButton1::SendInput c.jr.davison@gmail.com
+^#!XButton2::SendInput christopher.davison@strath.ac.uk
 
 ; DON'T DECLARE KEYBINDS IN ANY OTHER FILES.
 ; Those are only for functions, so all keybinds are declared in here.
@@ -28,14 +30,6 @@ CapsLock::F13
 ; UTILITY
 ^#!SPACE::WinSet, Alwaysontop, , A
 ^F12::reload
-^#!o::   ; Open my 'default' tabs and apps
-    run "https://www.pinboard.in/u:davison"
-    run "https://www.pinboard.com/u:davison/untagged"
-    run "https://www.youtube.com"
-    run "https://www.bbc.com/news"
-    run "https://www.feedly.com"
-    run "https://mail.google.com"
-return
 
 ; Move and resize windows
 ; (usually for shoving youtube into a bottom corner)
@@ -65,3 +59,5 @@ switchDesktop()
         switchedDesktop := true
     }
 }
+
+^+1::Run Bookmarks.ahk
