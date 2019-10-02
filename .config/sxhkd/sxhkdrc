@@ -10,7 +10,7 @@ super + Return
 super + d
     dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -p "Program: "
 super + alt + d
-    dmenu_desktop
+    j4-dmenu-desktop --dmenu="dmenu -i -l 10 -m 0 -fn  'Ubuntu Mono-14'"
 super + alt + w
     dmenu_win_switcher
 super + alt + s
