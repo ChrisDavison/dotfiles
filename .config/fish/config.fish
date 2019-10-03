@@ -11,8 +11,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux BUDGET_CONFIG "$HOME/Dropbox/house/income.csv"
-set -Ux BUDGET_COSTS "$HOME/Dropbox/house/costs.csv"
+set -Ux BUDGET "$HOME/Dropbox/house/house-costs.txt"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
@@ -43,4 +42,4 @@ alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
-rvm default
+test -x rvm; and rvm default
