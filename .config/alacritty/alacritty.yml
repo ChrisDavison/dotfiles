@@ -26,7 +26,7 @@ window:
     # Values for `decorations` (macOS only):
     #         - transparent: Title bar, transparent background and title bar buttons
     #         - buttonless: Title bar, transparent background, but no title bar buttons
-    decorations: none
+    decorations: full
 
     # Startup Mode (changes require restart)
     # May be Windowed/Maximized/Fullscreen OR SimpleFullscreen (macOS only)
@@ -234,6 +234,29 @@ schemes:
             cyan:    '0x87d7d7'
             white:   '0xe4e4e4'
 
+    seoul256_light: &seoul256_light
+        primary:
+            background: '0xdadada'
+            foreground: '0x4e4e4e'
+        normal:
+            black:   '0x4e4e4e'
+            red:     '0xaf5f5f'
+            green:   '0x5f885f'
+            yellow:  '0xaf8760'
+            blue:    '0x5f87ae'
+            magenta: '0x875f87'
+            cyan:    '0x5f8787'
+            white:   '0xe4e4e4'
+        bright:
+            black:   '0x3a3a3a'
+            red:     '0x870100'
+            green:   '0x005f00'
+            yellow:  '0xd8865f'
+            blue:    '0x0087af'
+            magenta: '0x87025f'
+            cyan:    '0x008787'
+            white:   '0xeeeeee'
+
     pencil_light: &pencil_light
         primary:
             background: '0xf1f1f1'
@@ -257,8 +280,8 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-colors: *molokai
-#colors: *pencil_light
+colors: *seoul256
+# colors: *pencil_light
 
 visual_bell:
     animation: EaseOutExpo
