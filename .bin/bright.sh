@@ -42,8 +42,8 @@ max_brightness=$(cat "${device_dir}/max_brightness")
 # echo $brightness_file
 
 if [ "$1" == 'current' ]; then
-echo $( echo "(${curr_brightness} / ${max_brightness}) * 100" | bc -l) \
-| cut -d'.' -f 1
+    now=$( echo "(${curr_brightness} / ${max_brightness}) * 100" | bc -l | cut -d'.' -f 1)
+echo  $now%
 else
 direction=$1
 
