@@ -1,5 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export BUDGET:/home/davison/Dropbox/house/house\x2dcosts\x2etxt
 SETUVAR --export BUDGET_CONFIG:/home/davison/Dropbox/house/income\x2ecsv
 SETUVAR --export BUDGET_COSTS:/home/davison/Dropbox/house/costs\x2ecsv
 SETUVAR --export CODEDIR:/home/davison/code

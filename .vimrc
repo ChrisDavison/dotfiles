@@ -351,7 +351,7 @@ command! CD exec "cd ".expand("%:h")
 command! RMD exec "!rm ".expand("%") | bp | bd #
 " command! Notes edit ~/Dropbox/notes/notes.md | normal G
 command! Logbook exec "e " . expand(strftime("~/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")) | normal G
-command! Journal exec "e " . expand(strftime("~/Dropbox/notes/journal.md")) | normal G
+command! Journal exec "e " . expand(strftime("~/Dropbox/notes/notes.md")) | normal G
 
 command! NF call fzf#run({'source': 'fd -e md . ~/Dropbox/', 'sink': 'e'})
 
