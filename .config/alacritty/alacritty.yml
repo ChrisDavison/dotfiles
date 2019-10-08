@@ -280,7 +280,7 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-colors: *seoul256
+colors: *monokai
 # colors: *pencil_light
 
 visual_bell:

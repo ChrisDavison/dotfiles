@@ -2,7 +2,7 @@
 #
 # Mod1 = alt, Mod4 = win
 set $mod Mod4
-gaps inner 10
+gaps inner 0
 gaps outer 0
 #smart_gaps on
 #smart_borders on
@@ -93,16 +93,16 @@ bindsym $mod+0 workspace $ws10
 
 set $internal eDP1
 set $external DP1
-workspace $ws1 output $external
-workspace $ws2 output $external
-workspace $ws3 output $external
-workspace $ws4 output $external
-workspace $ws5 output $external
-workspace $ws6 output $internal
-workspace $ws7 output $internal
-workspace $ws8 output $internal
-workspace $ws9 output $internal
-workspace $ws10 output $internal
+# workspace $ws1 output $external
+# workspace $ws2 output $external
+# workspace $ws3 output $external
+# workspace $ws4 output $external
+# workspace $ws5 output $external
+# workspace $ws6 output $internal
+# workspace $ws7 output $internal
+# workspace $ws8 output $internal
+# workspace $ws9 output $internal
+# workspace $ws10 output $internal
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
@@ -165,6 +165,7 @@ bindsym $mod+r mode "resize"
 exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
+exec --no-startup-id compton
 exec_always --no-startup-id autorandr -c
 # exec_always --no-startup-id $(killall -q polybar; for m in $(polybar --list-monitors | cut -d":" -f1); do MONITOR=$m polybar -r example & done)
 exec --no-startup-id sh ~/.fehbg
@@ -187,11 +188,12 @@ bar {
 bindsym $mod+Return exec "alacritty || i3-sensible-terminal"
 
 # some dmenu scripts
-bindsym $mod+d exec dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -p "Program: "
-bindsym $mod+space exec dmenu_dmenu
-bindsym $mod+Shift+w exec dmenu_win_switcher_i3
-bindsym $mod+Mod1+q exec dmenu_powermenu.sh
-bindsym $mod+Shift+b exec dmenu_bookmarks
+bindsym $mod+d exec rofi -modi combi -show combi
+bindsym $mod+space exec rofi -modi combi -show combi
+# bindsym $mod+space exec dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -b -p "Program: "
+# bindsym $mod+Shift+w exec dmenu_win_switcher_i3
+bindsym $mod+Mod1+q exec rofi_powermenu
+bindsym $mod+Shift+b exec rofi_bookmarks
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
 bindsym --whole-window $mod+o workspace next_on_output

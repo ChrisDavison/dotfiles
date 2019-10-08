@@ -8,7 +8,7 @@ rofi.location: 0
 rofi.font: Cascadia Code 12
 rofi.sidebar-mode: true
 rofi.color-enabled: true
-rofi.modi: drun,run,window
+rofi.modi: drun,run,window,combi
 rofi.color-window: #2e3440, #2e3440, #2e3440
 rofi.color-normal: #2e3440, #d8dee9, #2e3440, #2e3440, #bf616a
 rofi.color-active: #2e3440, #b48ead, #2e3440, #2e3440, #93e5cc

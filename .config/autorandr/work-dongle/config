@@ -10,6 +10,5 @@ pos 0x0
 rate 59.95
 output eDP1
 mode 1920x1080
-pos 2560x0
-primary
+pos 0x1440
 rate 60.00
