@@ -10,7 +10,7 @@ default_border pixel 2
 
 client.focused          #8620e6 #8620e6 #ffffff #ffffff #8620e6
 
-font pango:Camingo Code 12
+font pango:Hack 12
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
