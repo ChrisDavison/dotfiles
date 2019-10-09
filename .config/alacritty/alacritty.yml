@@ -49,11 +49,11 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Ubuntu Mono
+        family: Camingo Code
     italic:
-        family: Ubuntu Mono
+        family: Camingo Code
     bold:
-        family: Ubuntu Mono
+        family: Camingo Code
     size: 12.0
 
     offset:
