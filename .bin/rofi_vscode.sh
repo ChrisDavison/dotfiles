@@ -3,19 +3,16 @@
 if [ -z "$@" ]; then
     function gen_directories()
     {
-        find $CODEDIR -type d -maxdepth 1 -exec basename {} \;
+        find $CODEDIR -mindepth 1 -maxdepth 1 -type d -exec realpath --relative-to=$HOME {} \;
     }
-    echo $(basename "~/Dropbox/notes/"); gen_directories
+    echo $(realpath --relative-to=$HOME "$HOME/Dropbox/notes/");
+    echo $(realpath --relative-to=$HOME "$HOME/Dropbox/thesis/analysis")
+    gen_directories
 else
-    project=$@
-    if [ ! -z "$project" ]; then
-        project_dir="$HOME/Dropbox/$project"
-        if [ -d "$HOME/Dropbox/$project" ]; then
-            code "$HOME/Dropbox/$project" 
-        elif [ -d "$CODEDIR/$project" ]; then
-            code "$CODEDIR/$project"
-        else
-            echo "No $project_dir"
-        fi
+    project=$HOME/$@
+    if [ -d "$project" ]; then
+        code "$project"
+    else
+        echo "No $project"
     fi
 fi
