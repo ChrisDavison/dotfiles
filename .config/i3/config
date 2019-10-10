@@ -188,7 +188,8 @@ bar {
 bindsym $mod+Return exec "alacritty || i3-sensible-terminal"
 
 # some dmenu scripts
-bindsym $mod+space exec "rofi -combi-modi window,drun,bookmark:/home/davison/.bin/rofi_bookmarks -show combi -modi combi"
+bindsym $mod+space exec "rofi -combi-modi drun,window,bookmark:/home/davison/.bin/rofi_bookmarks,project:/home/davison/.bin/rofi_vscode -show combi -modi combi"
+bindsym $mod+Shift+space exec "rofi -modi window -show window"
 # bindsym $mod+d exec "rofi -modi run -show run"
 # bindsym $mod+space exec dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -b -p "Program: "
 # bindsym $mod+Shift+w exec dmenu_win_switcher_i3
