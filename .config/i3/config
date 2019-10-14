@@ -188,8 +188,8 @@ bar {
 bindsym $mod+Return exec "alacritty || i3-sensible-terminal"
 
 # some dmenu scripts
-bindsym $mod+space exec "rofi -combi-modi drun,window,run -show combi -modi combi,window,drun,run"
-bindsym $mod+Shift+space exec "rofi -modi window -show window"
+bindsym $mod+space exec "rofi -combi-modi drun,window -show combi -modi combi,window,drun"
+bindsym $mod+Shift+space exec "rofi -combi-modi drun,window -show window -modi combi,window,drun"
 bindsym $mod+p exec "rofi -modi project:/home/davison/.bin/rofi_vscode -show project"
 bindsym $mod+b exec "rofi -modi bookmarks:/home/davison/.bin/rofi_bookmarks -show bookmarks"
 

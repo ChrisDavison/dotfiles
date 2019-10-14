@@ -6,3 +6,4 @@
 **/fzf*.fish
 fish/fishd.*
 **/fishd.*
+**/.vscode
