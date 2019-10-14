@@ -6,3 +6,13 @@ Wikipedia;https://www.wikipedia.com
 YT Subscriptions;https://www.youtube.com/feed/subscriptions
 YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
 YT Watch Later;https://www.youtube.com/playlist?list=WL
+Twitch.tv;https://twitch.tv/mcdm/videos
+Twitch - MCDM;https://twitch.tv/mcdm/videos
+Twitch - itmeJP;https://twitch.tv/itmejp/videos
+Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
+Weather - DarkSky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
+Weather - BBC;https://www.bbc.co.uk/weather/2648579
+Train Home;http://ojp.nationalrail.co.uk/service/timesandfares/GLC/RUT/today/1630/dep
+Strath Email;https://outlook.office365.com/mail/inbox
+Strath Pegasus;https://pegasus.strath.ac.uk
+Strath FMS;https://fms.strath.ac.uk/

@@ -3,7 +3,7 @@
 if [ -z "$@" ]; then
     function gen_bookmarks()
     {
-        cat ~/.bookmarks | cut -d';' -f1
+        cat ~/.bookmarks | sort | cut -d';' -f1
     }
     gen_bookmarks
 else
