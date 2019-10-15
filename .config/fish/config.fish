@@ -11,7 +11,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux BUDGET "$HOME/Dropbox/house/house-costs.txt"
+set -Ux FINANCES "$HOME/Dropbox/notes/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH

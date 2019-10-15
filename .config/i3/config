@@ -55,7 +55,7 @@ bindsym $mod+e layout toggle split
 
 # IGNORE don't use floating for now
 # toggle tiling / floating
-# bindsym $mod+Shift+space floating toggle
+bindsym $mod+Mod1+space floating toggle
 
 # # change focus between tiling / floating windows
 # bindsym $mod+space focus mode_toggle
@@ -165,7 +165,6 @@ bindsym $mod+r mode "resize"
 exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
-exec --no-startup-id compton
 exec_always --no-startup-id autorandr -c
 # exec_always --no-startup-id $(killall -q polybar; for m in $(polybar --list-monitors | cut -d":" -f1); do MONITOR=$m polybar -r example & done)
 exec --no-startup-id sh ~/.fehbg
@@ -221,6 +220,10 @@ bindsym XF86AudioNext exec playerctl next --player=spotify
 bindsym XF86AudioPrev exec playerctl prev --player=spotify
 
 bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
+
+bindsym $mod+Mod1+s sticky toggle
+bindsym $mod+Mod1+Shift+s resize set width 300 px height 169 px
+bindsym $mod+Mod1+a floating enable; resize set width 300 px height 169 px; move position center
 
 #           _           _                                           _
 # __      _(_)_ __   __| | _____      __  _ __ ___   __ _ _ __ ___ | |_

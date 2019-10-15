@@ -5,6 +5,7 @@ SETUVAR --export BUDGET_CONFIG:/home/davison/Dropbox/house/income\x2ecsv
 SETUVAR --export BUDGET_COSTS:/home/davison/Dropbox/house/costs\x2ecsv
 SETUVAR --export CODEDIR:/home/davison/code
 SETUVAR --export EDITOR:nvim
+SETUVAR --export FINANCES:/home/davison/Dropbox/notes/budget
 SETUVAR --export FZF_ALT_C_COMMAND:fd\x20\x2dt\x20d\x20\x2e\x20\x24HOME
 SETUVAR --export FZF_DEFAULT_COMMAND:rg\x20\x2d\x2dfiles\x20\x2d\x2dno\x2dignore\x20\x2d\x2dhidden\x20\x2d\x2dfollow\x20\x2d\x2dglob\x20\x22\x21\x2egit/\x2a\x22
 SETUVAR FZF_DEFAULT_OPTS:\x2d\x2dheight\x2040\x25
