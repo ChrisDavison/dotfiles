@@ -32,6 +32,7 @@ alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
+alias b="budget.py"
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"

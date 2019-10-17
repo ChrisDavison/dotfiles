@@ -16,3 +16,4 @@ Train Home;http://ojp.nationalrail.co.uk/service/timesandfares/GLC/RUT/today/163
 Strath Email;https://outlook.office365.com/mail/inbox
 Strath Pegasus;https://pegasus.strath.ac.uk
 Strath FMS;https://fms.strath.ac.uk/
+Strath Calendar;https://outlook.office365.com/calendar/view/month
