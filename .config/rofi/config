@@ -5,7 +5,7 @@ rofi.width: 50
 rofi.columns: 1
 rofi.padding: 40
 rofi.location: 0
-rofi.font: Hack 14
+rofi.font: Cascadia Code 14
 rofi.sidebar-mode: true
 rofi.color-enabled: true
 rofi.color-window: #2e3440, #2e3440, #2e3440

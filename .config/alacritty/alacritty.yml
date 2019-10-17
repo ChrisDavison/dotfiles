@@ -6,13 +6,13 @@
     #TERM: xterm-256color
 
 window:
-    dimensions: 
+    dimensions:
         columns: 0
         lines: 0
     #position:
     #    x: 0
     #    y: 0
-    padding: # Blank space around the window. Scaled by DPI. 
+    padding: # Blank space around the window. Scaled by DPI.
         x: 1
         y: 1
     dynamic_padding: true # spread padding evenly around the terminal
@@ -31,7 +31,7 @@ window:
     # Startup Mode (changes require restart)
     # May be Windowed/Maximized/Fullscreen OR SimpleFullscreen (macOS only)
     startup_mode: Windowed
-    
+
     title: Alacritty # Window title
     class: Alacritty # Window class (Linux only):
 
@@ -49,11 +49,11 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Hack
+        family: Cascadia Code
     italic:
-        family: Hack
+        family: Cascadia Code
     bold:
-        family: Hack
+        family: Cascadia Code
     size: 12.0
 
     offset:
@@ -63,7 +63,7 @@ font: # CHANGES REQUIRE RESTART
     glyph_offset: # move glyphs WITHIN their cells
         x: 0
         y: 0
-        
+
     # If the font quality on non-retina display looks bad then set
     # `use_thin_strokes` to `true` and enable font smoothing by running the
     # following command:
@@ -311,7 +311,7 @@ mouse:
     url: # Launch URLs when clicked...
         # Uses explorer (win), open (macOS), or xdg-open (linux)
         # the url is added to the command as the last parameter
-        
+
         #launcher:
         #    program: xdg-open
         #    args: []
