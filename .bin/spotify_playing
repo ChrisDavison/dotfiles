@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 
-echo "♫ `playerctl metadata --format "{{ title }} ∷ {{ artist }} ({{ album }})"` ♫"
+msg=`playerctl metadata --format "{{ title }} - {{ artist }} <{{ album }}>"`
+if [ -z "$msg" ]; then
+    echo "No music"
+else
+    status=`playerctl status`
+    echo "$status: $msg"
+fi
