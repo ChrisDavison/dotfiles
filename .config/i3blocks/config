@@ -44,9 +44,13 @@ interval=10
 #label=
 #interval=10
 
+#[battery]
+#label=B
+#interval=60
+
 [battery]
-label=B
-interval=60
+command=batrem
+interval=10
 
 [time]
 command=date '+%d %b, %H:%M'
