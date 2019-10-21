@@ -224,6 +224,8 @@ bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
 bindsym $mod+Mod1+s sticky toggle
 bindsym $mod+Mod1+Shift+s resize set width 300 px height 169 px
 bindsym $mod+Mod1+a floating enable; resize set width 300 px height 169 px; move position center
+bindsym $mod+Mod1+c exec feh $HOME/Dropbox/work/contacts.png
+
 
 #           _           _                                           _
 # __      _(_)_ __   __| | _____      __  _ __ ___   __ _ _ __ ___ | |_
@@ -236,3 +238,4 @@ for_window [class="keepassxc"] move container to workspace $ws9
 for_window [class="Anki"] floating enable
 for_window [class="spotify"] move container to workspace $ws10
 for_window [title="keybinds.png" class="feh"] floating enable
+for_window [title=".*contacts.*" class="feh"] floating enable; resize set width 600 px height 600 px; move position center

@@ -44,3 +44,6 @@ alias ltg="lt --git-ignore"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
+
+# opam configuration
+source /home/davison/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
