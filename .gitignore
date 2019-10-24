@@ -7,3 +7,4 @@
 fish/fishd.*
 **/fishd.*
 **/.vscode
+.mypy_cache/
