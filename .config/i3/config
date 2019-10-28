@@ -237,6 +237,9 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 #                                                   |___/
 for_window [class="Mendeley Desktop"] move container to workspace $ws8
 for_window [class="keepassxc"] move container to workspace $ws9
+for_window [class="Code"] move container to workspace $ws6
+for_window [class="libreoffice-writer"] move container to workspace $ws7
+for_window [class="GitKraken"] move container to workspace $ws2
 for_window [class="Anki"] floating enable; move position center
 for_window [class="spotify"] move container to workspace $ws10
 for_window [title="keybinds.png" class="feh"] floating enable; move position center
