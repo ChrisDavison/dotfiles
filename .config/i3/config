@@ -213,8 +213,8 @@ bindsym $mod+Mod1+c exec feh $HOME/Dropbox/work/contacts.png
 # | |_) | |  | | (_| | | | | |_| | | |  __/\__ \__ \
 # |_.__/|_|  |_|\__, |_| |_|\__|_| |_|\___||___/___/
 #               |___/
-bindsym --release XF86MonBrightnessDown exec bright down && pkill -RTMIN+10 i3blocks
-bindsym --release XF86MonBrightnessUp exec bright up && pkill -RTMIN+10 i3blocks
+bindsym --release XF86MonBrightnessDown exec bright.sh down && pkill -RTMIN+10 i3blocks
+bindsym --release XF86MonBrightnessUp exec bright.sh up && pkill -RTMIN+10 i3blocks
 
 #                  _ _
 #   __ _ _   _  __| (_) ___
