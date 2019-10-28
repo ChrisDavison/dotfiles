@@ -170,8 +170,8 @@ exec_always --no-startup-id autorandr -c
 exec --no-startup-id sh ~/.fehbg
 
 bar {
-    #position top
-    status_command SCRIPT_DIR=/home/davison/code/dotfiles/.config/i3blocks i3blocks -c /home/davison/code/dotfiles/.config/i3blocks/config
+    position top
+    status_command SCRIPT_DIR=/home/davison/src/github.com/chrisdavison/dotfiles/.config/i3blocks i3blocks -c /home/davison/src/github.com/chrisdavison/dotfiles/.config/i3blocks/config
     tray_output primary
     tray_padding 0
 }
