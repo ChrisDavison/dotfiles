@@ -22,7 +22,7 @@ interval=30
 signal=10
 
 [backlight]
-command=bright current
+command=bright.sh current
 interval=60
 signal=10
 
@@ -44,13 +44,13 @@ interval=10
 #label=
 #interval=10
 
-#[battery]
-#label=B
-#interval=60
-
 [battery]
-command=batrem
-interval=10
+label=B
+interval=60
+
+#[battery]
+#command=batrem
+#interval=10
 
 [time]
 command=date '+%d %b, %H:%M'
