@@ -126,7 +126,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
-export CODEDIR="$HOME/code"
+export CODEDIR="$HOME/src/github.com"
 export NOTESDIR="$HOME/Dropbox/notes"
 
 export PATH=$HOME/.vim/bundle/fzf/bin:$PATH;

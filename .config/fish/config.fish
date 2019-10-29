@@ -9,7 +9,7 @@ set -Ux FZF_DEFAULT_COMMAND 'rg --files --no-ignore --hidden --follow --glob "!.
 set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
 set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
-set -Ux CODEDIR "$HOME/code"
+set -Ux CODEDIR "$HOME/src/github.com/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux FINANCES "$HOME/Dropbox/notes/budget"
 
@@ -26,8 +26,8 @@ alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
-alias rf="repoutil fetch"
-alias rs="repoutil stat"
+alias rf="repoutil fetch $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
+alias rs="repoutil stat $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"

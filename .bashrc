@@ -6,9 +6,9 @@ set -o vi
 
 # Unique Bash version check
 if ((BASH_VERSINFO[0] < 4))
-then 
-  echo "sensible.bash: Looks like you're running an older version of Bash." 
-  echo "sensible.bash: You need at least bash-4.0 or some options will not work correctly." 
+then
+  echo "sensible.bash: Looks like you're running an older version of Bash."
+  echo "sensible.bash: You need at least bash-4.0 or some options will not work correctly."
   echo "sensible.bash: Keep your software up-to-date!"
 fi
 
@@ -135,7 +135,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.g
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
-export CODEDIR="$HOME/code"
+export CODEDIR="$HOME/src/github.com"
 export NOTESDIR="$HOME/Dropbox/notes"
 export BUDGET_CONFIG="$HOME/Dropbox/house/income.csv"
 export BUDGET_COSTS="$HOME/Dropbox/house/costs.csv"

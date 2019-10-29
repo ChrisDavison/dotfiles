@@ -1,6 +1,6 @@
 #!/bin/bash
-CODEDIR=$HOME/code
-DOTFILES=$CODEDIR/dotfiles
+CODEDIR=$HOME/src/github.com
+DOTFILES=$CODEDIR/chrisdavison/dotfiles
 
 cmd=$1
 verbose=0
@@ -21,7 +21,7 @@ _headertext(){
 }
 
 install_symlinks() {
-    install_symlinks_to_plain_files 
+    install_symlinks_to_plain_files
     install_symlinks_to_dirs
     install_symlinks_to_bins
 }
@@ -71,8 +71,10 @@ install_personal_repos () {
     _headertext "downloading my repos"
     for repo in chrisdavison-hugo learning scripts;
     do
-        [ $verbose -eq 1 ] && echo "\t$repo"
-        git clone --quiet git@github.com:chrisdavison/"$repo" $CODEDIR/"$repo" > /dev/null
+        if [ ! -d "$CODEDIR/chrisdavison/$repo" ]; then
+            [ $verbose -eq 1 ] && echo "\t$repo"
+            git clone --quiet git@github.com:chrisdavison/"$repo" $CODEDIR/chrisdavison/"$repo" > /dev/null
+        fi
     done
 }
 
@@ -80,8 +82,10 @@ install_work_repos(){
     _headertext "downloading work repos"
     for repo in cattleprod collar-outlier-removal cowhealth precisionbeef ee273 cybele-sat ;
     do
-        [ $verbose -eq 1 ] && echo "\t$repo"
-        git clone --quiet git@github.com:cidcom/"$repo" $CODEDIR/"$repo" > /dev/null
+        if [ ! -d "$CODEDIR/cidcom/$repo" ]; then
+            [ $verbose -eq 1 ] && echo "\t$repo"
+            git clone --quiet git@github.com:cidcom/"$repo" $CODEDIR/cidcom/"$repo" > /dev/null
+        fi
     done
 }
 
@@ -95,7 +99,7 @@ install_plug() {
 
     curl -fLo $HOME/$vimdir/autoload/plug.vim -s --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    
+
     mkdir -p $HOME/.config/nvim/autoload/
     cp $HOME/$vimdir/autoload/plug.vim $HOME/.config/nvim/autoload/plug.vim
 }
@@ -117,10 +121,10 @@ usage() {
 }
 
 
-case $cmd in 
-    all) 
+case $cmd in
+    all)
         _headertext "Installing everything"
-        install_symlinks 
+        install_symlinks
         install_fzf
         install_plug
         install_personal_repos
