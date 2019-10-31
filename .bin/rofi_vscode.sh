@@ -7,7 +7,6 @@ if [ -z "$@" ]; then
         find $HOME/src/github.com/cidcom -mindepth 1 -maxdepth 1 -type d -exec realpath --relative-to=$HOME {} \;
     }
     echo $(realpath --relative-to=$HOME "$HOME/Dropbox/notes/")
-    echo $(realpath --relative-to=$HOME "$HOME/Dropbox/notes/budget")
     gen_directories
 else
     if [ -d "$HOME/$@" ]; then
