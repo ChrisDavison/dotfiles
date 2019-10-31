@@ -32,6 +32,11 @@ label=HOME
 #DIR=/mnt/data
 interval=30
 
+[repounclean]
+command=/home/davison/.bin/repoutil_unclean_count.sh
+label=GIT
+interval=60
+
 [memory]
 label=M
 interval=30
