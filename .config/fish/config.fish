@@ -28,6 +28,7 @@ alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
 alias rf="repoutil fetch $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias rs="repoutil stat $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
+alias rl="repoutil list $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
@@ -36,9 +37,9 @@ alias b="budget.py"
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"
-alias ll="ls --long"
-alias la="ll -a"
-alias lt="exa --tree -L 2"
+alias ll="ls --long --group-directories-first"
+alias la="ll -a --group-directories-first"
+alias lt="exa --tree -L 2 --group-directories-first"
 alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
@@ -47,3 +48,4 @@ test -x rvm; and rvm default
 
 # opam configuration
 source /home/davison/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source /usr/share/autojump/autojump.fish

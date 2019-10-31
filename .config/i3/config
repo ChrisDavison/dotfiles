@@ -244,4 +244,5 @@ for_window [class="Anki"] floating enable; move position center
 for_window [class="spotify"] move container to workspace $ws10
 for_window [title="keybinds.png" class="feh"] floating enable; move position center
 for_window [class="Blueman-manager"] floating enable
+for_window [class="*mpv*"] floating enable
 for_window [title=".*contacts.*" class="feh"] floating enable; resize set width 600 px height 600 px
