@@ -14,7 +14,7 @@ else
     fi
     msg+=" - $artist"
     if [ ! -z "$album" ]; then
-        msg+=" <$album>$"
+        msg+=" <$album>"
     fi
     echo "$status: $msg"
 fi
