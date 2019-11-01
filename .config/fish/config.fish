@@ -15,7 +15,7 @@ set -Ux FINANCES "$HOME/Dropbox/notes/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
-set PATH $CODEDIR/scripts/ $PATH
+set PATH $CODEDIR/chrisdavison/scripts/ $PATH
 set PATH $HOME/.cargo/bin $PATH
 
 alias c="clear"
@@ -29,6 +29,7 @@ alias ipython="ipython --pprint --no-banner"
 alias rf="repoutil fetch $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias rs="repoutil stat $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias rl="repoutil list $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
+alias ru="repoutil unclean $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
