@@ -19,16 +19,23 @@ floating_modifier $mod
 bindsym $mod+q kill
 
 # change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+#bindsym $mod+h focus left
+#bindsym $mod+j focus down
+#bindsym $mod+k focus up
+#bindsym $mod+l focus right
+#bindsym $mod+Left focus left
+#bindsym $mod+Down focus down
+#bindsym $mod+Up focus up
+#bindsym $mod+Right focus right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+h exec --no-startup-id i3_fullscreen_nav.sh focus left
+bindsym $mod+j exec --no-startup-id i3_fullscreen_nav.sh focus down
+bindsym $mod+k exec --no-startup-id i3_fullscreen_nav.sh focus up
+bindsym $mod+l exec --no-startup-id i3_fullscreen_nav.sh focus right
+bindsym $mod+Left exec --no-startup-id i3_fullscreen_nav.sh focus left
+bindsym $mod+Down exec --no-startup-id i3_fullscreen_nav.sh focus down
+bindsym $mod+Up exec --no-startup-id i3_fullscreen_nav.sh focus up
+bindsym $mod+Right exec --no-startup-id i3_fullscreen_nav.sh focus right
 
 # move focused window
 bindsym $mod+Shift+h move left
@@ -187,8 +194,7 @@ bar {
 bindsym $mod+Return exec "alacritty || i3-sensible-terminal"
 
 # some dmenu scripts
-bindsym $mod+space exec "rofi -combi-modi drun,window -show combi -modi combi,window,drun"
-bindsym $mod+Shift+space exec "rofi -combi-modi drun,window -show window -modi combi,window,drun"
+bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,drun"
 bindsym $mod+p exec "rofi -modi project:/home/davison/.bin/rofi_vscode.sh -show project"
 bindsym $mod+b exec "rofi -modi bookmarks:/home/davison/.bin/rofi_bookmarks.sh -show bookmarks"
 
