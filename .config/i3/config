@@ -19,19 +19,21 @@ floating_modifier $mod
 bindsym $mod+q kill
 
 # change focus
-#bindsym $mod+h focus left
-#bindsym $mod+j focus down
-#bindsym $mod+k focus up
-#bindsym $mod+l focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 #bindsym $mod+Left focus left
 #bindsym $mod+Down focus down
 #bindsym $mod+Up focus up
 #bindsym $mod+Right focus right
 
-bindsym $mod+h exec --no-startup-id i3_fullscreen_nav.sh focus left
-bindsym $mod+j exec --no-startup-id i3_fullscreen_nav.sh focus down
-bindsym $mod+k exec --no-startup-id i3_fullscreen_nav.sh focus up
-bindsym $mod+l exec --no-startup-id i3_fullscreen_nav.sh focus right
+## DON'T USE HJKL FOR FULLSCREEN NAV
+## Use hjkl to keep windows non-fullscreen, and left/right/up/down for fullscreen
+#bindsym $mod+h exec --no-startup-id i3_fullscreen_nav.sh focus left
+#bindsym $mod+j exec --no-startup-id i3_fullscreen_nav.sh focus down
+#bindsym $mod+k exec --no-startup-id i3_fullscreen_nav.sh focus up
+#bindsym $mod+l exec --no-startup-id i3_fullscreen_nav.sh focus right
 bindsym $mod+Left exec --no-startup-id i3_fullscreen_nav.sh focus left
 bindsym $mod+Down exec --no-startup-id i3_fullscreen_nav.sh focus down
 bindsym $mod+Up exec --no-startup-id i3_fullscreen_nav.sh focus up
@@ -241,13 +243,20 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 #  \ V  V /| | | | | (_| | (_) \ V  V /  | | | | | | (_| | | | | | | |_ _
 #   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/   |_| |_| |_|\__, |_| |_| |_|\__(_)
 #                                                   |___/
-for_window [class="Mendeley Desktop"] move container to workspace $ws8
-for_window [class="keepassxc"] move container to workspace $ws9
+# Workspaces - 'Monitor 1'
+for_window [class="GitKraken"] move container to workspace $ws2
+for_window [class="Thunderbird"] move container to workspace $ws3
+for_window [class="Slack"] move container to workspace $ws3
+
+# Workspaces - 'Monitor 2 (inbuilt)'
 for_window [class="Code"] move container to workspace $ws6
 for_window [class="libreoffice-writer"] move container to workspace $ws7
-for_window [class="GitKraken"] move container to workspace $ws2
-for_window [class="Anki"] floating enable; move position center
+for_window [class="Mendeley Desktop"] move container to workspace $ws8
+for_window [class="keepassxc"] move container to workspace $ws9
 for_window [class="spotify"] move container to workspace $ws10
+
+# Other window modifications
+for_window [class="Anki"] floating enable; move position center
 for_window [title="keybinds.png" class="feh"] floating enable; move position center
 for_window [class="Blueman-manager"] floating enable
 for_window [class="*mpv*"] floating enable
