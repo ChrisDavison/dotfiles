@@ -23,17 +23,12 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
-#bindsym $mod+Left focus left
-#bindsym $mod+Down focus down
-#bindsym $mod+Up focus up
-#bindsym $mod+Right focus right
+# bindsym $mod+Left focus left
+# bindsym $mod+Down focus down
+# bindsym $mod+Up focus up
+# bindsym $mod+Right focus right
 
-## DON'T USE HJKL FOR FULLSCREEN NAV
-## Use hjkl to keep windows non-fullscreen, and left/right/up/down for fullscreen
-#bindsym $mod+h exec --no-startup-id i3_fullscreen_nav.sh focus left
-#bindsym $mod+j exec --no-startup-id i3_fullscreen_nav.sh focus down
-#bindsym $mod+k exec --no-startup-id i3_fullscreen_nav.sh focus up
-#bindsym $mod+l exec --no-startup-id i3_fullscreen_nav.sh focus right
+## Navigate through fullscreen apps
 bindsym $mod+Left exec --no-startup-id i3_fullscreen_nav.sh focus left
 bindsym $mod+Down exec --no-startup-id i3_fullscreen_nav.sh focus down
 bindsym $mod+Up exec --no-startup-id i3_fullscreen_nav.sh focus up
@@ -44,12 +39,6 @@ bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
 
 # toggle split direction
 bindsym $mod+z split toggle
@@ -69,11 +58,9 @@ bindsym $mod+Mod1+space floating toggle
 # # change focus between tiling / floating windows
 # bindsym $mod+space focus mode_toggle
 
-# focus the parent container
+# focus the parent or child containers ('ancestor' or 'descendant')
 bindsym $mod+a focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+d focus child
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -135,35 +122,16 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 
-
-
-# resize window (you can also use the mouse for that)
-mode "resize" {
-    # These bindings trigger as soon as you enter the resize mode
-
-    # Pressing left will shrink the window’s width.
-    # Pressing right will grow the window’s width.
-    # Pressing up will shrink the window’s height.
-    # Pressing down will grow the window’s height.
-    bindsym h resize shrink width 2 px or 2 ppt
-    bindsym j resize grow height 2 px or 2 ppt
-    bindsym k resize shrink height 2 px or 2 ppt
-    bindsym l resize grow width 2 px or 2 ppt
-
-    # same bindings, but for the arrow keys
-    bindsym Left resize shrink width 10 px or 10 ppt
-    bindsym Down resize grow height 10 px or 10 ppt
-    bindsym Up resize shrink height 10 px or 10 ppt
-    bindsym Right resize grow width 10 px or 10 ppt
-
-    # back to normal: Enter or Escape or $mod+r
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym $mod+r mode "default"
-}
+#                _
+#  _ __ ___  ___(_)_______
+# | '__/ _ \/ __| |_  / _ \
+# | | |  __/\__ \ |/ /  __/
+# |_|  \___||___/_/___\___|
 bindsym $mod+r mode "resize"
-
-
+bindsym $mod+Ctrl+h resize shrink width 2 px or 2 ppt
+bindsym $mod+Ctrl+j resize grow height 2 px or 2 ppt
+bindsym $mod+Ctrl+k resize shrink height 2 px or 2 ppt
+bindsym $mod+Ctrl+l resize grow width 2 px or 2 ppt
 
 #      _             _
 #  ___| |_ __ _ _ __| |_ _   _ _ __
@@ -175,7 +143,6 @@ exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
 exec_always --no-startup-id autorandr -c
-# exec_always --no-startup-id $(killall -q polybar; for m in $(polybar --list-monitors | cut -d":" -f1); do MONITOR=$m polybar -r example & done)
 exec --no-startup-id sh ~/.fehbg
 
 bar {
@@ -191,7 +158,6 @@ bar {
 # |   <  __/ |_| | |_) | | | | | (_| \__ \
 # |_|\_\___|\__, |_.__/|_|_| |_|\__,_|___/
 #           |___/
-#
 # start a terminal
 bindsym $mod+Return exec "alacritty || i3-sensible-terminal"
 
