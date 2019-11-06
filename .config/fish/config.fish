@@ -11,7 +11,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/src/github.com/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux FINANCES "$HOME/Dropbox/notes/budget"
+set -Ux FINANCES "$HOME/src/github.com/chrisdavison/knowledge/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
