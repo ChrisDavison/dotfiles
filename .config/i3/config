@@ -174,7 +174,8 @@ bindsym --whole-window $mod+i workspace prev_on_output
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
+bindsym $mod+Mod1+k exec "rofi -modi keybinds:/home/davison/.bin/rofi_keybinds.sh -show keybinds"
+#bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
 
 bindsym $mod+Mod1+s sticky toggle
 bindsym $mod+Mod1+Shift+s resize set width 300 px height 169 px
