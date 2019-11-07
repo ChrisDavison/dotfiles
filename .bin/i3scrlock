@@ -1,4 +1,12 @@
 #!/bin/bash
-scrot /tmp/screenshot.png
-convert /tmp/screenshot.png -posterize 10 -blur 0x10 /tmp/screenshotblur.png
-i3lock -i /tmp/screenshotblur.png
+# scrot /tmp/screenshot.png
+# convert /tmp/screenshot.png -posterize 10 -blur 0x10 /tmp/screenshotblur.png
+n_monitors=`polybar --list-monitors | wc -l`
+echo $n_monitors
+if [ $n_monitors -eq "2" ]; then
+    i3lock -i /tmp/screenshot.png
+elif [ $n_monitors -eq "1" ]; then
+    i3lock -i /tmp/screenshot-1monitor.png
+else
+    i3lock
+fi
