@@ -46,6 +46,6 @@
     publish="!git push -u origin $(git branch-name)"
     # Remove branch from remote
     unpublish="!git push origin :$(git branch-name)"
-
+    editmodified="!$EDITOR $(git ls-files -m -o)"
 [core]
 	excludesfile = /Users/davison/.global_ignore
