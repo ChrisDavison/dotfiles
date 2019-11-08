@@ -10,9 +10,10 @@ if [ -z "$@" ]; then
     gen_directories
 else
     if [ -d "$HOME/$@" ]; then
-        gnome-terminal -x nvim "$HOME/$@"
+        gnome-terminal --working-directory="$HOME/$@" -x nvim "$HOME/$@"
     elif [ -d "$HOME/src/github.com/$@" ]; then
-        gnome-terminal -x nvim "$HOME/src/github.com/$@"
+        gnome-terminal  --working-directory="$HOME/src/github.com/$@" -x nvim "$HOME/src/github.com/$@"
+
     else
         echo "No $project"
     fi
