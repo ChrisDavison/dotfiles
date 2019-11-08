@@ -49,11 +49,14 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Cascadia Code
+        family: Camingo Code
+        style: Regular
     italic:
-        family: Cascadia Code
+        family: Camingo Code
+        style: Italic
     bold:
-        family: Cascadia Code
+        family: Camingo Code
+        style: Bold
     size: 12.0
 
     offset:

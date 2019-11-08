@@ -25,6 +25,7 @@ alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
+alias nv="nvim.appimage"
 alias ipython="ipython --pprint --no-banner"
 alias rf="repoutil fetch $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
 alias rs="repoutil stat $HOME/src/github.com/chrisdavison $HOME/src/github.com/cidcom"
