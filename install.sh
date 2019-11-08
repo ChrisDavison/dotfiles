@@ -1,6 +1,6 @@
 #!/bin/bash
 CODEDIR=$HOME/src/github.com
-DOTFILES=$CODEDIR/chrisdavison/dotfiles
+DOTFILES=$CODEDIR/ChrisDavison/dotfiles
 
 cmd=$1
 verbose=0
@@ -69,11 +69,11 @@ install_symlinks_to_bins(){
 
 install_personal_repos () {
     _headertext "downloading my repos"
-    for repo in chrisdavison-hugo learning scripts;
+    for repo in ChrisDavison-hugo learning scripts;
     do
-        if [ ! -d "$CODEDIR/chrisdavison/$repo" ]; then
+        if [ ! -d "$CODEDIR/ChrisDavison/$repo" ]; then
             [ $verbose -eq 1 ] && echo "\t$repo"
-            git clone --quiet git@github.com:chrisdavison/"$repo" $CODEDIR/chrisdavison/"$repo" > /dev/null
+            git clone --quiet git@github.com:ChrisDavison/"$repo" $CODEDIR/ChrisDavison/"$repo" > /dev/null
         fi
     done
 }
