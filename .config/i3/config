@@ -129,8 +129,8 @@ bindsym $mod+Shift+r restart
 # |_|  \___||___/_/___\___|
 bindsym $mod+r mode "resize"
 bindsym $mod+Ctrl+h resize shrink width 2 px or 2 ppt
-bindsym $mod+Ctrl+j resize grow height 2 px or 2 ppt
-bindsym $mod+Ctrl+k resize shrink height 2 px or 2 ppt
+bindsym $mod+Ctrl+j resize shrink height 2 px or 2 ppt
+bindsym $mod+Ctrl+k resize grow height 2 px or 2 ppt
 bindsym $mod+Ctrl+l resize grow width 2 px or 2 ppt
 
 #      _             _
