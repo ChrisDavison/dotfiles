@@ -1,7 +1,7 @@
 set -Ux fish_greeting ""
 
 set -Ux EDITOR "nvim"
-set -Ux TERM xterm-256color
+# set -Ux TERM xterm-256color
 set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME/go"
 set -Ux GOBIN "$HOME/bin"
@@ -18,6 +18,7 @@ set PATH $HOME/.bin $PATH
 set PATH $CODEDIR/chrisdavison/scripts/ $PATH
 set PATH $HOME/.cargo/bin $PATH
 
+alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
 alias mv="mv -v"     # Always explain move actions

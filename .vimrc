@@ -213,6 +213,7 @@ let g:slime_target = "tmux"
 let g:rustfmt_autosave=1
 let g:is_bash=1
 let g:tex_flavor = "latex"
+let g:vimtex_compiler_progname = 'nvr'
 
 " abbreviations
 cnoreabbrev W w
@@ -322,6 +323,13 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
+nmap <leader>rn <Plug>(coc-rename)
+
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-i)
+
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -331,6 +339,7 @@ augroup vimrc
     au ColorScheme * hi! link SignColumn LineNr
     au TextChanged,InsertLeave,FocusLost * silent! wall
     au CursorHold * silent! checktime " Check for external changes to files
+    au CursorHold * silent call CocActionAsync('highlight')
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc source %
     au BufEnter .scratch set filetype=markdown
@@ -343,4 +352,5 @@ augroup vimrc
     au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     autocmd BufWritePre * call MakeNonExDir()
+    au FileType python let b:coc_root_patterns = ['.env', '.git']
 augroup END
