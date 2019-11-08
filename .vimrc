@@ -261,7 +261,7 @@ endif
 set termguicolors
 set t_Co=256
 set bg=dark
-silent! colorscheme corvine
+silent! colorscheme corvine_light
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
