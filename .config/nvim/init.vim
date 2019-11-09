@@ -152,23 +152,20 @@ elseif filereadable(expand('~/.vimrc'))
     nnoremap <leader>ev :edit ~/.vimrc<CR>
 endif
 
-" These versions are for when I don't have fzf and fzf.vim installed
-if exists(':Files') > 0  " ...if we have FZF support
-    nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
-    nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
-    nnoremap <leader>p :Files<CR>
-    nnoremap <leader>b :Buffers<CR>
-    nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
-else
-    nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
-    nnoremap <leader>es :edit ~/src/github.com/chrisdavison/scripts/**/*
-    nnoremap <leader>p :find
-    nnoremap <leader>b :ls<Cr>:b
-    nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
-    nnoremap <leader>n :edit ~/Dropbox/notes/**/*
-endif
+" nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
+" nnoremap <leader>es :edit ~/src/github.com/chrisdavison/scripts/**/*
+" nnoremap <leader>p :find
+" nnoremap <leader>b :ls<Cr>:b
+" nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
+" nnoremap <leader>n :edit ~/Dropbox/notes/**/*
+nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
+nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
+nnoremap <leader>p :Files<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
 
-nnoremap <C-n> :NERDTreeToggle<CR>
+
+nnoremap <C-n> :NERDTreeVCS<CR>
 nnoremap <silent> <CR> :nohlsearch<CR>
 
 " Use // to search visual selection
@@ -351,12 +348,15 @@ augroup vimrc
     au BufEnter *.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=none\ --atx-headers
-    au Filetype markdown nnoremap <leader>t :MarkDrawer<CR>
+    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto
+    au Filetype markdown nnoremap <buffer> <leader>t :MarkDrawer<CR>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     autocmd BufWritePre * call MakeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
+    " Only auto-wrap text while in insert mode
+    au InsertEnter *.md,*.txt set formatoptions+=a
+    au InsertLeave *.md,*.txt set formatoptions-=a
 augroup END

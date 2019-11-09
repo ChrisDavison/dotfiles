@@ -3,8 +3,9 @@
 SETUVAR --export BUDGET:/home/davison/Dropbox/house/house\x2dcosts\x2etxt
 SETUVAR --export BUDGET_CONFIG:/home/davison/Dropbox/house/income\x2ecsv
 SETUVAR --export BUDGET_COSTS:/home/davison/Dropbox/house/costs\x2ecsv
-SETUVAR --export CODEDIR:/Users/davison/src/github\x2ecom/
+SETUVAR --export CODEDIR:/home/davison/src/github\x2ecom/
 SETUVAR --export EDITOR:nvim
+SETUVAR --export FINANCES:/home/davison/src/github\x2ecom/ChrisDavison/knowledge/budget
 SETUVAR --export FZF_ALT_C_COMMAND:fd\x20\x2dt\x20d\x20\x2e\x20\x24HOME
 SETUVAR --export FZF_DEFAULT_COMMAND:rg\x20\x2d\x2dfiles\x20\x2d\x2dno\x2dignore\x20\x2d\x2dhidden\x20\x2d\x2dfollow\x20\x2d\x2dglob\x20\x22\x21\x2egit/\x2a\x22
 SETUVAR FZF_DEFAULT_OPTS:\x2d\x2dheight\x2040\x25
@@ -12,12 +13,12 @@ SETUVAR FZF_LEGACY_KEYBINDINGS:1
 SETUVAR FZF_PREVIEW_DIR_CMD:ls
 SETUVAR FZF_PREVIEW_FILE_CMD:head\x20\x2dn\x2010
 SETUVAR FZF_TMUX_HEIGHT:40\x25
-SETUVAR --export GOBIN:/Users/davison/bin
-SETUVAR --export --path GOPATH:/Users/davison/go
+SETUVAR --export GOBIN:/home/davison/bin
+SETUVAR --export --path GOPATH:/home/davison/go
 SETUVAR --export LESS:FRSX
-SETUVAR --export NOTESDIR:/Users/davison/Dropbox/notes
+SETUVAR --export NOTESDIR:/home/davison/Dropbox/notes
 SETUVAR --export TERM:xterm\x2d256color
-SETUVAR --export WORKON_HOME:/Users/davison/\x2eenvs
+SETUVAR --export WORKON_HOME:/home/davison/\x2eenvs
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
