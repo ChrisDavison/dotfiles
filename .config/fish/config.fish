@@ -53,4 +53,3 @@ test -x rvm; and rvm default
 source /home/davison/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 source /usr/share/autojump/autojump.fish
 
-alias j="autojump"
