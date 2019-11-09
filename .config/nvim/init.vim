@@ -50,7 +50,6 @@ set history=1000
 set tabpagemax=5
 set sessionoptions-=options
 set viminfo^=!
-set t_ut= " Fix issues with background color on some terminals
 set relativenumber
 set fillchars=fold:·
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
@@ -61,7 +60,7 @@ set shortmess+=c
 set signcolumn=yes
 
 set path+=**
-set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
+set statusline=%<\ %n:%f\ %m%r%y%=%(%P\ of\ %LL\ -\ %l,%c\ %)
 
 " undo (save undo history across sessions)
 set undodir=~/.undodir
@@ -132,21 +131,14 @@ Plug 'liuchengxu/vim-clap'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Scuilion/markdown-drawer'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'romainl/vim-qlist'
 
 " Themes
 Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'arzg/vim-corvine'
-Plug 'morhetz/gruvbox'
-Plug 'sonph/onehalf'
-Plug 'jacoborus/tender.vim'
-Plug 'jnurmine/Zenburn'
-Plug 'AlessandroYorba/Alduin'
-
 
 call plug#end()
-
-
                                                   
 " keybinds
 "  _  _________   ______ ___ _   _ ____  ____  
@@ -154,30 +146,33 @@ call plug#end()
 " | ' /|  _|  \ V /|  _ \| ||  \| | | | \___ \ 
 " | . \| |___  | | | |_) | || |\  | |_| |___) |
 " |_|\_\_____| |_| |____/___|_| \_|____/|____/ 
-if has('nvim')
+if filereadable(expand('~/.config/nvim/init.vim'))
     nnoremap <leader>ev :edit ~/.config/nvim/init.vim<CR>
-else
+elseif filereadable(expand('~/.vimrc'))
     nnoremap <leader>ev :edit ~/.vimrc<CR>
 endif
 
 " These versions are for when I don't have fzf and fzf.vim installed
-" nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
-" nnoremap <leader>b :ls<Cr>:b
-" nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
-" nnoremap <leader>p :find
+if exists(':Files') > 0  " ...if we have FZF support
+    nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
+    nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
+    nnoremap <leader>p :Files<CR>
+    nnoremap <leader>b :Buffers<CR>
+    nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
+else
+    nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
+    nnoremap <leader>es :edit ~/src/github.com/chrisdavison/scripts/**/*
+    nnoremap <leader>p :find
+    nnoremap <leader>b :ls<Cr>:b
+    nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
+    nnoremap <leader>n :edit ~/Dropbox/notes/**/*
+endif
 
-nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
-nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>p :Files<CR>
-nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <silent> <CR> :nohlsearch<CR>
 
 " Use // to search visual selection
 vnoremap // y/<c-r>"<CR>
-
-" =====[ Uppercase the current word (from anywhere within the <word>) ]=====
-inoremap <C-u>   <esc>mzgUiw`za
 
 nnoremap <silent> Q =ip
 
@@ -193,13 +188,13 @@ nnoremap k      gk
 nnoremap K :silent! lgrep! "\b<C-R><C-W>\b"<CR>:lw<CR>
 nnoremap <leader>g :silent! lgrep! ""<LEFT>
 
-nnoremap <leader>n :Explore ~/Dropbox/notes<CR>
-
 nmap s <Plug>(easymotion-s2)
 map <leader>j <Plug>(easymotion-j)
 map <leader>k <Plug>(easymotion-k)
 
 nnoremap <leader>md :MarkDrawer<CR>
+
+nnoremap <leader>t :TagbarToggle<CR>
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <c-c> <ESC>
@@ -210,12 +205,7 @@ let g:markdrawer_toc='full_index'
 let g:go_fmt_command="goimports"
 let g:go_version_warning=0
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
-
 let g:pymode_python = 'python3'
-let g:slime_paste_file=tempname()
-let g:slime_python_ipython = 1
-let g:slime_target = "tmux"
-
 let g:rustfmt_autosave=1
 let g:is_bash=1
 let g:tex_flavor = "latex"
@@ -260,18 +250,6 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-
-" appearance
-" when do I need termguicolours? why did I switch it off?
-" problem between vim and neovim? terminal and gui? windows vs osx?
-set termguicolors
-set t_Co=256
-set bg=dark
-silent! colorscheme corvine
-set guioptions-=m
-set guioptions-=T
-set guioptions-=r
-set guioptions-=L
 
 
 let g:tagbar_type_rust = {
@@ -339,6 +317,27 @@ omap af <Plug>(coc-funcobj-i)
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" appearance
+" when do I need termguicolours? why did I switch it off?
+" problem between vim and neovim? terminal and gui? windows vs osx?
+set termguicolors
+set t_ut= " Fix issues with background color on some terminals
+set t_Co=256
+set bg=dark
+silent! colorscheme corvine
+set guioptions-=m
+set guioptions-=T
+set guioptions-=r
+set guioptions-=L
+
 augroup vimrc
     autocmd!
     au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
@@ -353,6 +352,7 @@ augroup vimrc
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=none\ --atx-headers
+    au Filetype markdown nnoremap <leader>t :MarkDrawer<CR>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80

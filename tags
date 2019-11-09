@@ -7,27 +7,33 @@
 //	.config/nvim/init.vim	/^vnoremap \/\/ y\/<c-r>"<CR>$/;"	m
 <	.config/nvim/init.vim	/^vnoremap <      <gv$/;"	m
 <BS>	.config/nvim/init.vim	/^nnoremap <BS>   <C-^>$/;"	m
-<C-n>	.config/nvim/init.vim	/^nnoremap <C-n> :NERDTree<CR>$/;"	m
-<C-u>	.config/nvim/init.vim	/^inoremap <C-u>   <esc>mzgUiw`za$/;"	m
+<C-n>	.config/nvim/init.vim	/^nnoremap <C-n> :NERDTreeToggle<CR>$/;"	m
 <CR>	.config/nvim/init.vim	/^nnoremap <silent> <CR> :nohlsearch<CR>$/;"	m
 <S-TAB>	.config/nvim/init.vim	/^inoremap <expr><S-TAB> pumvisible() ? "\\<C-p>" : "\\<C-h>"$/;"	m
 <TAB>	.config/nvim/init.vim	/^inoremap <silent><expr> <TAB>$/;"	m
 <c-c>	.config/nvim/init.vim	/^inoremap <c-c> <ESC>$/;"	m
 <c-space>	.config/nvim/init.vim	/^inoremap <silent><expr> <c-space> coc#refresh()$/;"	m
 <cr>	.config/nvim/init.vim	/^inoremap <expr> <cr> pumvisible() ? "\\<C-y>" : "\\<C-g>u\\<CR>"$/;"	m
-<leader>b	.config/nvim/init.vim	/^nnoremap <leader>b :Buffers<CR>$/;"	m
-<leader>en	.config/nvim/init.vim	/^nnoremap <leader>en :Files ~\/src\/github.com\/chrisdavison\/knowledge<CR>$/;"	m
-<leader>es	.config/nvim/init.vim	/^nnoremap <leader>es :Files ~\/src\/github.com\/chrisdavison\/scripts<CR>$/;"	m
+<leader>b	.config/nvim/init.vim	/^    nnoremap <leader>b :Buffers<CR>$/;"	m
+<leader>b	.config/nvim/init.vim	/^    nnoremap <leader>b :ls<Cr>:b$/;"	m
+<leader>en	.config/nvim/init.vim	/^    nnoremap <leader>en :Files ~\/src\/github.com\/chrisdavison\/knowledge<CR>$/;"	m
+<leader>en	.config/nvim/init.vim	/^    nnoremap <leader>en :edit ~\/src\/github.com\/chrisdavison\/knowledge\/**\/*$/;"	m
+<leader>es	.config/nvim/init.vim	/^    nnoremap <leader>es :Files ~\/src\/github.com\/chrisdavison\/scripts<CR>$/;"	m
+<leader>es	.config/nvim/init.vim	/^    nnoremap <leader>es :edit ~\/src\/github.com\/chrisdavison\/scripts\/**\/*$/;"	m
 <leader>ev	.config/nvim/init.vim	/^    nnoremap <leader>ev :edit ~\/.config\/nvim\/init.vim<CR>$/;"	m
 <leader>ev	.config/nvim/init.vim	/^    nnoremap <leader>ev :edit ~\/.vimrc<CR>$/;"	m
 <leader>g	.config/nvim/init.vim	/^nnoremap <leader>g :silent! lgrep! ""<LEFT>$/;"	m
 <leader>j	.config/nvim/init.vim	/^map <leader>j <Plug>(easymotion-j)$/;"	m
 <leader>k	.config/nvim/init.vim	/^map <leader>k <Plug>(easymotion-k)$/;"	m
 <leader>md	.config/nvim/init.vim	/^nnoremap <leader>md :MarkDrawer<CR>$/;"	m
-<leader>n	.config/nvim/init.vim	/^nnoremap <leader>n :Explore ~\/Dropbox\/notes<CR>$/;"	m
-<leader>p	.config/nvim/init.vim	/^nnoremap <leader>p :Files<CR>$/;"	m
+<leader>n	.config/nvim/init.vim	/^    nnoremap <leader>n :Files ~\/Dropbox\/notes\/<CR>$/;"	m
+<leader>n	.config/nvim/init.vim	/^    nnoremap <leader>n :edit ~\/Dropbox\/notes\/**\/*$/;"	m
+<leader>p	.config/nvim/init.vim	/^    nnoremap <leader>p :Files<CR>$/;"	m
+<leader>p	.config/nvim/init.vim	/^    nnoremap <leader>p :find$/;"	m
 <leader>rn	.config/nvim/init.vim	/^nmap <leader>rn <Plug>(coc-rename)$/;"	m
+<leader>s	.config/nvim/init.vim	/^    nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>$/;"	m
 <leader>s	.config/nvim/init.vim	/^nnoremap <leader>s  :Scratch<CR>$/;"	m
+<leader>t	.config/nvim/init.vim	/^nnoremap <leader>t :TagbarToggle<CR>$/;"	m
 >	.config/nvim/init.vim	/^vnoremap >      >gv$/;"	m
 Bd	.config/nvim/init.vim	/^command! Bd bp|bd #$/;"	c
 CD	.config/nvim/init.vim	/^command! CD exec "cd ".expand("%:h")$/;"	c
@@ -103,9 +109,6 @@ g:netrw_list_hide	.config/nvim/init.vim	/^let g:netrw_list_hide= '.*\\.swp$,\\.D
 g:plugs_order	.config/nvim/autoload/plug.vim	/^  let g:plugs_order = get(g:, 'plugs_order', keys(g:plugs))$/;"	v
 g:pymode_python	.config/nvim/init.vim	/^let g:pymode_python = 'python3'$/;"	v
 g:rustfmt_autosave	.config/nvim/init.vim	/^let g:rustfmt_autosave=1$/;"	v
-g:slime_paste_file	.config/nvim/init.vim	/^let g:slime_paste_file=tempname()$/;"	v
-g:slime_python_ipython	.config/nvim/init.vim	/^let g:slime_python_ipython = 1$/;"	v
-g:slime_target	.config/nvim/init.vim	/^let g:slime_target = "tmux"$/;"	v
 g:tagbar_type_rust	.config/nvim/init.vim	/^let g:tagbar_type_rust = {$/;"	v
 g:tex_flavor	.config/nvim/init.vim	/^let g:tex_flavor = "latex"$/;"	v
 g:vim_markdown_folding_disabled	.config/nvim/init.vim	/^let g:vim_markdown_folding_disabled = 1$/;"	v
@@ -215,6 +218,7 @@ section	.config/nvim/autoload/plug.vim	/^function! s:section(flags)$/;"	f
 set_tz	.config/i3blocks/time	/^sub set_tz {$/;"	s
 shellesc_cmd	.config/nvim/autoload/plug.vim	/^function! s:shellesc_cmd(arg, script)$/;"	f
 shellesc_ps1	.config/nvim/autoload/plug.vim	/^function! s:shellesc_ps1(arg)$/;"	f
+show_documentation	.config/nvim/init.vim	/^function! s:show_documentation()$/;"	f
 snapshot	.config/nvim/autoload/plug.vim	/^function! s:snapshot(force, ...) abort$/;"	f
 source	.config/nvim/autoload/plug.vim	/^function! s:source(from, ...)$/;"	f
 spawn	.config/nvim/autoload/plug.vim	/^function! s:spawn(name, cmd, opts)$/;"	f
