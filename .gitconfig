@@ -49,3 +49,6 @@
     editmodified="!$EDITOR $(git ls-files -m -o)"
 [core]
 	excludesfile = /Users/davison/.global_ignore
+	commitGraph = true
+[wc]
+	writeCommitGraph = true
