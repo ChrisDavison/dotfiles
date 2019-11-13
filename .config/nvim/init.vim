@@ -3,6 +3,52 @@ let mapleader=" "
 syntax enable
 filetype plugin indent on
 
+" ------------------------------------------------------------------------------
+" plugins, managed with github.com/junegunn/plug.vim
+" ------------------------------------------------------------------------------
+call plug#begin('~/.vim/3rd_party')
+Plug 'fatih/vim-go'
+Plug 'lervag/vimtex'
+Plug 'rust-lang/rust.vim'
+Plug 'vim-jp/vim-cpp'
+Plug 'vim-python/python-syntax'
+Plug 'plasticboy/vim-markdown'
+Plug 'cespare/vim-toml'
+
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
+Plug 'kana/vim-textobj-user'  " Custom text objects
+Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
+Plug 'tpope/vim-commentary'   " Comment modification/text objects
+Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'      " Easily navigate directories
+Plug 'wellle/targets.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'Shougo/echodoc'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'majutsushi/tagbar'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Scuilion/markdown-drawer'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'romainl/vim-qlist'
+Plug 'junegunn/rainbow_parentheses.vim'
+
+" Themes
+Plug 'tomasr/molokai'
+Plug 'junegunn/seoul256.vim'
+Plug 'arzg/vim-corvine'
+
+call plug#end()
+
+" ------------------------------------------------------------------------------
+" settings
+" ------------------------------------------------------------------------------
 set nocompatible
 set autochdir
 set wrap lbr
@@ -15,7 +61,7 @@ set smarttab
 set nrformats-=octal
 set breakindent
 set breakindentopt+=shift:2,sbr
-set number 
+set number
 set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
 set hidden
 set ruler
@@ -40,6 +86,7 @@ set directory=~/.temp,.
 set wildmenu
 set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
+set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
@@ -91,89 +138,68 @@ if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
-" plugins
-"  ____  _    _   _  ____ ___ _   _ ____  
-" |  _ \| |  | | | |/ ___|_ _| \ | / ___| 
-" | |_) | |  | | | | |  _ | ||  \| \___ \ 
-" |  __/| |__| |_| | |_| || || |\  |___) |
-" |_|   |_____\___/ \____|___|_| \_|____/ 
-call plug#begin('~/.vim/3rd_party')
-Plug 'JuliaEditorSupport/julia-vim'
-Plug 'fatih/vim-go'
-Plug 'lervag/vimtex'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-jp/vim-cpp'
-Plug 'vim-python/python-syntax'
-Plug 'plasticboy/vim-markdown'
-Plug 'elixir-editors/vim-elixir'
-Plug 'cespare/vim-toml'
+" ------------------------------------------------------------------------------
+" appearance
+" ------------------------------------------------------------------------------
+" when do I need termguicolours? why did I switch it off?
+" problem between vim and neovim? terminal and gui? windows vs osx?
+set termguicolors
+set t_ut= " Fix issues with background color on some terminals
+set t_Co=256
+set bg=dark
+silent! colorscheme molokai
+set guioptions-=m
+set guioptions-=T
+set guioptions-=r
+set guioptions-=L
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'dahu/vim-fanfingtastic'  " Let f/F work across line endings
-Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
-Plug 'kana/vim-textobj-user'  " Custom text objects
-Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
-Plug 'tpope/vim-commentary'   " Comment modification/text objects
-Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'      " Easily navigate directories
-Plug 'wellle/targets.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'Shougo/echodoc'
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'mbbill/undotree'
-Plug 'majutsushi/tagbar'
-Plug 'liuchengxu/vim-clap'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'Scuilion/markdown-drawer'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'romainl/vim-qlist'
 
-" Themes
-Plug 'tomasr/molokai'
-Plug 'junegunn/seoul256.vim'
-Plug 'arzg/vim-corvine'
+" ------------------------------------------------------------------------------
+" settings for plugins
+" ------------------------------------------------------------------------------
+let g:markdrawer_toc='full_index'
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
+let g:go_fmt_command="goimports"
+let g:go_version_warning=0
+let g:pymode_python = 'python3'
+let g:rustfmt_autosave=1
+let g:is_bash=1
+let g:tex_flavor = "latex"
+let g:vimtex_compiler_progname = 'nvr'
+let g:echodoc#enable_at_startup=1
+let g:echodoc#type = 'signature'
+let g:vim_markdown_folding_disabled = 1
+let g:tagbar_type_rust = {
+    \ 'ctagstype' : 'rust',
+    \ 'kinds' : [
+        \'T:types,type definitions',
+        \'f:functions,function definitions',
+        \'g:enum,enumeration names',
+        \'s:structure names',
+        \'m:modules,module names',
+        \'c:consts,static constants',
+        \'t:traits',
+        \'i:impls,trait implementations',
+    \]
+    \}
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
 
-call plug#end()
-                                                  
-" keybinds
-"  _  _________   ______ ___ _   _ ____  ____  
-" | |/ / ____\ \ / / __ )_ _| \ | |  _ \/ ___| 
-" | ' /|  _|  \ V /|  _ \| ||  \| | | | \___ \ 
-" | . \| |___  | | | |_) | || |\  | |_| |___) |
-" |_|\_\_____| |_| |____/___|_| \_|____/|____/ 
+
+" ------------------------------------------------------------------------------
+"  keybinds
+" ------------------------------------------------------------------------------
+"  keybinds for builtin functionality
 if filereadable(expand('~/.config/nvim/init.vim'))
     nnoremap <leader>ev :edit ~/.config/nvim/init.vim<CR>
 elseif filereadable(expand('~/.vimrc'))
     nnoremap <leader>ev :edit ~/.vimrc<CR>
 endif
 
-" nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
-" nnoremap <leader>es :edit ~/src/github.com/chrisdavison/scripts/**/*
-" nnoremap <leader>p :find
-" nnoremap <leader>b :ls<Cr>:b
-" nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
-" nnoremap <leader>n :edit ~/Dropbox/notes/**/*
-nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
-nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
-nnoremap <leader>p :Files<CR>
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
-
-
-nnoremap <C-n> :NERDTreeVCS<CR>
-nnoremap <silent> <CR> :nohlsearch<CR>
-
 " Use // to search visual selection
 vnoremap // y/<c-r>"<CR>
 
 nnoremap <silent> Q =ip
-
-" =====[ Generic useful stuff ]=====
 nnoremap <BS>   <C-^>
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
@@ -181,41 +207,43 @@ vnoremap <      <gv
 vnoremap >      >gv
 nnoremap j      gj
 nnoremap k      gk
+nnoremap Y y$
+nnoremap <silent> <CR> :nohlsearch<CR>
 
-nnoremap K :silent! lgrep! "\b<C-R><C-W>\b"<CR>:lw<CR>
-nnoremap <leader>g :silent! lgrep! ""<LEFT>
+" Close quickfix or location window
+nnoremap <leader>c :cclose<bar>lclose<CR>
+
+" keybinds for installed plugins
+nnoremap <leader>en :Files! ~/src/github.com/ChrisDavison/knowledge<CR>
+nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
+nnoremap <leader>el :NERDTree ~/src/github.com/ChrisDavison/logbook/2019<CR>
+nnoremap <leader>p :Files!<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>n :Files! ~/Dropbox/notes/<CR>
+
+nnoremap <C-n> :NERDTreeVCS<CR>
+
 
 nmap s <Plug>(easymotion-s2)
 map <leader>j <Plug>(easymotion-j)
 map <leader>k <Plug>(easymotion-k)
 
-nnoremap <leader>md :MarkDrawer<CR>
-
-nnoremap <leader>t :TagbarToggle<CR>
+" Readline-style keybinds in the command line
+cnoremap <C-A> <Home>
+cnoremap <C-B> <Left>
+cnoremap <expr> <C-D> getcmdpos()>strlen(getcmdline())?"\<Lt>C-D>":"\<Lt>Del>"
+cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
+cnoremap        <M-b> <S-Left>
+cnoremap        <M-f> <S-Right>
+silent! exe "set <S-Left>=\<Esc>b"
+silent! exe "set <S-Right>=\<Esc>f"
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <c-c> <ESC>
 
 nnoremap <leader>md :MarkDrawer<CR>
-let g:markdrawer_toc='full_index'
+nnoremap <leader>t :TagbarToggle<CR>
 
-let g:go_fmt_command="goimports"
-let g:go_version_warning=0
-let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
-let g:pymode_python = 'python3'
-let g:rustfmt_autosave=1
-let g:is_bash=1
-let g:tex_flavor = "latex"
-let g:vimtex_compiler_progname = 'nvr'
-
-" abbreviations
-cnoreabbrev W w
-cnoreabbrev Qa qa
-cnoreabbrev E e
-cnoreabbrev Q! q!
-
-iabbrev meanstd μ±σ
-iabbrev SALS **See also**:
 
 " custom commands
 command! CopyFilename exec "@+=expand(\"%\")"
@@ -230,47 +258,35 @@ command! FindWord exec "Rg " . expand("<cword>")
 
 nnoremap <leader>s  :Scratch<CR>
 
+" ------------------------------------------------------------------------------
+" :MakeNonExistentDir | try to make all parent directories of a new buffer
+" ------------------------------------------------------------------------------
 " make nonexistent directories on write
-function! MakeNonExDir()
+function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
     endif
 endfunction
+command! MakeNonExistentDir call s:makeNonExDir()
 
 " grep / ripgrep
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-
     command! -bang -nargs=* Rg
-                \ call fzf#vim#grep(
-                \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1, 
-                \ fzf#vim#with_preview('right:50%:hidden', '?'),
-                \ <bang>0)
+        \ call fzf#vim#grep(
+        \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+        \ fzf#vim#with_preview('right:50%:hidden', '?'),
+        \ <bang>0)
 endif
 
-
-let g:tagbar_type_rust = {
-    \ 'ctagstype' : 'rust',
-    \ 'kinds' : [
-        \'T:types,type definitions',
-        \'f:functions,function definitions',
-        \'g:enum,enumeration names',
-        \'s:structure names',
-        \'m:modules,module names',
-        \'c:consts,static constants',
-        \'t:traits',
-        \'i:impls,trait implementations',
-    \]
-    \}
-
-let g:echodoc#enable_at_startup=1
-let g:echodoc#type = 'signature'
-
-let g:vim_markdown_folding_disabled = 1
-" Run autocommands at the end of vimrc, to use any previously defined
-" functions
+" ------------------------------------------------------------------------------
+" highlight non-ascii characters in current buffer
+" ------------------------------------------------------------------------------
 highlight nonascii guibg=Red ctermbg=1 term=standout
 
+" ------------------------------------------------------------------------------
+" keybinds for Coc.nvim, the completion engine
+" ------------------------------------------------------------------------------
 " coc.nvim...?
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
@@ -311,6 +327,8 @@ xmap af <Plug>(coc-funcobj-i)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-i)
 
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -322,19 +340,48 @@ function! s:show_documentation()
   endif
 endfunction
 
-" appearance
-" when do I need termguicolours? why did I switch it off?
-" problem between vim and neovim? terminal and gui? windows vs osx?
-set termguicolors
-set t_ut= " Fix issues with background color on some terminals
-set t_Co=256
-set bg=dark
-silent! colorscheme corvine
-set guioptions-=m
-set guioptions-=T
-set guioptions-=r
-set guioptions-=L
+" ----------------------------------------------------------------------------
+" EX | chmod +x
+" ----------------------------------------------------------------------------
+command! EX if !empty(expand('%'))
+         \|   write
+         \|   call system('chmod +x '.expand('%'))
+         \|   silent e
+         \| else
+         \|   echohl WarningMsg
+         \|   echo 'Save the file first'
+         \|   echohl None
+         \| endif
 
+" ---------------------------------------------------------
+" :Root | Change dir to the root of the Git repository
+" ---------------------------------------------------------
+function! s:root()
+  let root = systemlist('git rev-parse --show-toplevel')[0]
+  if v:shell_error
+    echo 'Not in git repo'
+  else
+    execute 'lcd' root
+    echo 'Changed directory to: '.root
+  endif
+endfunction
+command! Root call s:root()
+
+
+" ------------------------------------------------------------------------------ 
+" abbreviations
+" ------------------------------------------------------------------------------ 
+cnoreabbrev W w
+cnoreabbrev Qa qa
+cnoreabbrev E e
+cnoreabbrev Q! q!
+
+iabbrev meanstd μ±σ
+iabbrev SALS **See also**:
+
+" ------------------------------------------------------------------------------
+" autocommands
+" ------------------------------------------------------------------------------
 augroup vimrc
     autocmd!
     au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
@@ -348,15 +395,13 @@ augroup vimrc
     au BufEnter *.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto
+    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown nnoremap <buffer> <leader>t :MarkDrawer<CR>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
-    autocmd BufWritePre * call MakeNonExDir()
+    autocmd BufWritePre * call s:makeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
-    " Only auto-wrap text while in insert mode
-    au InsertEnter *.md,*.txt set formatoptions+=a
-    au InsertLeave *.md,*.txt set formatoptions-=a
+    au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
 augroup END
