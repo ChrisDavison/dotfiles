@@ -2,7 +2,7 @@
 if [ -z "$@" ]; then
     function gen_keybinds()
     {
-        ls -1 ~/src/github.com/chrisdavison/dotfiles/keybind-helpers | rg ".md" | sort | cut -d'.' -f1
+        ls -1 ~/src/github.com/ChrisDavison/dotfiles/keybind-helpers | rg ".md" | sort | cut -d'.' -f1
     }
     gen_keybinds
 else
