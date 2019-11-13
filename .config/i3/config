@@ -147,7 +147,7 @@ exec --no-startup-id sh ~/.fehbg
 
 bar {
     position top
-    status_command SCRIPT_DIR=/home/davison/src/github.com/chrisdavison/dotfiles/.config/i3blocks i3blocks -c /home/davison/src/github.com/chrisdavison/dotfiles/.config/i3blocks/config
+    status_command SCRIPT_DIR=/home/davison/src/github.com/ChrisDavison/dotfiles/.config/i3blocks i3blocks -c /home/davison/src/github.com/ChrisDavison/dotfiles/.config/i3blocks/config
     tray_output primary
     tray_padding 0
 }
