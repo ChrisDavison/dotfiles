@@ -147,7 +147,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme molokai
+silent! colorscheme seoul256
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
@@ -404,4 +404,5 @@ augroup vimrc
     autocmd BufWritePre * call s:makeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
+    au FileType markdown set spell spelllang=en_gb
 augroup END
