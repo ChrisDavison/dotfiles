@@ -197,7 +197,7 @@ nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
 
 nnoremap <C-n> :NERDTreeVCS<CR>
 
-nmap s <Plug>(easymotion-s2)
+nmap s <Plug>(easymotion-s)
 map <leader>j <Plug>(easymotion-j)
 map <leader>k <Plug>(easymotion-k)
 
