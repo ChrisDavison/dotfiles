@@ -1,49 +1,46 @@
 let mapleader=" "
 
-syntax enable
-filetype plugin indent on
-
 " ------------------------------------------------------------------------------
 " plugins, managed with github.com/junegunn/plug.vim
 " ------------------------------------------------------------------------------
 call plug#begin('~/.vim/3rd_party')
+" languages
+Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
+Plug 'plasticboy/vim-markdown'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
-Plug 'plasticboy/vim-markdown'
-Plug 'cespare/vim-toml'
-
+" utility
+Plug 'airblade/vim-gitgutter'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
 Plug 'kana/vim-textobj-user'  " Custom text objects
-Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'majutsushi/tagbar'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'romainl/vim-qlist'
+Plug 'scrooloose/nerdtree'
+Plug 'Scuilion/markdown-drawer'
+Plug 'Shougo/echodoc'
 Plug 'tpope/vim-commentary'   " Comment modification/text objects
+Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      " Easily navigate directories
 Plug 'wellle/targets.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'Shougo/echodoc'
-Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'majutsushi/tagbar'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'Scuilion/markdown-drawer'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'romainl/vim-qlist'
-Plug 'junegunn/rainbow_parentheses.vim'
-
 " Themes
 Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'arzg/vim-corvine'
-
 call plug#end()
 
 " ------------------------------------------------------------------------------
@@ -54,19 +51,12 @@ set autochdir
 set wrap lbr
 let &showbreak = '>>'
 set cpo+=n
-set autoindent
-set backspace=indent,eol,start
-set complete-=i
-set smarttab
 set nrformats-=octal
 set breakindent
 set breakindentopt+=shift:2,sbr
 set number
 set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
 set hidden
-set ruler
-set nospell
-set nofoldenable  " OR foldenable foldlevelstart=0
 set updatetime=300 " Write a swap file after 1 second
 set cmdheight=2
 set colorcolumn=0
@@ -83,20 +73,13 @@ set nowritebackup
 set backupcopy=yes
 set backupdir=~/.temp,.
 set directory=~/.temp,.
-set wildmenu
 set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
 set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
-set laststatus=2
 set conceallevel=2
-set formatoptions+=j  "Delete comment char when joining lines
-set history=1000
-set tabpagemax=5
-set sessionoptions-=options
-set viminfo^=!
 set relativenumber
 set fillchars=fold:·
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
@@ -117,21 +100,14 @@ set undofile
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
-elseif executable('/usr/bin/fish')
-    set shell=/usr/bin/fish
-elseif executable('/usr/bin/zsh')
-    set shell=/usr/bin/zsh
-elseif executable('/usr/bin/bash')
-    set shell=/usr/bin/bash
-elseif executable('/bin/bash')
-    set shell=/bin/bash
 else
-    echom "No valid shell!"
-endif
-
-" CONDITIONAL SETTINGS / RANDOM STUFF
-if has('path_extra')
-    setglobal tags-=./tags tags-=./tags; tags^=./tags;
+    let shells=['/usr/bin/fish', '/usr/bin/zsh', '/usr/bin/bash', '/bin/bash']
+    for possibleshell in shells
+        if executable(possibleshell)
+            exec "set shell=".possibleshell
+            break
+        endif
+    endfor
 endif
 
 if has('nvim')
@@ -152,7 +128,6 @@ set guioptions-=m
 set guioptions-=T
 set guioptions-=r
 set guioptions-=L
-
 
 " ------------------------------------------------------------------------------
 " settings for plugins
@@ -185,14 +160,13 @@ let g:tagbar_type_rust = {
 let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 
-
 " ------------------------------------------------------------------------------
 "  keybinds
 " ------------------------------------------------------------------------------
 "  keybinds for builtin functionality
-if filereadable(expand('~/.config/nvim/init.vim'))
+if has('nvim')
     nnoremap <leader>ev :edit ~/.config/nvim/init.vim<CR>
-elseif filereadable(expand('~/.vimrc'))
+else
     nnoremap <leader>ev :edit ~/.vimrc<CR>
 endif
 
@@ -214,15 +188,14 @@ nnoremap <silent> <CR> :nohlsearch<CR>
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
 " keybinds for installed plugins
-nnoremap <leader>en :Files! ~/src/github.com/ChrisDavison/knowledge<CR>
-nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
+nnoremap <leader>en :Files ~/src/github.com/ChrisDavison/knowledge<CR>
+nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :NERDTree ~/src/github.com/ChrisDavison/logbook/2019<CR>
-nnoremap <leader>p :Files!<CR>
+nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>n :Files! ~/Dropbox/notes/<CR>
+nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
 
 nnoremap <C-n> :NERDTreeVCS<CR>
-
 
 nmap s <Plug>(easymotion-s2)
 map <leader>j <Plug>(easymotion-j)
@@ -244,24 +217,31 @@ inoremap <c-c> <ESC>
 nnoremap <leader>md :MarkDrawer<CR>
 nnoremap <leader>t :TagbarToggle<CR>
 
-
 " custom commands
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
-command! Bd bp|bd #
-command! Wd write|Bd
-command! Scratch edit ~/.scratch | normal G
 command! CD exec "cd ".expand("%:h")
-command! RMD exec "!rm ".expand("%") | bp | bd #
-command! FMT exec "silent!normal mzgg=G`zmzzz"
 command! FindWord exec "Rg " . expand("<cword>")
 
+" ------------------------------------------------------------------------------
+" :Bd | Delete buffer and replace with 'alternate' buffer
+" ------------------------------------------------------------------------------
+command! Bd bp|bd #
+
+" ------------------------------------------------------------------------------
+" :Scratch | Open a 'scratch' buffer
+" ------------------------------------------------------------------------------
+command! Scratch edit ~/.scratch | normal G
 nnoremap <leader>s  :Scratch<CR>
+
+" ------------------------------------------------------------------------------
+" :FMT | Execute 'equalprg' on entire buffer, remembering position
+" ------------------------------------------------------------------------------ 
+command! FMT exec "silent!normal mzgg=G`zmzzz"
 
 " ------------------------------------------------------------------------------
 " :MakeNonExistentDir | try to make all parent directories of a new buffer
 " ------------------------------------------------------------------------------
-" make nonexistent directories on write
 function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
@@ -341,7 +321,7 @@ function! s:show_documentation()
 endfunction
 
 " ----------------------------------------------------------------------------
-" EX | chmod +x
+" :EX | chmod +x
 " ----------------------------------------------------------------------------
 command! EX if !empty(expand('%'))
          \|   write
@@ -367,7 +347,6 @@ function! s:root()
 endfunction
 command! Root call s:root()
 
-
 " ------------------------------------------------------------------------------ 
 " abbreviations
 " ------------------------------------------------------------------------------ 
@@ -385,6 +364,7 @@ iabbrev SALS **See also**:
 augroup vimrc
     autocmd!
     au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
+    au BufReadPost * RainbowParentheses
     au ColorScheme * hi! link SignColumn LineNr
     au TextChanged,InsertLeave,FocusLost * silent! wall
     au CursorHold * silent! checktime " Check for external changes to files
@@ -404,5 +384,5 @@ augroup vimrc
     autocmd BufWritePre * call s:makeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
-    au FileType markdown set spell spelllang=en_gb
+    au FileType markdown setlocal spell spelllang=en_gb
 augroup END
