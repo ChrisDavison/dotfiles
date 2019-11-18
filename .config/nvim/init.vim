@@ -384,5 +384,4 @@ augroup vimrc
     autocmd BufWritePre * call s:makeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
-    au FileType markdown setlocal spell spelllang=en_gb
 augroup END
