@@ -3,7 +3,7 @@
 if [ -z "$@" ]; then
     function gen_directories()
     {
-        find $HOME/src/github.com/chrisdavison -mindepth 1 -maxdepth 1 -type d -exec realpath --relative-to=$HOME/src/github.com/ {} \;
+        find $HOME/src/github.com/ChrisDavison -mindepth 1 -maxdepth 1 -type d -exec realpath --relative-to=$HOME/src/github.com/ {} \;
         find $HOME/src/github.com/cidcom -mindepth 1 -maxdepth 1 -type d -exec realpath --relative-to=$HOME/src/github.com/ {} \;
     }
     echo $(realpath --relative-to=$HOME "$HOME/Dropbox/notes/")
