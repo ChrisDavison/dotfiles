@@ -4,9 +4,9 @@
 n_monitors=`polybar --list-monitors | wc -l`
 echo $n_monitors
 if [ $n_monitors -eq "2" ]; then
-    i3lock -i /tmp/screenshot.png
+    i3lock -i /home/davison/Dropbox/wallpapers/lockscreen-dual.png
 elif [ $n_monitors -eq "1" ]; then
-    i3lock -i /tmp/screenshot-1monitor.png
+    i3lock -i /home/davison/Dropbox/wallpapers/lockscreen.png
 else
     i3lock
 fi
