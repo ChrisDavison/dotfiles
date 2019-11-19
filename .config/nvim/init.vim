@@ -28,7 +28,6 @@ Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-qlist'
 Plug 'scrooloose/nerdtree'
-Plug 'Scuilion/markdown-drawer'
 Plug 'Shougo/echodoc'
 Plug 'tpope/vim-commentary'   " Comment modification/text objects
 Plug 'tpope/vim-sensible'
@@ -132,8 +131,9 @@ set guioptions-=L
 " ------------------------------------------------------------------------------
 " settings for plugins
 " ------------------------------------------------------------------------------
-let g:markdrawer_toc='full_index'
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_toc_autofit = 1
 let g:go_fmt_command="goimports"
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
@@ -143,7 +143,6 @@ let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type = 'signature'
-let g:vim_markdown_folding_disabled = 1
 let g:tagbar_type_rust = {
     \ 'ctagstype' : 'rust',
     \ 'kinds' : [
@@ -214,7 +213,6 @@ silent! exe "set <S-Right>=\<Esc>f"
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <c-c> <ESC>
 
-nnoremap <leader>md :MarkDrawer<CR>
 nnoremap <leader>t :TagbarToggle<CR>
 
 " custom commands
@@ -376,7 +374,8 @@ augroup vimrc
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
-    au Filetype markdown nnoremap <buffer> <leader>t :MarkDrawer<CR>
+    au Filetype markdown nnoremap <buffer> <leader>t :Toc<CR>
+    au Filetype markdown nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
