@@ -221,6 +221,11 @@ command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! CD exec "cd ".expand("%:h")
 command! FindWord exec "Rg " . expand("<cword>")
 
+function s:note(fn)
+    exec "e ~/Dropbox/notes/" . a:fn . ".md" 
+endfunction
+command! -nargs=1 Note call s:note(<args>)
+
 " ------------------------------------------------------------------------------
 " :Bd | Delete buffer and replace with 'alternate' buffer
 " ------------------------------------------------------------------------------
@@ -236,6 +241,7 @@ nnoremap <leader>s  :Scratch<CR>
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
 " ------------------------------------------------------------------------------ 
 command! FMT exec "silent!normal mzgg=G`zmzzz"
+nnoremap <leader>f :FMT<CR>
 
 " ------------------------------------------------------------------------------
 " :MakeNonExistentDir | try to make all parent directories of a new buffer
