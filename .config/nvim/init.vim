@@ -84,7 +84,7 @@ set fillchars=fold:·
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
 " suppress 'match x of y', 'only match'... etc
-set shortmess+=c
+set shortmess=a
 
 set signcolumn=yes
 
