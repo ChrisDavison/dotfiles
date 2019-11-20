@@ -27,23 +27,23 @@ interval=60
 signal=10
 
 # Disk usage
-[disk]
-label=HOME
-#DIR=/mnt/data
-interval=30
+#[disk]
+#label=HOME
+##DIR=/mnt/data
+#interval=30
 
 [repounclean]
 command=/home/davison/.bin/repoutil_unclean_count.sh
 label=GIT
 interval=60
 
-[memory]
-label=M
-interval=30
+# [memory]
+# label=M
+# interval=30
 
-[cpu_usage]
-label=C
-interval=10
+# [cpu_usage]
+# label=C
+# interval=10
 
 #[temperature]
 #label=
@@ -58,5 +58,5 @@ interval=60
 #interval=10
 
 [time]
-command=date '+%d %b, %H:%M'
+command=date '+%Y/%m/%d %H:%M'
 interval=60
