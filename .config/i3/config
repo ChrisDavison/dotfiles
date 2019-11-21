@@ -2,7 +2,7 @@
 #
 # Mod1 = alt, Mod4 = win
 set $mod Mod4
-gaps inner 10 
+gaps inner 10
 gaps outer 0
 smart_gaps on
 smart_borders on
@@ -166,8 +166,8 @@ bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,d
 bindsym $mod+b exec "rofi -modi bookmarks:/home/davison/.bin/rofi_bookmarks.sh -show bookmarks"
 
 # Choose vscode or nvim to open a project
-# bindsym $mod+p exec "rofi -modi vscode:/home/davison/.bin/rofi_vscode.sh -show vscode"
-bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
+bindsym $mod+p exec "rofi -modi vscode:/home/davison/.bin/rofi_vscode.sh -show vscode"
+# bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
 
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
