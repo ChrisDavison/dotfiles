@@ -4,8 +4,8 @@ BBC News;https://bbc.co.uk/news
 Youtube;https://www.youtube.com
 Wikipedia;https://www.wikipedia.com
 YT Subscriptions;https://www.youtube.com/feed/subscriptions
-YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
-YT Watch Later;https://www.youtube.com/playlist?list=WL
+YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc&disable_polymer=True
+YT Watch Later;https://www.youtube.com/playlist?list=WL&disable_polymer=True
 Twitch.tv;https://twitch.tv/mcdm/videos
 Twitch - MCDM;https://twitch.tv/mcdm/videos
 Twitch - itmeJP;https://twitch.tv/itmejp/videos
