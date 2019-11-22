@@ -88,6 +88,9 @@ bindsym $mod+9 workspace $ws9
 bindsym $mod+0 workspace $ws10
 
 set $internal eDP1
+# The direct HDMI feed reports typically as DP3
+# while my Dell hub reports as DP1
+# set $external DP3
 set $external DP1
 workspace $ws1 output $external
 workspace $ws2 output $external
@@ -177,6 +180,7 @@ bindsym --whole-window $mod+i workspace prev_on_output
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
+bindsym $mod+n exec "typora /home/davison/Dropbox/notes"
 bindsym $mod+Mod1+k exec "rofi -modi keybinds:/home/davison/.bin/rofi_keybinds.sh -show keybinds"
 #bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
 
