@@ -184,6 +184,8 @@ bindsym $mod+n exec "typora /home/davison/Dropbox/notes"
 bindsym $mod+Mod1+k exec "rofi -modi keybinds:/home/davison/.bin/rofi_keybinds.sh -show keybinds"
 #bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
 
+bindsym $mod+Mod1+t exec surf "https://todoist.com/app?lang=en#agenda%2Foverdue%20%26%20!assigned%20to%3A%20other%2C%20today%20%26%20!assigned%20to%3A%20other"
+
 # bindsym $mod+Mod1+s sticky toggle
 bindsym $mod+Mod1+Shift+s resize set width 300 px height 169 px
 bindsym $mod+Mod1+a floating enable; resize set width 300 px height 169 px; move position center
