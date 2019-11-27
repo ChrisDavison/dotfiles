@@ -20,8 +20,6 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-textobj-user'  " Custom text objects
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar'
@@ -123,17 +121,12 @@ set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
 silent! colorscheme seoul256
-set guioptions-=m
-set guioptions-=T
-set guioptions-=r
-set guioptions-=L
 
 " ------------------------------------------------------------------------------
 " settings for plugins
 " ------------------------------------------------------------------------------
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 let g:vim_markdown_folding_disabled = 1
-let g:vim_markdown_toc_autofit = 1
 let g:go_fmt_command="goimports"
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
@@ -158,6 +151,20 @@ let g:tagbar_type_rust = {
     \}
 let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
+let g:tagbar_type_markdown = {
+    \ 'ctagstype': 'markdown',
+    \ 'ctagsbin' : '/home/davison/.local/bin/markdown2ctags',
+    \ 'ctagsargs' : '-f - --sort=yes',
+    \ 'kinds' : [
+        \ 's:sections',
+        \ 'i:images'
+    \ ],
+    \ 'sro' : '|',
+    \ 'kind2scope' : {
+        \ 's' : 'section',
+    \ },
+    \ 'sort': 0,
+\ }
 
 " ------------------------------------------------------------------------------
 "  keybinds
@@ -187,12 +194,11 @@ nnoremap <silent> <CR> :nohlsearch<CR>
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
 " keybinds for installed plugins
-nnoremap <leader>en :Files ~/src/github.com/ChrisDavison/knowledge<CR>
+nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :NERDTree ~/src/github.com/ChrisDavison/logbook/2019<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>n :Files ~/Dropbox/notes/<CR>
 
 nnoremap <C-n> :NERDTreeVCS<CR>
 
@@ -219,7 +225,6 @@ nnoremap <leader>t :TagbarToggle<CR>
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! CD exec "cd ".expand("%:h")
-command! FindWord exec "Rg " . expand("<cword>")
 
 function s:note(fn)
     exec "e ~/Dropbox/notes/" . a:fn . ".md" 
@@ -358,6 +363,7 @@ cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
+cnoreabbrev GIt Git
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
@@ -376,11 +382,11 @@ augroup vimrc
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch set filetype=markdown
+    au BufEnter *.txt set filetype=markdown
     au BufEnter *.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
-    au Filetype markdown nnoremap <buffer> <leader>t :Toc<CR>
     au Filetype markdown nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
