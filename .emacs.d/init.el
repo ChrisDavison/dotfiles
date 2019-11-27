@@ -3,14 +3,22 @@
 ;;; Commentary:
 
 ;;; Code:
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (setq gc-cons-threshold 100000000)
 
 ;; Utility functions to check if my org file has been tangled recently
 (defun file-mod-time (filename)
   (file-attribute-modification-time (file-attributes filename)))
 
-(defconst cd/config-org "~/code/dotfiles/.emacs.d/chris-davison.org" "Path to my configuration")
-(defconst cd/config-el "~/code/dotfiles/.emacs.d/chris-davison.el" "Output filename for my configuration")
+(defconst cd/config-org "~/src/github.com/ChrisDavison/dotfiles/.emacs.d/chris-davison.org" "Path to my configuration")
+(defconst cd/config-el "~/src/github.com/ChrisDavison/dotfiles/.emacs.d/chris-davison.el" "Output filename for my configuration")
+
 
 (require 'org)
 (org-babel-tangle-file cd/config-org cd/config-el)
