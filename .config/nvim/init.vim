@@ -1,11 +1,9 @@
 let mapleader=" "
 
-" ------------------------------------------------------------------------------
 " plugins, managed with github.com/junegunn/plug.vim
-" ------------------------------------------------------------------------------
+" --------------------------------------------------
 call plug#begin('~/.vim/3rd_party')
 " languages
-Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'plasticboy/vim-markdown'
@@ -14,7 +12,6 @@ Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
 " utility
 Plug 'airblade/vim-gitgutter'
-Plug 'christoomey/vim-tmux-navigator'
 Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
@@ -40,9 +37,8 @@ Plug 'junegunn/seoul256.vim'
 Plug 'arzg/vim-corvine'
 call plug#end()
 
-" ------------------------------------------------------------------------------
 " settings
-" ------------------------------------------------------------------------------
+" --------
 set nocompatible
 set autochdir
 set wrap lbr
@@ -111,9 +107,8 @@ if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
-" ------------------------------------------------------------------------------
 " appearance
-" ------------------------------------------------------------------------------
+" ----------
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
 set termguicolors
@@ -122,9 +117,8 @@ set t_Co=256
 set bg=dark
 silent! colorscheme seoul256
 
-" ------------------------------------------------------------------------------
 " settings for plugins
-" ------------------------------------------------------------------------------
+" --------------------
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 let g:vim_markdown_folding_disabled = 1
 let g:go_fmt_command="goimports"
@@ -166,10 +160,8 @@ let g:tagbar_type_markdown = {
     \ 'sort': 0,
 \ }
 
-" ------------------------------------------------------------------------------
 "  keybinds
-" ------------------------------------------------------------------------------
-"  keybinds for builtin functionality
+"  --------
 if has('nvim')
     nnoremap <leader>ev :edit ~/.config/nvim/init.vim<CR>
 else
@@ -190,13 +182,18 @@ nnoremap k      gk
 nnoremap Y y$
 nnoremap <silent> <CR> :nohlsearch<CR>
 
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :NERDTree ~/src/github.com/ChrisDavison/logbook/2019<CR>
+nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 
@@ -222,6 +219,7 @@ inoremap <c-c> <ESC>
 nnoremap <leader>t :TagbarToggle<CR>
 
 " custom commands
+" ---------------
 command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! CD exec "cd ".expand("%:h")
@@ -231,26 +229,22 @@ function s:note(fn)
 endfunction
 command! -nargs=1 Note call s:note(<args>)
 
-" ------------------------------------------------------------------------------
 " :Bd | Delete buffer and replace with 'alternate' buffer
-" ------------------------------------------------------------------------------
+" -------------------------------------------------------
 command! Bd bp|bd #
 
-" ------------------------------------------------------------------------------
 " :Scratch | Open a 'scratch' buffer
-" ------------------------------------------------------------------------------
+" ----------------------------------
 command! Scratch edit ~/.scratch | normal G
 nnoremap <leader>s  :Scratch<CR>
 
-" ------------------------------------------------------------------------------
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
-" ------------------------------------------------------------------------------ 
+" ----------------------------------------------------------------
 command! FMT exec "silent!normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
-" ------------------------------------------------------------------------------
 " :MakeNonExistentDir | try to make all parent directories of a new buffer
-" ------------------------------------------------------------------------------
+" ------------------------------------------------------------------------
 function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
@@ -259,6 +253,7 @@ endfunction
 command! MakeNonExistentDir call s:makeNonExDir()
 
 " grep / ripgrep
+" --------------
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     command! -bang -nargs=* Rg
@@ -268,14 +263,9 @@ if executable('rg')
         \ <bang>0)
 endif
 
-" ------------------------------------------------------------------------------
-" highlight non-ascii characters in current buffer
-" ------------------------------------------------------------------------------
-highlight nonascii guibg=Red ctermbg=1 term=standout
-
-" ------------------------------------------------------------------------------
+" coc.nvim, the nvim language server protocol runner
+" --------------------------------------------------
 " keybinds for Coc.nvim, the completion engine
-" ------------------------------------------------------------------------------
 " coc.nvim...?
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
@@ -329,9 +319,8 @@ function! s:show_documentation()
   endif
 endfunction
 
-" ----------------------------------------------------------------------------
 " :EX | chmod +x
-" ----------------------------------------------------------------------------
+" --------------
 command! EX if !empty(expand('%'))
          \|   write
          \|   call system('chmod +x '.expand('%'))
@@ -342,9 +331,8 @@ command! EX if !empty(expand('%'))
          \|   echohl None
          \| endif
 
-" ---------------------------------------------------------
 " :Root | Change dir to the root of the Git repository
-" ---------------------------------------------------------
+" ----------------------------------------------------
 function! s:root()
   let root = systemlist('git rev-parse --show-toplevel')[0]
   if v:shell_error
@@ -356,9 +344,7 @@ function! s:root()
 endfunction
 command! Root call s:root()
 
-" ------------------------------------------------------------------------------ 
 " abbreviations
-" ------------------------------------------------------------------------------ 
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
@@ -368,31 +354,27 @@ cnoreabbrev GIt Git
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
 
-" ------------------------------------------------------------------------------
 " autocommands
-" ------------------------------------------------------------------------------
+" ------------
 augroup vimrc
     autocmd!
-    au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
-    au BufReadPost * RainbowParentheses
-    au ColorScheme * hi! link SignColumn LineNr
     au TextChanged,InsertLeave,FocusLost * silent! wall
+    autocmd BufWritePre * call s:makeNonExDir()
+    au ColorScheme * hi! link SignColumn LineNr
     au CursorHold * silent! checktime " Check for external changes to files
     au CursorHold * silent call CocActionAsync('highlight')
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch set filetype=markdown
-    au BufEnter *.txt set filetype=markdown
-    au BufEnter *.md set filetype=markdown
+    au BufEnter *.txt,*.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
+    au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
-    autocmd BufWritePre * call s:makeNonExDir()
     au FileType python let b:coc_root_patterns = ['.env', '.git']
-    au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
 augroup END
