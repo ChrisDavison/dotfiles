@@ -353,6 +353,8 @@ cnoreabbrev GIt Git
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
+iabbrev <expr> DATE strftime("%Y%m%d")
+iabbrev <expr> DATETIME strftime("%Y%m%dT%H%M%S")
 
 " autocommands
 " ------------
