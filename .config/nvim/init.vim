@@ -89,6 +89,7 @@ set statusline=%<\ %n:%f\ %m%r%y%=%(%P\ of\ %LL\ -\ %l,%c\ %)
 " undo (save undo history across sessions)
 set undodir=~/.undodir
 set undofile
+set completeopt=menu,menuone,preview
 
 " shell (specialised per os)
 if has('win32')
@@ -199,6 +200,7 @@ nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 
 nnoremap <C-n> :NERDTreeVCS<CR>
+nnoremap <leader>gt exec ":Tags " . expand("<cword>")<CR>
 
 nmap s <Plug>(easymotion-s)
 map <leader>j <Plug>(easymotion-j)
@@ -296,8 +298,6 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 nmap <leader>rn <Plug>(coc-rename)
@@ -379,5 +379,7 @@ augroup vimrc
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
+    au Filetype python nnoremap <buffer> <leader>i :g/^def\s<CR>:
     au FileType python let b:coc_root_patterns = ['.env', '.git']
+    au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup END

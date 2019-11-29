@@ -4,6 +4,9 @@
         "--smart-case"
     ],
     "suggest.triggerAfterInsertEnter": true,
+    "suggest.enablePreview": true,
+    "suggest.echodocSupport": true,
+    "codeLens.enable": true,
     "coc.preferences.formatOnSaveFiletypes": [
         "rust"
     ],
