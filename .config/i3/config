@@ -10,7 +10,7 @@ default_border pixel 2
 
 client.focused          #8620e6 #8620e6 #ffffff #ffffff #8620e6
 
-font pango:Cascadia Code 12
+font pango:Iosevka Term 12
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -169,8 +169,8 @@ bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,d
 bindsym $mod+b exec "rofi -modi bookmarks:/home/davison/.bin/rofi_bookmarks.sh -show bookmarks"
 
 # Choose vscode or nvim to open a project
-bindsym $mod+p exec "rofi -modi vscode:/home/davison/.bin/rofi_vscode.sh -show vscode"
-# bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
+# bindsym $mod+p exec "rofi -modi vscode:/home/davison/.bin/rofi_vscode.sh -show vscode"
+bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
 
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
