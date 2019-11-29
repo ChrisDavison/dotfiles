@@ -30,6 +30,7 @@ Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      " Easily navigate directories
 Plug 'wellle/targets.vim'
+Plug 'rhysd/git-messenger.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 " Themes
 Plug 'tomasr/molokai'
