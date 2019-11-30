@@ -11,7 +11,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/src/github.com/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux FINANCES "$HOME/src/github.com/ChrisDavison/knowledge/budget"
+set -Ux FINANCES "$NOTESDIR/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
@@ -36,7 +36,7 @@ alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
-alias b="budget.py"
+alias b="budget $FINANCES"
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"

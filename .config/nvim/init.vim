@@ -4,31 +4,25 @@ let mapleader=" "
 " --------------------------------------------------
 call plug#begin('~/.vim/3rd_party')
 " languages
-Plug 'fatih/vim-go'
-Plug 'lervag/vimtex'
-Plug 'plasticboy/vim-markdown'
-Plug 'rust-lang/rust.vim'
-Plug 'vim-jp/vim-cpp'
-Plug 'vim-python/python-syntax'
-" utility
-Plug 'airblade/vim-gitgutter'
-Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
+Plug 'sheerun/vim-polyglot'           " Plugins for most useful languages
+Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
+Plug 'easymotion/vim-easymotion'      " Easily navigate to any word or char in buffer
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
+Plug 'jceb/vim-textobj-uri'           " Text object for urls
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'kana/vim-textobj-user'  " Custom text objects
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
+Plug 'kana/vim-textobj-user'          " Custom text objects
+Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
+Plug 'majutsushi/tagbar'              " Show an interactive list of tags
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'romainl/vim-qlist'
-Plug 'scrooloose/nerdtree'
-Plug 'Shougo/echodoc'
-Plug 'tpope/vim-commentary'   " Comment modification/text objects
+Plug 'romainl/vim-qlist'              " add [I results to quickfix
+Plug 'scrooloose/nerdtree'            " Navigatable tree view of directory
+Plug 'Shougo/echodoc'                 " Show signature of completed function
+Plug 'tpope/vim-commentary'           " Comment modification/text objects
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
+Plug 'tpope/vim-surround'             " 'Surround' text objects e.g. csi(
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'      " Easily navigate directories
+Plug 'tpope/vim-vinegar'              " Easily navigate directories
 Plug 'wellle/targets.vim'
 Plug 'rhysd/git-messenger.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
