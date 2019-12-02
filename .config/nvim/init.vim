@@ -5,6 +5,7 @@ let mapleader=" "
 call plug#begin('~/.vim/3rd_party')
 " languages
 Plug 'sheerun/vim-polyglot'           " Plugins for most useful languages
+Plug 'freitass/todo.txt-vim'
 Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
 Plug 'easymotion/vim-easymotion'      " Easily navigate to any word or char in buffer
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
@@ -223,8 +224,8 @@ command! CopyFilename exec "@+=expand(\"%\")"
 command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! CD exec "cd ".expand("%:h")
 
-function s:note(fn)
-    exec "e ~/Dropbox/notes/" . a:fn . ".md" 
+function! s:note(fn)
+    exec "e ~/Dropbox/notes/_UNFILED/" . a:fn . ".txt" 
 endfunction
 command! -nargs=1 Note call s:note(<args>)
 
