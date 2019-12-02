@@ -36,7 +36,6 @@ call plug#end()
 " settings
 " --------
 set nocompatible
-set autochdir
 set wrap lbr
 let &showbreak = '>>'
 set cpo+=n
@@ -196,7 +195,7 @@ nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 
-nnoremap <C-n> :NERDTreeVCS<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <leader>gt exec ":Tags " . expand("<cword>")<CR>
 
 nmap s <Plug>(easymotion-s)
