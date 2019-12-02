@@ -3,7 +3,7 @@ set -Ux fish_greeting ""
 set -Ux EDITOR "nvim"
 # set -Ux TERM xterm-256color
 set -Ux EDITOR "nvim"
-set -Ux GOPATH "$HOME/go"
+set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/bin"
 set -Ux FZF_DEFAULT_COMMAND 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
@@ -11,7 +11,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/src/github.com/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux FINANCES "$NOTESDIR/budget"
+set -Ux FINANCES "$HOME/Dropbox/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
@@ -28,15 +28,26 @@ alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias nv="nvim.appimage"
 alias ipython="ipython --pprint --no-banner"
-alias rf="repoutil fetch $HOME/src/github.com/ChrisDavison $HOME/src/github.com/cidcom"
-alias rs="repoutil stat $HOME/src/github.com/ChrisDavison $HOME/src/github.com/cidcom"
-alias rl="repoutil list $HOME/src/github.com/ChrisDavison $HOME/src/github.com/cidcom"
-alias ru="repoutil unclean $HOME/src/github.com/ChrisDavison $HOME/src/github.com/cidcom"
 alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
 alias b="budget $FINANCES"
+
+set myRepos "$HOME/src/github.com/ChrisDavison"
+set workRepos "$HOME/src/github.com/cidcom"
+if test -d $myRepos; and test -d $workRepos
+    set repos "$myRepos $workRepos"
+else if test -d $myRepos
+    set repos "$myRepos"
+else if test -d $workRepos
+    set repos "$workRepos"
+end
+alias rf="repoutil fetch $repos"
+alias rs="repoutil stat $repos"
+alias rl="repoutil list $repos"
+alias ru="repoutil unclean $repos"
+set -e repos
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"
@@ -51,5 +62,10 @@ test -x rvm; and rvm default
 
 # opam configuration
 source /home/davison/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
-source /usr/share/autojump/autojump.fish
+if test -f /usr/share/autojump/autojump.fish
+    source /usr/share/autojump/autojump.fish
+end
 
+if test -f /Users/davison/.autojump/share/autojump/autojump.fish
+    source /Users/davison/.autojump/share/autojump/autojump.fish
+end

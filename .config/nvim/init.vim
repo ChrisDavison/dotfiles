@@ -107,7 +107,9 @@ endif
 " ----------
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
-set termguicolors
+if !has('mac')
+    set termguicolors
+endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
