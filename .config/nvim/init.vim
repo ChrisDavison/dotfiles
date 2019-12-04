@@ -4,12 +4,30 @@ let mapleader=" "
 " --------------------------------------------------
 call plug#begin('~/.vim/3rd_party')
 " languages
-Plug 'sheerun/vim-polyglot'           " Plugins for most useful languages
+Plug 'fatih/vim-go'
+Plug 'lervag/vimtex'
+Plug 'plasticboy/vim-markdown'
+Plug 'vim-jp/vim-cpp'
+Plug 'vim-python/python-syntax'
+Plug 'georgewitteman/vim-fish'
+Plug 'guns/vim-clojure-static'
+Plug 'elixir-lang/vim-elixir'
+Plug 'ekalinin/Dockerfile.vim'
+Plug 'vim-scripts/gnuplot-syntax-highlighting'
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'vim-perl/vim-perl'
+Plug 'vim-ruby/vim-ruby'
+Plug 'vim-scripts/R.vim'
+Plug 'freitass/todo.txt-vim'
+" Utility
 Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'Konfekt/FastFold'
+Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'      " Easily navigate to any word or char in buffer
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'jceb/vim-textobj-uri'           " Text object for urls
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dur':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user'          " Custom text objects
 Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
@@ -30,6 +48,8 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
 Plug 'arzg/vim-corvine'
+Plug 'owickstrom/vim-colors-paramount'
+Plug 'andreasvc/vim-256noir'
 call plug#end()
 
 " settings
