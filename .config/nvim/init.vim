@@ -58,6 +58,7 @@ set nocompatible
 set wrap lbr
 let &showbreak = '>>'
 set cpo+=n
+set autochdir
 set nrformats-=octal
 set breakindent
 set breakindentopt+=shift:2,sbr
@@ -132,13 +133,14 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme paramount
 
 " settings for plugins
 " --------------------
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 let g:vim_markdown_folding_disabled = 1
 let g:go_fmt_command="goimports"
+let g:go_fmt_autosave=1
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
 let g:rustfmt_autosave=1
@@ -360,6 +362,12 @@ function! s:root()
 endfunction
 command! Root call s:root()
 
+command! Mkdp call mkdp#util#toggle_preview()
+command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
+command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
+command! Calendar exec "edit " . expand('$HOME/Dropbox/notes/calendar.txt')
+command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
+
 " abbreviations
 cnoreabbrev W w
 cnoreabbrev Qa qa
@@ -370,7 +378,19 @@ cnoreabbrev GIt Git
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y%m%d")
-iabbrev <expr> DATETIME strftime("%Y%m%dT%H%M%S")
+iabbrev <expr> DATETIME strftime("%Y-%m-%dT%H:%M:%S")
+
+" Rather than modifying 'paramount' directly,
+" Just link html (markdown) headers to 'Question' to get
+" a pinkish header
+if g:colors_name == 'paramount'
+    hi! link htmlH1      Question
+    hi! link htmlH2      Question
+    hi! link htmlH3      Question
+    hi! link htmlH4      Question
+    hi! link htmlH5      Question
+    hi! link htmlH6      Question
+endif
 
 " autocommands
 " ------------
@@ -397,4 +417,6 @@ augroup vimrc
     au Filetype python nnoremap <buffer> <leader>i :g/^def\s<CR>:
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    au BufEnter todo*.txt,done*.txt set filetype=todo.txt
+    au Filetype markdown :CocDisable
 augroup END
