@@ -365,7 +365,6 @@ command! Root call s:root()
 command! Mkdp call mkdp#util#toggle_preview()
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
-command! Calendar exec "edit " . expand('$HOME/Dropbox/notes/calendar.txt')
 command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
 
 " abbreviations
