@@ -14,6 +14,7 @@ for file in *.txt **/*.txt
 do
     mv "$file" "${file%.txt}.md"
 done
+[ -d "logbook" ] && rm -rf logbook/
 git add --all
 git commit -m "backup $(date +'%Y%m%d %H')"
 git push
