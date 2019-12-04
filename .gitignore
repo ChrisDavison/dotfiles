@@ -9,3 +9,4 @@ fish/fishd.*
 **/.vscode
 .mypy_cache/
 tags
+.config/fish/fish_variables
