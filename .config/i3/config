@@ -166,10 +166,8 @@ bindsym $mod+Return exec "gnome-terminal"
 
 # some dmenu scripts
 bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,drun"
-bindsym $mod+b exec "rofi -modi bookmarks:/home/davison/.bin/rofi_bookmarks.sh -show bookmarks"
 
 # Choose vscode or nvim to open a project
-# bindsym $mod+p exec "rofi -modi vscode:/home/davison/.bin/rofi_vscode.sh -show vscode"
 bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
 
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
@@ -179,10 +177,6 @@ bindsym --whole-window $mod+i workspace prev_on_output
 
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
-
-bindsym $mod+n exec "typora /home/davison/Dropbox/notes"
-bindsym $mod+Mod1+k exec "rofi -modi keybinds:/home/davison/.bin/rofi_keybinds.sh -show keybinds"
-#bindsym $mod+Mod1+k exec feh ~/.config/i3/keybinds.png
 
 # bindsym $mod+Mod1+s sticky toggle
 bindsym $mod+Mod1+Shift+s resize set width 300 px height 169 px
@@ -221,11 +215,11 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 for_window [class="GitKraken"] move container to workspace $ws2
 for_window [class="Thunderbird"] move container to workspace $ws3
 for_window [class="Slack"] move container to workspace $ws3
+for_window [class="Mendeley Desktop"] move container to workspace $ws4
 
 # Workspaces - 'Monitor 2 (inbuilt)'
 for_window [class="Code"] move container to workspace $ws6
 for_window [class="libreoffice-writer"] move container to workspace $ws7
-for_window [class="Mendeley Desktop"] move container to workspace $ws8
 for_window [class="keepassxc"] move container to workspace $ws9
 for_window [class="spotify"] move container to workspace $ws10
 
