@@ -55,7 +55,7 @@ set autochdir
 set breakindent
 set breakindentopt+=shift:2,sbr
 set number
-set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
+set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
 set cmdheight=1
 set colorcolumn=0
