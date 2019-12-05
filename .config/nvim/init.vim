@@ -34,8 +34,6 @@ Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
 Plug 'majutsushi/tagbar'              " Show an interactive list of tags
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-qlist'              " add [I results to quickfix
-Plug 'scrooloose/nerdtree'            " Navigatable tree view of directory
-Plug 'Shougo/echodoc'                 " Show signature of completed function
 Plug 'tpope/vim-commentary'           " Comment modification/text objects
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'             " 'Surround' text objects e.g. csi(
@@ -43,13 +41,9 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'              " Easily navigate directories
 Plug 'wellle/targets.vim'
 Plug 'rhysd/git-messenger.vim'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 " Themes
-Plug 'tomasr/molokai'
 Plug 'junegunn/seoul256.vim'
-Plug 'arzg/vim-corvine'
 Plug 'owickstrom/vim-colors-paramount'
-Plug 'andreasvc/vim-256noir'
 call plug#end()
 
 " settings
@@ -59,27 +53,21 @@ set wrap lbr
 let &showbreak = '>>'
 set cpo+=n
 set autochdir
-set nrformats-=octal
 set breakindent
 set breakindentopt+=shift:2,sbr
 set number
 set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
-set hidden
 set updatetime=300 " Write a swap file after 1 second
-set cmdheight=2
+set cmdheight=1
 set colorcolumn=0
-set hlsearch
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 
 " Some servers have issues with backup files
-set nobackup
-set nowritebackup
+set nobackup nowritebackup
 
-set backupcopy=yes
-set backupdir=~/.temp,.
 set directory=~/.temp,.
 set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
@@ -87,9 +75,7 @@ set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
-set conceallevel=2
 set relativenumber
-set fillchars=fold:·
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
 " suppress 'match x of y', 'only match'... etc
@@ -132,7 +118,7 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=dark
+set bg=light
 silent! colorscheme paramount
 
 " settings for plugins
@@ -147,8 +133,6 @@ let g:rustfmt_autosave=1
 let g:is_bash=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
-let g:echodoc#enable_at_startup=1
-let g:echodoc#type = 'signature'
 let g:tagbar_type_rust = {
     \ 'ctagstype' : 'rust',
     \ 'kinds' : [
@@ -216,7 +200,6 @@ nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 
-nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <leader>gt exec ":Tags " . expand("<cword>")<CR>
 
 nmap s <Plug>(easymotion-s)
@@ -366,6 +349,7 @@ command! Mkdp call mkdp#util#toggle_preview()
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
 command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
+command! Logbook exec "edit " . expand('$HOME/src/github.com/ChrisDavison/logbook/' . strftime("%Y"))
 
 " abbreviations
 cnoreabbrev W w
@@ -373,6 +357,7 @@ cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
 cnoreabbrev GIt Git
+cnoreabbrev Set set
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
@@ -417,5 +402,5 @@ augroup vimrc
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
     au BufEnter todo*.txt,done*.txt set filetype=todo.txt
-    au Filetype markdown :CocDisable
+    au Filetype markdown :silent! CocDisable
 augroup END
