@@ -202,7 +202,8 @@ nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 
-nnoremap <leader>gt exec ":Tags " . expand("<cword>")<CR>
+command! TagThisWord exec "Tags " . expand("<cword>") 
+nnoremap <leader>gt :TagThisWord<CR>
 
 nmap s <Plug>(easymotion-s)
 map <leader>j <Plug>(easymotion-j)
@@ -221,7 +222,7 @@ silent! exe "set <S-Right>=\<Esc>f"
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <c-c> <ESC>
 
-nnoremap <leader>t :TagbarToggle<CR>
+nnoremap <leader>t :Tags<CR>
 
 " custom commands
 " ---------------
