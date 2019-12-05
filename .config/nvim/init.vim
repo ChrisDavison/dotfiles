@@ -18,7 +18,6 @@ Plug 'JuliaEditorSupport/julia-vim'
 Plug 'vim-perl/vim-perl'
 Plug 'vim-ruby/vim-ruby'
 Plug 'vim-scripts/R.vim'
-Plug 'freitass/todo.txt-vim'
 " Utility
 Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
 Plug 'michaeljsmith/vim-indent-object'
