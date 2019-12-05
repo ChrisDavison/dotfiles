@@ -6,7 +6,7 @@ notes_source="$HOME/Dropbox/notes/"
 notes_dest="$HOME/src/github.com/ChrisDavison/knowledge/"
 
 # sync everything from source (dropbox notes) to dest (github 'knowledge' repo)
-rsync -r --exclude "logbook/" $notes_source $notes_dest
+rsync -r $notes_source $notes_dest
 
 # change to the git repo and commit everything, with timestamp as commit message
 git add --all
