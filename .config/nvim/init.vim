@@ -33,13 +33,13 @@ Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
 Plug 'majutsushi/tagbar'              " Show an interactive list of tags
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-qlist'              " add [I results to quickfix
+Plug 'Shougo/echodoc'
 Plug 'tpope/vim-commentary'           " Comment modification/text objects
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'             " 'Surround' text objects e.g. csi(
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'              " Easily navigate directories
 Plug 'wellle/targets.vim'
-Plug 'rhysd/git-messenger.vim'
 " Themes
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
@@ -75,6 +75,7 @@ set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
 set relativenumber
+set noshowmode
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
 " suppress 'match x of y', 'only match'... etc
@@ -132,6 +133,8 @@ let g:rustfmt_autosave=1
 let g:is_bash=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
+let g:echodoc#enable_at_startup=1
+let g:echodoc#type="echo"
 let g:tagbar_type_rust = {
     \ 'ctagstype' : 'rust',
     \ 'kinds' : [
