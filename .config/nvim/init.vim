@@ -348,7 +348,19 @@ function! s:root()
 endfunction
 command! Root call s:root()
 
-command! Mkdp call mkdp#util#toggle_preview()
+" :Mkdp | Wrapper for MarkdownPreview, so that I can call it from txt files
+" -------------------------------------------------------------------------
+function! s:Mkdp(bang)
+    if a:bang
+        call mkdp#util#stop_preview()
+    else
+        call mkdp#util#open_preview_page()
+    endif
+endfunction
+command! -bang Mkdp call s:Mkdp(<bang>0)
+
+" Commands to jump to specific files or directories
+" -------------------------------------------------
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
 command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
