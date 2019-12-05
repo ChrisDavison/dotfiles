@@ -291,9 +291,9 @@ inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -408,7 +408,7 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
-    au FileType markdown map <Bar> vip :EasyAlign*<Bar><Enter>
+    au Filetype markdown :silent! CocDisable
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
@@ -416,6 +416,4 @@ augroup vimrc
     au Filetype python nnoremap <buffer> <leader>i :g/^def\s<CR>:
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-    au BufEnter todo*.txt,done*.txt set filetype=todo.txt
-    au Filetype markdown :silent! CocDisable
 augroup END
