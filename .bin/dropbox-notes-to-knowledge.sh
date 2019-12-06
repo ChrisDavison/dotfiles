@@ -9,6 +9,7 @@ notes_dest="$HOME/src/github.com/ChrisDavison/knowledge/"
 rsync -r $notes_source $notes_dest
 
 # change to the git repo and commit everything, with timestamp as commit message
+cd $notes_dest
 git add --all
 git commit -m "backup $(date +'%Y%m%d %H')"
 git push
