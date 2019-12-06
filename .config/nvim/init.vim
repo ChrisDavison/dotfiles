@@ -118,7 +118,7 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=light
+set bg=dark
 silent! colorscheme paramount
 
 " settings for plugins
