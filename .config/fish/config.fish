@@ -33,6 +33,7 @@ alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
 alias b="budget $FINANCES"
+alias ts="tagsearch"
 
 set myRepos "$HOME/src/github.com/ChrisDavison"
 set workRepos "$HOME/src/github.com/cidcom"
