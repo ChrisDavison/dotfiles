@@ -4,7 +4,7 @@ set -Ux EDITOR "nvim"
 # set -Ux TERM xterm-256color
 set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME"
-set -Ux GOBIN "$HOME/bin"
+set -Ux GOBIN "$HOME/.bin"
 set -Ux FZF_DEFAULT_COMMAND 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
 set -Ux WORKON_HOME "$HOME/.envs"
