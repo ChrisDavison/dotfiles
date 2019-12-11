@@ -34,6 +34,8 @@ alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
 alias b="budget $FINANCES"
 alias ts="tagsearch"
+alias ob="openBookmarks"
+alias obu="openBookmarkURL"
 
 set myRepos "$HOME/src/github.com/ChrisDavison"
 set workRepos "$HOME/src/github.com/cidcom"
