@@ -10,3 +10,6 @@ fish/fishd.*
 .mypy_cache/
 tags
 .config/fish/fish_variables
+.emacs.d/backups/
+.emacs.d/elpa/
+.emacs.d/chris-davison.el

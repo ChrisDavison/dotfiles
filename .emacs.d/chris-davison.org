@@ -490,6 +490,7 @@ Flycheck basically runs linters and stuff, and lets you know problems in your co
 #+END_SRC
 ** Markdown
 #+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.txt$" . markdown-mode))
 (use-package markdown-mode :ensure t :defer t
   :config
   (add-to-list 'auto-mode-alist
