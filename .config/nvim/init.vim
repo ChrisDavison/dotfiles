@@ -183,6 +183,7 @@ vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 nnoremap j      gj
+nnoremap D      dd
 nnoremap k      gk
 nnoremap Y y$
 nnoremap <silent> <CR> :nohlsearch<CR>

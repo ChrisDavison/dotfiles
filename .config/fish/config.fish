@@ -17,6 +17,7 @@ set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
 set PATH $CODEDIR/ChrisDavison/scripts/ $PATH
 set PATH $HOME/.cargo/bin $PATH
+set PATH /usr/local/go/bin $PATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
