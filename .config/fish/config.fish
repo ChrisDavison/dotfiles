@@ -38,17 +38,10 @@ alias ts="tagsearch"
 alias ob="openBookmarks"
 alias obu="openBookmarkURL"
 
-set myRepos "$HOME/src/github.com/ChrisDavison"
-set workRepos "$HOME/src/github.com/cidcom"
-if test -d $myRepos; and test -d $workRepos
-    set repos "$myRepos $workRepos"
-else if test -d $myRepos
-    set repos "$myRepos"
-else if test -d $workRepos
-    set repos "$workRepos"
-end
-alias ru="repoutil"
-set -e repos
+alias ru="repoutil unclean"
+alias rs="repoutil stat"
+alias rl="repoutil list"
+alias rf="repoutil fetch"
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"
