@@ -205,7 +205,9 @@ nnoremap <leader>p :call <SID>maybe_gfiles()<CR>
 
 function! s:maybe_gfiles()
     let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
-    if !v:shell_error
+    if expand('%:p') =~ "Dropbox/notes"
+        exec "Files " . expand("~/Dropbox/notes")
+    elseif !v:shell_error
         GFiles
     else
         Files
