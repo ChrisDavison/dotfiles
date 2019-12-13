@@ -165,10 +165,14 @@ bar {
 bindsym $mod+Return exec "gnome-terminal"
 
 # some dmenu scripts
-bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,drun"
+# bindsym $mod+space exec "dmenu_run -fn 'Ubuntu Mono-18' -l 10"
+bindsym $mod+space exec "dmenu_dmenu.sh 'Desktop (Applications)'"
+bindsym $mod+shift+space exec "dmenu_win_switcher_i3.sh"
+bindsym $mod+shift+d exec "dmenu_dmenu.sh"
+# bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,drun"
 
 # Choose vscode or nvim to open a project
-bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
+# bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
 
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
@@ -221,11 +225,9 @@ for_window [class="Mendeley Desktop"] move container to workspace $ws4
 for_window [class="Code"] move container to workspace $ws6
 for_window [class="libreoffice-writer"] move container to workspace $ws7
 for_window [class="keepassxc"] move container to workspace $ws9
-for_window [class="spotify"] move container to workspace $ws10
+for_window [class="spotify"] move container to workspace $ws2
 
 # Other window modifications
 for_window [class="Anki"] floating enable; move position center
-for_window [title="keybinds.png" class="feh"] floating enable; move position center
 for_window [class="Blueman-manager"] floating enable
-for_window [class="*mpv*"] floating enable
 for_window [title=".*contacts.*" class="feh"] floating enable; move position enter
