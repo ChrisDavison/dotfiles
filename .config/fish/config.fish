@@ -47,10 +47,7 @@ else if test -d $myRepos
 else if test -d $workRepos
     set repos "$workRepos"
 end
-alias rf="repoutil fetch $repos"
-alias rs="repoutil stat $repos"
-alias rl="repoutil list $repos"
-alias ru="repoutil unclean $repos"
+alias ru="repoutil"
 set -e repos
 
 alias ls="exa --group-directories-first"
