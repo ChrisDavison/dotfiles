@@ -200,7 +200,18 @@ nnoremap <leader>c :cclose<bar>lclose<CR>
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
-nnoremap <leader>p :Files<CR>
+nnoremap <leader>p :call <SID>maybe_gfiles()<CR>
+
+
+function! s:maybe_gfiles()
+    let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
+    if !v:shell_error
+        GFiles
+    else
+        Files
+    end
+endfunction
+
 nnoremap <leader>b :Buffers<CR>
 
 command! TagThisWord exec "Tags " . expand("<cword>") 
@@ -379,6 +390,8 @@ iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y%m%d")
 iabbrev <expr> DATETIME strftime("%Y-%m-%dT%H:%M:%S")
+iabbrev RSQ R²
+
 
 " Rather than modifying 'paramount' directly,
 " Just link html (markdown) headers to 'Question' to get
