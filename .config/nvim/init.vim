@@ -240,14 +240,19 @@ nnoremap <leader>t :Tags<CR>
 
 " custom commands
 " ---------------
-command! CopyFilename exec "@+=expand(\"%\")"
-command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
+command! CopyFilename exec "@+=expand(\"%:p\")"
+command! CopyRelativeFilename exec "@+=expand(\"%\")"
+
+" :CD | Change to the parent directory of the current file
+" --------------------------------------------------------
 command! CD exec "cd ".expand("%:h")
 
+" :Note | Create a new note in Dropbox/notes/_UNFILED, with the given text
+" ------------------------------------------------------------------------
 function! s:note(fn)
-    exec "e ~/Dropbox/notes/_UNFILED/" . a:fn . ".txt" 
+    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt" 
 endfunction
-command! -nargs=1 Note call s:note(<args>)
+command! -nargs=+ Note call s:note(<args>)
 
 " :Bd | Delete buffer and replace with 'alternate' buffer
 " -------------------------------------------------------
