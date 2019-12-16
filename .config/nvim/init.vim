@@ -384,6 +384,22 @@ function! s:Mkdp(bang)
 endfunction
 command! -bang Mkdp call s:Mkdp(<bang>0)
 
+" :Autowrap[!] | Turn automatic column-80 wrapping on/off  (for md/txt only)
+" --------------------------------------------------------------------------
+function! s:toggle_autowrap(bang)
+    if a:bang
+        echom "Autowrap DISABLED"
+        set formatoptions-=a
+    else
+        let ft=&filetype
+        if ft == "markdown" || ft == "markdown.pandoc"
+            echom "Autowrap ENABLED"
+            set formatoptions+=a
+        endif
+    endif
+endfunction
+command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
+
 " Commands to jump to specific files or directories
 " -------------------------------------------------
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
