@@ -6,7 +6,7 @@ call plug#begin('~/.vim/3rd_party')
 " languages
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
-Plug 'plasticboy/vim-markdown'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
 Plug 'georgewitteman/vim-fish'
@@ -91,6 +91,7 @@ set undodir=~/.undodir
 set undofile
 set completeopt=menu,menuone,preview
 
+
 " shell (specialised per os)
 if has('win32')
     set shell=cmd.exe
@@ -125,6 +126,11 @@ silent! colorscheme paramount
 " --------------------
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
 let g:vim_markdown_folding_disabled = 1
+" vim-pandoc-syntax
+let g:pandoc#sytax#conceal#use=1
+let g:pandoc#sytax#conceal#urls=1
+let g:pandoc#syntax#conceal#blacklist=['list', 'atx', 'codeblock_start', 'codeblock_delim']
+let g:pandoc#syntax#style#use_definition_lists = 0
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
@@ -427,9 +433,9 @@ augroup vimrc
     au BufEnter *.txt,*.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
-    au Filetype markdown nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
-    au Filetype markdown :silent! CocDisable
+    au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
+    au Filetype markdown,markdown.pandoc :silent! CocDisable
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
