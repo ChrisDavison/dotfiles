@@ -20,6 +20,11 @@ markup=none
 command=is_tmux_alive.sh
 interval=60
 
+[gitunclean]
+command=git_num_unclean.sh
+interval=60
+
+
 [volume]
 label=♪
 interval=30
