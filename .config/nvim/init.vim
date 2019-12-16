@@ -373,7 +373,7 @@ function! s:root()
 endfunction
 command! Root call s:root()
 
-" :Mkdp | Wrapper for MarkdownPreview, so that I can call it from txt files
+" :Mkdp[!] | Wrapper for MarkdownPreview, so that I can call it from txt files
 " -------------------------------------------------------------------------
 function! s:Mkdp(bang)
     if a:bang
