@@ -13,4 +13,6 @@ function litmkpair
     echo "# $renamed" > "$basefn".txt
     echo >> "$basefn".txt
     echo "@unread" >> "$basefn".txt
+    mv "$basefn".txt > ./writeups/
+    mv $tidyfn > ./papers/
 end
