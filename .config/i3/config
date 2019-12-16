@@ -163,17 +163,7 @@ bar {
 #           |___/
 # start a terminal
 bindsym $mod+Return exec "gnome-terminal"
-
-# some dmenu scripts
-# bindsym $mod+space exec "dmenu_run -fn 'Ubuntu Mono-18' -l 10"
-bindsym $mod+space exec "dmenu_dmenu.sh 'Desktop (Applications)'"
-bindsym $mod+shift+space exec "dmenu_win_switcher_i3.sh"
-bindsym $mod+shift+d exec "dmenu_dmenu.sh"
-# bindsym $mod+space exec "rofi -combi-modi window,drun -show combi -modi window,drun"
-
-# Choose vscode or nvim to open a project
-# bindsym $mod+p exec "rofi -modi nvim:/home/davison/.bin/rofi_nvim_projects.sh -show nvim"
-
+bindsym $mod+space exec "rofi -combi-modi window,drun -show combi"
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
 bindsym --whole-window $mod+o workspace next_on_output
@@ -228,6 +218,5 @@ for_window [class="keepassxc"] move container to workspace $ws9
 for_window [class="spotify"] move container to workspace $ws2
 
 # Other window modifications
-for_window [class="Anki"] floating enable; move position center
 for_window [class="Blueman-manager"] floating enable
 for_window [title=".*contacts.*" class="feh"] floating enable; move position enter
