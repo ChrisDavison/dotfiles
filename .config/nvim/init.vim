@@ -434,6 +434,15 @@ if g:colors_name == 'paramount'
     hi! link htmlH6      Question
 endif
 
+function! s:maybe_filetype_markdown()
+    let ft=&filetype
+    if ft == "help"
+        return
+    else
+        setlocal filetype=markdown.pandoc
+    end
+endfunction
+
 " autocommands
 " ------------
 augroup vimrc
@@ -445,8 +454,8 @@ augroup vimrc
     au CursorHold * silent call CocActionAsync('highlight')
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter .scratch set filetype=markdown
-    au BufEnter *.txt,*.md set filetype=markdown
+    au BufEnter .scratch call <sid>maybe_filetype_markdown()
+    au BufEnter *.txt,*.md call <sid>maybe_filetype_markdown()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
