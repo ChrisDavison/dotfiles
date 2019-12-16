@@ -2,13 +2,14 @@
 #
 # Mod1 = alt, Mod4 = win
 set $mod Mod4
-gaps inner 10
+gaps inner 4
 gaps outer 0
 smart_gaps on
 smart_borders on
 default_border pixel 2
 
-client.focused          #8620e6 #8620e6 #ffffff #ffffff #8620e6
+client.unfocused      #8620e6 #8620e6 #ffffff #ffffff #8620e6
+client.focused        #ed38d8 #ed38d8 #ffffff #ffffff #ed38d8
 
 font pango:Iosevka Term 12
 
