@@ -91,7 +91,6 @@ set undodir=~/.undodir
 set undofile
 set completeopt=menu,menuone,preview
 
-
 " shell (specialised per os)
 if has('win32')
     set shell=cmd.exe
@@ -451,7 +450,6 @@ augroup vimrc
     autocmd BufWritePre * call s:makeNonExDir()
     au ColorScheme * hi! link SignColumn LineNr
     au CursorHold * silent! checktime " Check for external changes to files
-    au CursorHold * silent call CocActionAsync('highlight')
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch call <sid>maybe_filetype_markdown()
@@ -461,6 +459,7 @@ augroup vimrc
     au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
     au Filetype markdown,markdown.pandoc :silent! CocDisable
+    au Filetype markdown,markdown.pandoc setlocal spell
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
