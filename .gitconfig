@@ -51,5 +51,6 @@
 	commitGraph = true
     pager="less -FRSX"
     autocrlf = true
+    ignoreCase = true
 [wc]
 	writeCommitGraph = true
