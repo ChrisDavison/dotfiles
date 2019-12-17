@@ -17,9 +17,6 @@
     submodulesummary=1
 [diff]
     submodule=log
-[code]
-    excludesfiles=/Users/davison/.global_ignore
-    pager="less -FRSX"
 [alias]
     uncommit=reset --soft HEAD^
     unstage=reset HEAD --
@@ -52,5 +49,7 @@
 [core]
 	excludesfile = /home/davison/.global_ignore
 	commitGraph = true
+    pager="less -FRSX"
+    autocrlf = true
 [wc]
 	writeCommitGraph = true
