@@ -391,10 +391,20 @@ function! s:toggle_autowrap(bang)
         set formatoptions-=a
     else
         let ft=&filetype
-        if ft == "markdown" || ft == "markdown.pandoc"
+        let skip=['bookmark', 'self-tracking', 'budget']
+        let curdir=expand('%:p:h')
+        for pattern in skip
+            if curdir =~ pattern
+                echom "NOT autowrapping as directory `" . pattern . "` matches skip"
+                return
+            endif
+        endfor
+
+        if ft =~ "markdown"
             echom "Autowrap ENABLED"
             set formatoptions+=a
         endif
+    end
     endif
 endfunction
 command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
@@ -460,6 +470,7 @@ augroup vimrc
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
     au Filetype markdown,markdown.pandoc :silent! CocDisable
     au Filetype markdown,markdown.pandoc setlocal spell
+    au Filetype markdown,markdown.pandoc :Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
