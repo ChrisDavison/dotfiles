@@ -389,22 +389,21 @@ function! s:toggle_autowrap(bang)
     if a:bang
         echom "Autowrap DISABLED"
         set formatoptions-=a
-    else
-        let ft=&filetype
-        let skip=['bookmark', 'self-tracking', 'budget']
-        let curdir=expand('%:p:h')
-        for pattern in skip
-            if curdir =~ pattern
-                echom "NOT autowrapping as directory `" . pattern . "` matches skip"
-                return
-            endif
-        endfor
-
-        if ft =~ "markdown"
-            echom "Autowrap ENABLED"
-            set formatoptions+=a
+        return
+    endif
+    let ft=&filetype
+    let skip=['bookmark', 'self-tracking', 'budget']
+    let curdir=expand('%:p:h')
+    for pattern in skip
+        if curdir =~ pattern
+            echom "NOT autowrapping as directory `" . pattern . "` matches skip"
+            return
         endif
-    end
+    endfor
+
+    if ft =~ "markdown"
+        echom "Autowrap ENABLED"
+        set formatoptions+=a
     endif
 endfunction
 command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
