@@ -2,18 +2,32 @@
 # exit on error
 set -e 
 
-notes() {
-
+backup_source_to_dest() {
+    src=$1
+    dest=$2
+    echo "Source: $src"
+    echo "Destination: $dest"
+    echo "Backup date: $(date +'%Y%m%d %H')"
+    pushd "$dest"
+    fd -E ".git/" -x rm -rf {}
+    rsync -r $source $dest
+    git add --all
+    git commit -m "backup $(date +'%Y%m%d %H')"
+    git push
+    popd
 }
 
-notes_source="$HOME/Dropbox/notes/"
-notes_dest="$HOME/src/github.com/ChrisDavison/knowledge/"
+notes() {
+    src="$HOME/Dropbox/notes/"
+    dest="$HOME/src/github.com/ChrisDavison/knowledge/"
+    backup_source_to_dest "$src" "$dest"
+}
 
-# sync everything from source (dropbox notes) to dest (github 'knowledge' repo)
-rsync -r $notes_source $notes_dest
+logbook() {
+    src="$HOME/Dropbox/logbook/"
+    dest="$HOME/src/github.com/ChrisDavison/logbook/"
+    backup_source_to_dest "$src" "$dest"
+}
 
-# change to the git repo and commit everything, with timestamp as commit message
-cd $notes_dest
-git add --all
-git commit -m "backup $(date +'%Y%m%d %H')"
-git push
+notes
+logbook
