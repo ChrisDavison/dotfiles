@@ -388,7 +388,7 @@ command! -bang Mkdp call s:Mkdp(<bang>0)
 function! s:toggle_autowrap(bang)
     if a:bang
         echom "Autowrap DISABLED"
-        set formatoptions-=a
+        setlocal formatoptions-=a
         return
     endif
     let ft=&filetype
@@ -403,7 +403,7 @@ function! s:toggle_autowrap(bang)
 
     if ft =~ "markdown"
         echom "Autowrap ENABLED"
-        set formatoptions+=a
+        setlocal formatoptions+=a
     endif
 endfunction
 command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
@@ -469,7 +469,7 @@ augroup vimrc
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
     au Filetype markdown,markdown.pandoc :silent! CocDisable
     au Filetype markdown,markdown.pandoc setlocal spell
-    au Filetype markdown,markdown.pandoc :Autowrap
+    au Filetype markdown,markdown.pandoc :silent! Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
