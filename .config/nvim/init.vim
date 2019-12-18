@@ -198,6 +198,9 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Automatically use first spelling suggestion
+nnoremap <leader>s  z=1<CR><CR>
+
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
@@ -266,7 +269,6 @@ command! Bd bp|bd #
 " :Scratch | Open a 'scratch' buffer
 " ----------------------------------
 command! Scratch edit ~/.scratch | normal G
-nnoremap <leader>s  :Scratch<CR>
 
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
 " ----------------------------------------------------------------
