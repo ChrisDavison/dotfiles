@@ -128,7 +128,7 @@ let g:vim_markdown_folding_disabled = 1
 " vim-pandoc-syntax
 let g:pandoc#sytax#conceal#use=1
 let g:pandoc#sytax#conceal#urls=1
-let g:pandoc#syntax#conceal#blacklist=['list', 'atx', 'codeblock_start', 'codeblock_delim']
+let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -469,9 +469,9 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
-    au Filetype markdown,markdown.pandoc :silent! CocDisable
-    au Filetype markdown,markdown.pandoc setlocal spell
-    au Filetype markdown,markdown.pandoc :silent! Autowrap
+    au BufRead,BufNewFile *.md,*.txt :silent! CocDisable
+    au BufRead,BufNewFile *.md,*.txt :setlocal spell
+    au BufRead,BufNewFile *.md,*.txt :silent! Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
