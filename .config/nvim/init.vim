@@ -469,9 +469,9 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
-    au BufRead,BufNewFile *.md,*.txt :silent! CocDisable
-    au BufRead,BufNewFile *.md,*.txt :setlocal spell
-    au BufRead,BufNewFile *.md,*.txt :silent! Autowrap
+    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! CocDisable
+    au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal spell
+    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
