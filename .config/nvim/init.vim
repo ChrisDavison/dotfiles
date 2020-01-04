@@ -28,6 +28,8 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'jceb/vim-textobj-uri'           " Text object for urls
 Plug 'junegunn/fzf', { 'dur':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'kana/vim-textobj-user'          " Custom text objects
 Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
 Plug 'majutsushi/tagbar'              " Show an interactive list of tags
@@ -124,7 +126,7 @@ silent! colorscheme paramount
 " settings for plugins
 " --------------------
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
-let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_disabled = 0
 " vim-pandoc-syntax
 let g:pandoc#sytax#conceal#use=1
 let g:pandoc#sytax#conceal#urls=1
@@ -468,10 +470,14 @@ augroup vimrc
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+    " au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --wrap=none\ --reference-links\ --reference-location=section\ --atx-headers
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
+    au Filetype markdown,markdown.pandoc setlocal foldenable
+    au Filetype markdown,markdown.pandoc setlocal foldmethod=syntax
+    au Filetype markdown,markdown.pandoc setlocal conceallevel=0
     au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! CocDisable
-    au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal spell
-    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
+    " au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal spell
+    " au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
@@ -479,4 +485,6 @@ augroup vimrc
     au Filetype python nnoremap <buffer> <leader>i :g/^def\s<CR>:
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    au User GoyoEnter Limelight
+    au User GoyoLeave Limelight!
 augroup END
