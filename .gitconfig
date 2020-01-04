@@ -50,7 +50,6 @@
 	excludesfile = /home/davison/.global_ignore
 	commitGraph = true
     pager="less -FRSX"
-    autocrlf = true
     ignoreCase = true
 [wc]
 	writeCommitGraph = true
