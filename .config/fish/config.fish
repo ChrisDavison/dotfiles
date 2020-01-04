@@ -33,10 +33,11 @@ alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
-alias b="budget $FINANCES"
+alias budget="budget $FINANCES"
 alias ts="tagsearch"
 alias ob="openBookmarks"
 alias obu="openBookmarkURL"
+alias b="bat --map-syntax txt:markdown"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
@@ -63,3 +64,5 @@ end
 if test -f /Users/davison/.autojump/share/autojump/autojump.fish
     source /Users/davison/.autojump/share/autojump/autojump.fish
 end
+
+cd $HOME/Dropbox/notes
