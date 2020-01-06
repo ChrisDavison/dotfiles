@@ -1,6 +1,6 @@
 let mapleader=" "
 
-" plugins, managed with github.com/junegunn/plug.vim
+" pluginslogs/, managed with github.com/junegunn/plug.vim
 " --------------------------------------------------
 call plug#begin('~/.vim/3rd_party')
 " languages
@@ -200,6 +200,25 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" FZF keybinds
+imap <C-x><C-k> <plug>(fzf-complete-word)
+imap <C-x><C-f> <plug>(fzf-complete-path)
+imap <C-x><C-j> <plug>(fzf-complete-file-ag)
+imap <C-x><C-l> <plug>(fzf-complete-line)
+
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+    \ 'ctrl-q': function('s:build_quickfix_list'),
+    \ 'ctrl-t': 'tab split',
+    \ 'ctrl-x': 'split',
+    \ 'ctrl-v': 'vsplit' }
+
 " Automatically use first spelling suggestion
 nnoremap <leader>s  z=1<CR><CR>
 
@@ -286,7 +305,7 @@ function! s:makeNonExDir()
 endfunction
 command! MakeNonExistentDir call s:makeNonExDir()
 
-" grep / ripgrep
+" :Rg | grep / ripgrep
 " --------------
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
@@ -295,6 +314,15 @@ if executable('rg')
         \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
         \ fzf#vim#with_preview('right:50%:hidden', '?'),
         \ <bang>0)
+    function! RipgrepFzf(query, fullscreen)
+        let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+        let initial_command = printf(command_fmt, shellescape(a:query))
+        let reload_command = printf(command_fmt, '{q}')
+        let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+        call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+    endfunction
+
+    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 endif
 
 " coc.nvim, the nvim language server protocol runner
@@ -477,7 +505,7 @@ augroup vimrc
     au Filetype markdown,markdown.pandoc setlocal conceallevel=0
     au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! CocDisable
     " au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal spell
-    " au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
+    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80
     au Filetype tex setlocal colorcolumn=80
