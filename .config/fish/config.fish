@@ -65,4 +65,4 @@ if test -f /Users/davison/.autojump/share/autojump/autojump.fish
     source /Users/davison/.autojump/share/autojump/autojump.fish
 end
 
-cd $HOME/Dropbox/notes
+status --is-interactive; and cd $HOME/Dropbox/notes
