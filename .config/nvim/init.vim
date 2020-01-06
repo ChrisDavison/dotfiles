@@ -263,7 +263,8 @@ silent! exe "set <S-Left>=\<Esc>b"
 silent! exe "set <S-Right>=\<Esc>f"
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
-inoremap <c-c> <ESC>
+inoremap kj <ESC>
+inoremap jk <ESC>
 
 nnoremap <leader>t :Tags<CR>
 
