@@ -37,7 +37,7 @@ alias budget="budget $FINANCES"
 alias ts="tagsearch"
 alias ob="openBookmarks"
 alias obu="openBookmarkURL"
-alias b="bat --map-syntax txt:markdown"
+alias b="bat --map-syntax txt:markdown --style=grid,header"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
