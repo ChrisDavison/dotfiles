@@ -7,6 +7,8 @@ call plug#begin('~/.vim/3rd_party')
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'jkramer/vim-checkbox'
 Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
 Plug 'georgewitteman/vim-fish'
@@ -125,13 +127,20 @@ silent! colorscheme paramount
 
 " settings for plugins
 " --------------------
-let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
-let g:vim_markdown_folding_disabled = 0
-" vim-pandoc-syntax
 let g:pandoc#sytax#conceal#use=1
 let g:pandoc#sytax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
+let g:pandoc#folding#mode='stacked'
+let g:pandoc#formatting#mode='ha'
+let g:pandoc#formatting#textwidth=80
+let g:pandoc#formatting#equalprg='pandoc' .
+            \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists' .
+            \ ' --columns=80' .
+            \ ' --reference-links' .
+            \ ' --reference-location=section' .
+            \ ' --wrap=auto' .
+            \ ' --atx-headers'
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
