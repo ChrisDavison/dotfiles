@@ -227,13 +227,14 @@ nnoremap <leader>i :Headers<CR>
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
-nnoremap <leader>p :call <SID>maybe_gfiles()<CR>
-
+nnoremap <leader>p :silent!call <SID>maybe_gfiles()<CR>
 
 function! s:maybe_gfiles()
     let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
     if expand('%:p') =~ "Dropbox/notes"
         exec "Files " . expand("~/Dropbox/notes")
+    elseif expand('%:p') =~ "Dropbox/logbook"
+        exec "Files " . expand("~/Dropbox/logbook")
     elseif !v:shell_error
         GFiles
     else
