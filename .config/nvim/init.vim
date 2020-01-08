@@ -484,6 +484,9 @@ function! s:maybe_filetype_markdown()
     end
 endfunction
 
+" :NoCheck | Untick all checkboxes in file
+command! NoCheck silent!exec "%s/\\[x\\]\/\\[ \\]\/"
+
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
