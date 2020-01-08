@@ -221,6 +221,8 @@ nnoremap <leader>s  z=1<CR><CR>
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
+nnoremap <leader>i :Headers<CR>
+
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
@@ -479,6 +481,19 @@ function! s:maybe_filetype_markdown()
         setlocal filetype=markdown.pandoc
     end
 endfunction
+
+let s:headermap={
+            \'rust': 'fn',
+            \'python': 'def',
+            \'go': 'func',
+            \'vim': 'function',
+            \'markdown': '#',
+            \'markdown.pandoc': '#'}
+function! s:goto_header(ft)
+    let pattern=s:headermap[a:ft]
+    exec ":g/^\\s*".pattern."\\s"
+endfunction
+command! Headers exec <sid>goto_header(&filetype)
 
 " autocommands
 " ------------
