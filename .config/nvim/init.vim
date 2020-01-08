@@ -247,9 +247,11 @@ nnoremap <leader>b :Buffers<CR>
 command! TagThisWord exec "Tags " . expand("<cword>") 
 nnoremap <leader>gt :TagThisWord<CR>
 
-nmap s <Plug>(easymotion-s)
+" Easymotion configuration
+nmap s <Plug>(easymotion-s2)
 map <leader>j <Plug>(easymotion-j)
 map <leader>k <Plug>(easymotion-k)
+let g:EasyMotion_smartcase=1
 
 " Readline-style keybinds in the command line
 cnoremap <C-A> <Home>
