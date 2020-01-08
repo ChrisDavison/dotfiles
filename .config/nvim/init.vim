@@ -183,11 +183,7 @@ let g:tagbar_type_markdown = {
 
 "  keybinds
 "  --------
-if has('nvim')
-    nnoremap <leader>ev :edit ~/.config/nvim/init.vim<CR>
-else
-    nnoremap <leader>ev :edit ~/.vimrc<CR>
-endif
+nnoremap <leader>ev :edit $MYVIMRC<CR>
 
 " Use // to search visual selection
 vnoremap // y/<c-r>"<CR>
