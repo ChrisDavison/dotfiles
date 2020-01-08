@@ -514,20 +514,14 @@ augroup vimrc
     au BufEnter *.txt,*.md call <sid>maybe_filetype_markdown()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
-    " au Filetype markdown,markdown.pandoc setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --wrap=none\ --reference-links\ --reference-location=section\ --atx-headers
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#\+\s<CR>:
+    au Filetype markdown,markdown.pandoc setlocal foldlevelstart=0
     au Filetype markdown,markdown.pandoc setlocal foldenable
-    au Filetype markdown,markdown.pandoc setlocal foldmethod=syntax
     au Filetype markdown,markdown.pandoc setlocal conceallevel=0
     au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! CocDisable
-    " au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal spell
-    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! Autowrap
+    au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal nospell
     au BufRead,BufNewFile *.latex set filetype=tex
-    au Filetype tex setlocal tw=80
-    au Filetype tex setlocal colorcolumn=80
+    au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
-    au Filetype python nnoremap <buffer> <leader>i :g/^def\s<CR>:
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
     au User GoyoEnter Limelight
