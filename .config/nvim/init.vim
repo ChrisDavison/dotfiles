@@ -123,7 +123,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme paramount
+silent! colorscheme seoul256
 
 " settings for plugins
 " --------------------
