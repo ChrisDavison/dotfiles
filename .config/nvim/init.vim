@@ -210,16 +210,7 @@ imap <C-x><C-k> <plug>(fzf-complete-word)
 imap <C-x><C-f> <plug>(fzf-complete-path)
 imap <C-x><C-j> <plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <plug>(fzf-complete-line)
-
-" An action can be a reference to a function that processes selected lines
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-
 let g:fzf_action = {
-    \ 'ctrl-q': function('s:build_quickfix_list'),
     \ 'ctrl-t': 'tab split',
     \ 'ctrl-x': 'split',
     \ 'ctrl-v': 'vsplit' }
