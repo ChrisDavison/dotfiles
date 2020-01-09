@@ -3,7 +3,6 @@
 **/.netrwhist
 **/__*.fish
 **/fisher.fish
-**/fzf*.fish
 fish/fishd.*
 **/fishd.*
 **/.vscode
