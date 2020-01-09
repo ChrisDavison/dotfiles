@@ -222,7 +222,7 @@ nnoremap <leader>s  z=1<CR><CR>
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
-nnoremap <leader>i :Headers<CR>
+nnoremap <leader>i :Headers<CR><CR>:
 
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
@@ -316,15 +316,6 @@ if executable('rg')
                 \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
-    function! RipgrepFzf(query, fullscreen)
-        let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
-        let initial_command = printf(command_fmt, shellescape(a:query))
-        let reload_command = printf(command_fmt, '{q}')
-        let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-        call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-    endfunction
-
-    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 endif
 
 " coc.nvim, the nvim language server protocol runner
@@ -505,8 +496,8 @@ let s:headermap={
             \'python': 'def',
             \'go': 'func',
             \'vim': 'function',
-            \'markdown': '#',
-            \'markdown.pandoc': '#'}
+            \'markdown': '#\+',
+            \'markdown.pandoc': '#\+'}
 function! s:goto_header(ft)
     let pattern=s:headermap[a:ft]
     exec ":g/^\\s*".pattern."\\s"
@@ -527,7 +518,7 @@ augroup vimrc
     au BufEnter *.txt,*.md call <sid>maybe_filetype_markdown()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown* setlocal foldenable foldlevelstart=0
+    au Filetype markdown* setlocal foldenable foldlevelstart=99
     au Filetype markdown* setlocal conceallevel=2
     au Filetype markdown* setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --columns=79\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
     au BufEnter,BufRead,BufNewFile *md,*txt :silent! CocDisable
