@@ -438,7 +438,8 @@ command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
 " -------------------------------------------------
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')<bar>normal <C-End> 
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')<bar>normal <C-End>
-command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/projects')
+command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/todo')
+command! Todos exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
 
 " :Habits[!] | Open daily, weekly, and monthly habits
@@ -457,13 +458,13 @@ command! -bang Habits call <sid>open_habits(<bang>1)
 " :Thesis | Open note files relevant to my thesis
 function! s:open_thesis(as_split)
     if a:as_split
-        vsplit $HOME/Dropbox/notes/projects/thesis-general.txt
+        vsplit $HOME/Dropbox/notes/todo/thesis-general.txt
     else
         only
-        edit $HOME/Dropbox/notes/projects/thesis-general.txt
+        edit $HOME/Dropbox/notes/todo/thesis-general.txt
     endif
-    split $HOME/Dropbox/notes/projects/thesis-chapter-dairy.txt
-    split $HOME/Dropbox/notes/projects/thesis-chapter-beef.txt
+    split $HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt
+    split $HOME/Dropbox/notes/todo/thesis-chapter-beef.txt
 endfunction
 command! -bang Thesis call <sid>open_thesis(<bang>1)
 
