@@ -447,9 +447,18 @@ command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
 command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
 command! Logbook exec "edit " . expand('$HOME/src/github.com/ChrisDavison/logbook/' . strftime("%Y"))
-command! Habits vsplit $HOME/Dropbox/notes/habits/1-daily.txt<bar>
-            \ split $HOME/Dropbox/notes/habits/2-weekly.txt<bar>
-            \ split $HOME/Dropbox/notes/habits/3-monthly.txt
+
+function! s:open_habits(as_split)
+    if a:as_split
+        vsplit $HOME/Dropbox/notes/habits/1-daily.txt
+    else
+        only
+        edit $HOME/Dropbox/notes/habits/1-daily.txt
+    endif
+    split $HOME/Dropbox/notes/habits/2-weekly.txt
+    split $HOME/Dropbox/notes/habits/3-monthly.txt
+endfunction
+command! -bang Habits call <sid>open_habits(<bang>1)
 
 " abbreviations
 cnoreabbrev W w
