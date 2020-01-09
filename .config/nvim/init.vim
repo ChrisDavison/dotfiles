@@ -226,7 +226,7 @@ nnoremap <leader>i :Headers<CR>
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :Files ~/src/github.com/ChrisDavison/logbook/2019<CR>
+nnoremap <leader>el :Files ~/Dropbox/logbook/2020<CR>
 nnoremap <leader>p :silent!call <SID>maybe_gfiles()<CR>
 
 function! s:maybe_gfiles()
@@ -290,7 +290,7 @@ command! Bd bp|bd #
 
 " :Scratch | Open a 'scratch' buffer
 " ----------------------------------
-command! Scratch edit ~/.scratch | normal G
+command! Scratch edit ~/.scratch | normal <C-End>
 
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
 " ----------------------------------------------------------------
@@ -443,10 +443,10 @@ command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
 
 " Commands to jump to specific files or directories
 " -------------------------------------------------
-command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
-command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
-command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
-command! Logbook exec "edit " . expand('$HOME/src/github.com/ChrisDavison/logbook/' . strftime("%Y"))
+command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')<bar>normal <C-End> 
+command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')<bar>normal <C-End>
+command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/projects')
+command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
 
 function! s:open_habits(as_split)
     if a:as_split
