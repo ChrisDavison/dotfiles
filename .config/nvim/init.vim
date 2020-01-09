@@ -132,7 +132,7 @@ let g:pandoc#sytax#conceal#use=1
 let g:pandoc#sytax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
-let g:pandoc#folding#mode='stacked'
+let g:pandoc#folding#mode='syntax'
 let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#textwidth=80
 let g:pandoc#formatting#equalprg='pandoc' .
@@ -153,34 +153,34 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
 let g:tagbar_type_rust = {
-    \ 'ctagstype' : 'rust',
-    \ 'kinds' : [
-        \'T:types,type definitions',
-        \'f:functions,function definitions',
-        \'g:enum,enumeration names',
-        \'s:structure names',
-        \'m:modules,module names',
-        \'c:consts,static constants',
-        \'t:traits',
-        \'i:impls,trait implementations',
-    \]
-    \}
+            \ 'ctagstype' : 'rust',
+            \ 'kinds' : [
+            \'T:types,type definitions',
+            \'f:functions,function definitions',
+            \'g:enum,enumeration names',
+            \'s:structure names',
+            \'m:modules,module names',
+            \'c:consts,static constants',
+            \'t:traits',
+            \'i:impls,trait implementations',
+            \]
+            \}
 let g:coc_snippet_next = '<c-j>'
 let g:coc_snippet_prev = '<c-k>'
 let g:tagbar_type_markdown = {
-    \ 'ctagstype': 'markdown',
-    \ 'ctagsbin' : '/home/davison/.local/bin/markdown2ctags',
-    \ 'ctagsargs' : '-f - --sort=yes',
-    \ 'kinds' : [
-        \ 's:sections',
-        \ 'i:images'
-    \ ],
-    \ 'sro' : '|',
-    \ 'kind2scope' : {
-        \ 's' : 'section',
-    \ },
-    \ 'sort': 0,
-\ }
+            \ 'ctagstype': 'markdown',
+            \ 'ctagsbin' : '/home/davison/.local/bin/markdown2ctags',
+            \ 'ctagsargs' : '-f - --sort=yes',
+            \ 'kinds' : [
+            \ 's:sections',
+            \ 'i:images'
+            \ ],
+            \ 'sro' : '|',
+            \ 'kind2scope' : {
+            \ 's' : 'section',
+            \ },
+            \ 'sort': 0,
+            \ }
 
 "  keybinds
 "  --------
@@ -212,9 +212,9 @@ imap <C-x><C-f> <plug>(fzf-complete-path)
 imap <C-x><C-j> <plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <plug>(fzf-complete-line)
 let g:fzf_action = {
-    \ 'ctrl-t': 'tab split',
-    \ 'ctrl-x': 'split',
-    \ 'ctrl-v': 'vsplit' }
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit' }
 
 " Automatically use first spelling suggestion
 nnoremap <leader>s  z=1<CR><CR>
@@ -295,7 +295,7 @@ command! Scratch edit ~/.scratch | normal <C-End>
 
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
 " ----------------------------------------------------------------
-command! FMT exec "silent!normal mzgg=G`zmzzz"
+command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
 " :MakeNonExistentDir | try to make all parent directories of a new buffer
@@ -312,10 +312,10 @@ command! MakeNonExistentDir call s:makeNonExDir()
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     command! -bang -nargs=* Rg
-        \ call fzf#vim#grep(
-        \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-        \ fzf#vim#with_preview('right:50%:hidden', '?'),
-        \ <bang>0)
+                \ call fzf#vim#grep(
+                \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+                \ fzf#vim#with_preview('right:50%:hidden', '?'),
+                \ <bang>0)
     function! RipgrepFzf(query, fullscreen)
         let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
         let initial_command = printf(command_fmt, shellescape(a:query))
@@ -334,14 +334,14 @@ endif
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
@@ -374,35 +374,35 @@ imap <C-j> <Plug>(coc-snippets-expand-jump)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
+    if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    else
+        call CocAction('doHover')
+    endif
 endfunction
 
 " :EX | chmod +x
 " --------------
 command! EX if !empty(expand('%'))
-         \|   write
-         \|   call system('chmod +x '.expand('%'))
-         \|   silent e
-         \| else
-         \|   echohl WarningMsg
-         \|   echo 'Save the file first'
-         \|   echohl None
-         \| endif
+            \|   write
+            \|   call system('chmod +x '.expand('%'))
+            \|   silent e
+            \| else
+                \|   echohl WarningMsg
+                \|   echo 'Save the file first'
+                \|   echohl None
+                \| endif
 
 " :Root | Change dir to the root of the Git repository
 " ----------------------------------------------------
 function! s:root()
-  let root = systemlist('git rev-parse --show-toplevel')[0]
-  if v:shell_error
-    echo 'Not in git repo'
-  else
-    execute 'lcd' root
-    echo 'Changed directory to: '.root
-  endif
+    let root = systemlist('git rev-parse --show-toplevel')[0]
+    if v:shell_error
+        echo 'Not in git repo'
+    else
+        execute 'lcd' root
+        echo 'Changed directory to: '.root
+    endif
 endfunction
 command! Root call s:root()
 
@@ -527,10 +527,10 @@ augroup vimrc
     au BufEnter *.txt,*.md call <sid>maybe_filetype_markdown()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown,markdown.pandoc setlocal foldlevelstart=0
-    au Filetype markdown,markdown.pandoc setlocal foldenable
-    au Filetype markdown,markdown.pandoc setlocal conceallevel=0
-    au BufEnter,BufRead,BufNewFile *.md,*.txt :silent! CocDisable
+    au Filetype markdown* setlocal foldenable foldlevelstart=0
+    au Filetype markdown* setlocal conceallevel=2
+    au Filetype markdown* setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --columns=79\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+    au BufEnter,BufRead,BufNewFile *md,*txt :silent! CocDisable
     au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal nospell
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80 colorcolumn=80
