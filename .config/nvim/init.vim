@@ -22,6 +22,7 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'vim-scripts/R.vim'
 " Utility
 Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'Konfekt/FastFold'
 Plug 'dahu/vim-fanfingtastic'
