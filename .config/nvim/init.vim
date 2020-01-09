@@ -29,7 +29,7 @@ Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'      " Easily navigate to any word or char in buffer
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'jceb/vim-textobj-uri'           " Text object for urls
-Plug 'junegunn/fzf', { 'dur':  '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
@@ -440,6 +440,7 @@ command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')<bar>no
 command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/projects')
 command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
 
+" :Habits[!] | Open daily, weekly, and monthly habits
 function! s:open_habits(as_split)
     if a:as_split
         vsplit $HOME/Dropbox/notes/habits/1-daily.txt
@@ -451,6 +452,20 @@ function! s:open_habits(as_split)
     split $HOME/Dropbox/notes/habits/3-monthly.txt
 endfunction
 command! -bang Habits call <sid>open_habits(<bang>1)
+
+" :Thesis | Open note files relevant to my thesis
+function! s:open_thesis(as_split)
+    if a:as_split
+        vsplit $HOME/Dropbox/notes/projects/thesis-general.txt
+    else
+        only
+        edit $HOME/Dropbox/notes/projects/thesis-general.txt
+    endif
+    split $HOME/Dropbox/notes/projects/thesis-chapter-dairy.txt
+    split $HOME/Dropbox/notes/projects/thesis-chapter-beef.txt
+endfunction
+command! -bang Thesis call <sid>open_thesis(<bang>1)
+
 
 " abbreviations
 cnoreabbrev W w
