@@ -136,7 +136,7 @@ let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#textwidth=80
 let g:pandoc#formatting#equalprg='pandoc' .
             \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists' .
-            \ ' --columns=80' .
+            \ ' --columns=79' .
             \ ' --reference-links' .
             \ ' --reference-location=section' .
             \ ' --wrap=auto' .
@@ -447,6 +447,9 @@ command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')
 command! Projects exec "edit " . expand('$HOME/Dropbox/notes/projects')
 command! Logbook exec "edit " . expand('$HOME/src/github.com/ChrisDavison/logbook/' . strftime("%Y"))
+command! Habits vsplit $HOME/Dropbox/notes/habits/1-daily.txt<bar>
+            \ split $HOME/Dropbox/notes/habits/2-weekly.txt<bar>
+            \ split $HOME/Dropbox/notes/habits/3-monthly.txt
 
 " abbreviations
 cnoreabbrev W w
