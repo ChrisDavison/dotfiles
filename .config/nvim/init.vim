@@ -5,6 +5,7 @@ let mapleader=" "
 call plug#begin('~/.vim/3rd_party')
 " languages
 Plug 'fatih/vim-go'
+Plug 'freitass/todo.txt-vim'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
@@ -498,6 +499,8 @@ function! s:maybe_filetype_markdown()
     let ft=&filetype
     if ft == "help"
         return
+    elseif expand("%") =~ 'todo*'
+        setlocal filetype=todo.txt
     else
         setlocal filetype=markdown.pandoc
     end
@@ -518,6 +521,8 @@ function! s:goto_header(ft)
     exec ":g/^\\s*".pattern."\\s"
 endfunction
 command! Headers exec <sid>goto_header(&filetype)
+
+command! -nargs=+ -complete=file Oedit silent!only<bar>edit <args>
 
 " autocommands
 " ------------
