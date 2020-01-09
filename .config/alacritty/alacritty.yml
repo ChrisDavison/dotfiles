@@ -38,7 +38,6 @@ window:
 scrolling:
     history: 100000 # Number of scrollback lines. '0' disables
     multiplier: 3 # Number of lines viewport moves when scrolled
-    faux_multiplier: 3 # How many lines to scroll in the 'alternate' buffer (e.g. for man)
     auto_scroll: true # Scroll to the bottom when new text is written to the terminal.
 
 # Spaces per tab (some apps like emacs may need this)
@@ -49,15 +48,15 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Camingo Code
+        family: Fantasque Sans Mono
         style: Regular
     italic:
-        family: Camingo Code
+        family: Fantasque Sans Mono
         style: Italic
     bold:
-        family: Camingo Code
+        family: Fantasque Sans Mono
         style: Bold
-    size: 12.0
+    size: 9.0
 
     offset:
         x: 1 # letterspacing
