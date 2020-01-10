@@ -465,10 +465,10 @@ let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
 let s:todo_files = ['$HOME/Dropbox/notes/todo/today.txt',
             \ '$HOME/Dropbox/notes/todo/todo.txt']
 
-command! -bang Habits call <sid>stack_open_files(s:habit_files, <bang>1)
-command! -bang Thesis call <sid>stack_open_files(s:thesis_files, <bang>1)
-command! -bang Todo call <sid>stack_open_files(s:todo_files, <bang>1)
-command! -bang Today call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
+command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
+command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
+command! -bang Todo silent!call <sid>stack_open_files(s:todo_files, <bang>1)
+command! -bang Today silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
 
 " abbreviations
 cnoreabbrev W w
