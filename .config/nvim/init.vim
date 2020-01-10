@@ -5,7 +5,6 @@ let mapleader=" "
 call plug#begin('~/.vim/3rd_party')
 " languages
 Plug 'fatih/vim-go'
-Plug 'freitass/todo.txt-vim'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
@@ -437,37 +436,39 @@ command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
 " Commands to jump to specific files or directories
 " -------------------------------------------------
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')<bar>normal <C-End> 
-command! Someday exec "edit " . expand('$HOME/Dropbox/notes/someday.txt')<bar>normal <C-End>
+command! Someday exec "edit " . expand('$HOME/Dropbox/notes/todo/someday.txt')<bar>normal <C-End>
 command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Todos exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
 
-" :Habits[!] | Open daily, weekly, and monthly habits
-function! s:open_habits(as_split)
+" :Habits[!] :Thesis[!] | Open stacks of files
+" This will every file, stacked on top of each other, optionally ONLY these
+" files.
+function! s:stack_open_files(files, as_split)
     if a:as_split
-        vsplit $HOME/Dropbox/notes/habits/1-daily.txt
+        exec "vsplit " . a:files[0]
     else
         only
-        edit $HOME/Dropbox/notes/habits/1-daily.txt
+        exec "edit " . a:files[0]
     endif
-    split $HOME/Dropbox/notes/habits/2-weekly.txt
-    split $HOME/Dropbox/notes/habits/3-monthly.txt
+    for fn in a:files[1:]
+        exec "split " . fn
+    endfor
 endfunction
-command! -bang Habits call <sid>open_habits(<bang>1)
 
-" :Thesis | Open note files relevant to my thesis
-function! s:open_thesis(as_split)
-    if a:as_split
-        vsplit $HOME/Dropbox/notes/todo/thesis-general.txt
-    else
-        only
-        edit $HOME/Dropbox/notes/todo/thesis-general.txt
-    endif
-    split $HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt
-    split $HOME/Dropbox/notes/todo/thesis-chapter-beef.txt
-endfunction
-command! -bang Thesis call <sid>open_thesis(<bang>1)
+let s:habit_files = ['$HOME/Dropbox/notes/habits/1-daily.txt',
+            \ '$HOME/Dropbox/notes/habits/2-weekly.txt',
+            \ '$HOME/Dropbox/notes/habits/3-monthly.txt']
+let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
+            \ '$HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt',
+            \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
+let s:todo_files = ['$HOME/Dropbox/notes/todo/today.txt',
+            \ '$HOME/Dropbox/notes/todo/todo.txt']
 
+command! -bang Habits call <sid>stack_open_files(s:habit_files, <bang>1)
+command! -bang Thesis call <sid>stack_open_files(s:thesis_files, <bang>1)
+command! -bang Todo call <sid>stack_open_files(s:todo_files, <bang>1)
+command! -bang Today call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
 
 " abbreviations
 cnoreabbrev W w
@@ -500,8 +501,6 @@ function! s:maybe_filetype_markdown()
     let ft=&filetype
     if ft == "help"
         return
-    elseif expand("%") =~ 'todo*'
-        setlocal filetype=todo.txt
     else
         setlocal filetype=markdown.pandoc
     end
