@@ -522,8 +522,18 @@ endfunction
 " :NoCheck | Untick all checkboxes in file
 command! NoCheck silent!exec "%s/\\[x\\]\/\\[ \\]\/"
 
-" :RMCheck | Simple wrapper to delete lines with checkboxes
-command! RMCheck silent!exec "g/\\[x\\]/d"
+" :RMCheck[!] | Simple wrapper to delete lines with checkboxes
+" with !, log the done marks to 'todo/done.txt'
+function! s:rm_checkboxes(log)
+    let @a=""
+    silent!exec "g/\\[x\\]/d A"
+    if a:log
+        exec "split " . expand("$HOME/Dropbox/notes/todo/done.txt")
+        exec "$put a"
+        exec "close"
+    endif
+endfunction
+command! -bang RMCheck call <sid>rm_checkboxes(<bang>0)
 
 let s:headermap={
             \'rust': 'fn',
@@ -537,8 +547,6 @@ function! s:goto_header(ft)
     exec ":g/^\\s*".pattern."\\s"
 endfunction
 command! Headers exec <sid>goto_header(&filetype)
-
-command! -nargs=+ -complete=file Oedit silent!only<bar>edit <args>
 
 " autocommands
 " ------------
