@@ -185,7 +185,7 @@ let g:tagbar_type_markdown = {
 
 "  keybinds
 "  --------
-nnoremap <leader>ev :edit $MYVIMRC<CR>
+nnoremap <leader>ev :tabedit $MYVIMRC<CR>
 
 " Use // to search visual selection
 vnoremap // y/<c-r>"<CR>
