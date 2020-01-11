@@ -442,6 +442,17 @@ command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Todos exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
 
+function! s:new_personal_log(args, daily)
+    if a:daily
+        let filename=strftime("%Y%m%d") . "-" . join(split(a:args), "-") . ".txt"
+    else
+        let filename=strftime("%Y%m") . "-" . join(split(a:args), "-") . ".txt"
+    endif
+    let path=expand("$HOME/Dropbox/notes/logs/" . filename)
+    exec "edit " . path
+endfunction
+command! -bang -nargs=+ Log call <sid>new_personal_log(<q-args>, <bang>0)
+
 " :Habits[!] :Thesis[!] | Open stacks of files
 " This will every file, stacked on top of each other, optionally ONLY these
 " files.
