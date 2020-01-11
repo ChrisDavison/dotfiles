@@ -133,6 +133,7 @@ let g:pandoc#sytax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
 let g:pandoc#folding#mode='syntax'
+let g:pandoc#folding#level=99
 let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#textwidth=80
 let g:pandoc#formatting#equalprg='pandoc' .
