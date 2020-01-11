@@ -458,7 +458,7 @@ command! -bang -nargs=+ Log call <sid>new_personal_log(<q-args>, <bang>0)
 " files.
 function! s:stack_open_files(files, as_split)
     if a:as_split
-        exec "vsplit " . a:files[0]
+        exec "vert botright split " . a:files[0]
     else
         only
         exec "edit " . a:files[0]
