@@ -522,6 +522,9 @@ endfunction
 " :NoCheck | Untick all checkboxes in file
 command! NoCheck silent!exec "%s/\\[x\\]\/\\[ \\]\/"
 
+" :RMCheck | Simple wrapper to delete lines with checkboxes
+command! RMCheck silent!exec "g/\\[x\\]/d"
+
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
