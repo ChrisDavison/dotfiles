@@ -417,7 +417,6 @@ function! s:toggle_autowrap(bang)
         setlocal formatoptions-=a
         return
     endif
-    let ft=&filetype
     let skip=['bookmark', 'self-tracking', 'budget']
     let curdir=expand('%:p:h')
     for pattern in skip
@@ -427,7 +426,7 @@ function! s:toggle_autowrap(bang)
         endif
     endfor
 
-    if ft =~ "markdown"
+    if &filetype =~ "markdown"
         echom "Autowrap ENABLED"
         setlocal formatoptions+=a
     endif
@@ -437,6 +436,9 @@ command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
 " Commands to jump to specific files or directories
 " -------------------------------------------------
 command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')<bar>normal <C-End> 
+cnoreabbrev inbox Inbox
+cnoreabbrev inb Inbox
+
 command! Someday exec "edit " . expand('$HOME/Dropbox/notes/todo/someday.txt')<bar>normal <C-End>
 command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/todo')
 command! Todos exec "Explore " . expand('$HOME/Dropbox/notes/todo')
@@ -490,6 +492,8 @@ cnoreabbrev E e
 cnoreabbrev Q! q!
 cnoreabbrev GIt Git
 cnoreabbrev Set set
+cnoreabbrev oedit only<bar>edit
+cnoreabbrev oe only<bar>edit
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
