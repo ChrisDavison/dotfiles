@@ -8,44 +8,30 @@ Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
-Plug 'jkramer/vim-checkbox'
-Plug 'vim-jp/vim-cpp'
 Plug 'vim-python/python-syntax'
 Plug 'georgewitteman/vim-fish'
-Plug 'guns/vim-clojure-static'
-Plug 'elixir-lang/vim-elixir'
 Plug 'ekalinin/Dockerfile.vim'
-Plug 'vim-scripts/gnuplot-syntax-highlighting'
-Plug 'JuliaEditorSupport/julia-vim'
-Plug 'vim-perl/vim-perl'
-Plug 'vim-ruby/vim-ruby'
-Plug 'vim-scripts/R.vim'
-" Utility
-Plug 'airblade/vim-gitgutter'         " Highlight uncommitted changes on left edge
-Plug 'christoomey/vim-tmux-navigator'
+Plug 'airblade/vim-gitgutter'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'Konfekt/FastFold'
 Plug 'dahu/vim-fanfingtastic'
-Plug 'easymotion/vim-easymotion'      " Easily navigate to any word or char in buffer
+Plug 'easymotion/vim-easymotion'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'jceb/vim-textobj-uri'           " Text object for urls
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
-Plug 'kana/vim-textobj-user'          " Custom text objects
-Plug 'ludovicchabant/vim-gutentags'   " Automatically regenerate tags
-Plug 'majutsushi/tagbar'              " Show an interactive list of tags
+Plug 'kana/vim-textobj-user'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'majutsushi/tagbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'romainl/vim-qlist'              " add [I results to quickfix
+Plug 'romainl/vim-qlist'
 Plug 'Shougo/echodoc'
-Plug 'tpope/vim-commentary'           " Comment modification/text objects
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'             " 'Surround' text objects e.g. csi(
+Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'              " Easily navigate directories
+Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
-" Themes
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
 call plug#end()
