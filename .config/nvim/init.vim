@@ -502,7 +502,7 @@ endfunction
 " :RMCheck will delete lines with checked boxes
 function! s:checkbox_rotate()
     if getline(".") !~ "\[[x ]\]"
-        silent!s/\(\s*-\s\+\)\([^[]\+$\)/\1[ ] \2
+        s/\(\s*-\s\+\)\([^[].*$\)/\1[ ] \2
     elseif getline(".") =~ "\\[ \\]"
         silent!s/\[ \]/\[x\]/
     else
