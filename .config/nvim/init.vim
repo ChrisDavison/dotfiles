@@ -11,29 +11,32 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-python/python-syntax'
 Plug 'georgewitteman/vim-fish'
 Plug 'ekalinin/Dockerfile.vim'
-Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'        
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'Konfekt/FastFold'
 Plug 'dahu/vim-fanfingtastic'
-Plug 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion'  
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-user'     
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'          
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'romainl/vim-qlist'
+Plug 'romainl/vim-qlist'         
 Plug 'Shougo/echodoc'
-Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary'     
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'
+Plug 'tpope/vim-surround'      
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-vinegar'      
 Plug 'wellle/targets.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
+Plug 'morhetz/gruvbox'
+Plug 'tomasr/molokai'
+Plug 'jacoborus/tender.vim'
 call plug#end()
 
 " settings
@@ -59,7 +62,7 @@ set lazyredraw " Don't redraw while executing macros
 set nobackup nowritebackup
 
 set directory=~/.temp,.
-set wildmode=list:longest,full
+set wildmode=list:longest:list,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
 set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
@@ -109,7 +112,7 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=dark
+set bg=light
 silent! colorscheme paramount
 
 " settings for plugins
@@ -260,7 +263,7 @@ command! CD exec "cd ".expand("%:h")
 " :Note | Create a new note in Dropbox/notes/_UNFILED, with the given text
 " ------------------------------------------------------------------------
 function! s:note(fn)
-    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt"
+    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt" 
 endfunction
 command! -nargs=+ Note call s:note(<args>)
 
@@ -435,13 +438,13 @@ let s:habit_files = ['$HOME/Dropbox/notes/habits/1-daily.txt',
 let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
-let s:todo_files = ['$HOME/Dropbox/notes/todo/today.txt',
-            \ '$HOME/Dropbox/notes/todo/todo.txt',
+let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt',
             \ '$HOME/Dropbox/notes/todo/todo-work.txt']
+let s:todo_today = '$HOME/Dropbox/notes/todo/today.txt'
 
 command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
 command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
-command! -bang Todo silent!call <sid>stack_open_files(s:todo_files, <bang>1)
+command! Plan only|silent!exec "edit " . s:todo_today|silent!call <sid>stack_open_files(s:todo_files, 1)
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
