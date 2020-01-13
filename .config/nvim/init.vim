@@ -468,6 +468,7 @@ iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y%m%d")
 iabbrev <expr> DATETIME strftime("%Y-%m-%dT%H:%M:%S")
 iabbrev RSQ R²
+iabbrev pmin1 ⁻¹
 
 
 " Rather than modifying 'paramount' directly,
@@ -483,30 +484,37 @@ if g:colors_name == 'paramount'
 endif
 
 function! s:maybe_filetype_markdown()
-    let ft=&filetype
-    if ft == "help"
+    if &filetype == "help"
         return
     else
         setlocal filetype=markdown.pandoc
     end
 endfunction
 
-" :NoCheck | Untick all checkboxes in file
-command! NoCheck silent!exec "%s/\\[x\\]\/\\[ \\]\/"
-
-" :RMCheck[!] | Simple wrapper to delete lines with checkboxes
-" with !, log the done marks to 'todo/done.txt'
-function! s:rm_checkboxes(log)
-    let @a=""
-    silent!exec "g/\\[x\\]/d A"
-    if a:log
-        exec "split " . expand("$HOME/Dropbox/notes/todo/done.txt")
-        exec "$put a"
-        exec "close"
+" HANDLING CHECKBOXES
+" :Check will add, if none exists
+" Will toggle, if exists
+" Will clear, if 'off' is 1 (e.g. if :Check!)
+" :Uncheck will clear all (or only selected) checkboxes
+" :RMCheck will delete lines with checked boxes
+function! s:checkbox_rotate()
+    if getline(".") !~ "\[[x ]\]"
+        silent!s/\(\s*-\s\+\)\([^[]\+$\)/\1[ ] \2
+    elseif getline(".") =~ "\\[ \\]"
+        silent!s/\[ \]/\[x\]/
+    else
+        s/\[x\] //
     endif
 endfunction
-command! -bang RMCheck call <sid>rm_checkboxes(<bang>0)
+command! -range CheckRot <line1>,<line2>call <sid>checkbox_rotate()
+command! -range=% Uncheck :<line1>,<line2>s/\[x\]/\[ \]/
+command! RMCheck :%s/\s*-\s\+\[x\].*\n\(\s*[^-]\s\+.*\n\)*//
 
+nnoremap <leader>x :CheckRot<CR>
+vnoremap <leader>x :'<,'>CheckRot<CR>
+
+" :Headers | imenu-like list functions,headers etc, for defined filetypes
+" -----------------------------------------------------------------------
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
@@ -519,6 +527,7 @@ function! s:goto_header(ft)
     exec ":g/^\\s*".pattern."\\s"
 endfunction
 command! Headers exec <sid>goto_header(&filetype)
+nnoremap <leader>i :Headers<CR>:
 
 " autocommands
 " ------------
