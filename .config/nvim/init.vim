@@ -260,7 +260,7 @@ command! CD exec "cd ".expand("%:h")
 " :Note | Create a new note in Dropbox/notes/_UNFILED, with the given text
 " ------------------------------------------------------------------------
 function! s:note(fn)
-    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt" 
+    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt"
 endfunction
 command! -nargs=+ Note call s:note(<args>)
 
@@ -399,17 +399,7 @@ function! s:toggle_autowrap(bang)
 endfunction
 command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
 
-" Commands to jump to specific files or directories
-" -------------------------------------------------
-command! Inbox exec "edit " . expand('$HOME/Dropbox/notes/inbox.txt')<bar>normal <C-End> 
-cnoreabbrev inbox Inbox
-cnoreabbrev inb Inbox
-
-command! Someday exec "edit " . expand('$HOME/Dropbox/notes/todo/someday.txt')<bar>normal <C-End>
-command! Projects exec "Explore " . expand('$HOME/Dropbox/notes/todo')
-command! Todos exec "Explore " . expand('$HOME/Dropbox/notes/todo')
-command! Logbook exec "Explore " . expand('$HOME/Dropbox/logbook/' . strftime("%Y"))
-
+" :Log | Create an entry in $NOTES/logs/ with the specified name
 function! s:new_personal_log(args, daily)
     if a:daily
         let filename=strftime("%Y%m%d") . "-" . join(split(a:args), "-") . ".txt"
@@ -421,9 +411,12 @@ function! s:new_personal_log(args, daily)
 endfunction
 command! -bang -nargs=+ Log call <sid>new_personal_log(<q-args>, <bang>0)
 
-" :Habits[!] :Thesis[!] | Open stacks of files
-" This will every file, stacked on top of each other, optionally ONLY these
-" files.
+" 'File stacks' - open every file in a list as horizontally split buffers
+" using [!] variant will make ONLY these buffers display
+"
+" :Habits[!] -- daily, weekly, and monthly habit checklist
+" :Thesis[!] -- general, beef chapter, and dairy chapter
+" :Todo[!]   -- today, personal todos, work todos
 function! s:stack_open_files(files, as_split)
     if a:as_split
         exec "vert botright split " . a:files[0]
@@ -449,7 +442,16 @@ let s:todo_files = ['$HOME/Dropbox/notes/todo/today.txt',
 command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
 command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
 command! -bang Todo silent!call <sid>stack_open_files(s:todo_files, <bang>1)
+
+" Commands to jump to specific files or directories
+" Using my 'stack open', so that I can use the [!] variant if wanted
 command! -bang Today silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
+command! -bang Inbox silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/inbox.txt'], <bang>1)
+command! -bang Someday silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/someday.txt'], <bang>1)
+command! -bang Projects silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo'], <bang>1)
+command! -bang Todos silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo')], <bang>1)
+command! -bang Logbook silent!call <sid>stack_open_files(['$HOME/Dropbox/logbook/' . strftime("%Y")], <bang>1)
+
 
 " abbreviations
 cnoreabbrev W w
