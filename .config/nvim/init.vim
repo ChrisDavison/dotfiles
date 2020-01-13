@@ -171,10 +171,7 @@ let g:tagbar_type_markdown = {
 
 "  keybinds
 "  --------
-nnoremap <leader>ev :tabedit $MYVIMRC<CR>
-
-" Use // to search visual selection
-vnoremap // y/<c-r>"<CR>
+nnoremap <leader>ev :edit $MYVIMRC<CR>
 
 nnoremap <silent> Q =ip
 nnoremap <BS>   <C-^>
@@ -185,7 +182,7 @@ vnoremap >      >gv
 nnoremap j      gj
 nnoremap D      dd
 nnoremap k      gk
-nnoremap Y y$
+nnoremap Y      y$
 nnoremap <silent> <CR> :nohlsearch<CR>
 
 nnoremap <C-h> <C-w>h
@@ -209,15 +206,15 @@ nnoremap <leader>s  z=1<CR><CR>
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
-nnoremap <leader>i :Headers<CR><CR>:
-
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files ~/Dropbox/logbook/2020<CR>
 nnoremap <leader>p :silent!call <SID>maybe_gfiles()<CR>
+nnoremap <leader>b :Buffers<CR>
 
 function! s:maybe_gfiles()
+    " Root is only called to test for it's error code
     let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
     if expand('%:p') =~ "Dropbox/notes"
         exec "Files " . expand("~/Dropbox/notes")
@@ -229,11 +226,6 @@ function! s:maybe_gfiles()
         Files
     end
 endfunction
-
-nnoremap <leader>b :Buffers<CR>
-
-command! TagThisWord exec "Tags " . expand("<cword>") 
-nnoremap <leader>gt :TagThisWord<CR>
 
 " Easymotion configuration
 nmap s <Plug>(easymotion-s2)
@@ -358,18 +350,6 @@ function! s:show_documentation()
         call CocAction('doHover')
     endif
 endfunction
-
-" :EX | chmod +x
-" --------------
-command! EX if !empty(expand('%'))
-            \|   write
-            \|   call system('chmod +x '.expand('%'))
-            \|   silent e
-            \| else
-                \|   echohl WarningMsg
-                \|   echo 'Save the file first'
-                \|   echohl None
-                \| endif
 
 " :Root | Change dir to the root of the Git repository
 " ----------------------------------------------------
@@ -562,6 +542,4 @@ augroup vimrc
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-    au User GoyoEnter Limelight
-    au User GoyoLeave Limelight!
 augroup END
