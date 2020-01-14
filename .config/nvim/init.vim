@@ -555,5 +555,6 @@ augroup vimrc
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python let b:coc_root_patterns = ['.env', '.git']
+    au FileType python setlocal foldmethod=indent
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup END
