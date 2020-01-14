@@ -68,7 +68,7 @@ set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
-set relativenumber
+" set relativenumber
 set noshowmode
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
@@ -112,8 +112,8 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=light
-silent! colorscheme paramount
+set bg=dark
+silent! colorscheme seoul256
 
 " settings for plugins
 " --------------------
@@ -192,6 +192,8 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+
+tnoremap <Esc> <C-\><C-n>
 
 " FZF keybinds
 imap <C-x><C-k> <plug>(fzf-complete-word)
@@ -322,9 +324,7 @@ inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
