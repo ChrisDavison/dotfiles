@@ -18,6 +18,7 @@ set PATH $HOME/.bin $PATH
 set PATH $CODEDIR/ChrisDavison/scripts/ $PATH
 set PATH $HOME/.cargo/bin $PATH
 set PATH /usr/local/go/bin $PATH
+set PATH /snap/bin $PATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
@@ -55,8 +56,6 @@ alias ltg="lt --git-ignore"
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
 
-# opam configuration
-source /home/davison/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 if test -f /usr/share/autojump/autojump.fish
     source /usr/share/autojump/autojump.fish
 end
