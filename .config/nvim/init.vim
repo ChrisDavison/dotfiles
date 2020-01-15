@@ -484,14 +484,14 @@ iabbrev pmin1 ⁻¹
 " Rather than modifying 'paramount' directly,
 " Just link html (markdown) headers to 'Question' to get
 " a pinkish header
-if g:colors_name == 'paramount'
-    hi! link htmlH1      Question
-    hi! link htmlH2      Question
-    hi! link htmlH3      Question
-    hi! link htmlH4      Question
-    hi! link htmlH5      Question
-    hi! link htmlH6      Question
-endif
+" if g:colors_name == 'paramount'
+"     hi! link htmlH1      Question
+"     hi! link htmlH2      Question
+"     hi! link htmlH3      Question
+"     hi! link htmlH4      Question
+"     hi! link htmlH5      Question
+"     hi! link htmlH6      Question
+" endif
 
 function! s:maybe_filetype_markdown()
     if &filetype == "help"
@@ -509,7 +509,7 @@ endfunction
 " :RMCheck will delete lines with checked boxes
 function! s:checkbox_rotate()
     if getline(".") !~ "\[[x ]\]"
-        s/\(\s*-\s\+\)\([^[].*$\)/\1[ ] \2
+        s/\(\s*\%(?!-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
     elseif getline(".") =~ "\\[ \\]"
         silent!s/\[ \]/\[x\]/
     else
