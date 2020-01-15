@@ -239,8 +239,10 @@ endfunction
 
 " Easymotion configuration
 nmap s <Plug>(easymotion-s2)
-map <leader>j <Plug>(easymotion-j)
-map <leader>k <Plug>(easymotion-k)
+nmap <leader><leader>w <Plug>(easymotion-bd-W)
+nmap <leader><leader>e <Plug>(easymotion-bd-E)
+map <leader>j <Plug>(easymotion-bd-jk)
+map <leader>k <Plug>(easymotion-bd-jk)
 let g:EasyMotion_smartcase=1
 
 " Readline-style keybinds in the command line
