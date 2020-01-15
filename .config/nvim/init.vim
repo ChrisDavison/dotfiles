@@ -517,11 +517,13 @@ function! s:checkbox_rotate()
     endif
 endfunction
 command! -range CheckRot <line1>,<line2>call <sid>checkbox_rotate()
-command! -range=% Uncheck :<line1>,<line2>s/\[x\]/\[ \]/
+command! -range Uncheck :<line1>,<line2>s/\[x\]/\[ \]/
 command! RMCheck :%s/\s*-\s\+\[x\].*\n\(\s*[^-]\s\+.*\n\)*//
 
 nnoremap <leader>x :CheckRot<CR>
 vnoremap <leader>x :'<,'>CheckRot<CR>
+nnoremap <leader>X :Uncheck<CR>
+vnoremap <leader>X :'<,'>Uncheck<CR>
 
 " :Headers | imenu-like list functions,headers etc, for defined filetypes
 " -----------------------------------------------------------------------
