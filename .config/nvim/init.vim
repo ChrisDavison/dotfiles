@@ -123,15 +123,18 @@ let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
 let g:pandoc#folding#mode='syntax'
 let g:pandoc#folding#level=99
-let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#textwidth=80
+let g:pandoc#formatting#mode='s'
 let g:pandoc#formatting#equalprg='pandoc' .
             \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists' .
-            \ ' --columns=79' .
             \ ' --reference-links' .
             \ ' --reference-location=section' .
-            \ ' --wrap=auto' .
             \ ' --atx-headers'
+let g:markdown_hard_wrap=0
+if g:markdown_hard_wrap " If I want to use soft-wrapping, without commenting out a bunch of lines...
+    let g:pandoc#formatting#mode='ha'
+    let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --columns=79\ --wrap=auto'
+endif
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
@@ -532,6 +535,14 @@ endfunction
 command! Headers exec <sid>goto_header(&filetype)
 nnoremap <leader>i :Headers<CR>:
 
+function! s:set_markdown_wrap_mode(hard)
+    if a:hard
+        setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --columns=79\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+    else
+        setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --reference-links\ --reference-location=section\ --wrap=none\ --atx-headers
+    endif
+endfunction
+
 " autocommands
 " ------------
 augroup vimrc
@@ -548,7 +559,7 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
     au Filetype markdown* setlocal conceallevel=2
-    au Filetype markdown* setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --columns=79\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+    au BufEnter,BufRead,BufNewFile *md,*txt call <sid>set_markdown_wrap_mode(g:markdown_hard_wrap)
     au BufEnter,BufRead,BufNewFile *md,*txt :silent! CocDisable
     au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal nospell
     au BufRead,BufNewFile *.latex set filetype=tex
