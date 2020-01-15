@@ -20,6 +20,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'kana/vim-textobj-user'     
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar'          
@@ -36,18 +37,17 @@ Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
 Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
-Plug 'jacoborus/tender.vim'
 call plug#end()
 
 " settings
 " --------
 set nocompatible
 set wrap lbr
-let &showbreak = '>>'
+let &showbreak = '┆'
 set cpo+=n
 set autochdir
 set breakindent
-set breakindentopt+=shift:2,sbr
+set breakindentopt=shift:4,sbr
 set number
 set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
@@ -70,14 +70,14 @@ set switchbuf=useopen,usetab
 set splitbelow splitright
 " set relativenumber
 set noshowmode
-let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
+let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__'
 
 " suppress 'match x of y', 'only match'... etc
 set shortmess=a
 
 set signcolumn=yes
 
-set path+=**
+set path=.,**
 set statusline=%<\ %n:%f\ %m%r%y%=%(%P\ of\ %LL\ -\ %l,%c\ %)
 
 " undo (save undo history across sessions)
@@ -113,7 +113,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme gruvbox
 
 " settings for plugins
 " --------------------
