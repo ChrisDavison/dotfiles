@@ -574,4 +574,6 @@ augroup vimrc
     au FileType python let b:coc_root_patterns = ['.env', '.git']
     au FileType python setlocal foldmethod=indent
     au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    au User GoyoEnter Limelight
+    au User GoyoLeave Limelight!
 augroup END
