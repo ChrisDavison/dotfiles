@@ -44,23 +44,23 @@ scrolling:
 tabspaces: 4
 
 font: # CHANGES REQUIRE RESTART
-    use_thin_strokes: true # macOS ONLY. false is better for non-retina displays
+    use_thin_strokes: false # macOS ONLY. false is better for non-retina displays
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Fantasque Sans Mono
+        family: Jetbrains Mono
         style: Regular
     italic:
-        family: Fantasque Sans Mono
+        family: Jetbrains Mono
         style: Italic
     bold:
-        family: Fantasque Sans Mono
+        family: Jetbrains Mono
         style: Bold
-    size: 9.0
+    size: 8.0
 
     offset:
-        x: 1 # letterspacing
-        y: 0 # linespacing
+        x: 0 # letterspacing
+        y: 1 # linespacing
 
     glyph_offset: # move glyphs WITHIN their cells
         x: 0
@@ -282,7 +282,7 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-colors: *seoul256
+colors: *gruvbox
 
 visual_bell:
     animation: EaseOutExpo
