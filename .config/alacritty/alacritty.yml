@@ -56,7 +56,7 @@ font: # CHANGES REQUIRE RESTART
     bold:
         family: Jetbrains Mono
         style: Bold
-    size: 8.0
+    size: 12.0
 
     offset:
         x: 0 # letterspacing
