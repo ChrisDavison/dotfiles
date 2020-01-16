@@ -113,7 +113,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme gruvbox
+silent! colorscheme molokai
 
 " settings for plugins
 " --------------------
@@ -123,17 +123,22 @@ let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
 let g:pandoc#folding#mode='syntax'
 let g:pandoc#folding#level=99
+let g:pandoc#folding#fastfolds=1
+let g:pandoc#folding#fdc=1
 let g:pandoc#formatting#textwidth=80
 let g:pandoc#formatting#mode='s'
 let g:pandoc#formatting#equalprg='pandoc' .
             \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists' .
-            \ ' --reference-links' .
-            \ ' --reference-location=section' .
             \ ' --atx-headers'
 let g:markdown_hard_wrap=0
 if g:markdown_hard_wrap " If I want to use soft-wrapping, without commenting out a bunch of lines...
     let g:pandoc#formatting#mode='ha'
     let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --columns=79\ --wrap=auto'
+endif
+let g:markdown_reference_links=0
+if g:markdown_reference_links
+    let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --reference-links' .
+            \ ' --reference-location=section' .
 endif
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -509,7 +514,7 @@ endfunction
 " :RMCheck will delete lines with checked boxes
 function! s:checkbox_rotate()
     if getline(".") !~ "\[[x ]\]"
-        s/\(\s*\%(?!-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
+        s/\(\s*\%(-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
     elseif getline(".") =~ "\\[ \\]"
         silent!s/\[ \]/\[x\]/
     else
@@ -534,18 +539,29 @@ let s:headermap={
             \'vim': 'function',
             \'markdown': '#\+',
             \'markdown.pandoc': '#\+'}
-function! s:goto_header(ft)
+function! s:goto_header(ft, filter)
     let pattern=s:headermap[a:ft]
-    exec ":g/^\\s*".pattern."\\s"
+    if len(a:filter) > 0
+        let pattern= s:headermap[a:ft] . ".*" . a:filter . ".*"
+    endif
+    exec ":g/^\\s*".pattern."\\s/"
 endfunction
-command! Headers exec <sid>goto_header(&filetype)
+command! -nargs=* Headers exec <sid>goto_header(&filetype, <q-args>)
 nnoremap <leader>i :Headers<CR>:
+nnoremap <leader>I :Headers !<CR>:
 
 function! s:set_markdown_wrap_mode(hard)
+    let fmt="pandoc --to "
+    let fmt=fmt + "markdown"
+    setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists
+    if g:markdown_reference_links
+        setlocal equalprg+=-shortcut_reference_links\ --reference-links\ --reference-location=section
+    endif
+    setlocal equalprg+=\ --atx-headers
     if a:hard
-        setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --columns=79\ --reference-links\ --reference-location=section\ --wrap=auto\ --atx-headers
+        setlocal equalprg+=\ --columns=79\ --wrap=auto
     else
-        setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists\ --reference-links\ --reference-location=section\ --wrap=none\ --atx-headers
+        setlocal equalprg+=\ --wrap=none
     endif
 endfunction
 
