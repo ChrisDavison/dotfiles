@@ -113,7 +113,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme molokai
+silent! colorscheme gruvbox
 
 " settings for plugins
 " --------------------
@@ -128,7 +128,7 @@ let g:pandoc#folding#fdc=1
 let g:pandoc#formatting#textwidth=80
 let g:pandoc#formatting#mode='s'
 let g:pandoc#formatting#equalprg='pandoc' .
-            \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists' .
+            \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block' .
             \ ' --atx-headers'
 let g:markdown_hard_wrap=0
 if g:markdown_hard_wrap " If I want to use soft-wrapping, without commenting out a bunch of lines...
@@ -225,7 +225,9 @@ nnoremap <leader>c :cclose<bar>lclose<CR>
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files ~/Dropbox/logbook/2020<CR>
-nnoremap <leader>p :silent!call <SID>maybe_gfiles()<CR>
+
+command! MGFiles call s:maybe_gfiles()
+nnoremap <leader>p :MGFiles<CR>
 nnoremap <leader>b :Buffers<CR>
 
 function! s:maybe_gfiles()
@@ -452,15 +454,15 @@ let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
 let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt',
             \ '$HOME/Dropbox/notes/todo/todo-work.txt']
-let s:todo_today = '$HOME/Dropbox/notes/todo/today.txt'
+let s:todo_important = '$HOME/Dropbox/notes/todo/important.txt'
 
 command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
 command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
-command! Plan only|silent!exec "edit " . s:todo_today|silent!call <sid>stack_open_files(s:todo_files, 1)
+command! Plan only|silent!exec "edit " . s:todo_important|silent!call <sid>stack_open_files(s:todo_files, 1)
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! -bang Today silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
+command! -bang MIT silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/important.txt'], <bang>1)
 command! -bang Inbox silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/inbox.txt'], <bang>1)
 command! -bang Someday silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/someday.txt'], <bang>1)
 command! -bang Projects silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo'], <bang>1)
@@ -514,15 +516,19 @@ endfunction
 " :RMCheck will delete lines with checked boxes
 function! s:checkbox_rotate()
     if getline(".") !~ "\[[x ]\]"
-        s/\(\s*\%(-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
+        silent!s/\(\s*\%(-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
     elseif getline(".") =~ "\\[ \\]"
         silent!s/\[ \]/\[x\]/
     else
-        s/\[x\] //
+        silent!s/\[x\] //
     endif
 endfunction
+function! s:checkbox_delete()
+    silent!s/\[[x ]\] //
+    silent!s/aksjdasd
+endfunction
 command! -range CheckRot <line1>,<line2>call <sid>checkbox_rotate()
-command! -range Uncheck :<line1>,<line2>s/\[x\]/\[ \]/
+command! -range Uncheck <line1>,<line2>call <sid>checkbox_delete()
 command! RMCheck :%s/\s*-\s\+\[x\].*\n\(\s*[^-]\s\+.*\n\)*//
 
 nnoremap <leader>x :CheckRot<CR>
@@ -553,7 +559,7 @@ nnoremap <leader>I :Headers !<CR>:
 function! s:set_markdown_wrap_mode(hard)
     let fmt="pandoc --to "
     let fmt=fmt + "markdown"
-    setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists
+    setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block
     if g:markdown_reference_links
         setlocal equalprg+=-shortcut_reference_links\ --reference-links\ --reference-location=section
     endif
