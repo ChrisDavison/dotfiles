@@ -93,16 +93,16 @@ set $internal eDP1
 # while my Dell hub reports as DP1
 # set $external DP3
 set $external DP1
-workspace $ws1 output $external
-workspace $ws2 output $external
-workspace $ws3 output $external
-workspace $ws4 output $external
-workspace $ws5 output $external
-workspace $ws6 output $internal
-workspace $ws7 output $internal
-workspace $ws8 output $internal
-workspace $ws9 output $internal
-workspace $ws10 output $internal
+workspace $ws1 output $internal
+workspace $ws2 output $internal
+workspace $ws3 output $internal
+workspace $ws4 output $internal
+workspace $ws5 output $internal
+workspace $ws6 output $external
+workspace $ws7 output $external
+workspace $ws8 output $external
+workspace $ws9 output $external
+workspace $ws10 output $external
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
@@ -208,16 +208,14 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 #   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/   |_| |_| |_|\__, |_| |_| |_|\__(_)
 #                                                   |___/
 # Workspaces - 'Monitor 1'
-for_window [class="GitKraken"] move container to workspace $ws2
-for_window [class="Thunderbird"] move container to workspace $ws3
-for_window [class="Slack"] move container to workspace $ws3
-for_window [class="Mendeley Desktop"] move container to workspace $ws4
+for_window [class="GitKraken"] move container to workspace $ws7
+for_window [class="Mendeley Desktop"] move container to workspace $ws8
 
 # Workspaces - 'Monitor 2 (inbuilt)'
-for_window [class="Code"] move container to workspace $ws6
-for_window [class="libreoffice-writer"] move container to workspace $ws7
-for_window [class="keepassxc"] move container to workspace $ws9
-for_window [class="spotify"] move container to workspace $ws2
+for_window [class="Code"] move container to workspace $ws1
+for_window [class="libreoffice-writer"] move container to workspace $ws2
+for_window [class="keepassxc"] move container to workspace $ws5
+for_window [class="spotify"] move container to workspace $ws7
 
 # Other window modifications
 for_window [class="Blueman-manager"] floating enable
