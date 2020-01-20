@@ -454,15 +454,15 @@ let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
 let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt',
             \ '$HOME/Dropbox/notes/todo/todo-work.txt']
-let s:todo_important = '$HOME/Dropbox/notes/todo/important.txt'
+let s:todo_today = '$HOME/Dropbox/notes/todo/today.txt'
 
 command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
 command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
-command! Plan only|silent!exec "edit " . s:todo_important|silent!call <sid>stack_open_files(s:todo_files, 1)
+command! Plan only|silent!exec "edit " . s:todo_today|silent!call <sid>stack_open_files(s:todo_files, 1)
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! -bang MIT silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/important.txt'], <bang>1)
+command! -bang Today silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
 command! -bang Inbox silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/inbox.txt'], <bang>1)
 command! -bang Someday silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/someday.txt'], <bang>1)
 command! -bang Projects silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo'], <bang>1)
