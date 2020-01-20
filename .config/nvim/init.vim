@@ -452,8 +452,7 @@ let s:habit_files = ['$HOME/Dropbox/notes/habits/1-daily.txt',
 let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt',
             \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
-let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt',
-            \ '$HOME/Dropbox/notes/todo/todo-work.txt']
+let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt' ]
 let s:todo_today = '$HOME/Dropbox/notes/todo/today.txt'
 
 command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
