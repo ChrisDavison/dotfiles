@@ -245,9 +245,9 @@ function! s:maybe_gfiles()
 endfunction
 
 " Easymotion configuration
-nmap s <Plug>(easymotion-s2)
-nmap <leader><leader>w <Plug>(easymotion-bd-W)
-nmap <leader><leader>e <Plug>(easymotion-bd-E)
+nmap s <Plug>(easymotion-s)
+nmap <leader><leader>w <Plug>(easymotion-bd-w)
+nmap <leader><leader>e <Plug>(easymotion-bd-e)
 map <leader>j <Plug>(easymotion-bd-jk)
 map <leader>k <Plug>(easymotion-bd-jk)
 let g:EasyMotion_smartcase=1
