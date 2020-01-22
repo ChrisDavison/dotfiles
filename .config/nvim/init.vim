@@ -35,8 +35,6 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
-Plug 'morhetz/gruvbox'
-Plug 'tomasr/molokai'
 call plug#end()
 
 " settings
@@ -51,8 +49,6 @@ set breakindentopt=shift:4,sbr
 set number
 set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
-set cmdheight=1
-set colorcolumn=0
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard=unnamedplus " Use system clipboard with vim clipboard
@@ -75,7 +71,7 @@ let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__p
 " suppress 'match x of y', 'only match'... etc
 set shortmess=a
 
-set signcolumn=yes
+set signcolumn=auto
 
 set path=.,**
 set statusline=%<\ %n:%f\ %m%r%y%=%(%P\ of\ %LL\ -\ %l,%c\ %)
@@ -112,13 +108,13 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=dark
-silent! colorscheme gruvbox
+set bg=light
+silent! colorscheme paramount
 
 " settings for plugins
 " --------------------
-let g:pandoc#sytax#conceal#use=1
-let g:pandoc#sytax#conceal#urls=1
+let g:pandoc#syntax#conceal#use=1
+let g:pandoc#syntax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
 let g:pandoc#syntax#style#use_definition_lists = 0
 let g:pandoc#folding#mode='syntax'
@@ -138,7 +134,7 @@ endif
 let g:markdown_reference_links=0
 if g:markdown_reference_links
     let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --reference-links' .
-            \ ' --reference-location=section' .
+                \ ' --reference-location=section' .
 endif
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -490,14 +486,14 @@ iabbrev pmin1 ⁻¹
 " Rather than modifying 'paramount' directly,
 " Just link html (markdown) headers to 'Question' to get
 " a pinkish header
-" if g:colors_name == 'paramount'
-"     hi! link htmlH1      Question
-"     hi! link htmlH2      Question
-"     hi! link htmlH3      Question
-"     hi! link htmlH4      Question
-"     hi! link htmlH5      Question
-"     hi! link htmlH6      Question
-" endif
+if g:colors_name == 'paramount'
+    hi! link htmlH1      Question
+    hi! link htmlH2      Question
+    hi! link htmlH3      Question
+    hi! link htmlH4      Question
+    hi! link htmlH5      Question
+    hi! link htmlH6      Question
+endif
 
 function! s:maybe_filetype_markdown()
     if &filetype == "help"
