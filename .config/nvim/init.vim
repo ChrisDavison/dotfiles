@@ -181,7 +181,6 @@ let g:tagbar_type_markdown = {
 nnoremap <leader>ev :edit $MYVIMRC<CR>
 
 nnoremap <silent> Q =ip
-nnoremap <BS>   <C-^>
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
 vnoremap <      <gv
