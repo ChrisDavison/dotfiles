@@ -9,24 +9,16 @@ Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-python/python-syntax'
-Plug 'georgewitteman/vim-fish'
-Plug 'ekalinin/Dockerfile.vim'
 Plug 'airblade/vim-gitgutter'        
-Plug 'michaeljsmith/vim-indent-object'
 Plug 'Konfekt/FastFold'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'  
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
 Plug 'kana/vim-textobj-user'     
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'          
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-qlist'         
-Plug 'Shougo/echodoc'
 Plug 'tpope/vim-commentary'     
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'      
@@ -146,35 +138,6 @@ let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
-let g:tagbar_type_rust = {
-            \ 'ctagstype' : 'rust',
-            \ 'kinds' : [
-            \'T:types,type definitions',
-            \'f:functions,function definitions',
-            \'g:enum,enumeration names',
-            \'s:structure names',
-            \'m:modules,module names',
-            \'c:consts,static constants',
-            \'t:traits',
-            \'i:impls,trait implementations',
-            \]
-            \}
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
-let g:tagbar_type_markdown = {
-            \ 'ctagstype': 'markdown',
-            \ 'ctagsbin' : '/home/davison/.local/bin/markdown2ctags',
-            \ 'ctagsargs' : '-f - --sort=yes',
-            \ 'kinds' : [
-            \ 's:sections',
-            \ 'i:images'
-            \ ],
-            \ 'sro' : '|',
-            \ 'kind2scope' : {
-            \ 's' : 'section',
-            \ },
-            \ 'sort': 0,
-            \ }
 
 "  keybinds
 "  --------
@@ -268,31 +231,19 @@ command! CopyFilename exec "@+=expand(\"%:p\")"
 command! CopyRelativeFilename exec "@+=expand(\"%\")"
 
 " :CD | Change to the parent directory of the current file
-" --------------------------------------------------------
 command! CD exec "cd ".expand("%:h")
 
-" :Note | Create a new note in Dropbox/notes/_UNFILED, with the given text
-" ------------------------------------------------------------------------
-function! s:note(fn)
-    exec "e ~/Dropbox/notes/_UNFILED/" . substitute(a:fn, " ", "-", "g") . ".txt" 
-endfunction
-command! -nargs=+ Note call s:note(<args>)
-
 " :Bd | Delete buffer and replace with 'alternate' buffer
-" -------------------------------------------------------
 command! Bd bp|bd #
 
 " :Scratch | Open a 'scratch' buffer
-" ----------------------------------
 command! Scratch edit ~/.scratch | normal <C-End>
 
 " :FMT | Execute 'equalprg' on entire buffer, remembering position
-" ----------------------------------------------------------------
 command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
 " :MakeNonExistentDir | try to make all parent directories of a new buffer
-" ------------------------------------------------------------------------
 function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
@@ -301,7 +252,6 @@ endfunction
 command! MakeNonExistentDir call s:makeNonExDir()
 
 " :Rg | grep / ripgrep
-" --------------
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     command! -bang -nargs=* Rg
@@ -311,60 +261,7 @@ if executable('rg')
                 \ <bang>0)
 endif
 
-" coc.nvim, the nvim language server protocol runner
-" --------------------------------------------------
-" keybinds for Coc.nvim, the completion engine
-" coc.nvim...?
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gr <Plug>(coc-references)
-
-nmap <leader>rn <Plug>(coc-rename)
-
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-i)
-
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-    else
-        call CocAction('doHover')
-    endif
-endfunction
-
 " :Root | Change dir to the root of the Git repository
-" ----------------------------------------------------
 function! s:root()
     let root = systemlist('git rev-parse --show-toplevel')[0]
     if v:shell_error
@@ -377,7 +274,6 @@ endfunction
 command! Root call s:root()
 
 " :Mkdp[!] | Wrapper for MarkdownPreview, so that I can call it from txt files
-" -------------------------------------------------------------------------
 function! s:Mkdp(bang)
     if a:bang
         call mkdp#util#stop_preview()
@@ -388,7 +284,6 @@ endfunction
 command! -bang Mkdp call s:Mkdp(<bang>0)
 
 " :Autowrap[!] | Turn automatic column-80 wrapping on/off  (for md/txt only)
-" --------------------------------------------------------------------------
 function! s:toggle_autowrap(bang)
     if a:bang
         echom "Autowrap DISABLED"
@@ -409,60 +304,29 @@ function! s:toggle_autowrap(bang)
         setlocal formatoptions+=a
     endif
 endfunction
-command! -bang Autowrap call <sid>toggle_autowrap(<bang>0)
+command! -bang Autowrap call s:toggle_autowrap(<bang>0)
 
-" :Log | Create an entry in $NOTES/logs/ with the specified name
-function! s:new_personal_log(args, daily)
-    if a:daily
-        let filename=strftime("%Y%m%d") . "-" . join(split(a:args), "-") . ".txt"
-    else
-        let filename=strftime("%Y%m") . "-" . join(split(a:args), "-") . ".txt"
-    endif
-    let path=expand("$HOME/Dropbox/notes/logs/" . filename)
-    exec "edit " . path
-endfunction
-command! -bang -nargs=+ Log call <sid>new_personal_log(<q-args>, <bang>0)
+" :Log | shortcut to creating a file in 'notes/logs'
+cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/notes/logs/%Y%m")
 
-" 'File stacks' - open every file in a list as horizontally split buffers
-" using [!] variant will make ONLY these buffers display
-"
-" :Habits[!] -- daily, weekly, and monthly habit checklist
-" :Thesis[!] -- general, beef chapter, and dairy chapter
-" :Todo[!]   -- today, personal todos, work todos
-function! s:stack_open_files(files, as_split)
-    if a:as_split
-        exec "vert botright split " . a:files[0]
-    else
-        only
-        exec "edit " . a:files[0]
-    endif
-    for fn in a:files[1:]
-        exec "split " . fn
-    endfor
-endfunction
-
-let s:habit_files = ['$HOME/Dropbox/notes/habits/1-daily.txt',
-            \ '$HOME/Dropbox/notes/habits/2-weekly.txt',
-            \ '$HOME/Dropbox/notes/habits/3-monthly.txt']
-let s:thesis_files = ['$HOME/Dropbox/notes/todo/thesis-general.txt',
-            \ '$HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt',
-            \ '$HOME/Dropbox/notes/todo/thesis-chapter-beef.txt']
-let s:todo_files = ['$HOME/Dropbox/notes/todo/todo.txt' ]
-let s:todo_today = '$HOME/Dropbox/notes/todo/today.txt'
-
-command! -bang Habits silent!call <sid>stack_open_files(s:habit_files, <bang>1)
-command! -bang Thesis silent!call <sid>stack_open_files(s:thesis_files, <bang>1)
-command! Plan only|silent!exec "edit " . s:todo_today|silent!call <sid>stack_open_files(s:todo_files, 1)
+" Specific file 'layouts'
+command! Habits silent only<bar>edit $HOME/Dropbox/notes/habits/1-daily.txt<BAR>
+            \ silent split $HOME/Dropbox/notes/habits/2-weekly.txt<BAR>
+            \ silent split $HOME/Dropbox/notes/habits/3-monthly.txt
+command! Thesis silent only<bar>edit $HOME/Dropbox/notes/todo/thesis-general.txt<BAR>
+            \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt <BAR>
+            \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-beef.txt
+command! Plan silent only<bar>edit $HOME/Dropbox/notes/todo/today.txt<BAR>
+            \ silent vsplit $HOME/Dropbox/notes/todo/todo.txt
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! -bang Today silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/today.txt'], <bang>1)
-command! -bang Inbox silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/inbox.txt'], <bang>1)
-command! -bang Someday silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo/someday.txt'], <bang>1)
-command! -bang Projects silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo'], <bang>1)
-command! -bang Todos silent!call <sid>stack_open_files(['$HOME/Dropbox/notes/todo')], <bang>1)
-command! -bang Logbook silent!call <sid>stack_open_files(['$HOME/Dropbox/logbook/' . strftime("%Y")], <bang>1)
-
+command! Today silent only<BAR>edit $HOME/Dropbox/notes/todo/today.txt
+command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt
+command! Someday silent only<BAR>edit $HOME/Dropbox/notes/todo/someday.txt
+command! Projects silent only<BAR>edit $HOME/Dropbox/notes/todo
+command! Todos silent only<BAR>edit $HOME/Dropbox/notes/todo
+command! Logbook silent only<BAR>edit $HOME/Dropbox/logbook/
 
 " abbreviations
 cnoreabbrev W w
@@ -521,8 +385,8 @@ function! s:checkbox_delete()
     silent!s/\[[x ]\] //
     silent!s/aksjdasd
 endfunction
-command! -range CheckRot <line1>,<line2>call <sid>checkbox_rotate()
-command! -range Uncheck <line1>,<line2>call <sid>checkbox_delete()
+command! -range CheckRot <line1>,<line2>call s:checkbox_rotate()
+command! -range Uncheck <line1>,<line2>call s:checkbox_delete()
 command! RMCheck :%s/\s*-\s\+\[x\].*\n\(\s*[^-]\s\+.*\n\)*//
 
 nnoremap <leader>x :CheckRot<CR>
@@ -531,7 +395,6 @@ nnoremap <leader>X :Uncheck<CR>
 vnoremap <leader>X :'<,'>Uncheck<CR>
 
 " :Headers | imenu-like list functions,headers etc, for defined filetypes
-" -----------------------------------------------------------------------
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
@@ -546,11 +409,11 @@ function! s:goto_header(ft, filter)
     endif
     exec ":g/^\\s*".pattern."\\s/"
 endfunction
-command! -nargs=* Headers exec <sid>goto_header(&filetype, <q-args>)
+command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
 nnoremap <leader>i :Headers<CR>:
 nnoremap <leader>I :Headers !<CR>:
 
-function! s:set_markdown_wrap_mode(hard)
+function! s:set_markdown_wrap_mode()
     let fmt="pandoc --to "
     let fmt=fmt + "markdown"
     setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block
@@ -558,7 +421,7 @@ function! s:set_markdown_wrap_mode(hard)
         setlocal equalprg+=-shortcut_reference_links\ --reference-links\ --reference-location=section
     endif
     setlocal equalprg+=\ --atx-headers
-    if a:hard
+    if g:markdown_hard_wrap
         setlocal equalprg+=\ --columns=79\ --wrap=auto
     else
         setlocal equalprg+=\ --wrap=none
@@ -575,21 +438,16 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter .scratch call <sid>maybe_filetype_markdown()
-    au BufEnter *.txt,*.md call <sid>maybe_filetype_markdown()
+    au BufEnter .scratch call s:maybe_filetype_markdown()
+    au BufEnter *.txt,*.md call s:maybe_filetype_markdown()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
     au Filetype markdown* setlocal conceallevel=2
-    au BufEnter,BufRead,BufNewFile *md,*txt call <sid>set_markdown_wrap_mode(g:markdown_hard_wrap)
-    au BufEnter,BufRead,BufNewFile *md,*txt :silent! CocDisable
-    au BufEnter,BufRead,BufNewFile *.md,*.txt :setlocal nospell
+    au BufEnter,BufRead,BufNewFile *md,*txt call s:set_markdown_wrap_mode()
+    au BufEnter,BufRead,BufNewFile *.md,*.txt setlocal nospell
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
-    au FileType python let b:coc_root_patterns = ['.env', '.git']
     au FileType python setlocal foldmethod=indent
-    au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-    au User GoyoEnter Limelight
-    au User GoyoLeave Limelight!
 augroup END
