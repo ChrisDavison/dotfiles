@@ -367,30 +367,31 @@ function! s:maybe_filetype_markdown()
 endfunction
 
 " HANDLING CHECKBOXES
+" 
 " :Check will add, if none exists
 " Will toggle, if exists
 " Will clear, if 'off' is 1 (e.g. if :Check!)
 " :Uncheck will clear all (or only selected) checkboxes
 " :RMCheck will delete lines with checked boxes
-function! s:checkbox_rotate()
+function! s:checkbox_toggle()
     if getline(".") !~ "\[[x ]\]"
         silent!s/\(\s*\%(-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
     elseif getline(".") =~ "\\[ \\]"
         silent!s/\[ \]/\[x\]/
-    else
-        silent!s/\[x\] //
+    elseif getline(".") =~ "\\[x\\]"
+        silent!s/\[x\]/\[ \]/
     endif
 endfunction
 function! s:checkbox_delete()
     silent!s/\[[x ]\] //
-    silent!s/aksjdasd
+    silent!/aksjdasd
 endfunction
-command! -range CheckRot <line1>,<line2>call s:checkbox_rotate()
+command! -range CheckToggle <line1>,<line2>call s:checkbox_toggle()
 command! -range Uncheck <line1>,<line2>call s:checkbox_delete()
-command! RMCheck :%s/\s*-\s\+\[x\].*\n\(\s*[^-]\s\+.*\n\)*//
+command! RMCheck :%Uncheck
 
-nnoremap <leader>x :CheckRot<CR>
-vnoremap <leader>x :'<,'>CheckRot<CR>
+nnoremap <leader>x :CheckToggle<CR>
+vnoremap <leader>x :'<,'>CheckToggle<CR>
 nnoremap <leader>X :Uncheck<CR>
 vnoremap <leader>X :'<,'>Uncheck<CR>
 
