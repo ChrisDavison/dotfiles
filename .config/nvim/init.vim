@@ -1,9 +1,7 @@
 let mapleader=" "
 
-" pluginslogs/, managed with github.com/junegunn/plug.vim
-" --------------------------------------------------
+" plugins (using junegunn's Plug.vim)
 call plug#begin('~/.vim/3rd_party')
-" languages
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
@@ -30,7 +28,6 @@ Plug 'owickstrom/vim-colors-paramount'
 call plug#end()
 
 " settings
-" --------
 set nocompatible
 set wrap lbr
 let &showbreak = '┆'
@@ -56,7 +53,6 @@ set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
-" set relativenumber
 set noshowmode
 let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__'
 
@@ -92,7 +88,6 @@ if has('nvim')
 endif
 
 " appearance
-" ----------
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
 if !has('mac')
@@ -100,11 +95,10 @@ if !has('mac')
 endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
-set bg=light
-silent! colorscheme paramount
+set bg=dark
+silent! colorscheme seoul256
 
 " settings for plugins
-" --------------------
 let g:pandoc#syntax#conceal#use=1
 let g:pandoc#syntax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
@@ -226,7 +220,6 @@ inoremap <C-c> <ESC>
 nnoremap <leader>t :Tags<CR>
 
 " custom commands
-" ---------------
 command! CopyFilename exec "@+=expand(\"%:p\")"
 command! CopyRelativeFilename exec "@+=expand(\"%\")"
 
@@ -310,9 +303,6 @@ command! -bang Autowrap call s:toggle_autowrap(<bang>0)
 cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/notes/logs/%Y%m")
 
 " Specific file 'layouts'
-command! Habits silent only<bar>edit $HOME/Dropbox/notes/habits/1-daily.txt<BAR>
-            \ silent split $HOME/Dropbox/notes/habits/2-weekly.txt<BAR>
-            \ silent split $HOME/Dropbox/notes/habits/3-monthly.txt
 command! Thesis silent only<bar>edit $HOME/Dropbox/notes/todo/thesis-general.txt<BAR>
             \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt <BAR>
             \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-beef.txt
@@ -321,7 +311,7 @@ command! Plan silent only<bar>edit $HOME/Dropbox/notes/todo/today.txt<BAR>
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! Today silent only<BAR>edit $HOME/Dropbox/notes/todo/today.txt
+command! Today silent only<BAR>edit $HOME/Dropbox/notes/todo/today.txt<bar>split $HOME/Dropbox/notes/life-focus.txt
 command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt
 command! Someday silent only<BAR>edit $HOME/Dropbox/notes/todo/someday.txt
 command! Projects silent only<BAR>edit $HOME/Dropbox/notes/todo
@@ -340,8 +330,8 @@ cnoreabbrev oe only<bar>edit
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
-iabbrev <expr> DATE strftime("%Y%m%d")
-iabbrev <expr> DATETIME strftime("%Y-%m-%dT%H:%M:%S")
+iabbrev <expr> DATE strftime("%Y-%m-%d")
+iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
 iabbrev pmin1 ⁻¹
 
@@ -430,7 +420,6 @@ function! s:set_markdown_wrap_mode()
 endfunction
 
 " autocommands
-" ------------
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
