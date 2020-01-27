@@ -106,8 +106,8 @@ label-urgent = %name%!
 label-urgent-background = ${colors.alert}
 label-urgent-padding = ${settings.bspwm-padding}
 
-label-empty = %name%
-label-empty-foreground = ${colors.foreground-alt}
+label-empty = · 
+label-empty-foreground = ${colors.foreground}
 label-empty-padding = ${settings.bspwm-padding}
 
 ; Separator in between workspaces
