@@ -176,7 +176,7 @@ nnoremap <leader>c :cclose<bar>lclose<CR>
 " keybinds for installed plugins
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :Files ~/Dropbox/logbook/2020<CR>
+nnoremap <leader>el :Files ~/Dropbox/logbook/2020/<CR>
 
 command! MGFiles call s:maybe_gfiles()
 nnoremap <leader>p :MGFiles<CR>
@@ -299,23 +299,12 @@ function! s:toggle_autowrap(bang)
 endfunction
 command! -bang Autowrap call s:toggle_autowrap(<bang>0)
 
-" :Log | shortcut to creating a file in 'notes/logs'
-cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/notes/logs/%Y%m")
-
-" Specific file 'layouts'
-command! Thesis silent only<bar>edit $HOME/Dropbox/notes/todo/thesis-general.txt<BAR>
-            \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-dairy.txt <BAR>
-            \ silent split $HOME/Dropbox/notes/todo/thesis-chapter-beef.txt
-command! Plan silent only<bar>edit $HOME/Dropbox/notes/todo/today.txt<BAR>
-            \ silent vsplit $HOME/Dropbox/notes/todo/todo.txt
+" :Log | shortcut to creating a logbook entry
+cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/logbook/%Y/%Y%m%d-")
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! Today silent only<BAR>edit $HOME/Dropbox/notes/todo/today.txt<bar>split $HOME/Dropbox/notes/life-focus.txt
-command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt
-command! Someday silent only<BAR>edit $HOME/Dropbox/notes/todo/someday.txt
-command! Projects silent only<BAR>edit $HOME/Dropbox/notes/todo
-command! Todos silent only<BAR>edit $HOME/Dropbox/notes/todo
+command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt<bar>vsplit $HOME/Dropbox/notes/life-focus.txt
 command! Logbook silent only<BAR>edit $HOME/Dropbox/logbook/
 
 " abbreviations
