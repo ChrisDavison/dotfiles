@@ -18,6 +18,8 @@ super + alt + s
     dmenu_screenshot.sh
 super + alt + c
     dmenu_config
+super + {_, shift +} alt + t
+    {firefox-dev --new-window "https://todoist.com/app#agenda%2Foverdue%20%26%20!assigned%20to%3A%20other%2C%20today%20%26%20!assigned%20to%3A%20other", bspc rule -a \* -o state=floating && firefox-dev --new-window "https://todoist.com/app#agenda%2Foverdue%20%26%20!assigned%20to%3A%20other%2C%20today%20%26%20!assigned%20to%3A%20other"}
 
 # make sxhkd reload its configuration files:
 super + Escape
