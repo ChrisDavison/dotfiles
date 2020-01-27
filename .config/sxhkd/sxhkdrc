@@ -8,7 +8,8 @@ super + Return
 # | (_| | | | | | |  __/ | | | |_| |
 #  \__,_|_| |_| |_|\___|_| |_|\__,_|
 super + d
-    dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -p "Program: "
+    rofi -combi-modi window,drun -show combi
+    # dmenu_run -fn "Ubuntu Mono-14" -l 10 -m 0 -p "Program: "
 super + alt + d
     j4-dmenu-desktop --dmenu="dmenu -i -l 10 -m 0 -fn  'Ubuntu Mono-14'"
 super + alt + w
