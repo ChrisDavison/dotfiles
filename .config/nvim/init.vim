@@ -194,7 +194,7 @@ function! s:maybe_gfiles()
         GFiles
     else
         Files
-    end
+    endif
 endfunction
 
 " Easymotion configuration
@@ -256,7 +256,7 @@ if executable('rg')
 endif
 
 " :Root | Change dir to the root of the Git repository
-function! s:root()
+function! s:root(quiet)
     let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
     if expand('%:p') =~ "Dropbox/notes"
         exec "lcd " . expand("~/Dropbox/notes")
@@ -265,7 +265,7 @@ function! s:root()
     elseif !v:shell_error
         execute 'lcd' root
         echo 'Changed directory to: '.root
-    else
+    elseif !a:quiet
         echo "Not in git repo or under a recognised 'parent'
     end
 endfunction
@@ -325,6 +325,7 @@ cnoreabbrev oe only<bar>edit
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y-%m-%d")
+iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
 iabbrev pmin1 ⁻¹
@@ -424,7 +425,7 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch call s:maybe_filetype_markdown()
     au BufEnter *.txt,*.md call s:maybe_filetype_markdown()
-    au BufEnter *.txt,*.md call s:root()
+    au BufEnter *.txt,*.md call s:root(1)
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
