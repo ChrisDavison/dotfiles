@@ -34,7 +34,6 @@ bspc config remove_unplugged_monitors true
 bspc config split_ratio          0.50
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
-bspc config single_monocle      true
 
 bspc config automatic_scheme longest_side
 
