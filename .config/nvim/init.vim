@@ -25,6 +25,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
+Plug 'romainl/vim-qf'
 call plug#end()
 
 " settings
@@ -244,10 +245,10 @@ function! s:makeNonExDir()
 endfunction
 command! MakeNonExistentDir call s:makeNonExDir()
 
-" :Rg | grep / ripgrep
+" " :RG | grep / ripgrep
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-    command! -bang -nargs=* Rg
+    command! -bang -nargs=* RG
                 \ call fzf#vim#grep(
                 \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
@@ -256,13 +257,17 @@ endif
 
 " :Root | Change dir to the root of the Git repository
 function! s:root()
-    let root = systemlist('git rev-parse --show-toplevel')[0]
-    if v:shell_error
-        echo 'Not in git repo'
-    else
+    let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
+    if expand('%:p') =~ "Dropbox/notes"
+        exec "lcd " . expand("~/Dropbox/notes")
+    elseif expand('%:p') =~ "Dropbox/logbook"
+        exec "lcd " . expand("~/Dropbox/logbook")
+    elseif !v:shell_error
         execute 'lcd' root
         echo 'Changed directory to: '.root
-    endif
+    else
+        echo "Not in git repo or under a recognised 'parent'
+    end
 endfunction
 command! Root call s:root()
 
@@ -419,6 +424,7 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch call s:maybe_filetype_markdown()
     au BufEnter *.txt,*.md call s:maybe_filetype_markdown()
+    au BufEnter *.txt,*.md call s:root()
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
