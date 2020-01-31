@@ -9,24 +9,23 @@ super + Return
 #  \__,_|_| |_| |_|\___|_| |_|\__,_|
 super + d
     rofi -combi-modi window,drun -show combi
-super + alt + d
-    j4-dmenu-desktop --dmenu="dmenu -i -l 10 -m 0 -fn  'Ubuntu Mono-14'"
-super + alt + w
-    dmenu_win_switcher
+
 super + alt + s
     dmenu_screenshot.sh
-super + alt + c
-    dmenu_config
-super + {_, shift +} alt + t
-    {firefox-dev --new-window "https://todoist.com/app#agenda%2Foverdue%20%26%20!assigned%20to%3A%20other%2C%20today%20%26%20!assigned%20to%3A%20other", bspc rule -a \* -o state=floating && firefox-dev --new-window "https://todoist.com/app#agenda%2Foverdue%20%26%20!assigned%20to%3A%20other%2C%20today%20%26%20!assigned%20to%3A%20other"}
+
+super + alt + {_, ctrl} + d
+    bspc rule -a \* -o {state=floating rectangle=700x800+100+100,state=fullscreen follow=on} && firefox-dev --new-window "https://devdocs.io"
+
+super + alt + {_, ctrl} + t
+    bspc rule -a \* -o {state=floating rectangle=700x800+100+100,state=fullscreen follow=on} && firefox-dev --new-window "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd
+	pkill -USR1 -x sxhkd && notify-send -t 2000 "SXHKD Reloaded"
 
 # quit/restart bspwm
 super + alt + {q,r}
-	bspc {quit,wm -r}
+	bspc {quit,wm -r} && {,notify-send -t 2000 "BSPWM Reloaded"}
 
 # close and kill
 super + {_,shift + }w
@@ -44,7 +43,7 @@ super + g
 # | | __ _ _   _  ___  _   _| |_ 
 # | |/ _` | | | |/ _ \| | | | __|
 # | | (_| | |_| | (_) | |_| | |_ 
-k |_|\__,_|\__, |\___/ \__,_|\__|
+# |_|\__,_|\__, |\___/ \__,_|\__|
 #          |___/                 
 # alternate between the tiled and monocle layout
 super + m
@@ -171,11 +170,7 @@ XF86AudioMute
 # | '_ ` _ \| | | / __| |/ __|
 # | | | | | | |_| \__ \ | (__ 
 # |_| |_| |_|\__,_|___/_|\___|
-XF86AudioPlay
-    playerctl play-pause --player=spotify
-XF86AudioPause
-    playerctl play-pause --player=spotify
-XF86AudioNext
-    playerctl next --player=spotify
-XF86AudioPrev
-    playerctl prev --player=spotify
+{XF86AudioPlay, XF86AudioPause, XF86AudioNext, XF86AudioPrev}
+    playerctl --player=spotify {play-pause,play-pause,next,prev}
+
+

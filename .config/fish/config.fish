@@ -59,12 +59,4 @@ alias ltg="lt --git-ignore"
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
 
-if test -f /usr/share/autojump/autojump.fish
-    source /usr/share/autojump/autojump.fish
-end
-
-if test -f /Users/davison/.autojump/share/autojump/autojump.fish
-    source /Users/davison/.autojump/share/autojump/autojump.fish
-end
-
 status --is-interactive; and cd $HOME/Dropbox/notes

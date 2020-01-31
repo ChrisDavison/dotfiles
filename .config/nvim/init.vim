@@ -2,6 +2,7 @@ let mapleader=" "
 
 " plugins (using junegunn's Plug.vim)
 call plug#begin('~/.vim/3rd_party')
+Plug 'chriskempson/base16-vim'
 Plug 'fatih/vim-go'
 Plug 'lervag/vimtex'
 Plug 'vim-pandoc/vim-pandoc-syntax'
@@ -11,7 +12,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'Konfekt/FastFold'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'  
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'kana/vim-textobj-user'     
@@ -41,7 +41,7 @@ set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
-set clipboard=unnamedplus " Use system clipboard with vim clipboard
+set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 
 " Some servers have issues with backup files
@@ -97,7 +97,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme base16-dracula
 
 " settings for plugins
 let g:pandoc#syntax#conceal#use=1
@@ -175,25 +175,25 @@ nnoremap <leader>s  z=1<CR><CR>
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
 " keybinds for installed plugins
-nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
-nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :Files ~/Dropbox/logbook/2020/<CR>
+nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
+nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
+nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
 
 command! MGFiles call s:maybe_gfiles()
 nnoremap <leader>p :MGFiles<CR>
-nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>b :Buffers!<CR>
 
 function! s:maybe_gfiles()
     " Root is only called to test for it's error code
     let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
     if expand('%:p') =~ "Dropbox/notes"
-        exec "Files " . expand("~/Dropbox/notes")
+        exec "Files! " . expand("~/Dropbox/notes")
     elseif expand('%:p') =~ "Dropbox/logbook"
-        exec "Files " . expand("~/Dropbox/logbook")
+        exec "Files! " . expand("~/Dropbox/logbook")
     elseif !v:shell_error
-        GFiles
+        GFiles!
     else
-        Files
+        Files!
     endif
 endfunction
 
@@ -271,16 +271,6 @@ function! s:root(quiet)
 endfunction
 command! Root call s:root()
 
-" :Mkdp[!] | Wrapper for MarkdownPreview, so that I can call it from txt files
-function! s:Mkdp(bang)
-    if a:bang
-        call mkdp#util#stop_preview()
-    else
-        call mkdp#util#open_preview_page()
-    endif
-endfunction
-command! -bang Mkdp call s:Mkdp(<bang>0)
-
 " :Autowrap[!] | Turn automatic column-80 wrapping on/off  (for md/txt only)
 function! s:toggle_autowrap(bang)
     if a:bang
@@ -306,6 +296,8 @@ command! -bang Autowrap call s:toggle_autowrap(<bang>0)
 
 " :Log | shortcut to creating a logbook entry
 cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/logbook/%Y/%Y%m%d-")
+
+cnoreabbrev <expr> Journal strftime("edit $HOME/Dropbox/notes/journal/%Y-%m-%d--")
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
@@ -419,7 +411,7 @@ augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd BufWritePre * call s:makeNonExDir()
-    au ColorScheme * hi! link SignColumn LineNr
+    " au ColorScheme * hi! link SignColumn LineNr
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
