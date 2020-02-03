@@ -28,7 +28,6 @@ alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
-alias nv="nvim.appimage"
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
 alias today="date +%F"
@@ -38,10 +37,9 @@ alias ts="tagsearch"
 alias ob="openBookmarks"
 alias obu="openBookmarkURL"
 alias b="bat --map-syntax txt:markdown --style=grid,header"
-alias todos="v ~/Dropbox/notes/todo/todo.txt"
-alias ttoday="b ~/Dropbox/notes/todo/today.txt"
 alias n="echo '-  $argv' >> ~/Dropbox/notes/inbox.txt"
 alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
+alias inbox="nvim ~/Dropbox/notes/inbox.txt"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"

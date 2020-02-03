@@ -2,30 +2,32 @@ let mapleader=" "
 
 " plugins (using junegunn's Plug.vim)
 call plug#begin('~/.vim/3rd_party')
-Plug 'chriskempson/base16-vim'
-Plug 'fatih/vim-go'
-Plug 'lervag/vimtex'
-Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-python/python-syntax'
 Plug 'airblade/vim-gitgutter'        
-Plug 'Konfekt/FastFold'
+Plug 'chriskempson/base16-vim'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'easymotion/vim-easymotion'  
+Plug 'fatih/vim-go'
 Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/seoul256.vim'
 Plug 'kana/vim-textobj-user'     
+Plug 'Konfekt/FastFold'
+Plug 'lervag/vimtex'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'owickstrom/vim-colors-paramount'
+Plug 'romainl/vim-qf'
 Plug 'romainl/vim-qlist'         
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'     
+Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'      
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-python/python-syntax'
 Plug 'wellle/targets.vim'
-Plug 'junegunn/seoul256.vim'
-Plug 'owickstrom/vim-colors-paramount'
-Plug 'romainl/vim-qf'
 call plug#end()
 
 " settings
@@ -63,7 +65,7 @@ set shortmess=a
 set signcolumn=auto
 
 set path=.,**
-set statusline=%<\ %n:%f\ %m%r%y%=%(%P\ of\ %LL\ -\ %l,%c\ %)
+set statusline=%<\ %n:%f\ %m%r%y%{ObsessionStatus('[session]')}%=%(%P\ of\ %LL\ -\ %l,%c\ %)
 
 " undo (save undo history across sessions)
 set undodir=~/.undodir
@@ -318,6 +320,8 @@ iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
+iabbrev <expr> DATED strftime("%b %d")
+iabbrev <expr> jhead strftime("%b %d - %A")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
 iabbrev pmin1 ⁻¹
@@ -392,8 +396,6 @@ nnoremap <leader>i :Headers<CR>:
 nnoremap <leader>I :Headers !<CR>:
 
 function! s:set_markdown_wrap_mode()
-    let fmt="pandoc --to "
-    let fmt=fmt + "markdown"
     setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block
     if g:markdown_reference_links
         setlocal equalprg+=-shortcut_reference_links\ --reference-links\ --reference-location=section
