@@ -24,7 +24,7 @@ else
 fi
 
 #8620e6 is a nice purple
-bspc config border_width         2
+bspc config border_width         3
 bspc config focused_border_color "#8620e6"
 bspc config window_gap           10
 
