@@ -138,7 +138,6 @@ let g:echodoc#type="echo"
 
 "  keybinds
 "  --------
-nnoremap <leader>ev :edit $MYVIMRC<CR>
 
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
@@ -176,6 +175,9 @@ nnoremap <leader>s  z=1<CR><CR>
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
+" Keybinds for specific files
+
+nnoremap <leader>ev :edit $MYVIMRC<CR>
 " keybinds for installed plugins
 nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
@@ -184,6 +186,9 @@ nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
 command! MGFiles call s:maybe_gfiles()
 nnoremap <leader>p :MGFiles<CR>
 nnoremap <leader>b :Buffers!<CR>
+
+" :BufOnly | Close all buffers but this one
+cnoreabbrev BufOnly %bd\|e#
 
 function! s:maybe_gfiles()
     " Root is only called to test for it's error code
@@ -199,12 +204,19 @@ function! s:maybe_gfiles()
     endif
 endfunction
 
+" Copy file basename
+nnoremap <leader>cf :let @+=expand("%")<CR>
+" Copy file full path
+nnoremap <leader>cF :let @+=expand("%:p")<CR>
+" Copy file full parent dir
+nnoremap <leader>cd :let @+=expand("%:p:h")<CR>
+
 " Easymotion configuration
 nmap s <Plug>(easymotion-s)
 nmap <leader><leader>w <Plug>(easymotion-bd-w)
 nmap <leader><leader>e <Plug>(easymotion-bd-e)
-map <leader>j <Plug>(easymotion-bd-jk)
-map <leader>k <Plug>(easymotion-bd-jk)
+nmap <leader>j <Plug>(easymotion-bd-jk)
+nmap <leader>k <Plug>(easymotion-bd-jk)
 let g:EasyMotion_smartcase=1
 
 " Readline-style keybinds in the command line
@@ -223,8 +235,6 @@ inoremap <C-c> <ESC>
 nnoremap <leader>t :Tags<CR>
 
 " custom commands
-command! CopyFilename exec "@+=expand(\"%:p\")"
-command! CopyRelativeFilename exec "@+=expand(\"%\")"
 
 " :CD | Change to the parent directory of the current file
 command! CD exec "cd ".expand("%:h")
@@ -299,12 +309,12 @@ command! -bang Autowrap call s:toggle_autowrap(<bang>0)
 " :Log | shortcut to creating a logbook entry
 cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/logbook/%Y/%Y%m%d-")
 
-cnoreabbrev <expr> Journal strftime("edit $HOME/Dropbox/notes/journal/%Y-%m-%d--")
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
 command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt<bar>vsplit $HOME/Dropbox/notes/life-focus.txt
 command! Logbook silent only<BAR>edit $HOME/Dropbox/logbook/
+command! Journal silent only<BAR>edit $HOME/Dropbox/notes/2020-journal.txt<BAR>norm <C-End>
 
 " abbreviations
 cnoreabbrev W w
@@ -321,6 +331,8 @@ iabbrev SALS **See also**:
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 iabbrev <expr> DATED strftime("%b %d")
+iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
+iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("%b %d - %A")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
