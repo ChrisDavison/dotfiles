@@ -34,8 +34,7 @@ alias today="date +%F"
 alias tmux="tmux -2"
 alias envml="source $HOME/.envs/ml/bin/activate"
 alias ts="tagsearch"
-alias ob="openBookmarks"
-alias obu="openBookmarkURL"
+alias bm="bookmarks"
 alias b="bat --map-syntax txt:markdown --style=grid,header"
 alias n="echo '-  $argv' >> ~/Dropbox/notes/inbox.txt"
 alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
@@ -56,5 +55,3 @@ alias ltg="lt --git-ignore"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
-
-status --is-interactive; and cd $HOME/Dropbox/notes
