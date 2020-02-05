@@ -111,19 +111,22 @@ let g:pandoc#folding#level=99
 let g:pandoc#folding#fastfolds=1
 let g:pandoc#folding#fdc=1
 let g:pandoc#formatting#textwidth=80
+
+" Formatting options for markdown
+let g:markdown_hard_wrap=0
+let g:markdown_reference_links=1
+
 let g:pandoc#formatting#mode='s'
 let g:pandoc#formatting#equalprg='pandoc' .
             \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block' .
             \ ' --atx-headers'
-let g:markdown_hard_wrap=0
 if g:markdown_hard_wrap " If I want to use soft-wrapping, without commenting out a bunch of lines...
-    let g:pandoc#formatting#mode='ha'
+    let g:pandoc#formatting#mode='hA'
     let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --columns=79\ --wrap=auto'
 endif
-let g:markdown_reference_links=0
 if g:markdown_reference_links
     let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --reference-links' .
-                \ ' --reference-location=section' .
+                \ ' --reference-location=section'
 endif
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
