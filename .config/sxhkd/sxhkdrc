@@ -1,31 +1,26 @@
-# terminal imulator
+# ==========================
+#      LAUNCH PROGRAMS
+# ==========================
+# terminal emulator
 super + Return
 	alacritty
 
-#      _                            
-#   __| |_ __ ___   ___ _ __  _   _ 
-#  / _` | '_ ` _ \ / _ \ '_ \| | | |
-# | (_| | | | | | |  __/ | | | |_| |
-#  \__,_|_| |_| |_|\___|_| |_|\__,_|
 super + d
     rofi -combi-modi window,drun -show combi
 
 super + alt + s
     dmenu_screenshot.sh
 
-super + alt + {_, ctrl} + d
-    bspc rule -a \* -o {state=floating rectangle=700x800+100+100,state=fullscreen follow=on} && firefox-dev --new-window "https://devdocs.io"
-
-super + alt + {_, ctrl} + t
-    bspc rule -a \* -o {state=floating rectangle=700x800+100+100,state=fullscreen follow=on} && firefox-dev --new-window "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
+super + alt + t
+    firefox --new-tab "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd && notify-send -t 2000 "SXHKD Reloaded"
+	pkill -USR1 -x sxhkd
 
 # quit/restart bspwm
 super + alt + {q,r}
-	bspc {quit,wm -r} && {,notify-send -t 2000 "BSPWM Reloaded"}
+	bspc {quit,wm -r}
 
 # close and kill
 super + {_,shift + }w
@@ -39,12 +34,9 @@ super + y
 super + g
 	bspc node -s biggest -d focused
 
-#  _                         _   
-# | | __ _ _   _  ___  _   _| |_ 
-# | |/ _` | | | |/ _ \| | | | __|
-# | | (_| | |_| | (_) | |_| | |_ 
-# |_|\__,_|\__, |\___/ \__,_|\__|
-#          |___/                 
+# ==========================
+#           LAYOUT
+# ==========================
 # alternate between the tiled and monocle layout
 super + m
 	bspc desktop -l next
@@ -61,12 +53,9 @@ super + f; {m,l,s}
 	bspc node -g {marked,locked,sticky}
 
 
-#                              _     _             
-#   ___  _ __ __ _  __ _ _ __ (_)___(_)_ __   __ _ 
-#  / _ \| '__/ _` |/ _` | '_ \| / __| | '_ \ / _` |
-# | (_) | | | (_| | (_| | | | | \__ \ | | | | (_| |
-#  \___/|_|  \__, |\__,_|_| |_|_|___/_|_| |_|\__, |
-#            |___/                           |___/ 
+# ==========================
+#        ORGANISING
+# ==========================
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
@@ -97,12 +86,9 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
-#                           _           _   _             
-#  _ __  _ __ ___  ___  ___| | ___  ___| |_(_) ___  _ __  
-# | '_ \| '__/ _ \/ __|/ _ \ |/ _ \/ __| __| |/ _ \| '_ \ 
-# | |_) | | |  __/\__ \  __/ |  __/ (__| |_| | (_) | | | |
-# | .__/|_|  \___||___/\___|_|\___|\___|\__|_|\___/|_| |_|
-# |_|                                                     
+# ==========================
+#        PRESELECTION
+# ==========================
 # ...direction
 super + ctrl + {h,j,k,l}
 	bspc node -p {west,south,north,east}
@@ -120,12 +106,9 @@ super + ctrl + {h,j,k,l}
 super + ctrl + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-#                              __             _         
-#  _ __ ___   _____   _____   / / __ ___  ___(_)_______ 
-# | '_ ` _ \ / _ \ \ / / _ \ / / '__/ _ \/ __| |_  / _ \
-# | | | | | | (_) \ V /  __// /| | |  __/\__ \ |/ /  __/
-# |_| |_| |_|\___/ \_/ \___/_/ |_|  \___||___/_/___\___|
-#                                                       
+# ==========================
+#       MOVE / RESIZE
+# ==========================
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
@@ -139,40 +122,26 @@ super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
 
-#  _                _    _ _       _     _   
-# | |__   __ _  ___| | _| (_) __ _| |__ | |_ 
-# | '_ \ / _` |/ __| |/ / | |/ _` | '_ \| __|
-# | |_) | (_| | (__|   <| | | (_| | | | | |_ 
-# |_.__/ \__,_|\___|_|\_\_|_|\__, |_| |_|\__|
-#                            |___/           
-# XF86MonBrightnessDown
-#     xbacklight -dec 5% -time 0 -steps 1
+# ==========================
+#       BACKLIGHT
+# ==========================
 XF86MonBrightnessDown
+#     xbacklight -dec 5% -time 0 -steps 1
     bright.sh down && pkill -RTMIN+10 i3blocks
 
-# XF86MonBrightnessUp
-#     xbacklight -inc 5% -time 0 -steps 1
 XF86MonBrightnessUp
+#     xbacklight -inc 5% -time 0 -steps 1
     bright.sh up && pkill -RTMIN+10 i3blocks
 
-#             _                      
-# __   _____ | |_   _ _ __ ___   ___ 
-# \ \ / / _ \| | | | | '_ ` _ \ / _ \
-#  \ V / (_) | | |_| | | | | | |  __/
-#   \_/ \___/|_|\__,_|_| |_| |_|\___|
+# ==========================
+#       MUSIC & VOLUME
+# ==========================
 XF86AudioLowerVolume
     amixer -q -D pulse sset Master 5%-
 XF86AudioRaiseVolume
     amixer -q -D pulse sset Master 5%+
 XF86AudioMute
-    amixer -q -D pulse sset Master toggle && notify-send -t 500 "Audio mute toggled"
+    amixer -q -D pulse sset Master toggle
 
-#                      _      
-#  _ __ ___  _   _ ___(_) ___ 
-# | '_ ` _ \| | | / __| |/ __|
-# | | | | | | |_| \__ \ | (__ 
-# |_| |_| |_|\__,_|___/_|\___|
 {XF86AudioPlay, XF86AudioPause, XF86AudioNext, XF86AudioPrev}
     playerctl --player=spotify {play-pause,play-pause,next,prev}
-
-
