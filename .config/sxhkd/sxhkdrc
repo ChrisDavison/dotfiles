@@ -12,7 +12,7 @@ super + alt + s
     dmenu_screenshot.sh
 
 super + alt + t
-    firefox --new-tab "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
+    bspc rule -a \* -o state=floating rectangle=700x800+100+100 && firefox --new-window "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
 
 # make sxhkd reload its configuration files:
 super + Escape
