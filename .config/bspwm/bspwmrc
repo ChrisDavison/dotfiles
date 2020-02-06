@@ -4,7 +4,7 @@ sxhkd &
 feh --bg-scale ~/Dropbox/wallpapers/space--blue.png &
 nm-applet &
 udiskie &
-autorandr -c &
+# autorandr -c &
 dropbox start &
 
 INTERNAL=eDP1
