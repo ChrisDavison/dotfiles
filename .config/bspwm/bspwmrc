@@ -1,7 +1,6 @@
 #! /bin/sh
 
 sxhkd &
-feh --bg-scale ~/Dropbox/wallpapers/space--blue.png &
 nm-applet &
 udiskie &
 # autorandr -c &
@@ -22,6 +21,8 @@ else
     MONITOR=$INTERNAL polybar -r example &
     MONITOR=$EXTERNAL polybar -r example &
 fi
+
+feh --bg-scale ~/Dropbox/wallpapers/space--blue.png &
 
 #8620e6 is a nice purple
 bspc config border_width         3
