@@ -48,13 +48,13 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Jetbrains Mono
+        family: Hasklig
         style: Regular
     italic:
-        family: Jetbrains Mono
+        family: Hasklig
         style: Italic
     bold:
-        family: Jetbrains Mono
+        family: Hasklig
         style: Bold
     size: 12.0
 
