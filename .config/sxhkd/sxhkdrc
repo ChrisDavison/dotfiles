@@ -11,8 +11,12 @@ super + d
 super + alt + s
     dmenu_screenshot.sh
 
-super + alt + t
-    bspc rule -a \* -o state=floating rectangle=700x800+100+100 && firefox --new-window "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
+super + alt + {_, shift} + t
+    bspc rule -a \* -o state=floating center  && {firefox --new-window, surf} "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
+
+super + alt + a
+    bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki
+
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -43,8 +47,8 @@ super + m
 
 # set the window state
 # also have 'pseudo_tiled', which I don't use
-super + s; {t,F,f}
-	bspc node -t {tiled,floating,fullscreen}
+super + s; {t,T,F,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
 # can also have 'private' (will try to keep same tiling size/position)
