@@ -44,6 +44,7 @@ alias ru="repoutil unclean"
 alias rs="repoutil stat"
 alias rl="repoutil list"
 alias rf="repoutil fetch"
+alias rb="repoutil branchstat"
 
 alias ls="exa --group-directories-first"
 alias lsi="exa --group-directories-first --git-ignore"
