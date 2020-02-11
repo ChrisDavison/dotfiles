@@ -24,8 +24,6 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'      
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-python/python-syntax'
 Plug 'wellle/targets.vim'
 call plug#end()
@@ -102,32 +100,10 @@ set bg=dark
 silent! colorscheme base16-dracula
 
 " settings for plugins
-let g:pandoc#syntax#conceal#use=1
-let g:pandoc#syntax#conceal#urls=1
-let g:pandoc#syntax#conceal#blacklist=[ 'atx', 'list', 'ellipses', 'quotes' ]
-let g:pandoc#syntax#style#use_definition_lists = 0
-let g:pandoc#folding#mode='syntax'
-let g:pandoc#folding#level=99
-let g:pandoc#folding#fastfolds=1
-let g:pandoc#folding#fdc=1
-let g:pandoc#formatting#textwidth=80
-
 " Formatting options for markdown
 let g:markdown_hard_wrap=0
 let g:markdown_reference_links=1
-
-let g:pandoc#formatting#mode='s'
-let g:pandoc#formatting#equalprg='pandoc' .
-            \ ' --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block' .
-            \ ' --atx-headers'
-if g:markdown_hard_wrap " If I want to use soft-wrapping, without commenting out a bunch of lines...
-    let g:pandoc#formatting#mode='hA'
-    let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --columns=79\ --wrap=auto'
-endif
-if g:markdown_reference_links
-    let g:pandoc#formatting#equalprg=g:pandoc#formatting#equalprg . ' --reference-links' .
-                \ ' --reference-location=section'
-endif
+let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
@@ -358,7 +334,7 @@ function! s:maybe_filetype_markdown()
     if &filetype == "help"
         return
     else
-        setlocal filetype=markdown.pandoc
+        setlocal filetype=markdown
     end
 endfunction
 
@@ -423,6 +399,38 @@ function! s:set_markdown_wrap_mode()
     endif
 endfunction
 
+function! MarkdownLevel() "folding function
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "=" 
+endfunction
+
+
+function Markdown_Foldtext()
+    let l1 = getline(v:foldstart)
+    if l:l1[0] != '#'
+        return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
+    else
+        return l:l1 . '   :: ' . (v:foldend - v:foldstart) . ' lines '
+    endif
+endfunction
+
 " autocommands
 augroup vimrc
     autocmd!
@@ -438,7 +446,10 @@ augroup vimrc
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
-    au Filetype markdown* setlocal conceallevel=2
+    au Filetype markdown* setlocal conceallevel=1
+    au Filetype markdown setlocal foldexpr=MarkdownLevel()  
+    au Filetype markdown setlocal foldmethod=expr
+    au Filetype markdown setlocal foldtext=Markdown_Foldtext()
     au BufEnter,BufRead,BufNewFile *md,*txt call s:set_markdown_wrap_mode()
     au BufEnter,BufRead,BufNewFile *.md,*.txt setlocal nospell
     au BufRead,BufNewFile *.latex set filetype=tex
