@@ -26,7 +26,11 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      
 Plug 'vim-python/python-syntax'
 Plug 'wellle/targets.vim'
+Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
 call plug#end()
+
+let g:deoplete#enable_at_startup = 1
 
 " settings
 set nocompatible
@@ -97,7 +101,7 @@ endif
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme base16-dracula
+silent! colorscheme base16-material
 
 " settings for plugins
 " Formatting options for markdown
@@ -165,6 +169,7 @@ nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
 command! MGFiles call s:maybe_gfiles()
 nnoremap <leader>p :MGFiles<CR>
 nnoremap <leader>b :Buffers!<CR>
+nnoremap <leader>l :BLines!<CR>
 
 " :BufOnly | Close all buffers but this one
 cnoreabbrev BufOnly %bd\|e#
@@ -212,6 +217,7 @@ silent! exe "set <S-Right>=\<Esc>f"
 inoremap <C-c> <ESC>
 
 nnoremap <leader>t :Tags<CR>
+nnoremap <leader>T :BTags<CR>
 
 " custom commands
 
@@ -312,7 +318,7 @@ iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 iabbrev <expr> DATED strftime("%b %d")
 iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
 iabbrev <expr> DATENFULL strftime("%Y %b %d")
-iabbrev <expr> jhead strftime("%b %d - %A")
+iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
 iabbrev pmin1 ⁻¹

@@ -1,0 +1,39 @@
+snippet WEEKLYREV "Weekly Review, for journal"
+## Weekly Review
+
+@weekly @review @log @productivity
+
+Big Wins
+
+-   $1
+
+Big Losses
+
+-   $2
+
+Next Week's Priorities
+
+-   $3
+
+endsnippet
+snippet MENTALINV "description"
+## Monthly Mental Inventory
+
+Working on
+
+-   $1
+
+Should work on
+
+-   $2
+
+Want to work on
+
+-   $3
+endsnippet
+snippet WAISTHEIGHT "Waist to height ratio"
+| `date +%F` | ${1:WAIST}  | 70 | CALC RATIO |
+endsnippet
+snippet WAISTHIP "Waist to hip ratio"
+| `date +%F` | ${1:WAIST}  | ${2:HIP}     | CALC RATIO |
+endsnippet
