@@ -453,6 +453,7 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown* setlocal foldenable foldlevelstart=99
     au Filetype markdown* setlocal conceallevel=1
+    au Filetype markdown setlocal nonumber
     au Filetype markdown setlocal foldexpr=MarkdownLevel()  
     au Filetype markdown setlocal foldmethod=expr
     au Filetype markdown setlocal foldtext=Markdown_Foldtext()
