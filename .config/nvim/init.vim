@@ -1,6 +1,7 @@
 let mapleader=" "
 
-" plugins (using junegunn's Plug.vim)
+" }}}1 plugins (using junegunn's Plug.vim) {{{1
+
 call plug#begin('~/.vim/3rd_party')
 Plug 'airblade/vim-gitgutter'        
 Plug 'chriskempson/base16-vim'
@@ -22,17 +23,18 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'      
+Plug 'tpope/vim-speeddating'      
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'      
 Plug 'vim-python/python-syntax'
 Plug 'wellle/targets.vim'
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
+Plug 'ChrisDavison/checkmark'
+Plug 'ChrisDavison/vim-cdroot'
 call plug#end()
 
-let g:deoplete#enable_at_startup = 1
-
-" settings
+" }}}1 settings {{{1
 set nocompatible
 set wrap lbr
 let &showbreak = '┆'
@@ -92,7 +94,7 @@ if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
-" appearance
+" }}}1 appearance {{{1
 " when do I need termguicolours? why did I switch it off?
 " problem between vim and neovim? terminal and gui? windows vs osx?
 if !has('mac')
@@ -103,10 +105,8 @@ set t_Co=256
 set bg=dark
 silent! colorscheme base16-material
 
-" settings for plugins
-" Formatting options for markdown
-let g:markdown_hard_wrap=0
-let g:markdown_reference_links=1
+" settings for plugins {{{1
+
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -119,9 +119,7 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
 
-"  keybinds
-"  --------
-
+" }}}1 keybinds {{{1
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
@@ -158,21 +156,16 @@ nnoremap <leader>s  z=1<CR><CR>
 " Close quickfix or location window
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
-" Keybinds for specific files
-
 nnoremap <leader>ev :edit $MYVIMRC<CR>
-" keybinds for installed plugins
 nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
-
-command! MGFiles call s:maybe_gfiles()
-nnoremap <leader>p :MGFiles<CR>
 nnoremap <leader>b :Buffers!<CR>
 nnoremap <leader>l :BLines!<CR>
 
-" :BufOnly | Close all buffers but this one
-cnoreabbrev BufOnly %bd\|e#
+command! MGFiles call s:maybe_gfiles()
+nnoremap <leader>p :MGFiles<CR>
+
 
 function! s:maybe_gfiles()
     " Root is only called to test for it's error code
@@ -219,22 +212,20 @@ inoremap <C-c> <ESC>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 
-" custom commands
-
-" :CD | Change to the parent directory of the current file
+" }}}1 :CD | Change to the parent directory of the current file {{{1
 command! CD exec "cd ".expand("%:h")
 
-" :Bd | Delete buffer and replace with 'alternate' buffer
+" }}}1 :Bd | Delete buffer and replace with 'alternate' buffer {{{1
 command! Bd bp|bd #
 
-" :Scratch | Open a 'scratch' buffer
+" }}}1 :Scratch | Open a 'scratch' buffer {{{1
 command! Scratch edit ~/.scratch | normal <C-End>
 
-" :FMT | Execute 'equalprg' on entire buffer, remembering position
+" }}}1 :FMT | Execute 'equalprg' on entire buffer, remembering position {{{1
 command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
-" :MakeNonExistentDir | try to make all parent directories of a new buffer
+" }}}1 :MakeNonExistentDir | try to make all parent directories of a new buffer {{{1
 function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
@@ -242,7 +233,7 @@ function! s:makeNonExDir()
 endfunction
 command! MakeNonExistentDir call s:makeNonExDir()
 
-" " :RG | grep / ripgrep
+" }}}1 :RG | grep / ripgrep {{{1
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     command! -bang -nargs=* RG
@@ -251,57 +242,18 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
+" }}}1 OTHER STUFF {{{1
 
-" :Root | Change dir to the root of the Git repository
-function! s:root(quiet)
-    let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
-    if expand('%:p') =~ "Dropbox/notes"
-        exec "lcd " . expand("~/Dropbox/notes")
-    elseif expand('%:p') =~ "Dropbox/logbook"
-        exec "lcd " . expand("~/Dropbox/logbook")
-    elseif !v:shell_error
-        execute 'lcd' root
-        echo 'Changed directory to: '.root
-    elseif !a:quiet
-        echo "Not in git repo or under a recognised 'parent'
-    end
-endfunction
-command! Root call s:root()
-
-" :Autowrap[!] | Turn automatic column-80 wrapping on/off  (for md/txt only)
-function! s:toggle_autowrap(bang)
-    if a:bang
-        echom "Autowrap DISABLED"
-        setlocal formatoptions-=a
-        return
-    endif
-    let skip=['bookmark', 'self-tracking', 'budget']
-    let curdir=expand('%:p:h')
-    for pattern in skip
-        if curdir =~ pattern
-            echom "NOT autowrapping as directory `" . pattern . "` matches skip"
-            return
-        endif
-    endfor
-
-    if &filetype =~ "markdown"
-        echom "Autowrap ENABLED"
-        setlocal formatoptions+=a
-    endif
-endfunction
-command! -bang Autowrap call s:toggle_autowrap(<bang>0)
-
-" :Log | shortcut to creating a logbook entry
-cnoreabbrev <expr> Log strftime("edit $HOME/Dropbox/logbook/%Y/%Y%m%d-")
-
+" Used by ChrisDavison/vim-cdroot. Use these as the curdir whenever we're in a
+" child dir.
+let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
 
 " Commands to jump to specific files or directories
 " Using my 'stack open', so that I can use the [!] variant if wanted
-command! Inbox silent only<BAR>edit $HOME/Dropbox/notes/inbox.txt<bar>vsplit $HOME/Dropbox/notes/life-focus.txt
-command! Logbook silent only<BAR>edit $HOME/Dropbox/logbook/
-command! Journal silent only<BAR>edit $HOME/Dropbox/notes/2020-journal.txt<BAR>norm <C-End>
+command! Logbook silent only<BAR>edit $HOME/Dropbox/notes/logbook.txt<BAR>norm <C-End>
+command! Journal silent only<BAR>edit $HOME/Dropbox/notes/journal.txt<BAR>norm <C-End>
 
-" abbreviations
+" }}}1 abbreviations {{{1
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
@@ -310,6 +262,9 @@ cnoreabbrev GIt Git
 cnoreabbrev Set set
 cnoreabbrev oedit only<bar>edit
 cnoreabbrev oe only<bar>edit
+
+" :BufOnly | Close all buffers but this one
+cnoreabbrev BufOnly %bd\|e#
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
@@ -323,57 +278,7 @@ iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev RSQ R²
 iabbrev pmin1 ⁻¹
 
-
-" Rather than modifying 'paramount' directly,
-" Just link html (markdown) headers to 'Question' to get
-" a pinkish header
-if g:colors_name == 'paramount'
-    hi! link htmlH1      Question
-    hi! link htmlH2      Question
-    hi! link htmlH3      Question
-    hi! link htmlH4      Question
-    hi! link htmlH5      Question
-    hi! link htmlH6      Question
-endif
-
-function! s:maybe_filetype_markdown()
-    if &filetype == "help"
-        return
-    else
-        setlocal filetype=markdown
-    end
-endfunction
-
-" HANDLING CHECKBOXES
-" 
-" :Check will add, if none exists
-" Will toggle, if exists
-" Will clear, if 'off' is 1 (e.g. if :Check!)
-" :Uncheck will clear all (or only selected) checkboxes
-" :RMCheck will delete lines with checked boxes
-function! s:checkbox_toggle()
-    if getline(".") !~ "\[[x ]\]"
-        silent!s/\(\s*\%(-\|[0-9]\+.\)\s\+\)\([^[].*$\)/\1[ ] \2
-    elseif getline(".") =~ "\\[ \\]"
-        silent!s/\[ \]/\[x\]/
-    elseif getline(".") =~ "\\[x\\]"
-        silent!s/\[x\]/\[ \]/
-    endif
-endfunction
-function! s:checkbox_delete()
-    silent!s/\[[x ]\] //
-    silent!/aksjdasd
-endfunction
-command! -range CheckToggle <line1>,<line2>call s:checkbox_toggle()
-command! -range Uncheck <line1>,<line2>call s:checkbox_delete()
-command! RMCheck :%Uncheck
-
-nnoremap <leader>x :CheckToggle<CR>
-vnoremap <leader>x :'<,'>CheckToggle<CR>
-nnoremap <leader>X :Uncheck<CR>
-vnoremap <leader>X :'<,'>Uncheck<CR>
-
-" :Headers | imenu-like list functions,headers etc, for defined filetypes
+" }}}1 :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
@@ -391,18 +296,27 @@ endfunction
 command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
 nnoremap <leader>i :Headers<CR>:
 nnoremap <leader>I :Headers !<CR>:
+" }}}1 Markdown {{{1
+let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
 
-function! s:set_markdown_wrap_mode()
-    setlocal equalprg=pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block
-    if g:markdown_reference_links
-        setlocal equalprg+=-shortcut_reference_links\ --reference-links\ --reference-location=section
+let markdown_reference_links=1
+if markdown_reference_links
+    let md_equalprg.="-shortcut_reference_links\ --reference-links\ --reference-location=section"
+endif
+
+let markdown_hard_wrap=0
+if markdown_hard_wrap
+    let md_equalprg.="\ --columns=79\ --wrap=auto"
+else
+    let md_equalprg.="\ --wrap=none"
+endif
+let md_equalprg.="\ --atx-headers"
+
+function! s:maybe_filetype_markdown()
+    if &filetype == "help"
+        return
     endif
-    setlocal equalprg+=\ --atx-headers
-    if g:markdown_hard_wrap
-        setlocal equalprg+=\ --columns=79\ --wrap=auto
-    else
-        setlocal equalprg+=\ --wrap=none
-    endif
+    setlocal filetype=markdown
 endfunction
 
 function! MarkdownLevel() "folding function
@@ -428,16 +342,15 @@ function! MarkdownLevel() "folding function
 endfunction
 
 
-function Markdown_Foldtext()
+function MarkdownFoldtext()
     let l1 = getline(v:foldstart)
     if l:l1[0] != '#'
         return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
     else
-        return l:l1 . '   :: ' . (v:foldend - v:foldstart) . ' lines '
+        return l:l1 . '   «' . (v:foldend - v:foldstart) . '» '
     endif
 endfunction
-
-" autocommands
+" }}}1 autocommands {{{1
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
@@ -447,20 +360,23 @@ augroup vimrc
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter .scratch call s:maybe_filetype_markdown()
+    au BufEnter *.vim setlocal foldmethod=marker
     au BufEnter *.txt,*.md call s:maybe_filetype_markdown()
-    au BufEnter *.txt,*.md call s:root(1)
+    au BufEnter * Root
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown* setlocal foldenable foldlevelstart=99
-    au Filetype markdown* setlocal conceallevel=1
-    au Filetype markdown setlocal nonumber
+    au Filetype markdown setlocal foldenable foldlevelstart=0
+    au Filetype markdown setlocal conceallevel=1
     au Filetype markdown setlocal foldexpr=MarkdownLevel()  
     au Filetype markdown setlocal foldmethod=expr
-    au Filetype markdown setlocal foldtext=Markdown_Foldtext()
-    au BufEnter,BufRead,BufNewFile *md,*txt call s:set_markdown_wrap_mode()
-    au BufEnter,BufRead,BufNewFile *.md,*.txt setlocal nospell
+    au Filetype markdown setlocal foldtext=MarkdownFoldtext()
+    au Filetype markdown setlocal nospell
+    au Filetype markdown let &l:equalprg=md_equalprg
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
 augroup END
+" }}}1
+
+" vim:set foldmethod=marker
