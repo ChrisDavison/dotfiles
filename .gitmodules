@@ -82,3 +82,6 @@
 [submodule ".vim/bundle/checkmark"]
 	path = .vim/bundle/checkmark
 	url = git@github.com:ChrisDavison/checkmark
+[submodule ".vim/bundle/vim-cdroot"]
+	path = .vim/bundle/vim-cdroot
+	url = git@github.com:ChrisDavison/vim-cdroot
