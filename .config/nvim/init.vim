@@ -1,38 +1,39 @@
 let mapleader=" "
 
+" Load plugins
 " }}}1 plugins (using junegunn's Plug.vim) {{{1
 
-call plug#begin('~/.vim/3rd_party')
-Plug 'airblade/vim-gitgutter'        
-Plug 'chriskempson/base16-vim'
-Plug 'dahu/vim-fanfingtastic'
-Plug 'easymotion/vim-easymotion'  
-Plug 'fatih/vim-go'
-Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/seoul256.vim'
-Plug 'kana/vim-textobj-user'     
-Plug 'Konfekt/FastFold'
-Plug 'lervag/vimtex'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'owickstrom/vim-colors-paramount'
-Plug 'romainl/vim-qf'
-Plug 'romainl/vim-qlist'         
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-commentary'     
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'      
-Plug 'tpope/vim-speeddating'      
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'      
-Plug 'vim-python/python-syntax'
-Plug 'wellle/targets.vim'
-Plug 'honza/vim-snippets'
-Plug 'SirVer/ultisnips'
-Plug 'ChrisDavison/checkmark'
-Plug 'ChrisDavison/vim-cdroot'
-call plug#end()
+ call plug#begin('~/.vim/bundle')
+ Plug 'airblade/vim-gitgutter'        
+ Plug 'chriskempson/base16-vim'
+ Plug 'dahu/vim-fanfingtastic'
+ Plug 'easymotion/vim-easymotion'  
+ Plug 'fatih/vim-go'
+ Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
+ Plug 'junegunn/fzf.vim'
+ Plug 'junegunn/seoul256.vim'
+ Plug 'kana/vim-textobj-user'     
+ Plug 'Konfekt/FastFold'
+ Plug 'lervag/vimtex'
+ Plug 'ludovicchabant/vim-gutentags'
+ Plug 'owickstrom/vim-colors-paramount'
+ Plug 'romainl/vim-qf'
+ Plug 'romainl/vim-qlist'         
+ Plug 'tpope/vim-fugitive'
+ Plug 'tpope/vim-commentary'     
+ Plug 'tpope/vim-obsession'
+ Plug 'tpope/vim-sensible'
+ Plug 'tpope/vim-surround'      
+ Plug 'tpope/vim-speeddating'      
+ Plug 'tpope/vim-unimpaired'
+ Plug 'tpope/vim-vinegar'      
+ Plug 'vim-python/python-syntax'
+ Plug 'wellle/targets.vim'
+ Plug 'honza/vim-snippets'
+ Plug 'SirVer/ultisnips'
+ Plug 'ChrisDavison/checkmark'
+ Plug 'ChrisDavison/vim-cdroot'
+ call plug#end()
 
 " }}}1 settings {{{1
 set nocompatible
@@ -118,6 +119,8 @@ let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
+" chrisdavison/vim-cdroot -  Priority curdirs if in a subdir
+let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
 
 " }}}1 keybinds {{{1
 nnoremap <silent> Q =ip
@@ -212,6 +215,31 @@ inoremap <C-c> <ESC>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 
+" }}}1 abbreviations {{{1
+cnoreabbrev W w
+cnoreabbrev Qa qa
+cnoreabbrev E e
+cnoreabbrev Q! q!
+cnoreabbrev GIt Git
+cnoreabbrev Set set
+cnoreabbrev oedit only<bar>edit
+cnoreabbrev oe only<bar>edit
+
+" :BufOnly | Close all buffers but this one
+cnoreabbrev BufOnly %bd\|e#
+
+iabbrev meanstd μ±σ
+iabbrev SALS **See also**:
+iabbrev <expr> DATE strftime("%Y-%m-%d")
+iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
+iabbrev <expr> DATED strftime("%b %d")
+iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
+iabbrev <expr> DATENFULL strftime("%Y %b %d")
+iabbrev <expr> jhead strftime("# %Y-%m-%d")
+iabbrev <expr> TIME strftime("%H:%M:%S")
+iabbrev RSQ R²
+iabbrev pmin1 ⁻¹
+
 " }}}1 :CD | Change to the parent directory of the current file {{{1
 command! CD exec "cd ".expand("%:h")
 
@@ -242,42 +270,6 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-" }}}1 OTHER STUFF {{{1
-
-" Used by ChrisDavison/vim-cdroot. Use these as the curdir whenever we're in a
-" child dir.
-let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
-
-" Commands to jump to specific files or directories
-" Using my 'stack open', so that I can use the [!] variant if wanted
-command! Logbook silent only<BAR>edit $HOME/Dropbox/notes/logbook.txt<BAR>norm <C-End>
-command! Journal silent only<BAR>edit $HOME/Dropbox/notes/journal.txt<BAR>norm <C-End>
-
-" }}}1 abbreviations {{{1
-cnoreabbrev W w
-cnoreabbrev Qa qa
-cnoreabbrev E e
-cnoreabbrev Q! q!
-cnoreabbrev GIt Git
-cnoreabbrev Set set
-cnoreabbrev oedit only<bar>edit
-cnoreabbrev oe only<bar>edit
-
-" :BufOnly | Close all buffers but this one
-cnoreabbrev BufOnly %bd\|e#
-
-iabbrev meanstd μ±σ
-iabbrev SALS **See also**:
-iabbrev <expr> DATE strftime("%Y-%m-%d")
-iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
-iabbrev <expr> DATED strftime("%b %d")
-iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
-iabbrev <expr> DATENFULL strftime("%Y %b %d")
-iabbrev <expr> jhead strftime("# %Y-%m-%d")
-iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev RSQ R²
-iabbrev pmin1 ⁻¹
-
 " }}}1 :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
 let s:headermap={
             \'rust': 'fn',
@@ -297,23 +289,16 @@ command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
 nnoremap <leader>i :Headers<CR>:
 nnoremap <leader>I :Headers !<CR>:
 " }}}1 Markdown {{{1
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
-
 let markdown_reference_links=1
-if markdown_reference_links
-    let md_equalprg.="-shortcut_reference_links\ --reference-links\ --reference-location=section"
-endif
-
 let markdown_hard_wrap=0
-if markdown_hard_wrap
-    let md_equalprg.="\ --columns=79\ --wrap=auto"
-else
-    let md_equalprg.="\ --wrap=none"
-endif
+let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
+let md_equalprg.=markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
+let md_equalprg.=markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
 let md_equalprg.="\ --atx-headers"
 
 function! s:maybe_filetype_markdown()
-    if &filetype == "help"
+    if &filetype == "help" || expand('%:p') =~ "doc/"
+        setlocal filetype=help
         return
     endif
     setlocal filetype=markdown
@@ -359,9 +344,8 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter .scratch call s:maybe_filetype_markdown()
     au BufEnter *.vim setlocal foldmethod=marker
-    au BufEnter *.txt,*.md call s:maybe_filetype_markdown()
+    au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
