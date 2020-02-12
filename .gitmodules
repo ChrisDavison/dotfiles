@@ -28,3 +28,6 @@
 [submodule ".vim/bundle/FastFold"]
 	path = .vim/bundle/FastFold
 	url = git@github.com:Konfekt/FastFold
+[submodule ".vim/bundle/vimtex"]
+	path = .vim/bundle/vimtex
+	url = git@github.com:lervag/vimtex
