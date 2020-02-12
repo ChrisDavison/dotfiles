@@ -22,3 +22,6 @@
 [submodule ".vim/bundle/seoul256.vim"]
 	path = .vim/bundle/seoul256.vim
 	url = git@github.com:junegunn/seoul256.vim
+[submodule ".vim/bundle/vim-textobj-user"]
+	path = .vim/bundle/vim-textobj-user
+	url = git@github.com:kana/vim-textobj-user
