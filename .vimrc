@@ -2,7 +2,6 @@ let mapleader=" "
 
 " Load plugins
 execute pathogen#infect("~/.vim/bundle/{}")
-execute pathogen#helptags()
 
 " }}}1 settings {{{1
 set nocompatible
