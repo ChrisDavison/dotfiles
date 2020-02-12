@@ -88,3 +88,6 @@
 [submodule ".vim/bundle/molokayo"]
 	path = .vim/bundle/molokayo
 	url = git@github.com:fmoralesc/molokayo
+[submodule ".vim/bundle/vim-colors-xcode"]
+	path = .vim/bundle/vim-colors-xcode
+	url = git@github.com:arzg/vim-colors-xcode
