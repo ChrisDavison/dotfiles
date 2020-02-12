@@ -70,3 +70,6 @@
 [submodule ".vim/bundle/python-syntax"]
 	path = .vim/bundle/python-syntax
 	url = git@github.com:vim-python/python-syntax
+[submodule ".vim/bundle/targets.vim"]
+	path = .vim/bundle/targets.vim
+	url = git@github.com:wellle/targets.vim
