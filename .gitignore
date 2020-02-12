@@ -12,3 +12,4 @@ tags
 .emacs.d/backups/
 .emacs.d/elpa/
 .emacs.d/chris-davison.el
+bundle/

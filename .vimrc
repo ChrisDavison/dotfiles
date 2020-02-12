@@ -1,335 +1,356 @@
 let mapleader=" "
 
-" Load plugins, using pathogen
-execute pathogen#infect("~/.vim/bundle/{}")
-execute pathogen#helptags()
+syntax enable
+filetype plugin indent on
 
-" }}}1 settings {{{1
 set nocompatible
-set wrap lbr
-let &showbreak = '┆'
-set cpo+=n
 set autochdir
+set wrap lbr
+let &showbreak = '-> '
+set cpo+=n
+set autoindent
+set backspace=indent,eol,start
+set complete-=i
+set smarttab
+set nrformats-=octal
 set breakindent
-set breakindentopt=shift:4,sbr
-set number
-set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
+set breakindentopt+=shift:2,sbr
+set number 
+set iskeyword=a-z,A-Z,_,.,39  " Used e.g. when searching for tags
+set hidden
+set ruler
+set nospell
+set nofoldenable  " OR foldenable foldlevelstart=0
 set updatetime=300 " Write a swap file after 1 second
+set cmdheight=2
+set colorcolumn=0
+set hlsearch
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
-set clipboard+=unnamedplus " Use system clipboard with vim clipboard
+set clipboard=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 
 " Some servers have issues with backup files
-set nobackup nowritebackup
+set nobackup
+set nowritebackup
 
+set backupcopy=yes
+set backupdir=~/.temp,.
 set directory=~/.temp,.
-set wildmode=list:longest:list,full
+set wildmenu
+set wildmode=list:longest,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
-set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
-set noshowmode
-let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__'
+set laststatus=2
+set conceallevel=2
+set formatoptions+=j  "Delete comment char when joining lines
+set history=1000
+set tabpagemax=5
+set sessionoptions-=options
+set viminfo^=!
+set t_ut= " Fix issues with background color on some terminals
+set relativenumber
+set fillchars=fold:·
+let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$'
 
 " suppress 'match x of y', 'only match'... etc
-set shortmess=a
+set shortmess+=c
 
-set signcolumn=auto
+set signcolumn=yes
 
-set path=.,**
-set statusline=%<\ %n:%f\ %m%r%y%{ObsessionStatus('[session]')}%=%(%P\ of\ %LL\ -\ %l,%c\ %)
+set path+=**
+set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 
 " undo (save undo history across sessions)
 set undodir=~/.undodir
 set undofile
-set completeopt=menu,menuone,preview
 
 " shell (specialised per os)
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
+elseif executable('/usr/bin/fish')
+    set shell=/usr/bin/fish
+elseif executable('/usr/bin/zsh')
+    set shell=/usr/bin/zsh
+elseif executable('/usr/bin/bash')
+    set shell=/usr/bin/bash
+elseif executable('/bin/bash')
+    set shell=/bin/bash
 else
-    let shells=['/usr/bin/fish', '/usr/bin/zsh', '/usr/bin/bash', '/bin/bash']
-    for possibleshell in shells
-        if executable(possibleshell)
-            exec "set shell=".possibleshell
-            break
-        endif
-    endfor
+    echom "No valid shell!"
+endif
+
+" CONDITIONAL SETTINGS / RANDOM STUFF
+if has('path_extra')
+    setglobal tags-=./tags tags-=./tags; tags^=./tags;
 endif
 
 if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
-" }}}1 appearance {{{1
-" when do I need termguicolours? why did I switch it off?
-" problem between vim and neovim? terminal and gui? windows vs osx?
-if !has('mac')
-    set termguicolors
-endif
-set t_ut= " Fix issues with background color on some terminals
-set t_Co=256
-set bg=dark
-silent! colorscheme base16-material
+" plugins
+"  ____  _    _   _  ____ ___ _   _ ____  
+" |  _ \| |  | | | |/ ___|_ _| \ | / ___| 
+" | |_) | |  | | | | |  _ | ||  \| \___ \ 
+" |  __/| |__| |_| | |_| || || |\  |___) |
+" |_|   |_____\___/ \____|___|_| \_|____/ 
+call plug#begin('~/.vim/3rd_party')
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'fatih/vim-go'
+Plug 'lervag/vimtex'
+Plug 'rust-lang/rust.vim'
+Plug 'vim-jp/vim-cpp'
+Plug 'vim-python/python-syntax'
+Plug 'plasticboy/vim-markdown'
+Plug 'elixir-editors/vim-elixir'
+Plug 'cespare/vim-toml'
+Plug 'dag/vim-fish'
 
-" settings for plugins {{{1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'dahu/vim-fanfingtastic'  " Let f/F work across line endings
+Plug 'easymotion/vim-easymotion'  " Easily navigate to any word or char in buffer
+Plug 'kana/vim-textobj-user'  " Custom text objects
+Plug 'jceb/vim-textobj-uri'   " Text object for link-type stuff (`go` will open urls)
+Plug 'jpalardy/vim-slime'     " Send commands to tmux
+Plug 'romainl/vim-qlist'
+Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-commentary'   " Comment modification/text objects
+Plug 'tpope/vim-surround'     " 'Surround' text objects e.g. csi(
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'      " Easily navigate directories
+Plug 'wellle/targets.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'tomasr/molokai'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'Shougo/echodoc'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'mbbill/undotree'
+Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vim-clap'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Scuilion/markdown-drawer'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 
-let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
-let g:go_fmt_command="goimports"
-let g:go_fmt_autosave=1
-let g:go_version_warning=0
-let g:pymode_python = 'python3'
-let g:rustfmt_autosave=1
-let g:is_bash=1
-let g:tex_flavor = "latex"
-let g:vimtex_compiler_progname = 'nvr'
-let g:echodoc#enable_at_startup=1
-let g:echodoc#type="echo"
-" chrisdavison/vim-cdroot -  Priority curdirs if in a subdir
-let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
+" Themes
+Plug 'junegunn/seoul256.vim'
+Plug 'arzg/vim-corvine'
 
-" }}}1 keybinds {{{1
+call plug#end()
+
+
+                                                  
+" keybinds
+"  _  _________   ______ ___ _   _ ____  ____  
+" | |/ / ____\ \ / / __ )_ _| \ | |  _ \/ ___| 
+" | ' /|  _|  \ V /|  _ \| ||  \| | | | \___ \ 
+" | . \| |___  | | | |_) | || |\  | |_| |___) |
+" |_|\_\_____| |_| |____/___|_| \_|____/|____/ 
+nnoremap <leader>ev :edit ~/.vimrc<CR>
+
+" These versions are for when I don't have fzf and fzf.vim installed
+" nnoremap <leader>en :edit ~/src/github.com/chrisdavison/knowledge/**/*
+" nnoremap <leader>b :ls<Cr>:b
+" nnoremap <leader>s  :ls<CR>:filt  ls<LEFT><LEFT><LEFT>
+" nnoremap <leader>p :find
+
+nnoremap <leader>en :Files ~/src/github.com/chrisdavison/knowledge<CR>
+nnoremap <leader>es :Files ~/src/github.com/chrisdavison/scripts<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>p :Files<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <silent> <CR> :nohlsearch<CR>
+
+" Use // to search visual selection
+vnoremap // y/<c-r>"<CR>
+
+" =====[ Uppercase the current word (from anywhere within the <word>) ]=====
+inoremap <C-u>   <esc>mzgUiw`za
+
 nnoremap <silent> Q =ip
+
+" =====[ Generic useful stuff ]=====
+nnoremap <BS>   <C-^>
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 nnoremap j      gj
-vnoremap j      gj
-nnoremap D      dd
 nnoremap k      gk
-vnoremap k      gk
-nnoremap Y      y$
-nnoremap <silent> <CR> :nohlsearch<CR>
 
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
+nnoremap K :silent! lgrep! "\b<C-R><C-W>\b"<CR>:lw<CR>
+nnoremap <leader>g :silent! lgrep! ""<LEFT>
 
-tnoremap <Esc> <C-\><C-n>
+nnoremap <leader>n :Explore ~/Dropbox/notes<CR>
 
-" FZF keybinds
-imap <C-x><C-k> <plug>(fzf-complete-word)
-imap <C-x><C-f> <plug>(fzf-complete-path)
-imap <C-x><C-j> <plug>(fzf-complete-file-ag)
-imap <C-x><C-l> <plug>(fzf-complete-line)
-let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit' }
+nmap s <Plug>(easymotion-s2)
+map <leader>j <Plug>(easymotion-j)
+map <leader>k <Plug>(easymotion-k)
 
-" Automatically use first spelling suggestion
-nnoremap <leader>s  z=1<CR><CR>
-
-" Close quickfix or location window
-nnoremap <leader>c :cclose<bar>lclose<CR>
-
-nnoremap <leader>ev :edit ~/.vimrc<CR>
-nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
-nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
-nnoremap <leader>b :Buffers!<CR>
-nnoremap <leader>l :BLines!<CR>
-
-command! MGFiles call s:maybe_gfiles()
-nnoremap <leader>p :MGFiles<CR>
-
-
-function! s:maybe_gfiles()
-    " Root is only called to test for it's error code
-    let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
-    if expand('%:p') =~ "Dropbox/notes"
-        exec "Files! " . expand("~/Dropbox/notes")
-    elseif expand('%:p') =~ "Dropbox/logbook"
-        exec "Files! " . expand("~/Dropbox/logbook")
-    elseif !v:shell_error
-        GFiles!
-    else
-        Files!
-    endif
-endfunction
-
-" Copy file basename
-nnoremap <leader>cf :let @+=expand("%")<CR>
-" Copy file full path
-nnoremap <leader>cF :let @+=expand("%:p")<CR>
-" Copy file full parent dir
-nnoremap <leader>cd :let @+=expand("%:p:h")<CR>
-
-" Easymotion configuration
-nmap s <Plug>(easymotion-s)
-nmap <leader><leader>w <Plug>(easymotion-bd-w)
-nmap <leader><leader>e <Plug>(easymotion-bd-e)
-nmap <leader>j <Plug>(easymotion-bd-jk)
-nmap <leader>k <Plug>(easymotion-bd-jk)
-let g:EasyMotion_smartcase=1
-
-" Readline-style keybinds in the command line
-cnoremap <C-A> <Home>
-cnoremap <C-B> <Left>
-cnoremap <expr> <C-D> getcmdpos()>strlen(getcmdline())?"\<Lt>C-D>":"\<Lt>Del>"
-cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
-cnoremap        <M-b> <S-Left>
-cnoremap        <M-f> <S-Right>
-silent! exe "set <S-Left>=\<Esc>b"
-silent! exe "set <S-Right>=\<Esc>f"
+nnoremap <leader>md :MarkDrawer<CR>
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
-inoremap <C-c> <ESC>
+inoremap <c-c> <ESC>
 
-nnoremap <leader>t :Tags<CR>
-nnoremap <leader>T :BTags<CR>
+nnoremap <leader>md :MarkDrawer<CR>
+let g:markdrawer_toc='full_index'
 
-" }}}1 abbreviations {{{1
+let g:go_fmt_command="goimports"
+let g:go_version_warning=0
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'rust', 'go', 'c', 'cpp']
+
+let g:pymode_python = 'python3'
+let g:slime_paste_file=tempname()
+let g:slime_python_ipython = 1
+let g:slime_target = "tmux"
+
+let g:rustfmt_autosave=1
+let g:is_bash=1
+let g:tex_flavor = "latex"
+let g:vimtex_compiler_progname = 'nvr'
+
+" abbreviations
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
-cnoreabbrev GIt Git
-cnoreabbrev Set set
-cnoreabbrev oedit only<bar>edit
-cnoreabbrev oe only<bar>edit
-
-" :BufOnly | Close all buffers but this one
-cnoreabbrev BufOnly %bd\|e#
 
 iabbrev meanstd μ±σ
 iabbrev SALS **See also**:
-iabbrev <expr> DATE strftime("%Y-%m-%d")
-iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
-iabbrev <expr> DATED strftime("%b %d")
-iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
-iabbrev <expr> DATENFULL strftime("%Y %b %d")
-iabbrev <expr> jhead strftime("# %Y-%m-%d")
-iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev RSQ R²
-iabbrev pmin1 ⁻¹
 
-" }}}1 :CD | Change to the parent directory of the current file {{{1
-command! CD exec "cd ".expand("%:h")
-
-" }}}1 :Bd | Delete buffer and replace with 'alternate' buffer {{{1
+" custom commands
+command! CopyFilename exec "@+=expand(\"%\")"
+command! CopyRelativeFilename exec "@+=expand(\"%:p\")"
 command! Bd bp|bd #
+command! Wd write|Bd
+command! Scratch edit ~/.scratch | normal G
+command! CD exec "cd ".expand("%:h")
+command! RMD exec "!rm ".expand("%") | bp | bd #
+command! FMT exec "silent!normal mzgg=G`zmzzz"
+command! FindWord exec "Rg " . expand("<cword>")
 
-" }}}1 :Scratch | Open a 'scratch' buffer {{{1
-command! Scratch edit ~/.scratch | normal <C-End>
+nnoremap <leader>s  :Scratch<CR>
 
-" }}}1 :FMT | Execute 'equalprg' on entire buffer, remembering position {{{1
-command! FMT exec "normal mzgg=G`zmzzz"
-nnoremap <leader>f :FMT<CR>
-
-" }}}1 :MakeNonExistentDir | try to make all parent directories of a new buffer {{{1
-function! s:makeNonExDir()
+" make nonexistent directories on write
+function! MakeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
     endif
 endfunction
-command! MakeNonExistentDir call s:makeNonExDir()
 
-" }}}1 :RG | grep / ripgrep {{{1
+" grep / ripgrep
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-    command! -bang -nargs=* RG
+
+    command! -bang -nargs=* Rg
                 \ call fzf#vim#grep(
-                \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+                \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1, 
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-" }}}1 :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
-let s:headermap={
-            \'rust': 'fn',
-            \'python': 'def',
-            \'go': 'func',
-            \'vim': 'function',
-            \'markdown': '#\+',
-            \'markdown.pandoc': '#\+'}
-function! s:goto_header(ft, filter)
-    let pattern="^\\s*" . s:headermap[a:ft] . "\\s"
-    if len(a:filter) > 0
-        let pattern= l:pattern . a:filter 
-    endif
-    exec ":g/" . pattern . "/"
-endfunction
-command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
-nnoremap <leader>i :Headers<CR>:
-nnoremap <leader>I :Headers !<CR>:
-" }}}1 Markdown {{{1
-let markdown_reference_links=1
-let markdown_hard_wrap=0
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
-let md_equalprg.=markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
-let md_equalprg.=markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
-let md_equalprg.="\ --atx-headers"
 
-function! s:maybe_filetype_markdown()
-    if &filetype == "help" || expand('%:p') =~ "doc/"
-        setlocal filetype=help
-        return
-    endif
-    setlocal filetype=markdown
-endfunction
-
-function! MarkdownLevel() "folding function
-    if getline(v:lnum) =~ '^# .*$'
-        return ">1"
-    endif
-    if getline(v:lnum) =~ '^## .*$'
-        return ">2"
-    endif
-    if getline(v:lnum) =~ '^### .*$'
-        return ">3"
-    endif
-    if getline(v:lnum) =~ '^#### .*$'
-        return ">4"
-    endif
-    if getline(v:lnum) =~ '^##### .*$'
-        return ">5"
-    endif
-    if getline(v:lnum) =~ '^###### .*$'
-        return ">6"
-    endif
-    return "=" 
-endfunction
+" appearance
+" when do I need termguicolours? why did I switch it off?
+" problem between vim and neovim? terminal and gui? windows vs osx?
+set termguicolors
+set t_Co=256
+set bg=dark
+silent! colorscheme corvine_light
+set guioptions-=m
+set guioptions-=T
+set guioptions-=r
+set guioptions-=L
 
 
-function MarkdownFoldtext()
-    let l1 = getline(v:foldstart)
-    if l:l1[0] != '#'
-        return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
-    else
-        return l:l1 . '   «' . (v:foldend - v:foldstart) . '» '
-    endif
+let g:tagbar_type_rust = {
+    \ 'ctagstype' : 'rust',
+    \ 'kinds' : [
+        \'T:types,type definitions',
+        \'f:functions,function definitions',
+        \'g:enum,enumeration names',
+        \'s:structure names',
+        \'m:modules,module names',
+        \'c:consts,static constants',
+        \'t:traits',
+        \'i:impls,trait implementations',
+    \]
+    \}
+
+let g:echodoc#enable_at_startup=1
+let g:echodoc#type = 'signature'
+
+let g:vim_markdown_folding_disabled = 1
+" Run autocommands at the end of vimrc, to use any previously defined
+" functions
+highlight nonascii guibg=Red ctermbg=1 term=standout
+
+" coc.nvim...?
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-" }}}1 autocommands {{{1
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" Or use `complete_info` if your vim support it, like:
+" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+nmap <leader>rn <Plug>(coc-rename)
+
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-i)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 augroup vimrc
     autocmd!
+    au BufReadPost * syntax match nonascii "[^\u0000-\u007F£]"
+    au ColorScheme * hi! link SignColumn LineNr
     au TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd BufWritePre * call s:makeNonExDir()
-    " au ColorScheme * hi! link SignColumn LineNr
     au CursorHold * silent! checktime " Check for external changes to files
+    au CursorHold * silent call CocActionAsync('highlight')
     au VimResized * wincmd= " equally resize splits on window resize
-    au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter *.vim setlocal foldmethod=marker
-    au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
-    au BufEnter * Root
+    au BufWritePost .vimrc source %
+    au BufEnter .scratch set filetype=markdown
+    au BufEnter *.md set filetype=markdown
     au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal foldenable foldlevelstart=0
-    au Filetype markdown setlocal conceallevel=1
-    au Filetype markdown setlocal foldexpr=MarkdownLevel()  
-    au Filetype markdown setlocal foldmethod=expr
-    au Filetype markdown setlocal foldtext=MarkdownFoldtext()
-    au Filetype markdown setlocal nospell
-    au Filetype markdown let &l:equalprg=md_equalprg
+    au Filetype markdown setlocal equalprg=pandoc\ --to\ markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes\ --columns=80\ --reference-links\ --reference-location=section\ --atx-headers
     au BufRead,BufNewFile *.latex set filetype=tex
-    au Filetype tex setlocal tw=80 colorcolumn=80
+    au Filetype tex setlocal tw=80
+    au Filetype tex setlocal colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
-    au FileType python setlocal foldmethod=indent
+    autocmd BufWritePre * call MakeNonExDir()
+    au FileType python let b:coc_root_patterns = ['.env', '.git']
 augroup END
-" }}}1
-
-" vim:set foldmethod=marker
