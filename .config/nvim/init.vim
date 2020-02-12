@@ -287,11 +287,11 @@ let s:headermap={
             \'markdown': '#\+',
             \'markdown.pandoc': '#\+'}
 function! s:goto_header(ft, filter)
-    let pattern=s:headermap[a:ft]
+    let pattern="^\\s*" . s:headermap[a:ft] . "\\s"
     if len(a:filter) > 0
-        let pattern= s:headermap[a:ft] . ".*" . a:filter . ".*"
+        let pattern= l:pattern . a:filter 
     endif
-    exec ":g/^\\s*".pattern."\\s/"
+    exec ":g/" . pattern . "/"
 endfunction
 command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
 nnoremap <leader>i :Headers<CR>:
