@@ -1,3 +1,4 @@
+" vim: fdm=marker
 let mapleader=" "
 
 " Load plugins
@@ -161,10 +162,6 @@ nnoremap <leader>cd :let @+=expand("%:p:h")<CR>
 
 " Easymotion configuration
 nmap s <Plug>(easymotion-s)
-nmap <leader><leader>w <Plug>(easymotion-bd-w)
-nmap <leader><leader>e <Plug>(easymotion-bd-e)
-nmap <leader>j <Plug>(easymotion-bd-jk)
-nmap <leader>k <Plug>(easymotion-bd-jk)
 let g:EasyMotion_smartcase=1
 
 " Readline-style keybinds in the command line
@@ -192,12 +189,12 @@ cnoreabbrev GIt Git
 cnoreabbrev Set set
 cnoreabbrev oedit only<bar>edit
 cnoreabbrev oe only<bar>edit
-
-" :BufOnly | Close all buffers but this one
+cnoreabbrev BD bp<bar>bd #
+cnoreabbrev CD cd expand("%:h")
 cnoreabbrev BufOnly %bd\|e#
 
 iabbrev meanstd μ±σ
-iabbrev SALS **See also**:
+iabbrev ALSO **See also**:
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 iabbrev <expr> DATED strftime("%b %d")
@@ -205,14 +202,6 @@ iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
 iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev RSQ R²
-iabbrev pmin1 ⁻¹
-
-" }}}1 :CD | Change to the parent directory of the current file {{{1
-command! CD exec "cd ".expand("%:h")
-
-" }}}1 :Bd | Delete buffer and replace with 'alternate' buffer {{{1
-command! Bd bp|bd #
 
 " }}}1 :Scratch | Open a 'scratch' buffer {{{1
 command! Scratch edit ~/.scratch | normal <C-End>
@@ -244,18 +233,14 @@ let s:headermap={
             \'python': 'def',
             \'go': 'func',
             \'vim': 'function',
-            \'markdown': '#\+',
-            \'markdown.pandoc': '#\+'}
-function! s:goto_header(ft, filter)
-    let pattern="^\\s*" . s:headermap[a:ft] . "\\s"
-    if len(a:filter) > 0
-        let pattern= l:pattern . a:filter 
-    endif
-    exec ":g/" . pattern . "/"
+            \'markdown': '#\+'}
+function! s:goto_header(filter)
+    let filt = len(a:filter) > 0 ? a:filter : ""
+    let pattern="^\\s*" . s:headermap[&filetype] . "\\s*" .  l:filt
+    exec "BLines" . pattern
 endfunction
-command! -nargs=* Headers exec s:goto_header(&filetype, <q-args>)
-nnoremap <leader>i :Headers<CR>:
-nnoremap <leader>I :Headers !<CR>:
+command! -nargs=* Headers exec s:goto_header(<q-args>)
+nnoremap <leader>i :Headers<CR>
 " }}}1 Markdown {{{1
 let markdown_reference_links=1
 let markdown_hard_wrap=0
@@ -308,14 +293,12 @@ augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
     autocmd BufWritePre * call s:makeNonExDir()
-    " au ColorScheme * hi! link SignColumn LineNr
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au Filetype vim setlocal foldmethod=marker
+    " au Filetype vim setlocal foldmethod=marker
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
-    au Filetype arduino set filetype=cpp
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal foldenable foldlevelstart=0
     au Filetype markdown setlocal conceallevel=1
