@@ -295,7 +295,7 @@ function! MarkdownLevel() "folding function
 endfunction
 
 
-function MarkdownFoldtext()
+function! MarkdownFoldtext()
     let l1 = getline(v:foldstart)
     if l:l1[0] != '#'
         return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
