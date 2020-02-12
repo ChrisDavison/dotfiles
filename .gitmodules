@@ -37,3 +37,6 @@
 [submodule ".vim/bundle/vim-colors-paramount"]
 	path = .vim/bundle/vim-colors-paramount
 	url = git@github.com:owickstrom/vim-colors-paramount
+[submodule ".vim/bundle/vim-qf"]
+	path = .vim/bundle/vim-qf
+	url = git@github.com:romainl/vim-qf
