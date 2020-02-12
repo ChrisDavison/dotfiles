@@ -1,39 +1,8 @@
 let mapleader=" "
 
 " Load plugins
-" }}}1 plugins (using junegunn's Plug.vim) {{{1
-
-call plug#begin('~/.vim/bundle')
-Plug 'airblade/vim-gitgutter'        
-Plug 'chriskempson/base16-vim'
-Plug 'dahu/vim-fanfingtastic'
-Plug 'easymotion/vim-easymotion'  
-Plug 'fatih/vim-go'
-Plug 'junegunn/fzf', { 'dir':  '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/seoul256.vim'
-Plug 'kana/vim-textobj-user'     
-Plug 'Konfekt/FastFold'
-Plug 'lervag/vimtex'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'owickstrom/vim-colors-paramount'
-Plug 'romainl/vim-qf'
-Plug 'romainl/vim-qlist'         
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-commentary'     
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'      
-Plug 'tpope/vim-speeddating'      
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-vinegar'      
-Plug 'vim-python/python-syntax'
-Plug 'wellle/targets.vim'
-Plug 'honza/vim-snippets'
-Plug 'SirVer/ultisnips'
-Plug 'ChrisDavison/checkmark'
-Plug 'ChrisDavison/vim-cdroot'
-call plug#end()
+execute pathogen#infect("~/.vim/bundle/{}")
+execute pathogen#helptags()
 
 " }}}1 settings {{{1
 set nocompatible
@@ -363,4 +332,3 @@ augroup vimrc
 augroup END
 " }}}1
 
-" vim:set foldmethod=marker
