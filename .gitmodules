@@ -25,3 +25,6 @@
 [submodule ".vim/bundle/vim-textobj-user"]
 	path = .vim/bundle/vim-textobj-user
 	url = git@github.com:kana/vim-textobj-user
+[submodule ".vim/bundle/FastFold"]
+	path = .vim/bundle/FastFold
+	url = git@github.com:Konfekt/FastFold
