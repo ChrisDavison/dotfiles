@@ -67,3 +67,6 @@
 [submodule ".vim/bundle/vim-vinegar"]
 	path = .vim/bundle/vim-vinegar
 	url = git@github.com:tpope/vim-vinegar
+[submodule ".vim/bundle/python-syntax"]
+	path = .vim/bundle/python-syntax
+	url = git@github.com:vim-python/python-syntax
