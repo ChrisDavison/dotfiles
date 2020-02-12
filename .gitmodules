@@ -43,3 +43,6 @@
 [submodule ".vim/bundle/vim-qlist"]
 	path = .vim/bundle/vim-qlist
 	url = git@github.com:romainl/vim-qlist
+[submodule ".vim/bundle/vim-fugitive"]
+	path = .vim/bundle/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive
