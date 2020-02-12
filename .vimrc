@@ -313,7 +313,7 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter *.vim setlocal foldmethod=marker
+    au Filetype vim setlocal foldmethod=marker
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
     au Filetype arduino set filetype=cpp
