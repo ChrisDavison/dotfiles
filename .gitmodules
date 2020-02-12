@@ -79,3 +79,6 @@
 [submodule ".vim/bundle/ultisnips"]
 	path = .vim/bundle/ultisnips
 	url = git@github.com:SirVer/ultisnips
+[submodule ".vim/bundle/checkmark"]
+	path = .vim/bundle/checkmark
+	url = git@github.com:ChrisDavison/checkmark
