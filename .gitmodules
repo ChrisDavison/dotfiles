@@ -7,3 +7,6 @@
 [submodule ".vim/bundle/vim-fanfingtastic"]
 	path = .vim/bundle/vim-fanfingtastic
 	url = git@github.com:dahu/vim-fanfingtastic
+[submodule ".vim/bundle/vim-easymotion"]
+	path = .vim/bundle/vim-easymotion
+	url = git@github.com:easymotion/vim-easymotion
