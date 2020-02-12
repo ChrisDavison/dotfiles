@@ -85,3 +85,6 @@
 [submodule ".vim/bundle/vim-cdroot"]
 	path = .vim/bundle/vim-cdroot
 	url = git@github.com:ChrisDavison/vim-cdroot
+[submodule ".vim/bundle/molokayo"]
+	path = .vim/bundle/molokayo
+	url = git@github.com:fmoralesc/molokayo
