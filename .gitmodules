@@ -52,3 +52,6 @@
 [submodule ".vim/bundle/vim-obsession"]
 	path = .vim/bundle/vim-obsession
 	url = git@github.com:tpope/vim-obsession
+[submodule ".vim/bundle/vim-sensible"]
+	path = .vim/bundle/vim-sensible
+	url = git@github.com:tpope/vim-sensible
