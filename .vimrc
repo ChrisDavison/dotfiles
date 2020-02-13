@@ -262,7 +262,7 @@ augroup vimrc
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal foldenable foldlevelstart=0
+    au Filetype markdown setlocal foldenable foldlevelstart=0 foldmethod=expr
     au Filetype markdown setlocal conceallevel=1
     au Filetype markdown setlocal foldtext=MarkdownFoldtext()
     au Filetype markdown setlocal nospell
