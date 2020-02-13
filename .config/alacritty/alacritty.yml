@@ -26,7 +26,7 @@ window:
     # Values for `decorations` (macOS only):
     #         - transparent: Title bar, transparent background and title bar buttons
     #         - buttonless: Title bar, transparent background, but no title bar buttons
-    decorations: full
+    decorations: none
 
     # Startup Mode (changes require restart)
     # May be Windowed/Maximized/Fullscreen OR SimpleFullscreen (macOS only)
@@ -48,15 +48,15 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     normal:
-        family: Hasklig
+        family: Hack
         style: Regular
     italic:
-        family: Hasklig
+        family: Hack
         style: Italic
     bold:
-        family: Hasklig
+        family: Hack
         style: Bold
-    size: 12.0
+    size: 10.0
 
     offset:
         x: 0 # letterspacing
