@@ -94,3 +94,6 @@
 [submodule ".vim/bundle/vim-lucius"]
 	path = .vim/bundle/vim-lucius
 	url = git@github.com:jonathanfilip/vim-lucius
+[submodule ".vim/bundle/foldtext_vim"]
+	path = .vim/bundle/foldtext_vim
+	url = git@github.com:tomtom/foldtext_vim

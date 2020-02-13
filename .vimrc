@@ -134,21 +134,16 @@ nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
 nnoremap <leader>b :Buffers!<CR>
 nnoremap <leader>l :BLines!<CR>
+nnoremap <leader>t :Tags<CR>
+nnoremap <leader>T :BTags<CR>
 
-command! MGFiles call s:maybe_gfiles()
-nnoremap <leader>p :MGFiles<CR>
-
-
+nnoremap <leader>p :call <sid>maybe_gfiles()<CR>
 function! s:maybe_gfiles()
-    " Root is only called to test for it's error code
-    let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
-    if expand('%:p') =~ "Dropbox/notes"
-        exec "Files! " . expand("~/Dropbox/notes")
-    elseif expand('%:p') =~ "Dropbox/logbook"
-        exec "Files! " . expand("~/Dropbox/logbook")
-    elseif !v:shell_error
+    " system is only called to test for it's error code
+    call system('git rev-parse --show-toplevel')
+    if !v:shell_error
         GFiles!
-    else
+    else 
         Files!
     endif
 endfunction
@@ -177,8 +172,6 @@ silent! exe "set <S-Right>=\<Esc>f"
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
 
-nnoremap <leader>t :Tags<CR>
-nnoremap <leader>T :BTags<CR>
 
 " }}}1 abbreviations {{{1
 cnoreabbrev W w
@@ -252,40 +245,17 @@ let md_equalprg.="\ --atx-headers"
 function! s:maybe_filetype_markdown()
     if &filetype == "help" || expand('%:p') =~ "doc/"
         setlocal filetype=help
-        return
+    else
+        setlocal filetype=markdown
     endif
-    setlocal filetype=markdown
 endfunction
-
-function! MarkdownLevel() "folding function
-    if getline(v:lnum) =~ '^# .*$'
-        return ">1"
-    endif
-    if getline(v:lnum) =~ '^## .*$'
-        return ">2"
-    endif
-    if getline(v:lnum) =~ '^### .*$'
-        return ">3"
-    endif
-    if getline(v:lnum) =~ '^#### .*$'
-        return ">4"
-    endif
-    if getline(v:lnum) =~ '^##### .*$'
-        return ">5"
-    endif
-    if getline(v:lnum) =~ '^###### .*$'
-        return ">6"
-    endif
-    return "=" 
-endfunction
-
 
 function! MarkdownFoldtext()
     let l1 = getline(v:foldstart)
     if l:l1[0] != '#'
         return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
     else
-        return l:l1 . '   «' . (v:foldend - v:foldstart) . '» '
+        return l:l1 . '     «' .  (v:foldend - v:foldstart) . '»    '
     endif
 endfunction
 " }}}1 autocommands {{{1
@@ -302,8 +272,6 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal foldenable foldlevelstart=0
     au Filetype markdown setlocal conceallevel=1
-    au Filetype markdown setlocal foldexpr=MarkdownLevel()  
-    au Filetype markdown setlocal foldmethod=expr
     au Filetype markdown setlocal foldtext=MarkdownFoldtext()
     au Filetype markdown setlocal nospell
     au Filetype markdown let &l:equalprg=md_equalprg
