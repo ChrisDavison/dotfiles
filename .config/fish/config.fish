@@ -20,6 +20,11 @@ set PATH $HOME/.cargo/bin $PATH
 set PATH /usr/local/go/bin $PATH
 set PATH /snap/bin $PATH
 
+set CDPATH "." "~"
+set CDPATH $HOME/src/github.com/ChrisDavison $CDPATH
+set CDPATH $HOME/src/github.com/cidcom $CDPATH
+set CDPATH $HOME/Dropbox $CDPATH
+
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
