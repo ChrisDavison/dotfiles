@@ -65,18 +65,13 @@ if has('nvim')
 endif
 
 " }}}1 appearance {{{1
-" when do I need termguicolours? why did I switch it off?
-" problem between vim and neovim? terminal and gui? windows vs osx?
-if !has('mac')
-    set termguicolors
-endif
+set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
 silent! colorscheme base16-material
 
 " settings for plugins {{{1
-
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -88,7 +83,6 @@ let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
-" chrisdavison/vim-cdroot -  Priority curdirs if in a subdir
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
 
 " }}}1 keybinds {{{1
@@ -203,14 +197,6 @@ command! Scratch edit ~/.scratch | normal <C-End>
 command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
-" }}}1 :MakeNonExistentDir | try to make all parent directories of a new buffer {{{1
-function! s:makeNonExDir()
-    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
-        call mkdir(expand('<afile>:h'), 'p')
-    endif
-endfunction
-command! MakeNonExistentDir call s:makeNonExDir()
-
 " }}}1 :RG | grep / ripgrep {{{1
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
@@ -234,7 +220,13 @@ function! s:goto_header(filter)
 endfunction
 command! -nargs=* Headers exec s:goto_header(<q-args>)
 nnoremap <leader>i :Headers<CR>
-" }}}1 Markdown {{{1
+" }}}1 saving | make non-exitent dirs (including parents) on save {{{1
+function! s:makeNonExDir()
+    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
+        call mkdir(expand('<afile>:h'), 'p')
+    endif
+endfunction
+" }}}1 markdown | equalprg and filetype assignment {{{1
 let markdown_reference_links=1
 let markdown_hard_wrap=0
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
