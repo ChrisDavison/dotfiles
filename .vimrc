@@ -4,10 +4,10 @@ let mapleader=" "
 " Load plugins
 execute pathogen#infect("~/.vim/bundle/{}")
 
-" }}}1 settings {{{1
+" settings {{{1
 set nocompatible
 set wrap lbr
-let &showbreak = '┆'
+let &showbreak = '▓▒░'
 set cpo+=n
 set autochdir
 set breakindent
@@ -64,7 +64,7 @@ if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
-" }}}1 appearance {{{1
+" appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
@@ -85,7 +85,7 @@ let g:echodoc#enable_at_startup=1
 let g:echodoc#type="echo"
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
 
-" }}}1 keybinds {{{1
+" keybinds {{{1
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
@@ -167,7 +167,7 @@ silent! exe "set <S-Right>=\<Esc>f"
 inoremap <C-c> <ESC>
 
 
-" }}}1 abbreviations {{{1
+" abbreviations {{{1
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
@@ -190,14 +190,14 @@ iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 
-" }}}1 :Scratch | Open a 'scratch' buffer {{{1
+" :Scratch | Open a 'scratch' buffer {{{1
 command! Scratch edit ~/.scratch | normal <C-End>
 
-" }}}1 :FMT | Execute 'equalprg' on entire buffer, remembering position {{{1
+" :FMT | Execute 'equalprg' on entire buffer, remembering position {{{1
 command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
-" }}}1 :RG | grep / ripgrep {{{1
+" :RG | grep / ripgrep {{{1
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
     command! -bang -nargs=* RG
@@ -206,7 +206,7 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-" }}}1 :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
+" :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
@@ -220,13 +220,13 @@ function! s:goto_header(filter)
 endfunction
 command! -nargs=* Headers exec s:goto_header(<q-args>)
 nnoremap <leader>i :Headers<CR>
-" }}}1 saving | make non-exitent dirs (including parents) on save {{{1
+" saving | make non-exitent dirs (including parents) on save {{{1
 function! s:makeNonExDir()
     if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
         call mkdir(expand('<afile>:h'), 'p')
     endif
 endfunction
-" }}}1 markdown | equalprg and filetype assignment {{{1
+" markdown | equalprg and filetype assignment {{{1
 let markdown_reference_links=1
 let markdown_hard_wrap=0
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
@@ -242,15 +242,29 @@ function! s:maybe_filetype_markdown()
     endif
 endfunction
 
-function! MarkdownFoldtext()
-    let l1 = getline(v:foldstart)
-    if l:l1[0] != '#'
-        return repeat('#', v:foldlevel) . ' ' . l:l1 . '...'
+let g:markdown_fold_method='nested' " or 'stacked'
+function! FoldLevelMarkdown()
+    let line = getline(v:lnum)
+    let matches = matchlist(getline(v:lnum), '^\(#\+\)\s')
+    if len(matches) == 0
+        return "="
+    elseif g:markdown_fold_method == 'stacked'
+        return ">1"
     else
-        return l:l1 . '     «' .  (v:foldend - v:foldstart) . '»    '
-    endif
+        return ">" . len(matches[1])
+    end
 endfunction
-" }}}1 autocommands {{{1
+" fold text {{{1
+function! NeatFoldText()
+  let lines_count_text = '| ' . printf("%-5s", v:foldend - v:foldstart)
+  let foldchar = "."
+  let curline = getline(v:foldstart)
+  let linepadding = repeat("⋯", winwidth(0)-(len(curline)+len(lines_count_text)+5+2)) 
+  return curline . " " . linepadding . lines_count_text
+endfunction
+set foldtext=NeatFoldText()
+" autocommands {{{1
+    " au Filetype vim setlocal foldmethod=marker
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
@@ -258,13 +272,12 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    " au Filetype vim setlocal foldmethod=marker
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal foldenable foldlevelstart=0 foldmethod=expr
+    au Filetype markdown setlocal foldexpr=FoldLevelMarkdown()
     au Filetype markdown setlocal conceallevel=1
-    au Filetype markdown setlocal foldtext=MarkdownFoldtext()
     au Filetype markdown setlocal nospell
     au Filetype markdown let &l:equalprg=md_equalprg
     au BufRead,BufNewFile *.latex set filetype=tex
