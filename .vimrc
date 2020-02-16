@@ -244,14 +244,26 @@ endfunction
 
 let g:markdown_fold_method='nested' " or 'stacked'
 function! FoldLevelMarkdown()
-    let line = getline(v:lnum)
-    let matches = matchlist(getline(v:lnum), '^\(#\+\)\s')
-    if len(matches) == 0
-        return "="
-    elseif g:markdown_fold_method == 'stacked'
+    let matches_atx = matchlist(getline(v:lnum), '^\(#\+\)\s')
+    let line_len = len(getline(v:lnum))
+    let matches_setex_one = len(matchlist(getline(v:lnum+1), '^=\+$')) > 0
+    let matches_setex_two = len(matchlist(getline(v:lnum+1), '^-\+$')) > 0
+    if len(l:matches_atx) > 0
+        if g:markdown_fold_method == 'stacked'
+            return ">1"
+        else
+            return ">" . len(l:matches_atx[1])
+        end
+    elseif l:matches_setex_one
         return ">1"
+    elseif l:matches_setex_two
+        if g:markdown_fold_method == 'stacked'
+            return ">1"
+        else
+            return ">2"
+        endif
     else
-        return ">" . len(matches[1])
+        return "="
     end
 endfunction
 " fold text {{{1
@@ -259,6 +271,11 @@ function! NeatFoldText()
   let lines_count_text = '| ' . printf("%-5s", v:foldend - v:foldstart)
   let foldchar = "."
   let curline = getline(v:foldstart)
+  if &filetype == 'markdown'
+      if l:curline[0] != '#'
+        let curline = repeat("#", v:foldlevel) . " " . l:curline
+      end
+  end
   let linepadding = repeat("⋯", winwidth(0)-(len(curline)+len(lines_count_text)+5+2)) 
   return curline . " " . linepadding . lines_count_text
 endfunction
