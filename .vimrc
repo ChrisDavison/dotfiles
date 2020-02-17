@@ -25,7 +25,7 @@ set nobackup nowritebackup
 
 set directory=~/.temp,.
 set wildmode=list:longest:list,full
-set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~,*tags*
 set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
@@ -125,11 +125,12 @@ nnoremap <leader>c :cclose<bar>lclose<CR>
 nnoremap <leader>ev :edit ~/.vimrc<CR>
 nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>el :Files! ~/Dropbox/logbook/2020/<CR>
 nnoremap <leader>b :Buffers!<CR>
 nnoremap <leader>l :BLines!<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
+nnoremap <F2> :e ~/Dropbox/notes/journal.txt<CR>:normal Go<CR>
+nnoremap <F3> :e ~/Dropbox/notes/logbook.txt<CR>:normal Go<CR>
 
 nnoremap <leader>p :call <sid>maybe_gfiles()<CR>
 function! s:maybe_gfiles()
@@ -199,14 +200,14 @@ nnoremap <leader>f :FMT<CR>
 
 " :RG | grep / ripgrep {{{1
 if executable('rg')
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
     command! -bang -nargs=* RG
                 \ call fzf#vim#grep(
                 \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-" :Headers | imenu-like list functions,headers etc, for defined filetypes {{{1
+" :Headers | Show 'function-like' things in current file {{{1
 let s:headermap={
             \'rust': 'fn',
             \'python': 'def',
@@ -248,15 +249,16 @@ function! FoldLevelMarkdown()
     let line_len = len(getline(v:lnum))
     let matches_setex_one = len(matchlist(getline(v:lnum+1), '^=\+$')) > 0
     let matches_setex_two = len(matchlist(getline(v:lnum+1), '^-\+$')) > 0
-    if len(l:matches_atx) > 0
+    let prev_not_blank = len(getline(v:lnum)) > 0
+    if len(l:matches_atx) > 0 
         if g:markdown_fold_method == 'stacked'
             return ">1"
         else
             return ">" . len(l:matches_atx[1])
         end
-    elseif l:matches_setex_one
+    elseif l:matches_setex_one && prev_not_blank
         return ">1"
-    elseif l:matches_setex_two
+    elseif l:matches_setex_two && prev_not_blank
         if g:markdown_fold_method == 'stacked'
             return ">1"
         else
@@ -266,22 +268,74 @@ function! FoldLevelMarkdown()
         return "="
     end
 endfunction
+
+function! s:markdown_backlinks()
+    call fzf#vim#grep(
+                \ "rg --column --line-number --no-heading --color=always --smart-case ".expand('%'), 1,
+                \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
+endfunction
+command! Backlinks call s:markdown_backlinks()
+command! SeeAlso RG see also
+
+function! s:markdown_goto_file()
+    try
+        normal! gf
+    catch
+        normal! f(lgf
+    endtry
+endfunction
+command! GotoFile call s:markdown_goto_file()
+
+function! s:copy_filename_as_mdlink()
+    let @a="[" . expand('%') . "](./" . expand('%') . ")"
+endfunction
 " fold text {{{1
+function! s:actual_win_width()
+	return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
+endfunction
+
+function! s:SignsWidth()
+	let l:signs_width = 0
+	if has('signs')
+		" This seems to be the only way to find out if the signs column is even
+		" showing.
+		let l:signs = []
+		let l:signs_string = ''
+		redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
+		let l:signs = split(l:signs_string, "\n")[1:]
+		
+		if !empty(signs)
+			let l:signs_width = 2
+		endif
+	endif
+	
+	return l:signs_width
+endfunction
+
+function! s:NumberColumnWidth()
+	let l:number_col_width = 0
+	if &number
+		let l:number_col_width = max([strlen(line('$')) + 1, 3])
+	elseif &relativenumber
+		let l:number_col_width = 3
+	endif
+	
+	if l:number_col_width != 0
+		let l:number_col_width = max([l:number_col_width, &numberwidth])
+	endif
+	
+	return l:number_col_width
+endfunction
+
 function! NeatFoldText()
-  let lines_count_text = '| ' . printf("%-5s", v:foldend - v:foldstart)
-  let foldchar = "."
+  let lines_count_text = printf("%s ι ", v:foldend - v:foldstart)
   let curline = getline(v:foldstart)
-  if &filetype == 'markdown'
-      if l:curline[0] != '#'
-        let curline = repeat("#", v:foldlevel) . " " . l:curline
-      end
-  end
-  let linepadding = repeat("⋯", winwidth(0)-(len(curline)+len(lines_count_text)+5+2)) 
-  return curline . " " . linepadding . lines_count_text
+  let len_text = len(curline) + len(l:lines_count_text)
+  let padding = repeat(" ", s:actual_win_width() - len_text - 2)
+  return curline . " " . padding . lines_count_text
 endfunction
 set foldtext=NeatFoldText()
 " autocommands {{{1
-    " au Filetype vim setlocal foldmethod=marker
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
@@ -291,16 +345,18 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
+    au BufLeave *.txt,*.md call s:copy_filename_as_mdlink()
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal foldenable foldlevelstart=0 foldmethod=expr
     au Filetype markdown setlocal foldexpr=FoldLevelMarkdown()
     au Filetype markdown setlocal conceallevel=1
     au Filetype markdown setlocal nospell
     au Filetype markdown let &l:equalprg=md_equalprg
+    au Filetype markdown nnoremap gf :GotoFile<CR>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
+    au BufNewFile *.txt,*.md execute 'normal "ap'
 augroup END
-" }}}1
 
