@@ -126,11 +126,11 @@ nnoremap <leader>ev :edit ~/.vimrc<CR>
 nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>b :Buffers!<CR>
-nnoremap <leader>l :BLines!<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <F2> :e ~/Dropbox/notes/journal.txt<CR>:normal Go<CR>
 nnoremap <F3> :e ~/Dropbox/notes/logbook.txt<CR>:normal Go<CR>
+nnoremap <leader>l i<C-R>="[" . expand("#") . "](./" . expand("#") . ")"<CR><ESC>
 
 nnoremap <leader>p :call <sid>maybe_gfiles()<CR>
 function! s:maybe_gfiles()
@@ -357,6 +357,16 @@ augroup vimrc
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
-    au BufNewFile *.txt,*.md execute 'normal "ap'
 augroup END
-
+" NEW {{{1
+let g:templates_directory=["~/.vim/templates/"]
+let g:templates_user_variables=[
+            \ ['CLIPBOARD', 'GetClipboard'],
+            \ ['FROMFILE', 'GetAlternate'],
+            \ ]
+function! GetClipboard()
+    return getreg("+")
+endfunction
+function! GetAlternate()
+    return getreg("#")
+endfunction
