@@ -206,6 +206,11 @@ if executable('rg')
                 \ 'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
+    command! -bang -nargs=* GREP
+                \ call fzf#vim#grep(
+                \ 'rg -F --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+                \ fzf#vim#with_preview('right:50%:hidden', '?'),
+                \ <bang>0)
 endif
 " :Headers | Show 'function-like' things in current file {{{1
 let s:headermap={
@@ -228,7 +233,7 @@ function! s:makeNonExDir()
     endif
 endfunction
 " markdown | equalprg and filetype assignment {{{1
-let markdown_reference_links=1
+let markdown_reference_links=0
 let markdown_hard_wrap=0
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
 let md_equalprg.=markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
@@ -335,6 +340,19 @@ function! NeatFoldText()
   return curline . " " . padding . lines_count_text
 endfunction
 set foldtext=NeatFoldText()
+" vim templates {{{1
+let g:templates_no_builtin_templates=1
+let g:templates_directory=["~/.vim/templates/"]
+let g:templates_user_variables=[
+            \ ['CLIPBOARD', 'GetClipboard'],
+            \ ['FROMFILE', 'GetAlternate'],
+            \ ]
+function! GetClipboard()
+    return getreg("+")
+endfunction
+function! GetAlternate()
+    return getreg("#")
+endfunction
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -359,14 +377,3 @@ augroup vimrc
     au FileType python setlocal foldmethod=indent
 augroup END
 " NEW {{{1
-let g:templates_directory=["~/.vim/templates/"]
-let g:templates_user_variables=[
-            \ ['CLIPBOARD', 'GetClipboard'],
-            \ ['FROMFILE', 'GetAlternate'],
-            \ ]
-function! GetClipboard()
-    return getreg("+")
-endfunction
-function! GetAlternate()
-    return getreg("#")
-endfunction
