@@ -295,28 +295,43 @@ function! s:copy_filename_as_mdlink()
     let @a="[" . expand('%') . "](./" . expand('%') . ")"
 endfunction
 
+function! s:get_visual(only_on_line)
+    let l:start_line = line("'<")
+    let l:start_col = col("'<")
+    let l:end_line = line("'>")
+    let l:end_col = col("'>")
+    if a:only_on_line && (l:start_line != l:end_line)
+        echom "FileFromSelected: Start and end must be same line number"
+        return
+    end
+    return getline(".")[l:start_col-1:l:end_col-1]
+endfunction
+
+function! s:text_around_visual()
+    let start_line = line("'<")
+    let start_col = col("'<")
+    let end_line = line("'>")
+    let end_col = col("'>")
+    let before=getline(start_line)[:start_col-2]
+    if start_col == 1
+        let before = ""
+    end
+    let after=getline(start_line)[end_col:]
+    return [before, after]
+endfunction
+
+function! s:make_markdown_link(text, url)
+    return "[" . a:text . "](" . a:url . ")"
+endfunction
+
 function! FileFromSelected(is_visual)
-    let text=expand('<cword>')
+    let text= a:is_visual ? s:get_visual(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
+    let replacetext=s:make_markdown_link(l:text, "./" . substitute(l:text, " ", "-", "g") . ".txt")
     if a:is_visual
-        let start_line = line("'<")
-        let start_col = col("'<")
-        let end_line = line("'>")
-        let end_col = col("'>")
-        if start_line != end_line
-            echom "FileFromSelected: Start and end must be same line number"
-            return
-        end
-        let l:text=getline(".")[start_col-1:end_col-1]
-        if start_col != 0
-            let l:padding = " "
-        endif
-    else
-    end
-    let replacetext="[" . l:text . "](./" . l:text . ".txt)"
-    if a:is_visual
-        let line=getline(l:start_line)[:start_col-2] . replacetext . getline(l:start_line)[end_col:]
+        let around_visual = s:text_around_visual()
+        let l:line=around_visual[0] . replacetext . around_visual[1]
         call setline(l:start_line, l:line)
     else
         execute "normal ciw" . l:replacetext
