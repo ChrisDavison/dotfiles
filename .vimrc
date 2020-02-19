@@ -12,7 +12,7 @@ set cpo+=n
 set autochdir
 set breakindent
 set breakindentopt=shift:4,sbr
-set number
+set number relativenumber
 set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
 set ignorecase smartcase " ignore case unless i specifically mix letter case
@@ -69,7 +69,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme xcodedark
 
 " settings for plugins {{{1
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
@@ -327,11 +327,18 @@ function! s:make_markdown_link(text, url)
     return "[" . a:text . "](" . a:url . ")"
 endfunction
 
+function! s:sanitise_filename(filename)
+    let nospace = substitute(a:filename, " ", "-", "g")
+    let lower = tolower(nospace)
+    let nosyms = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
+    return nosyms
+endfunction
+
 function! FileFromSelected(is_visual)
     let text= a:is_visual ? s:get_visual(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
-    let linktext="./" . tolower(substitute(l:text, " ", "-", "g")) . ".txt"
+    let linktext="./" . s:sanitise_filename(l:text) . ".txt"
     let replacetext=s:make_markdown_link(l:text, linktext)
     if a:is_visual
         let around_visual = s:text_around_visual()
