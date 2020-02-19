@@ -69,7 +69,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme base16-material
+silent! colorscheme seoul256
 
 " settings for plugins {{{1
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
