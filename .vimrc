@@ -294,50 +294,81 @@ command! GotoFile call s:markdown_goto_file()
 function! s:copy_filename_as_mdlink()
     let @a="[" . expand('%') . "](./" . expand('%') . ")"
 endfunction
+
+function! FileFromSelected(is_visual)
+    let text=expand('<cword>')
+    let l:start_line = line(".")
+    let l:start_col = col(".")
+    if a:is_visual
+        let start_line = line("'<")
+        let start_col = col("'<")
+        let end_line = line("'>")
+        let end_col = col("'>")
+        if start_line != end_line
+            echom "FileFromSelected: Start and end must be same line number"
+            return
+        end
+        let l:text=getline(".")[start_col-1:end_col-1]
+        if start_col != 0
+            let l:padding = " "
+        endif
+    else
+    end
+    let replacetext="[" . l:text . "](./" . l:text . ".txt)"
+    if a:is_visual
+        let line=getline(l:start_line)[:start_col-2] . replacetext . getline(l:start_line)[end_col:]
+        call setline(l:start_line, l:line)
+    else
+        execute "normal ciw" . l:replacetext
+    end
+    call cursor(l:start_line, l:start_col+1)
+endfunction
+nnoremap ml :call FileFromSelected(0)<CR>
+vnoremap ml :call FileFromSelected(1)<CR>
 " fold text {{{1
 function! s:actual_win_width()
-	return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
+    return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
 endfunction
 
 function! s:SignsWidth()
-	let l:signs_width = 0
-	if has('signs')
-		" This seems to be the only way to find out if the signs column is even
-		" showing.
-		let l:signs = []
-		let l:signs_string = ''
-		redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
-		let l:signs = split(l:signs_string, "\n")[1:]
-		
-		if !empty(signs)
-			let l:signs_width = 2
-		endif
-	endif
-	
-	return l:signs_width
+    let l:signs_width = 0
+    if has('signs')
+        " This seems to be the only way to find out if the signs column is even
+        " showing.
+        let l:signs = []
+        let l:signs_string = ''
+        redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
+        let l:signs = split(l:signs_string, "\n")[1:]
+
+        if !empty(signs)
+            let l:signs_width = 2
+        endif
+    endif
+
+    return l:signs_width
 endfunction
 
 function! s:NumberColumnWidth()
-	let l:number_col_width = 0
-	if &number
-		let l:number_col_width = max([strlen(line('$')) + 1, 3])
-	elseif &relativenumber
-		let l:number_col_width = 3
-	endif
-	
-	if l:number_col_width != 0
-		let l:number_col_width = max([l:number_col_width, &numberwidth])
-	endif
-	
-	return l:number_col_width
+    let l:number_col_width = 0
+    if &number
+        let l:number_col_width = max([strlen(line('$')) + 1, 3])
+    elseif &relativenumber
+        let l:number_col_width = 3
+    endif
+
+    if l:number_col_width != 0
+        let l:number_col_width = max([l:number_col_width, &numberwidth])
+    endif
+
+    return l:number_col_width
 endfunction
 
 function! NeatFoldText()
-  let lines_count_text = printf("%s ι ", v:foldend - v:foldstart)
-  let curline = getline(v:foldstart)
-  let len_text = len(curline) + len(l:lines_count_text)
-  let padding = repeat(" ", s:actual_win_width() - len_text - 2)
-  return curline . " " . padding . lines_count_text
+    let lines_count_text = printf("%s ι ", v:foldend - v:foldstart)
+    let curline = getline(v:foldstart)
+    let len_text = len(curline) + len(l:lines_count_text)
+    let padding = repeat(" ", s:actual_win_width() - len_text - 2)
+    return curline . " " . padding . lines_count_text
 endfunction
 set foldtext=NeatFoldText()
 " vim templates {{{1
@@ -376,4 +407,3 @@ augroup vimrc
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
 augroup END
-" NEW {{{1
