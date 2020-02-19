@@ -284,9 +284,12 @@ command! SeeAlso RG see also
 
 function! s:markdown_goto_file()
     try
-        normal! gf
+        normal! vi(gf"by
+        execute "edit " . getreg("b")
     catch
-        normal! f(lgf
+        echo v:exception
+    catch /^Vim.*E447/
+        echo "COULDN'T GOTO FILE " . v:exception
     endtry
 endfunction
 command! GotoFile call s:markdown_goto_file()
@@ -328,7 +331,8 @@ function! FileFromSelected(is_visual)
     let text= a:is_visual ? s:get_visual(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
-    let replacetext=s:make_markdown_link(l:text, "./" . tolower(substitute(l:text, " ", "-", "g")) . ".txt")
+    let linktext="./" . tolower(substitute(l:text, " ", "-", "g")) . ".txt"
+    let replacetext=s:make_markdown_link(l:text, linktext)
     if a:is_visual
         let around_visual = s:text_around_visual()
         let l:line=around_visual[0] . replacetext . around_visual[1]
@@ -337,9 +341,16 @@ function! FileFromSelected(is_visual)
         execute "normal ciw" . l:replacetext
     end
     call cursor(l:start_line, l:start_col+1)
+    return linktext
+endfunction
+function! EditFileFromSelected(is_visual)
+    exec "w|edit " . FileFromSelected(a:is_visual)
 endfunction
 nnoremap ml :call FileFromSelected(0)<CR>
 vnoremap ml :call FileFromSelected(1)<CR>
+
+nnoremap gml :call EditFileFromSelected(0)<CR>
+vnoremap gml :call EditFileFromSelected(1)<CR>
 " fold text {{{1
 function! s:actual_win_width()
     return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
