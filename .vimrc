@@ -328,7 +328,7 @@ function! FileFromSelected(is_visual)
     let text= a:is_visual ? s:get_visual(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
-    let replacetext=s:make_markdown_link(l:text, "./" . substitute(l:text, " ", "-", "g") . ".txt")
+    let replacetext=s:make_markdown_link(l:text, "./" . tolower(substitute(l:text, " ", "-", "g")) . ".txt")
     if a:is_visual
         let around_visual = s:text_around_visual()
         let l:line=around_visual[0] . replacetext . around_visual[1]
