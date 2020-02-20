@@ -9,7 +9,6 @@ set nocompatible
 set wrap lbr
 let &showbreak = '▓▒░'
 set cpo+=n
-set autochdir
 set breakindent
 set breakindentopt=shift:4,sbr
 set number relativenumber
@@ -69,7 +68,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme xcodedark
+silent! colorscheme molokayo
 
 " settings for plugins {{{1
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
@@ -98,6 +97,7 @@ nnoremap k      gk
 vnoremap k      gk
 nnoremap Y      y$
 nnoremap <silent> <CR> :nohlsearch<CR>
+nnoremap <BS>   <C-^>
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
