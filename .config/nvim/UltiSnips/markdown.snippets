@@ -3,11 +3,11 @@ snippet WEEKLYREV "Weekly Review, for journal" bm
 
 @weekly @review @log @productivity
 
-Big Wins
+Big Wins - What I have been workin on
 
 -   $1
 
-Big Losses
+Big Losses - What I've failed to work on
 
 -   $2
 
@@ -18,6 +18,8 @@ Next Week's Priorities
 endsnippet
 snippet MENTALINV "description" bm
 ## Monthly Mental Inventory
+
+...reflect on long-term goals, to ensure I'm not sacrificing career/self progress for box-ticking.
 
 Working on
 
@@ -36,11 +38,4 @@ snippet WAISTHEIGHT "Waist to height ratio" bm
 endsnippet
 snippet WAISTHIP "Waist to hip ratio" bm
 | `date +%F` | ${1:WAIST}  | ${2:HIP}     | CALC RATIO |
-endsnippet
-snippet READ "Journal entry for something I read" bm
-## READ: $1
-
-`!v getreg("*")`
-
-$3
 endsnippet
