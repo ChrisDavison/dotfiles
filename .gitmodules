@@ -82,15 +82,9 @@
 [submodule ".vim/bundle/vim-cdroot"]
 	path = .vim/bundle/vim-cdroot
 	url = git@github.com:ChrisDavison/vim-cdroot
-[submodule ".vim/bundle/molokayo"]
-	path = .vim/bundle/molokayo
-	url = git@github.com:fmoralesc/molokayo
 [submodule ".vim/bundle/vim-colors-xcode"]
 	path = .vim/bundle/vim-colors-xcode
 	url = git@github.com:arzg/vim-colors-xcode
-[submodule ".vim/bundle/vim-lucius"]
-	path = .vim/bundle/vim-lucius
-	url = git@github.com:jonathanfilip/vim-lucius
 [submodule ".vim/bundle/foldtext_vim"]
 	path = .vim/bundle/foldtext_vim
 	url = git@github.com:tomtom/foldtext_vim
