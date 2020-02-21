@@ -46,16 +46,18 @@ font: # CHANGES REQUIRE RESTART
     use_thin_strokes: false # macOS ONLY. false is better for non-retina displays
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
+    fontface: &fontface
+        Iosevka Term
     normal:
-        family: Hack
+        family: *fontface
         style: Regular
     italic:
-        family: Hack
+        family: *fontface
         style: Italic
     bold:
-        family: Hack
+        family: *fontface
         style: Bold
-    size: 12.0
+    size: 14.0
 
     offset:
         x: 0 # letterspacing
