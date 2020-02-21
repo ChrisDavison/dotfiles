@@ -5,7 +5,7 @@ set -Ux EDITOR "nvim"
 set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/.bin"
-set -Ux FZF_DEFAULT_COMMAND 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
 set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
@@ -15,15 +15,10 @@ set -Ux FINANCES "$HOME/Dropbox/budget"
 
 set PATH $GOBIN $PATH
 set PATH $HOME/.bin $PATH
-set PATH $CODEDIR/ChrisDavison/scripts/ $PATH
+set PATH $HOME/src/github.com/ChrisDavison/scripts/ $PATH
 set PATH $HOME/.cargo/bin $PATH
 set PATH /usr/local/go/bin $PATH
 set PATH /snap/bin $PATH
-
-set CDPATH "." "~"
-set CDPATH $HOME/src/github.com/ChrisDavison $CDPATH
-set CDPATH $HOME/src/github.com/cidcom $CDPATH
-set CDPATH $HOME/Dropbox $CDPATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
