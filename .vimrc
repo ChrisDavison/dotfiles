@@ -11,7 +11,7 @@ let &showbreak = '▓▒░'
 set cpo+=n
 set breakindent
 set breakindentopt=shift:4,sbr
-set number relativenumber
+set number
 set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
 set updatetime=300 " Write a swap file after 1 second
 set ignorecase smartcase " ignore case unless i specifically mix letter case
@@ -68,7 +68,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme molokayo
+silent! colorscheme xcodedark
 
 " settings for plugins {{{1
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
