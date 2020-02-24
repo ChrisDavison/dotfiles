@@ -214,6 +214,6 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    " au BufEnter * Root
+    au BufEnter * Root
     au Filetype make setlocal noexpandtab
 augroup END
