@@ -5,11 +5,11 @@ let md_equalprg.="\ --atx-headers"
 
 let &equalprg=md_equalprg
 
-setlocal foldenable
-setlocal foldlevelstart=0
-setlocal foldmethod=expr
-setlocal foldexpr=FoldLevelMarkdown()
-setlocal conceallevel=1
-setlocal nospell
+set foldenable
+set foldlevelstart=0
+set foldmethod=expr
+set foldexpr=FoldLevelMarkdown()
+set conceallevel=1
+set nospell
 nnoremap gf :GotoFile<CR>
 

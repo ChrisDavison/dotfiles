@@ -4,33 +4,24 @@ let mapleader=" "
 " Load plugins (and docs on my .vim/plugin) {{{1
 execute pathogen#infect("~/.vim/bundle/{}")
 
-" :Headers, show 'header-like' things in current buffer
-" ./vim/plugin/headerjump.vim
+" Some plugins and autocommands have been split out
+" .vim/plugin/...
+"     headerjump.vim
+"     markdown_foldlevel.vim
+"     markdown_backlinks.vim
+"     markdown_gotofile.vim
+"     make_nonexistent_dir.vim
+"     file_from_selected_text.vim
+"     get_visual.vim
+"     sanitise_filename.vim
+"     window_width.vim
 
-" FoldLevelMarkdown expr for folding markdown headers
-" ./vim/plugin/markdown_foldlevel.vim
+" .vim/after/ftplugin/...
+"     markdown.vim
+"     tex.vim
 
-" :Backlinks - show files which include the current file's path
-" ./vim/plugin/markdown_backlinks.vim
-
-" Wrapper around 'gf' to handle markdown-formatted links
-" ./vim/plugin/markdown_gotofile.vim
-
-" Make all parent directories, if they don't exist, when a file is saved
-" ./vim/plugin/make_nonexistent_dir.vim
-
-" create a file in local dir, with .txt as extension, for the currently 
-" selected text. Ran through SanitiseFilename
-" ./vim/plugin/file_from_selected_text.vim
-
-" Get the visually selected text
-" ./vim/plugin/get_visual.vim
-
-" Remove symbols from a filename, and make 'kebab-case'
-" ./vim/plugin/sanitise_filename.vim
-
-" Get the number of printable symbols on a line before wrap
-"./vim/plugin/window_width.vim
+" .vim/ftdetect/...
+"     latex.vim
 " settings {{{1
 set nocompatible
 set wrap lbr
@@ -289,9 +280,6 @@ augroup vimrc
     au BufEnter * Root
     au BufLeave *.txt,*.md call CopyFilenameAsMarkdownLink()
     au Filetype make setlocal noexpandtab
-    au BufRead,BufNewFile *.latex set filetype=tex
-    au Filetype tex setlocal tw=80 colorcolumn=80
-    au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
 augroup END
 
