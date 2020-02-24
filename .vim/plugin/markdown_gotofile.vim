@@ -3,14 +3,13 @@ function s:markdown_goto_file()
     if filereadable(l:fname)
         execute "edit " . l:fname
     else
-        try
-            normal! vi("by
+        if getline(".")[col(".")-1:col(".")] == 'y'
+            normal vi("by
+        else
+            normal f]
+            normal vi("by
             execute "edit " . getreg("b")
-        catch
-            echo v:exception
-        catch /^Vim.*E447/
-            echo "COULDN'T GOTO FILE " . v:exception
-        endtry
+        end
     end
 endfunction
 command! GotoFile call s:markdown_goto_file()
