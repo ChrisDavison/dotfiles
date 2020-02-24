@@ -1,27 +1,17 @@
 " vim: fdm=marker
 let mapleader=" "
 
-" Load plugins (and docs on my .vim/plugin) {{{1
+" .vim/plugin...
+"     markdown_foldlevel, markdown_backlinks, markdown_gotofile
+"     headerjump, make_nonexistent_dir, file_from_selected, get_visual,
+"     sanitise_filename, window_width
+" .vim/after/ftplugin...
+"     markdown,  tex
+" .vim/ftdetect...
+"     markdown, latex
+
+" Load plugins from submodules (using tpope/pathogen.vim)
 execute pathogen#infect("~/.vim/bundle/{}")
-
-" Some plugins and autocommands have been split out
-" .vim/plugin/...
-"     headerjump.vim
-"     markdown_foldlevel.vim
-"     markdown_backlinks.vim
-"     markdown_gotofile.vim
-"     make_nonexistent_dir.vim
-"     file_from_selected_text.vim
-"     get_visual.vim
-"     sanitise_filename.vim
-"     window_width.vim
-
-" .vim/after/ftplugin/...
-"     markdown.vim
-"     tex.vim
-
-" .vim/ftdetect/...
-"     latex.vim
 " settings {{{1
 set nocompatible
 set wrap lbr
@@ -147,25 +137,15 @@ nnoremap <F3> :e ~/Dropbox/notes/logbook.txt<CR>:normal Go<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 
 " Copy file basename
-nnoremap <leader>cf :let @+=expand("%")<CR>
+nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
 " Copy file full path
-nnoremap <leader>cF :let @+=expand("%:p")<CR>
+nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
 " Copy file full parent dir
-nnoremap <leader>cd :let @+=expand("%:p:h")<CR>
+nnoremap <leader>cd :let @+=resolve(expand("%:p:h"))<CR>
 
 " Easymotion configuration
 nmap s <Plug>(easymotion-s)
 let g:EasyMotion_smartcase=1
-
-" Readline-style keybinds in the command line
-cnoremap <C-A> <Home>
-cnoremap <C-B> <Left>
-cnoremap <expr> <C-D> getcmdpos()>strlen(getcmdline())?"\<Lt>C-D>":"\<Lt>Del>"
-cnoremap <expr> <C-F> getcmdpos()>strlen(getcmdline())?&cedit:"\<Lt>Right>"
-cnoremap        <M-b> <S-Left>
-cnoremap        <M-f> <S-Right>
-silent! exe "set <S-Left>=\<Esc>b"
-silent! exe "set <S-Right>=\<Esc>f"
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>

@@ -8,14 +8,14 @@ let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --refe
 let md_equalprg.=g:markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
 let md_equalprg.="\ --atx-headers"
 
-let &equalprg=md_equalprg
+let &l:equalprg=md_equalprg
 
-set foldenable
-set foldlevelstart=0
-set foldmethod=expr
-set foldexpr=FoldLevelMarkdown()
-set conceallevel=1
-set nospell
+setlocal foldenable
+setlocal foldlevelstart=0
+setlocal foldmethod=expr
+setlocal foldexpr=FoldLevelMarkdown()
+setlocal conceallevel=1
+setlocal nospell
 nnoremap gf :GotoFile<CR>
 let g:pandoc#syntax#conceal#urls=1
 
