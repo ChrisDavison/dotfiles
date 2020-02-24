@@ -1,7 +1,6 @@
 set -Ux fish_greeting ""
 
 set -Ux EDITOR "nvim"
-# set -Ux TERM xterm-256color
 set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/.bin"
@@ -13,12 +12,12 @@ set -Ux CODEDIR "$HOME/src/github.com/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux FINANCES "$HOME/Dropbox/budget"
 
-set PATH $GOBIN $PATH
-set PATH $HOME/.bin $PATH
-set PATH $HOME/src/github.com/ChrisDavison/scripts/ $PATH
-set PATH $HOME/.cargo/bin $PATH
-set PATH /usr/local/go/bin $PATH
-set PATH /snap/bin $PATH
+test -d $GOBIN; and set PATH $GOBIN $PATH
+test -d $HOME/.bin; and set PATH $HOME/.bin $PATH
+test -d $HOME/src/github.com/ChrisDavison/scripts/; and set PATH $HOME/src/github.com/ChrisDavison/scripts/ $PATH
+test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
+test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
+test -d /snap/bin; and set PATH /snap/bin $PATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
