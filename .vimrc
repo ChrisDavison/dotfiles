@@ -144,7 +144,7 @@ nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
 nnoremap <leader>cd :let @+=resolve(expand("%:p:h"))<CR>
 
 " Easymotion configuration
-nmap s <Plug>(easymotion-s)
+nmap s <Plug>(easymotion-sn)
 let g:EasyMotion_smartcase=1
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
