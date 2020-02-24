@@ -89,19 +89,14 @@ set bg=dark
 silent! colorscheme xcodedark
 
 " settings for plugins {{{1
-let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
-let g:go_fmt_command="goimports"
-let g:go_fmt_autosave=1
-let g:go_version_warning=0
-let g:pymode_python = 'python3'
-let g:rustfmt_autosave=1
 let g:is_bash=1
-let g:tex_flavor = "latex"
-let g:vimtex_compiler_progname = 'nvr'
-let g:echodoc#enable_at_startup=1
-let g:echodoc#type="echo"
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
+let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
 
+" Used by .vim/plugin/markdown_foldlevel.vim
+" 'nested' hides L_n+1 below L_n
+" 'stacked' folds all headers, but treats them as same level
+let g:markdown_fold_method='nested' " or 'stacked'
 " keybinds {{{1
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
@@ -141,9 +136,9 @@ nnoremap <leader>s  z=1<CR><CR>
 nnoremap <leader>c :cclose<bar>lclose<CR>
 
 nnoremap <leader>ev :edit ~/.vimrc<CR>
-nnoremap <leader>en :Files! ~/Dropbox/notes/<CR>
-nnoremap <leader>es :Files! ~/src/github.com/ChrisDavison/scripts<CR>
-nnoremap <leader>b :Buffers!<CR>
+nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
+nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
+nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <F2> :e ~/Dropbox/notes/journal.txt<CR>:normal Go<CR>
@@ -185,7 +180,6 @@ cnoreabbrev Set set
 cnoreabbrev oedit only<bar>edit
 cnoreabbrev oe only<bar>edit
 cnoreabbrev BD bp<bar>bd #
-cnoreabbrev CD cd expand("%:h")
 cnoreabbrev BufOnly %bd\|e#
 
 iabbrev meanstd μ±σ
@@ -198,7 +192,8 @@ iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 
-" Custom commands
+" custom commands {{{1
+command! CD exec "cd " . expand("%:p:h")
 command! SeeAlso RG see also
 
 " :Scratch | Open a 'scratch' buffer
@@ -222,29 +217,6 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-
-" markdown | equalprg and filetype assignment {{{1
-" equalprg is set inside .vim/ftplugin/markdown.vim
-let g:markdown_reference_links=0
-let g:markdown_hard_wrap=0
-
-function! s:maybe_filetype_markdown()
-    if &filetype == "help" || expand('%:p') =~ "doc/"
-        setlocal filetype=help
-    else
-        setlocal filetype=markdown
-    endif
-endfunction
-
-let g:markdown_fold_method='nested' " or 'stacked'
-
-function! s:copy_filename_as_mdlink()
-    let @a="[" . expand('%') . "](./" . expand('%') . ")"
-endfunction
-
-function! s:make_markdown_link(text, url)
-    return "[" . a:text . "](" . a:url . ")"
-endfunction
 
 " fold text {{{1
 function! NeatFoldText()
@@ -276,10 +248,6 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
-    au BufLeave *.txt,*.md call CopyFilenameAsMarkdownLink()
     au Filetype make setlocal noexpandtab
-    au FileType python setlocal foldmethod=indent
 augroup END
-
