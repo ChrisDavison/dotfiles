@@ -1,8 +1,36 @@
 " vim: fdm=marker
 let mapleader=" "
 
-" Load plugins
+" Load plugins (and docs on my .vim/plugin) {{{1
 execute pathogen#infect("~/.vim/bundle/{}")
+
+" :Headers, show 'header-like' things in current buffer
+" ./vim/plugin/headerjump.vim
+
+" FoldLevelMarkdown expr for folding markdown headers
+" ./vim/plugin/markdown_foldlevel.vim
+
+" :Backlinks - show files which include the current file's path
+" ./vim/plugin/markdown_backlinks.vim
+
+" Wrapper around 'gf' to handle markdown-formatted links
+" ./vim/plugin/markdown_gotofile.vim
+
+" Make all parent directories, if they don't exist, when a file is saved
+" ./vim/plugin/make_nonexistent_dir.vim
+
+" create a file in local dir, with .txt as extension, for the currently 
+" selected text. Ran through SanitiseFilename
+" ./vim/plugin/file_from_selected_text.vim
+
+" Get the visually selected text
+" ./vim/plugin/get_visual.vim
+
+" Remove symbols from a filename, and make 'kebab-case'
+" ./vim/plugin/sanitise_filename.vim
+
+" Get the number of printable symbols on a line before wrap
+"./vim/plugin/window_width.vim
 
 " settings {{{1
 set nocompatible
@@ -191,10 +219,13 @@ iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 
-" :Scratch | Open a 'scratch' buffer {{{1
+" Custom commands
+command! SeeAlso RG see also
+
+" :Scratch | Open a 'scratch' buffer
 command! Scratch edit ~/.scratch | normal <C-End>
 
-" :FMT | Execute 'equalprg' on entire buffer, remembering position {{{1
+" :FMT | Execute 'equalprg' on entire buffer, remembering position
 command! FMT exec "normal mzgg=G`zmzzz"
 nnoremap <leader>f :FMT<CR>
 
@@ -212,26 +243,7 @@ if executable('rg')
                 \ fzf#vim#with_preview('right:50%:hidden', '?'),
                 \ <bang>0)
 endif
-" :Headers | Show 'function-like' things in current file {{{1
-let s:headermap={
-            \'rust': 'fn',
-            \'python': 'def',
-            \'go': 'func',
-            \'vim': 'function',
-            \'markdown': '#\+'}
-function! s:goto_header(filter)
-    let filt = len(a:filter) > 0 ? a:filter : ""
-    let pattern="^\\s*" . s:headermap[&filetype] . "\\s*" .  l:filt
-    exec "BLines" . pattern
-endfunction
-command! -nargs=* Headers exec s:goto_header(<q-args>)
-nnoremap <leader>i :Headers<CR>
-" saving | make non-exitent dirs (including parents) on save {{{1
-function! s:makeNonExDir()
-    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
-        call mkdir(expand('<afile>:h'), 'p')
-    endif
-endfunction
+
 " markdown | equalprg and filetype assignment {{{1
 let markdown_reference_links=0
 let markdown_hard_wrap=0
@@ -249,159 +261,22 @@ function! s:maybe_filetype_markdown()
 endfunction
 
 let g:markdown_fold_method='nested' " or 'stacked'
-function! FoldLevelMarkdown()
-    let matches_atx = matchlist(getline(v:lnum), '^\(#\+\)\s')
-    let line_len = len(getline(v:lnum))
-    let matches_setex_one = len(matchlist(getline(v:lnum+1), '^=\+$')) > 0
-    let matches_setex_two = len(matchlist(getline(v:lnum+1), '^-\+$')) > 0
-    let prev_not_blank = len(getline(v:lnum)) > 0
-    if len(l:matches_atx) > 0 
-        if g:markdown_fold_method == 'stacked'
-            return ">1"
-        else
-            return ">" . len(l:matches_atx[1])
-        end
-    elseif l:matches_setex_one && prev_not_blank
-        return ">1"
-    elseif l:matches_setex_two && prev_not_blank
-        if g:markdown_fold_method == 'stacked'
-            return ">1"
-        else
-            return ">2"
-        endif
-    else
-        return "="
-    end
-endfunction
-
-function! s:markdown_backlinks()
-    call fzf#vim#grep(
-                \ "rg --column --line-number --no-heading --color=always --smart-case ".expand('%'), 1,
-                \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
-endfunction
-command! Backlinks call s:markdown_backlinks()
-command! SeeAlso RG see also
-
-function! s:markdown_goto_file()
-    try
-        normal! vi(gf"by
-        execute "edit " . getreg("b")
-    catch
-        echo v:exception
-    catch /^Vim.*E447/
-        echo "COULDN'T GOTO FILE " . v:exception
-    endtry
-endfunction
-command! GotoFile call s:markdown_goto_file()
 
 function! s:copy_filename_as_mdlink()
     let @a="[" . expand('%') . "](./" . expand('%') . ")"
-endfunction
-
-function! s:get_visual(only_on_line)
-    let l:start_line = line("'<")
-    let l:start_col = col("'<")
-    let l:end_line = line("'>")
-    let l:end_col = col("'>")
-    if a:only_on_line && (l:start_line != l:end_line)
-        echom "FileFromSelected: Start and end must be same line number"
-        return
-    end
-    return getline(".")[l:start_col-1:l:end_col-1]
-endfunction
-
-function! s:text_around_visual()
-    let start_line = line("'<")
-    let start_col = col("'<")
-    let end_line = line("'>")
-    let end_col = col("'>")
-    let before=getline(start_line)[:start_col-2]
-    if start_col == 1
-        let before = ""
-    end
-    let after=getline(start_line)[end_col:]
-    return [before, after]
 endfunction
 
 function! s:make_markdown_link(text, url)
     return "[" . a:text . "](" . a:url . ")"
 endfunction
 
-function! s:sanitise_filename(filename)
-    let nospace = substitute(a:filename, " ", "-", "g")
-    let lower = tolower(nospace)
-    let nosyms = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
-    return nosyms
-endfunction
-
-function! FileFromSelected(is_visual)
-    let text= a:is_visual ? s:get_visual(1) : expand('<cword>')
-    let l:start_line = line(".")
-    let l:start_col = col(".")
-    let linktext="./" . s:sanitise_filename(l:text) . ".txt"
-    let replacetext=s:make_markdown_link(l:text, linktext)
-    if a:is_visual
-        let around_visual = s:text_around_visual()
-        let l:line=around_visual[0] . replacetext . around_visual[1]
-        call setline(l:start_line, l:line)
-    else
-        execute "normal ciw" . l:replacetext
-    end
-    call cursor(l:start_line, l:start_col+1)
-    return linktext
-endfunction
-function! EditFileFromSelected(is_visual)
-    exec "w|edit " . FileFromSelected(a:is_visual)
-endfunction
-nnoremap ml :call FileFromSelected(0)<CR>
-vnoremap ml :call FileFromSelected(1)<CR>
-
-nnoremap gml :call EditFileFromSelected(0)<CR>
-vnoremap gml :call EditFileFromSelected(1)<CR>
 " fold text {{{1
-function! s:actual_win_width()
-    return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
-endfunction
-
-function! s:SignsWidth()
-    let l:signs_width = 0
-    if has('signs')
-        " This seems to be the only way to find out if the signs column is even
-        " showing.
-        let l:signs = []
-        let l:signs_string = ''
-        redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
-        let l:signs = split(l:signs_string, "\n")[1:]
-
-        if !empty(signs)
-            let l:signs_width = 2
-        endif
-    endif
-
-    return l:signs_width
-endfunction
-
-function! s:NumberColumnWidth()
-    let l:number_col_width = 0
-    if &number
-        let l:number_col_width = max([strlen(line('$')) + 1, 3])
-    elseif &relativenumber
-        let l:number_col_width = 3
-    endif
-
-    if l:number_col_width != 0
-        let l:number_col_width = max([l:number_col_width, &numberwidth])
-    endif
-
-    return l:number_col_width
-endfunction
-
 function! NeatFoldText()
-    let lines_count_text = printf("%s ι ", v:foldend - v:foldstart)
+    let lines_count_text = printf("‖ %4S ‖", v:foldend - v:foldstart)
     let curline = getline(v:foldstart)
     let len_text = len(curline) + len(l:lines_count_text)
-    let padding = repeat(" ", s:actual_win_width() - len_text - 2)
-    return curline . " " . padding . lines_count_text
+    let padding = repeat(" ", ActualWindowWidth() - len_text)
+    return curline . padding . lines_count_text
 endfunction
 set foldtext=NeatFoldText()
 " vim templates {{{1
@@ -421,13 +296,14 @@ endfunction
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd BufWritePre * call s:makeNonExDir()
+    autocmd BufWritePre * call MakeNonExistentDirs()
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
-    au BufLeave *.txt,*.md call s:copy_filename_as_mdlink()
+    au BufLeave *.txt,*.md call CopyFilenameAsMarkdownLink()
+
     au Filetype make setlocal noexpandtab
     au Filetype markdown setlocal foldenable foldlevelstart=0 foldmethod=expr
     au Filetype markdown setlocal foldexpr=FoldLevelMarkdown()
@@ -440,3 +316,4 @@ augroup vimrc
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
     au FileType python setlocal foldmethod=indent
 augroup END
+
