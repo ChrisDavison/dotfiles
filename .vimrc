@@ -31,7 +31,6 @@ execute pathogen#infect("~/.vim/bundle/{}")
 
 " Get the number of printable symbols on a line before wrap
 "./vim/plugin/window_width.vim
-
 " settings {{{1
 set nocompatible
 set wrap lbr
@@ -158,18 +157,8 @@ nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <F2> :e ~/Dropbox/notes/journal.txt<CR>:normal Go<CR>
 nnoremap <F3> :e ~/Dropbox/notes/logbook.txt<CR>:normal Go<CR>
-nnoremap <leader>l i<C-R>="[" . expand("#") . "](./" . expand("#") . ")"<CR><ESC>
 
-nnoremap <leader>p :call <sid>maybe_gfiles()<CR>
-function! s:maybe_gfiles()
-    " system is only called to test for it's error code
-    call system('git rev-parse --show-toplevel')
-    if !v:shell_error
-        GFiles!
-    else 
-        Files!
-    endif
-endfunction
+nnoremap <leader>p :call MaybeGFiles()<CR>
 
 " Copy file basename
 nnoremap <leader>cf :let @+=expand("%")<CR>
@@ -194,7 +183,6 @@ silent! exe "set <S-Right>=\<Esc>f"
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
-
 
 " abbreviations {{{1
 cnoreabbrev W w
@@ -245,12 +233,9 @@ if executable('rg')
 endif
 
 " markdown | equalprg and filetype assignment {{{1
-let markdown_reference_links=0
-let markdown_hard_wrap=0
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
-let md_equalprg.=markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
-let md_equalprg.=markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
-let md_equalprg.="\ --atx-headers"
+" equalprg is set inside .vim/ftplugin/markdown.vim
+let g:markdown_reference_links=0
+let g:markdown_hard_wrap=0
 
 function! s:maybe_filetype_markdown()
     if &filetype == "help" || expand('%:p') =~ "doc/"
@@ -303,14 +288,7 @@ augroup vimrc
     au BufEnter *.txt,*.md,.scratch call s:maybe_filetype_markdown()
     au BufEnter * Root
     au BufLeave *.txt,*.md call CopyFilenameAsMarkdownLink()
-
     au Filetype make setlocal noexpandtab
-    au Filetype markdown setlocal foldenable foldlevelstart=0 foldmethod=expr
-    au Filetype markdown setlocal foldexpr=FoldLevelMarkdown()
-    au Filetype markdown setlocal conceallevel=1
-    au Filetype markdown setlocal nospell
-    au Filetype markdown let &l:equalprg=md_equalprg
-    au Filetype markdown nnoremap gf :GotoFile<CR>
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex setlocal tw=80 colorcolumn=80
     au Filetype tex setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80

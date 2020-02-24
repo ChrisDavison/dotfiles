@@ -1,6 +1,5 @@
 function CopyFilenameAsMarkdownLink()
     let link=s:make_markdown_link(expand('%'), "./" . expand('%'))
-    echo "Link: " . l:linnk
     let @a=l:link
 endfunction
 
