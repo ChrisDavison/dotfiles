@@ -1,7 +1,7 @@
 " vim: fdm=marker
 let mapleader=" "
 
-" .vim/plugin...
+" .vim/autoload...
 "     markdown_foldlevel, markdown_backlinks, markdown_gotofile
 "     headerjump, make_nonexistent_dir, file_from_selected, get_visual,
 "     sanitise_filename, window_width
@@ -74,8 +74,6 @@ endif
 " appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
-set t_Co=256
-set bg=dark
 silent! colorscheme seoul256
 
 " settings for plugins {{{1
@@ -150,6 +148,7 @@ let g:EasyMotion_smartcase=1
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
 
+
 " abbreviations {{{1
 cnoreabbrev W w
 cnoreabbrev Qa qa
@@ -211,10 +210,10 @@ set foldtext=NeatFoldText()
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd BufWritePre * call MakeNonExistentDirs()
+    autocmd BufWritePre * call file#make_nonexistent_dirs()
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter * Root
+    " au BufEnter * Root
     au Filetype make setlocal noexpandtab
 augroup END

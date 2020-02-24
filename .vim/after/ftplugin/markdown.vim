@@ -13,10 +13,18 @@ let &l:equalprg=md_equalprg
 setlocal foldenable
 setlocal foldlevelstart=0
 setlocal foldmethod=expr
-setlocal foldexpr=FoldLevelMarkdown()
+setlocal foldexpr=markdown#foldlevel()
 setlocal conceallevel=1
 setlocal nospell
-nnoremap gf :GotoFile<CR>
 let g:pandoc#syntax#conceal#urls=1
 
-au BufLeave *.txt,*.md call CopyFilenameAsMarkdownLink()
+au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
+
+command! Backlinks call markdown#backlinks()
+
+" .vim/autoload/file.vim
+nnoremap ml :call markdown#file_from_selection(0)<CR>
+vnoremap ml :call markdown#file_from_selection(1)<CR>
+nnoremap gml :call markdown#file_from_selection_and_edit(0)<CR>
+vnoremap gml :call markdown#file_from_selection_and_edit(1)<CR>
+nnoremap gf :call markdown#goto_file<CR>

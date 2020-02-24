@@ -85,9 +85,6 @@
 [submodule ".vim/bundle/vim-colors-xcode"]
 	path = .vim/bundle/vim-colors-xcode
 	url = git@github.com:arzg/vim-colors-xcode
-[submodule ".vim/bundle/foldtext_vim"]
-	path = .vim/bundle/foldtext_vim
-	url = git@github.com:tomtom/foldtext_vim
 [submodule ".vim/bundle/vim-pandoc-syntax"]
 	path = .vim/bundle/vim-pandoc-syntax
 	url = git@github.com:vim-pandoc/vim-pandoc-syntax
