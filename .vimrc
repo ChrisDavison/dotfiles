@@ -86,7 +86,7 @@ set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=256
 set bg=dark
-silent! colorscheme xcodedark
+silent! colorscheme seoul256
 
 " settings for plugins {{{1
 let g:is_bash=1
@@ -227,19 +227,6 @@ function! NeatFoldText()
     return curline . padding . lines_count_text
 endfunction
 set foldtext=NeatFoldText()
-" vim templates {{{1
-let g:templates_no_builtin_templates=1
-let g:templates_directory=["~/.vim/templates/"]
-let g:templates_user_variables=[
-            \ ['CLIPBOARD', 'GetClipboard'],
-            \ ['FROMFILE', 'GetAlternate'],
-            \ ]
-function! GetClipboard()
-    return getreg("+")
-endfunction
-function! GetAlternate()
-    return getreg("#")
-endfunction
 " autocommands {{{1
 augroup vimrc
     autocmd!
