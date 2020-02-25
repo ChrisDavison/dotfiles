@@ -13,7 +13,7 @@ let &l:equalprg=md_equalprg
 setlocal foldenable
 setlocal foldlevelstart=0
 setlocal foldmethod=expr
-setlocal foldexpr=markdown#foldlevel()
+setlocal foldexpr=markdown#fold_level()
 setlocal conceallevel=1
 setlocal nospell
 let g:pandoc#syntax#conceal#urls=1
