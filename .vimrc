@@ -1,11 +1,14 @@
 let mapleader=" "
 
 " .vim/autoload...
-"     markdown_foldlevel, markdown_backlinks, markdown_gotofile
-"     headerjump, make_nonexistent_dir, file_from_selected, get_visual,
-"     sanitise_filename, window_width
+"     markdown(fold_level, backlinks, gotofile, file_from_selection)
+"     selection(visual, before_and_after_visual)
+"     file(make_nonexistent_dir)
+"     sanitise(filename)
 " .vim/after/ftplugin...
 "     markdown,  tex
+" .vim/plugin
+"     foldtext, maybe_gfiles, window_width
 " .vim/ftdetect...
 "     markdown, latex
 
@@ -13,7 +16,7 @@ let mapleader=" "
 execute pathogen#infect("~/.vim/bundle/{}")
 " settings {{{1
 set nocompatible
-let &showbreak = '▓▒░'
+let &showbreak = '····'
 set cpo+=n
 set number
 set wrap lbr
@@ -41,7 +44,7 @@ let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__p
 
 set signcolumn=auto
 set path=.,**
-set statusline=%<\ %n:%f\ %m%r%y%{ObsessionStatus('[session]')}%=%(%P\ of\ %LL\ -\ %l,%c\ %)
+set statusline=%<\ %n:%f\ %m%r%y%{ObsessionStatus('[session]')}[%l,%c]
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -143,7 +146,7 @@ nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
 nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
 nnoremap <leader>cd :let @+=resolve(expand("%:p:h"))<CR>
-" abbreviations - command mode{{{1
+" abbreviations - command mode {{{1
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e

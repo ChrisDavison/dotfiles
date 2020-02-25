@@ -47,7 +47,7 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     fontface: &fontface
-        Iosevka Term
+        Inconsolata
     normal:
         family: *fontface
         style: Regular
@@ -57,11 +57,11 @@ font: # CHANGES REQUIRE RESTART
     bold:
         family: *fontface
         style: Bold
-    size: 14.0
+    size: 14
 
     offset:
         x: 0 # letterspacing
-        y: 1 # linespacing
+        y: 0 # linespacing
 
     glyph_offset: # move glyphs WITHIN their cells
         x: 0
