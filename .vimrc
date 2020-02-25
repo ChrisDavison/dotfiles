@@ -87,6 +87,9 @@ let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
 let g:markdown_fold_method='nested' " or 'stacked'
 
 let g:EasyMotion_smartcase=1
+
+" From .vim/plugin/foldtext
+set foldtext=CustomFoldText()
 " keybinds {{{1
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
@@ -198,15 +201,6 @@ if executable('rg')
                 \ <bang>0)
 endif
 
-" fold text {{{1
-function! NeatFoldText()
-    let lines_count_text = printf("‖ %4S ‖", v:foldend - v:foldstart)
-    let curline = getline(v:foldstart)
-    let len_text = len(curline) + len(l:lines_count_text)
-    let padding = repeat(" ", ActualWindowWidth() - len_text)
-    return curline . padding . lines_count_text
-endfunction
-set foldtext=NeatFoldText()
 " autocommands {{{1
 augroup vimrc
     autocmd!
