@@ -8,7 +8,7 @@ let mapleader=" "
 " .vim/after/ftplugin...
 "     markdown,  tex
 " .vim/plugin
-"     foldtext, maybe_gfiles, window_width
+"     foldtext, maybe_gfiles, window_width, fzf_favourite_files
 " .vim/ftdetect...
 "     markdown, latex
 
@@ -69,7 +69,7 @@ endif
 "      appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
-silent! colorscheme seoul256
+silent! colorscheme xcodelighthc
 " settings for plugins {{{1
 let g:is_bash=1
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
@@ -133,15 +133,25 @@ let g:fzf_action = {
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit' }
 "      files, SPECIFIC files/dirs, buffers, tags {{{1
-nnoremap <leader>ev :edit ~/.vimrc<CR>
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
-nnoremap <F2> :e ~/Dropbox/notes/journal.txt<CR>:normal Go<CR>
-nnoremap <F3> :e ~/Dropbox/notes/logbook.txt<CR>:normal Go<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
+
+let g:fzf_favourite_files = {
+            \ "VIMRC": "~/.vimrc",
+            \ "Note Index": "~/Dropbox/notes/index.txt",
+            \ "Journal": "~/Dropbox/notes/journal.txt",
+            \ "Logbook": "~/Dropbox/notes/logbook.txt",
+            \ "Thesis todos": "~/src/github.com/ChrisDavison/thesis/todos.txt",
+            \ "Thesis (dir)": "~/src/github.com/ChrisDavison/thesis/",
+            \ "Scripts (dir)": "~/src/github.com/ChrisDavison/scripts/",
+            \ "Notes (dir)": "~/Dropbox/notes",
+            \}
+nnoremap <leader>F :Favourites<CR>
+
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
 nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
@@ -167,6 +177,7 @@ iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
 iabbrev <expr> DATENFULL strftime("%Y %b %d")
 iabbrev <expr> jhead strftime("# %Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
+iabbrev TODO **TODO** -
 " custom commands {{{1
 command! CD exec "cd " . expand("%:p:h")
 command! SeeAlso Rg see also
