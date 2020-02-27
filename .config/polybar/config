@@ -42,7 +42,7 @@ font-0 = Inconsolata:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
-modules-left = wired-network wireless-network pulseaudio backlight-acpi memory cpu 
+modules-left = cpu memory backlight-acpi pulseaudio filesystem 
 modules-center = bspwm i3
 modules-right = battery date
 
@@ -86,7 +86,7 @@ label-indicator-background = ${colors.secondary}
 type = internal/fs
 interval = 25
 mount-0 = /
-label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+label-mounted = %mountpoint%: %percentage_used%%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
