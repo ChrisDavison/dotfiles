@@ -43,7 +43,7 @@ font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
 modules-left = wired-network wireless-network pulseaudio backlight-acpi memory cpu 
-modules-center = bspwm i3 xwindow
+modules-center = bspwm i3
 modules-right = battery date
 
 ; NOT USING
@@ -71,7 +71,8 @@ cursor-scroll = ns-resize
 
 [module/xwindow]
 type = internal/xwindow
-label = %title:0:40:...%
+label = %title%
+label-maxlen=50
 
 [module/xkeyboard]
 type = internal/xkeyboard
@@ -93,7 +94,7 @@ label-unmounted-foreground = ${colors.foreground-alt}
 type = internal/bspwm
 padding=20
 
-label-focused = %name%
+label-focused = %name% 
 label-focused-foreground = ${colors.white}
 label-focused-background = ${colors.bright_purple}
 label-focused-padding = ${settings.bspwm-padding}
@@ -109,6 +110,8 @@ label-urgent-padding = ${settings.bspwm-padding}
 label-empty = · 
 label-empty-foreground = ${colors.foreground}
 label-empty-padding = ${settings.bspwm-padding}
+
+ws-icon-0 = 1
 
 ; Separator in between workspaces
 ; label-separator = |
