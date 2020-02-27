@@ -101,7 +101,7 @@ nnoremap D      dd
 nnoremap k      gk
 vnoremap k      gk
 nnoremap Y      y$
-nnoremap <silent> <CR> :nohlsearch<CR>
+nnoremap <silent> // :nohlsearch<CR>
 nnoremap <BS>   <C-^>
 nmap s <Plug>(easymotion-sn)
 
@@ -141,6 +141,7 @@ nnoremap <leader>T :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
+nnoremap <leader>r :Rg 
 
 let g:fzf_favourite_files = {
             \ "vimrc": "~/.vimrc",

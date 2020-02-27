@@ -3,7 +3,11 @@ function! s:find_tag(tag)
     call feedkeys("i")
 endfunction
 
-command! Tagsearch call fzf#run(fzf#wrap({
+function! s:find_tag_grep(tag)
+    exec "silent!grep @" . a:tag
+endfunction
+
+command! -bang Tagsearch call fzf#run(fzf#wrap({
             \ 'source': 'tagsearch --long', 
-            \ 'sink': function("<SID>find_tag")}))
+            \ 'sink': <bang>0 ? function("<SID>find_tag") : function("<SID>find_tag_grep")}))
 
