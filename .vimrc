@@ -138,17 +138,19 @@ nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
+nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 
 let g:fzf_favourite_files = {
-            \ "VIMRC": "~/.vimrc",
-            \ "Note Index": "~/Dropbox/notes/index.txt",
-            \ "Journal": "~/Dropbox/notes/journal.txt",
-            \ "Logbook": "~/Dropbox/notes/logbook.txt",
-            \ "Thesis todos": "~/src/github.com/ChrisDavison/thesis/todos.txt",
-            \ "Thesis (dir)": "~/src/github.com/ChrisDavison/thesis/",
-            \ "Scripts (dir)": "~/src/github.com/ChrisDavison/scripts/",
-            \ "Notes (dir)": "~/Dropbox/notes",
+            \ "vimrc": "~/.vimrc",
+            \ "index of notes": "~/Dropbox/notes/index.txt",
+            \ "journal": "~/Dropbox/notes/journal.txt",
+            \ "logbook": "~/Dropbox/notes/logbook.txt",
+            \ "thesis todos": "~/src/github.com/ChrisDavison/thesis/todos.txt",
+            \ "stuff to learn": "~/Dropbox/notes/stuff-to-learn.txt",
+            \ "(d) thesis": "~/src/github.com/ChrisDavison/thesis/",
+            \ "(d) scripts": "~/src/github.com/ChrisDavison/scripts/",
+            \ "(d) notes": "~/Dropbox/notes",
             \}
 nnoremap <leader>F :Favourites<CR>
 
