@@ -139,6 +139,7 @@ nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
+nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 
 let g:fzf_favourite_files = {
@@ -146,6 +147,7 @@ let g:fzf_favourite_files = {
             \ "index of notes": "~/Dropbox/notes/index.txt",
             \ "journal": "~/Dropbox/notes/journal.txt",
             \ "logbook": "~/Dropbox/notes/logbook.txt",
+            \ "habit stacks": "~/Dropbox/notes/my-habit-stacks.txt",
             \ "thesis todos": "~/src/github.com/ChrisDavison/thesis/todos.txt",
             \ "stuff to learn": "~/Dropbox/notes/stuff-to-learn.txt",
             \ "(d) thesis": "~/src/github.com/ChrisDavison/thesis/",
@@ -169,6 +171,8 @@ cnoreabbrev oedit only<bar>edit
 cnoreabbrev oe only<bar>edit
 cnoreabbrev BD bp<bar>bd #
 cnoreabbrev BufOnly %bd\|e#
+cnoreabbrev ts Tagsearch
+cnoreabbrev fav Favourites
 " abbreviations - insert mode {{{1
 iabbrev meanstd μ±σ
 iabbrev ALSO **See also**:

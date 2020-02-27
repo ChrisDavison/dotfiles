@@ -1,6 +1,6 @@
 function! s:find_tag(tag)
-    exec "Rg @" . a:tag
-    normal i
+    exec "silent!Rg @" . a:tag
+    call feedkeys("i")
 endfunction
 
 command! Tagsearch call fzf#run(fzf#wrap({
