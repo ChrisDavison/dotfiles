@@ -101,7 +101,6 @@ nnoremap D      dd
 nnoremap k      gk
 vnoremap k      gk
 nnoremap Y      y$
-nnoremap <silent> // :nohlsearch<CR>
 nnoremap <BS>   <C-^>
 nmap s <Plug>(easymotion-sn)
 
