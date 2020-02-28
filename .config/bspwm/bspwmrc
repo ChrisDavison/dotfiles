@@ -22,7 +22,7 @@ else
     MONITOR=$EXTERNAL polybar -r example &
 fi
 
-feh --bg-scale ~/Dropbox/wallpapers/penguin-hackers.jpg &
+feh --bg-scale ~/Dropbox/wallpapers/space.jpg &
 
 #8620e6 is a nice purple
 bspc config border_width         4

@@ -57,7 +57,7 @@ font: # CHANGES REQUIRE RESTART
     bold:
         family: *fontface
         style: Bold
-    size: 14
+    size: 16
 
     offset:
         x: 0 # letterspacing
