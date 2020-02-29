@@ -69,7 +69,7 @@ endif
 "      appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
-silent! colorscheme xcodelighthc
+silent! colorscheme xcodedark
 " settings for plugins {{{1
 let g:is_bash=1
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
@@ -142,18 +142,20 @@ nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>r :Rg 
 
-let g:fzf_favourite_files = {
-            \ "vimrc": "~/.vimrc",
-            \ "index of notes": "~/Dropbox/notes/index.txt",
-            \ "journal": "~/Dropbox/notes/journal.txt",
-            \ "logbook": "~/Dropbox/notes/logbook.txt",
-            \ "habit stacks": "~/Dropbox/notes/my-habit-stacks.txt",
-            \ "thesis todos": "~/src/github.com/ChrisDavison/thesis/todos.txt",
-            \ "stuff to learn": "~/Dropbox/notes/stuff-to-learn.txt",
-            \ "(d) thesis": "~/src/github.com/ChrisDavison/thesis/",
-            \ "(d) scripts": "~/src/github.com/ChrisDavison/scripts/",
-            \ "(d) notes": "~/Dropbox/notes",
-            \}
+let g:fzf_favourite_files = [
+    \ {"name": "index of notes", "path": "~/Dropbox/notes/index.txt"},
+    \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
+    \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
+    \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
+    \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
+    \ {"name": "", "path": ""},
+    \ {"name": "habits » STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
+    \ {"name": "habits » daily", "path": "~/Dropbox/notes/daily.txt"},
+    \ {"name": "habits » weekly", "path": "~/Dropbox/notes/weekly.txt"},
+    \ {"name": "habits » monthly", "path": "~/Dropbox/notes/monthly.txt"},
+    \ {"name": "", "path": ""},
+    \ {"name": "vimrc", "path": "~/.vimrc"},
+    \]
 nnoremap <leader>F :Favourites<CR>
 
 "      copy file basename, full-path, or parent dir {{{1
@@ -199,3 +201,20 @@ augroup vimrc
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
 augroup END
+
+function! FirstLineFromFileAsLink(filename)
+    let title=trim(system('head -n1 ' . a:filename))
+    let matches = matchlist(title, '#\+ \(.*\)')
+    if len(l:matches) > 1
+        let l:title = l:matches[1]
+    endif
+    let filename=resolve(expand(a:filename))
+    if l:filename[0] != '.'
+        let filename = './' . a:filename
+    endif
+    let link="[" . title . "](" . a:filename . ")"
+    exec "normal a" . l:link
+endfunction
+
+command! -complete=file -nargs=1 InsertLinkToNote call FirstLineFromFileAsLink(<q-args>)
+nnoremap <leader>il :InsertLinkToNote 

@@ -11,7 +11,7 @@ let md_equalprg.="\ --atx-headers"
 let &l:equalprg=md_equalprg
 
 setlocal foldenable
-setlocal foldlevelstart=0
+setlocal foldlevelstart=99
 setlocal foldmethod=expr
 setlocal foldexpr=markdown#fold_level()
 setlocal conceallevel=1
@@ -20,7 +20,8 @@ let g:pandoc#syntax#conceal#urls=1
 
 au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
 
-command! Backlinks call markdown#backlinks()
+command! -bang Backlinks call markdown#backlinks(<bang>1)
+nnoremap <leader>B :Backlinks!<CR>
 
 " .vim/autoload/file.vim
 nnoremap ml :call markdown#file_from_selection(0)<CR>
