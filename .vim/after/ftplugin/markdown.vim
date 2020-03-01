@@ -1,7 +1,12 @@
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 
 let g:markdown_reference_links=0
-let g:markdown_hard_wrap=0
+let g:markdown_hard_wrap=1
+
+if g:markdown_hard_wrap
+    setlocal formatoptions+=a
+    setlocal textwidth=80
+endif
 
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
 let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
