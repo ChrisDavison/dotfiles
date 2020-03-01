@@ -26,22 +26,26 @@ endfunction " }}}1
 function! markdown#goto_file() " {{{1
     let fname=expand("<cfile>")
     if filereadable(l:fname)
-        execute "edit " . l:fname
+        execute "silent!edit " . l:fname
     else
-        if getline(".")[col(".")-1:col(".")] == 'y'
-            normal vi("by
-        else
+        if getline(".")[col(".")] != "]"
             normal f]
-            normal vi("by
-            execute "edit " . getreg("b")
         end
+        normal vi("by
+        execute "silent!edit " . getreg("b")
     end
 endfunction " }}}1
 
-function! markdown#backlinks() " {{{1
-    call fzf#vim#grep(
-                \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
-                \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
+function! markdown#backlinks(use_grep) " {{{1
+    if a:use_grep
+        normal mZ
+        exec "grep " . expand("%")
+        normal `Z
+    else
+        call fzf#vim#grep(
+        \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
+        \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
+    end
 endfunction " }}}1
 
 function! markdown#copy_filename_as_link() " {{{1
