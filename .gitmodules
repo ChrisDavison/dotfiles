@@ -91,3 +91,12 @@
 [submodule ".vim/bundle/goyo.vim"]
 	path = .vim/bundle/goyo.vim
 	url = git@github.com:junegunn/goyo.vim
+[submodule ".vim/bundle/lightline.vim"]
+	path = .vim/bundle/lightline.vim
+	url = git@github.com:itchyny/lightline.vim
+[submodule ".vim/bundle/vim-one"]
+	path = .vim/bundle/vim-one
+	url = git@github.com:rakr/vim-one
+[submodule ".vim/bundle/papercolor-theme"]
+	path = .vim/bundle/papercolor-theme
+	url = git@github.com:NLKNguyen/papercolor-theme

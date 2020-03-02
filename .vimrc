@@ -69,7 +69,12 @@ endif
 "      appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
-silent! colorscheme xcodedark
+set bg=dark
+if !has('gui_running')
+    set t_Co=256
+endif
+let g:lightline = {'colorscheme': 'one'}
+silent! colorscheme one
 " settings for plugins {{{1
 let g:is_bash=1
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
@@ -147,6 +152,7 @@ let g:fzf_favourite_files = [
     \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
     \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
     \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
+    \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
     \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
     \ {"name": "", "path": ""},
     \ {"name": "habits » STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
@@ -158,6 +164,7 @@ let g:fzf_favourite_files = [
     \]
 nnoremap <leader>F :Favourites<CR>
 nnoremap <F2> :Favourites<CR>
+nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
 
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
@@ -190,7 +197,7 @@ iabbrev TODO **TODO** -
 " custom commands {{{1
 command! CD exec "cd " . expand("%:p:h")
 command! SeeAlso Rg see also
-command! Scratch edit ~/.scratch | normal <C-End>
+command! Scratch edit ~/Dropbox/notes/.scratch | normal <C-End>
 " autocommands {{{1
 augroup vimrc
     autocmd!
