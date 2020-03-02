@@ -1,7 +1,7 @@
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 
 let g:markdown_reference_links=0
-let g:markdown_hard_wrap=1
+let g:markdown_hard_wrap=0
 
 if g:markdown_hard_wrap
     setlocal formatoptions+=a

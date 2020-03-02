@@ -3,7 +3,7 @@
 # ==========================
 # terminal emulator
 super + Return
-	alacritty
+	gnome-terminal
 
 super + d
     rofi -combi-modi window,drun -show combi
@@ -13,13 +13,6 @@ super + alt + s
 
 super + alt + {_, shift} + t
     bspc rule -a \* -o state=floating center  && firefox {_,--new-window} "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
-
-super + alt + shift + {j, Return, v}
-    alacritty -e /usr/local/bin/nvim {~/Dropbox/notes/journal.txt, ~/Dropbox/notes/index.txt, -S ~/.session.vim}
-
-super + alt + a
-    bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki
-
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -33,13 +26,13 @@ super + alt + {q,r}
 super + {_,shift + }w
 	bspc node -{c,k}
 
-# marked node to preselection
-super + y
-	bspc node newest.marked -n newest.!automatic
+# send current/marked node to preselection
+super + {_, shift} + y
+	bspc node {focused,newest.marked} -n newest.!automatic
 
-# rwap the current node and the biggest node
-super + g
-	bspc node -s biggest -d focused
+# swap the current node and the biggest node
+# super + g
+#	bspc node -s biggest -d focused
 
 # ==========================
 #           LAYOUT

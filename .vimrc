@@ -157,6 +157,7 @@ let g:fzf_favourite_files = [
     \ {"name": "vimrc", "path": "~/.vimrc"},
     \]
 nnoremap <leader>F :Favourites<CR>
+nnoremap <F2> :Favourites<CR>
 
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
