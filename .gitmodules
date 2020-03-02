@@ -91,3 +91,6 @@
 [submodule ".vim/bundle/vim-yin-yang"]
 	path = .vim/bundle/vim-yin-yang
 	url = git@github.com:pgdouyon/vim-yin-yang
+[submodule ".vim/bundle/vim-repeat"]
+	path = .vim/bundle/vim-repeat
+	url = git@github.com:tpope/vim-repeat
