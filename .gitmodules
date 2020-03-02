@@ -31,18 +31,12 @@
 [submodule ".vim/bundle/vim-gutentags"]
 	path = .vim/bundle/vim-gutentags
 	url = git@github.com:ludovicchabant/vim-gutentags
-[submodule ".vim/bundle/vim-colors-paramount"]
-	path = .vim/bundle/vim-colors-paramount
-	url = git@github.com:owickstrom/vim-colors-paramount
 [submodule ".vim/bundle/vim-qf"]
 	path = .vim/bundle/vim-qf
 	url = git@github.com:romainl/vim-qf
 [submodule ".vim/bundle/vim-qlist"]
 	path = .vim/bundle/vim-qlist
 	url = git@github.com:romainl/vim-qlist
-[submodule ".vim/bundle/vim-fugitive"]
-	path = .vim/bundle/vim-fugitive
-	url = git@github.com:tpope/vim-fugitive
 [submodule ".vim/bundle/vim-commentary"]
 	path = .vim/bundle/vim-commentary
 	url = git@github.com:tpope/vim-commentary
@@ -91,12 +85,9 @@
 [submodule ".vim/bundle/goyo.vim"]
 	path = .vim/bundle/goyo.vim
 	url = git@github.com:junegunn/goyo.vim
-[submodule ".vim/bundle/lightline.vim"]
-	path = .vim/bundle/lightline.vim
-	url = git@github.com:itchyny/lightline.vim
 [submodule ".vim/bundle/vim-one"]
 	path = .vim/bundle/vim-one
 	url = git@github.com:rakr/vim-one
-[submodule ".vim/bundle/papercolor-theme"]
-	path = .vim/bundle/papercolor-theme
-	url = git@github.com:NLKNguyen/papercolor-theme
+[submodule ".vim/bundle/vim-yin-yang"]
+	path = .vim/bundle/vim-yin-yang
+	url = git@github.com:pgdouyon/vim-yin-yang

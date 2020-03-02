@@ -44,7 +44,7 @@ let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__p
 
 set signcolumn=auto
 set path=.,**
-set statusline=%<\ %n:%f\ %m%r%y%{ObsessionStatus('[session]')}[%l,%c]
+set statusline=%<\ %m%r%Y%=%f%=[%l,%c]
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -73,8 +73,7 @@ set bg=dark
 if !has('gui_running')
     set t_Co=256
 endif
-let g:lightline = {'colorscheme': 'one'}
-silent! colorscheme one
+silent! colorscheme yin
 " settings for plugins {{{1
 let g:is_bash=1
 let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
