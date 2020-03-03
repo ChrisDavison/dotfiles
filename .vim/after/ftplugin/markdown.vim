@@ -16,7 +16,7 @@ let md_equalprg.="\ --atx-headers"
 let &l:equalprg=md_equalprg
 
 setlocal foldenable
-setlocal foldlevelstart=99
+setlocal foldlevelstart=1
 setlocal foldmethod=expr
 setlocal foldexpr=markdown#fold_level()
 setlocal conceallevel=1
