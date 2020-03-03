@@ -11,15 +11,21 @@
 
 List all matches in a navigatable list            *list_all_matches*
 
-You can list all matches using either {vimgrep} or {grep}. Vimgrep will use
-the internal regex engine, and grep will use whatever {grepprg} is set to.
+You can list all matches using either |vimgrep| or |grep|. Vimgrep will use
+the internal regex engine, and grep will use whatever *grepprg* is set to.
 
 When you run these, they will populate the quickfix list, which is global to
 all instances of vim. Instead, you can prefix with {l} to get the
 location-list version, which is local to each vim instance/window.
 
-All matches for the current file                  *matches_for_current_file*
+EXAMPLES                                          *vim-search-examples*
 
-Example: >
-  :vimgrep /pattern/ %
- <
+Search for 'word' in current file: >
+    :vimgrep /word/ %
+<
+
+Search for 'word' in all 'txt' files, using the external grep: >
+    :grep /word/ *.txt
+<
+
+vim:tw=78:ts=8:ft=help:norl:
