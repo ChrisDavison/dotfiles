@@ -8,15 +8,16 @@ super + Return
 super + d
     rofi -combi-modi window,drun -show combi
 
-super + alt + s
+super + shift + s
     dmenu_screenshot.sh
-
-super + alt + {_, shift} + t
-    bspc rule -a \* -o state=floating center  && firefox {_,--new-window} "https://todoist.com/app#agenda%2F(overdue%20%7C%20(today%20%26%20p1))%2C%20today%20%26%20!p1"
 
 # 'startup'
 super + alt + ctrl + s
     firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com" "https://calendar.google.com" "https://news.ycombinator.com" "https://lobste.rs" "https://reddit.com/r/programming"  "https://reddit.com/r/rust" "https://reddit.com/r/videos"
+
+# Open a 'reference' website from ~/.reference file
+super + shift + r
+    dmenu_reference.sh
 
 # email
 super + alt + ctrl + e
