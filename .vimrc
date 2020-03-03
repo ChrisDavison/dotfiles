@@ -35,16 +35,17 @@ set directory=~/.temp,.
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set wildmode=list:longest:list,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~,*tags*
+set wildignore+=*.swp,*.so,*.fls,*.log,*.out,*.toc,*.xdv,*.bbl,*.blg,*.fdb_latexmk
 set wildignorecase
 set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
 set showmode
-let g:netrw_list_hide= '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__'
+let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__,.*\.aux,.*\.log,.*\.bbl,.*\.blg,.*\.fdb_latexmk,.*\.fls,.*\.log,.*\.out,.*\.toc'
 
 set signcolumn=auto
 set path=.,**
-set statusline=%<\ %m%r%Y%=%f%=[%l,%c]
+set statusline=\ %Y%m%r%=%f%=[%l,%c]
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -151,6 +152,7 @@ let g:fzf_favourite_files = [
     \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
     \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
     \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
+    \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
     \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
     \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
     \ {"name": "", "path": ""},
@@ -225,3 +227,6 @@ endfunction
 
 command! -complete=file -nargs=1 InsertLinkToNote call FirstLineFromFileAsLink(<q-args>)
 nnoremap <leader>il :InsertLinkToNote 
+
+command! MODIFY set noro modifiable
+command! NOMODIFY set ro nomodifiable
