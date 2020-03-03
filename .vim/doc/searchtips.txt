@@ -1,4 +1,3 @@
-" vim: filetype=help foldmethod=marker foldmarker=<<<,>>> modifiable noreadonly
 *searchtips.txt*    Tips for Search and Replace
 
 |list_all_matches|             List all matches in a navigatable list
