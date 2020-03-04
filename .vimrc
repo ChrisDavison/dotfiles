@@ -210,7 +210,7 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
-    au BufEnter logbook.txt setlocal foldlevelstart=0
+    au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=0
 augroup END
 
 function! FirstLineFromFileAsLink(filename)
@@ -234,3 +234,4 @@ command! MODIFY set noro modifiable
 command! NOMODIFY set ro nomodifiable
 
 let &rtp.=",~/.vim/snippets"
+let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
