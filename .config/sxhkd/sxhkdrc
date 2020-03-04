@@ -6,7 +6,10 @@ super + Return
 	gnome-terminal
 
 super + d
-    rofi -combi-modi window,drun -show combi
+    j4-dmenu-desktop --dmenu="dmenu -i -fn 'Inconsolata-18' -p 'Program:'"
+
+super + shift + d
+    dmenu_win_switcher.sh
 
 super + shift + s
     dmenu_screenshot.sh
