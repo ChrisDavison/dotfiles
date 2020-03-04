@@ -77,7 +77,7 @@ endif
 silent! colorscheme yin
 " settings for plugins {{{1
 let g:is_bash=1
-let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
+" let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
 let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
@@ -107,6 +107,7 @@ nnoremap k      gk
 vnoremap k      gk
 nnoremap Y      y$
 nnoremap <BS>   <C-^>
+nnoremap <TAB>  za
 nmap s <Plug>(easymotion-sn)
 
 " Run 'equalprg' and return to mark
@@ -209,6 +210,7 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
+    au BufEnter logbook.txt setlocal foldlevelstart=0
 augroup END
 
 function! FirstLineFromFileAsLink(filename)
@@ -230,3 +232,5 @@ nnoremap <leader>il :InsertLinkToNote
 
 command! MODIFY set noro modifiable
 command! NOMODIFY set ro nomodifiable
+
+let &rtp.=",~/.vim/snippets"
