@@ -78,7 +78,8 @@ silent! colorscheme yin
 " settings for plugins {{{1
 let g:is_bash=1
 " let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
-let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
+" let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
+let g:fzf_layout = {'right': '~30%'}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
 " 'nested' hides L_n+1 below L_n
@@ -147,25 +148,26 @@ nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>r :Rg 
+nnoremap <leader>r :Rg 
 
 let g:fzf_favourite_files = [
-    \ {"name": "index of notes", "path": "~/Dropbox/notes/index.txt"},
-    \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
-    \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
-    \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
-    \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
-    \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
-    \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
-    \ {"name": "", "path": ""},
-    \ {"name": "habits » STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-    \ {"name": "habits » daily", "path": "~/Dropbox/notes/daily.txt"},
-    \ {"name": "habits » weekly", "path": "~/Dropbox/notes/weekly.txt"},
-    \ {"name": "habits » monthly", "path": "~/Dropbox/notes/monthly.txt"},
-    \ {"name": "", "path": ""},
-    \ {"name": "vimrc", "path": "~/.vimrc"},
-    \]
+            \ {"name": "index of notes", "path": "~/Dropbox/notes/index.txt"},
+            \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
+            \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
+            \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
+            \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
+            \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
+            \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
+            \ {"name": "", "path": ""},
+            \ {"name": "habits » STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
+            \ {"name": "habits » daily", "path": "~/Dropbox/notes/daily.txt"},
+            \ {"name": "habits » weekly", "path": "~/Dropbox/notes/weekly.txt"},
+            \ {"name": "habits » monthly", "path": "~/Dropbox/notes/monthly.txt"},
+            \ {"name": "", "path": ""},
+            \ {"name": "vimrc", "path": "~/.vimrc"},
+            \]
 nnoremap <leader>F :Favourites<CR>
-nnoremap <F2> :Favourites<CR>
+nnoremap <F2> :e ~/Dropbox/notes/todo.txt<CR>
 nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
 
 "      copy file basename, full-path, or parent dir {{{1
