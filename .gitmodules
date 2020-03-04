@@ -91,3 +91,6 @@
 [submodule ".vim/bundle/vim-repeat"]
 	path = .vim/bundle/vim-repeat
 	url = git@github.com:tpope/vim-repeat
+[submodule ".vim/ultisnips"]
+	path = .vim/bundle/ultisnips
+	url = git@github.com:sirver/ultisnips
