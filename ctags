@@ -6,6 +6,9 @@
 --regex-markdown=/^###[ \t](.*$)/\1/h3,heading,headings/
 --regex-markdown=/^####[ \t](.*$)/\1/h4,heading,headings/
 --regex-markdown=/^#####[ \t](.*$)/\1/h5,heading,headings/
+--regex-markdown=/(@[a-zA-Z]+)/\1/tag/
+--regex-markdown=/[^!]\[(.+)\]\(.+\)/LINK \1/link/
+
 
 --langdef=Rust
 --langmap=Rust:.rs
