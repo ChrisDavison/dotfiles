@@ -45,7 +45,7 @@ let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\
 
 set signcolumn=auto
 set path=.,**
-set statusline=\ %Y%m%r%=%f%=[%l,%c]
+set statusline=\ %F:%l:%c
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -77,9 +77,7 @@ endif
 silent! colorscheme yin
 " settings for plugins {{{1
 let g:is_bash=1
-" let g:non_git_roots=["~/Dropbox/notes", "~/Dropbox/logbook"]
-" let g:fzf_layout = {'window': {'width': 0.9, 'height': 0.6 }}
-let g:fzf_layout = {'right': '~30%'}
+let g:fzf_layout = {'window': '10new'}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
 " 'nested' hides L_n+1 below L_n

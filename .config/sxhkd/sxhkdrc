@@ -14,6 +14,9 @@ super + shift + d
 super + shift + s
     dmenu_screenshot.sh
 
+super + alt + a
+    bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki
+
 # 'startup'
 super + alt + ctrl + s
     firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com" "https://calendar.google.com" "https://news.ycombinator.com" "https://lobste.rs" "https://reddit.com/r/programming"  "https://reddit.com/r/rust" "https://reddit.com/r/videos"
