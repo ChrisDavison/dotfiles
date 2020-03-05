@@ -17,5 +17,6 @@ endfunction
 
 command! Favourites call fzf#run(fzf#wrap({
             \ 'source': reverse(map(copy(g:fzf_favourite_files), {_, v -> v["name"]})), 
-            \ 'sink': function("<SID>edit_favourite")}))
+            \ 'sink': function("<SID>edit_favourite"),
+            \ 'options': '--prompt Favourite: '}))
 
