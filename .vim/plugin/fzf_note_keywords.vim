@@ -9,5 +9,6 @@ endfunction
 
 command! -bang Tagsearch call fzf#run(fzf#wrap({
             \ 'source': 'tagsearch --long', 
-            \ 'sink': <bang>0 ? function("<SID>find_tag") : function("<SID>find_tag_grep")}))
+            \ 'sink': <bang>0 ? function("<SID>find_tag") : function("<SID>find_tag_grep"),
+            \ 'options': '--prompt Tag: '}))
 
