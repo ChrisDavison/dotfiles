@@ -155,13 +155,12 @@ let g:fzf_favourite_files = [
             \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
             \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
             \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
-            \ {"name": "thesis todos", "path": "~/src/github.com/ChrisDavison/thesis/todos.txt"},
-            \ {"name": "", "path": ""},
-            \ {"name": "habits » STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-            \ {"name": "habits » daily", "path": "~/Dropbox/notes/daily.txt"},
-            \ {"name": "habits » weekly", "path": "~/Dropbox/notes/weekly.txt"},
-            \ {"name": "habits » monthly", "path": "~/Dropbox/notes/monthly.txt"},
-            \ {"name": "", "path": ""},
+            \ {"name": "todos → projects", "path": "~/Dropbox/notes/projects.txt"},
+            \ {"name": "todos → thesis", "path": "~/Dropbox/notes/thesis.txt"},
+            \ {"name": "habits → STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
+            \ {"name": "habits → daily", "path": "~/Dropbox/notes/daily.txt"},
+            \ {"name": "habits → weekly", "path": "~/Dropbox/notes/weekly.txt"},
+            \ {"name": "habits → monthly", "path": "~/Dropbox/notes/monthly.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
 nnoremap <leader>F :Favourites<CR>
@@ -235,3 +234,5 @@ command! NOMODIFY set ro nomodifiable
 
 let &rtp.=",~/.vim/snippets"
 let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
+
+nnoremap <leader>l :BTags ^l:<CR>
