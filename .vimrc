@@ -70,21 +70,21 @@ endif
 "      appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
-set bg=dark
 if !has('gui_running')
     set t_Co=256
 endif
-silent! colorscheme yin
+set bg=light
+silent! colorscheme yang
 " settings for plugins {{{1
 let g:is_bash=1
-let g:fzf_layout = {'window': '10new'}
+let g:fzf_layout = {'window': 'enew'}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
 " 'nested' hides L_n+1 below L_n
 " 'stacked' folds all headers, but treats them as same level
 let g:markdown_fold_method='nested' " or 'stacked'
 
-let g:EasyMotion_smartcase=1
+" let g:EasyMotion_smartcase=1
 
 " From .vim/plugin/foldtext
 set foldtext=CustomFoldText()
@@ -92,6 +92,14 @@ set foldtext=CustomFoldText()
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
 endif
+
+let g:sneak#label=1
+
+let &rtp.=",~/.vim/snippets"
+let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
+
+let g:gutentags_project_root = ['tags']
+let g:gutentags_define_advanced_commands=1
 
 " keybinds {{{1
 nnoremap <silent> Q =ip
@@ -107,7 +115,7 @@ vnoremap k      gk
 nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
-nmap s <Plug>(easymotion-sn)
+" nmap s <Plug>(easymotion-sn)
 
 " Run 'equalprg' and return to mark
 nnoremap <leader>f :normal mzgg=G`zmzzz<CR>
@@ -147,7 +155,11 @@ nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>r :Rg 
 nnoremap <leader>r :Rg 
+" ctags definitions for markdown urls and @keywords
+nnoremap <leader>l :BTags LINK<CR>
+nnoremap <leader># :Tags @<CR>
 
+"      for my plugins (~/.vim/plugin) {{{1
 let g:fzf_favourite_files = [
             \ {"name": "index of notes", "path": "~/Dropbox/notes/index.txt"},
             \ {"name": "journal", "path": "~/Dropbox/notes/journal.txt"},
@@ -166,6 +178,7 @@ let g:fzf_favourite_files = [
 nnoremap <leader>F :Favourites<CR>
 nnoremap <F2> :e ~/Dropbox/notes/todo.txt<CR>
 nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
+nnoremap <leader>il :InsertLinkToNote 
 
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
@@ -211,28 +224,5 @@ augroup vimrc
     au Filetype make setlocal noexpandtab
     au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=0
 augroup END
+" }}}1
 
-function! FirstLineFromFileAsLink(filename)
-    let title=trim(system('head -n1 ' . a:filename))
-    let matches = matchlist(title, '#\+ \(.*\)')
-    if len(l:matches) > 1
-        let l:title = l:matches[1]
-    endif
-    let filename=resolve(expand(a:filename))
-    if l:filename[0] != '.'
-        let filename = './' . a:filename
-    endif
-    let link="[" . title . "](" . a:filename . ")"
-    exec "normal a" . l:link
-endfunction
-
-command! -complete=file -nargs=1 InsertLinkToNote call FirstLineFromFileAsLink(<q-args>)
-nnoremap <leader>il :InsertLinkToNote 
-
-command! MODIFY set noro modifiable
-command! NOMODIFY set ro nomodifiable
-
-let &rtp.=",~/.vim/snippets"
-let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
-
-nnoremap <leader>l :BTags ^l:<CR>
