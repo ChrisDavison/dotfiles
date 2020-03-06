@@ -33,7 +33,7 @@ set nobackup nowritebackup
 
 set directory=~/.temp,.
 set ignorecase smartcase " ignore case unless i specifically mix letter case
-set wildmode=list:longest:list,full
+set wildmode=list:longest:full,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~,*tags*
 set wildignore+=*.swp,*.so,*.fls,*.log,*.out,*.toc,*.xdv,*.bbl,*.blg,*.fdb_latexmk
 set wildignorecase
@@ -45,7 +45,7 @@ let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\
 
 set signcolumn=auto
 set path=.,**
-set statusline=\ %F:%l:%c
+set statusline=\ %t:%l:%c\ %m%r
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -118,7 +118,7 @@ nnoremap <TAB>  za
 " nmap s <Plug>(easymotion-sn)
 
 " Run 'equalprg' and return to mark
-nnoremap <leader>f :normal mzgg=G`zmzzz<CR>
+nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
@@ -175,7 +175,7 @@ let g:fzf_favourite_files = [
             \ {"name": "habits → monthly", "path": "~/Dropbox/notes/monthly.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
-nnoremap <leader>F :Favourites<CR>
+nnoremap <leader>f :Favourites<CR>
 nnoremap <F2> :e ~/Dropbox/notes/todo.txt<CR>
 nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
 nnoremap <leader>il :InsertLinkToNote 
@@ -212,6 +212,8 @@ iabbrev TODO **TODO** -
 command! CD exec "cd " . expand("%:p:h")
 command! SeeAlso Rg see also
 command! Scratch edit ~/Dropbox/notes/.scratch | normal <C-End>
+command! BD bp|bd#
+cnoreabbrev Bd BD
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -225,4 +227,3 @@ augroup vimrc
     au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=0
 augroup END
 " }}}1
-
