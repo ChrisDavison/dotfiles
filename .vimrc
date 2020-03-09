@@ -45,7 +45,7 @@ let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\
 
 set signcolumn=auto
 set path=.,**
-set statusline=\ %t:%l:%c\ %m%r
+set statusline=\ %t:%l:%c\ %m%r\ %{FugitiveStatusline()}
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
@@ -151,7 +151,7 @@ nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
-nnoremap <leader>p :call MaybeGFiles()<CR>
+nnoremap <leader>p :Files<CR>
 nnoremap <leader>r :Rg 
 nnoremap <leader>r :Rg 
 " ctags definitions for markdown urls and @keywords
@@ -169,7 +169,7 @@ let g:fzf_favourite_files = [
             \ {"name": "todos → projects", "path": "~/Dropbox/notes/projects.txt"},
             \ {"name": "todos → thesis", "path": "~/Dropbox/notes/thesis.txt"},
             \ {"name": "habits STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-            \ {"name": "habits & recurring tasks", "path": "~/Dropbox/notes/recurring-tasks-and-habits.txt"},
+            \ {"name": "habits & recurring tasks", "path": "~/Dropbox/notes/habits-and-recurring-tasks.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
 nnoremap <leader>f :Favourites<CR>
