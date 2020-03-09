@@ -29,6 +29,7 @@ alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
+test -e (which hub); and alias g="hub"
 alias today="date +%F"
 alias tmux="tmux -2"
 alias ts="tagsearch"
