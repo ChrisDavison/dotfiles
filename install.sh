@@ -2,7 +2,7 @@
 CODEDIR=$HOME/code
 
 function remove_and_symlink() {
-    rm $HOME/$1
+    [ -f $HOME/$1 ] && rm $HOME/$1
     ln -s $CODEDIR/dotfiles/$1 $HOME/$1
 }
 
