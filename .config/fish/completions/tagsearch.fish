@@ -1,0 +1,6 @@
+complete -c tagsearch -s c -l count -d 'Show count of tags'
+complete -c tagsearch -s u -l untagged -d 'Show files without tags'
+complete -c tagsearch -s l -l list -d 'List all tags for files matching keywords'
+complete -c tagsearch -l long -d 'Show a long(tall) list tags for all files matching keywords'
+complete -c tagsearch -s o -l or-filter -d 'Filter files where ANY, rather than ALL tags match'
+complete -c tagsearch -l similar-tags -d 'Lint for potentially similar tags'
