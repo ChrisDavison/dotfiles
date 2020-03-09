@@ -3,7 +3,6 @@
 sxhkd &
 nm-applet &
 udiskie &
-# autorandr -c &
 dropbox start &
 
 INTERNAL=eDP1

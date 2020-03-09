@@ -3,18 +3,18 @@ set -Ux fish_greeting ""
 set -Ux EDITOR "nvim"
 set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME"
-set -Ux GOBIN "$HOME/.bin"
+set -Ux GOBIN "$HOME/bin"
 set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
 set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
-set -Ux CODEDIR "$HOME/src/github.com/"
+set -Ux CODEDIR "$HOME/code/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux FINANCES "$HOME/Dropbox/budget"
 
 test -d $GOBIN; and set PATH $GOBIN $PATH
-test -d $HOME/.bin; and set PATH $HOME/.bin $PATH
-test -d $HOME/src/github.com/ChrisDavison/scripts/; and set PATH $HOME/src/github.com/ChrisDavison/scripts/ $PATH
+test -d $HOME/bin; and set PATH $HOME/.bin $PATH
+test -d $HOME/code/scripts/; and set PATH $HOME/code/scripts/ $PATH
 test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
 test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
 test -d /snap/bin; and set PATH /snap/bin $PATH
@@ -31,7 +31,6 @@ alias ipython="ipython --pprint --no-banner"
 alias g="git"
 alias today="date +%F"
 alias tmux="tmux -2"
-alias envml="source $HOME/.envs/ml/bin/activate"
 alias ts="tagsearch"
 alias bm="bookmarks"
 alias b="bat --map-syntax txt:markdown --style=grid,header"

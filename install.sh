@@ -1,78 +1,58 @@
 #!/bin/bash
-CODEDIR=$HOME/src/github.com
-DOTFILES=$CODEDIR/ChrisDavison/dotfiles
+CODEDIR=$HOME/code
 
-echo "============================"
-echo "get submodules (vim plugins)"
-echo "============================"
+function remove_and_symlink() {
+    rm $HOME/$1
+    ln -s $CODEDIR/dotfiles/$1 $HOME/$1
+}
+
+echo "----- get submodules (vim plugins)"
 git submodule update --init
 
-echo "======================"
-echo "symlinking plain files"
-echo "======================"
-for f in .bashrc .gitconfig .sqliterc .tmux.conf .vimrc .zshrc ; do
-    if [ -f $HOME/$f ] || [ -h $HOME/$f ]; then
-        rm $HOME/$f
-    fi
-    ln -s $ln_verbose $DOTFILES/$f $HOME/$f
-done
+echo "----- symlinking plain files"
+remove_and_symlink .bashrc
+remove_and_symlink .gitconfig
+remove_and_symlink .sqliterc
+remove_and_symlink .tmux.conf
+remove_and_symlink .vimrc
+remove_and_symlink .zshrc
 
-echo "============================="
-echo "symlinking vim and emacs dirs"
-echo "============================="
-for direc in .vim .emacs.d ; do
-    if [ -h $HOME/$direc ] || [ -d $HOME/$direc ]; then
-        rm -rf $HOME/$direc
-    fi
-    ln -s $ln_verbose $DOTFILES/$direc $HOME/$direc
-done
 
-echo "==========================="
-echo "symlinking stuff in .config"
-echo "==========================="
+echo "----- symlinking vim and emacs dirs"
+remove_and_symlink .vim
+# remove_and_symlink .emacs.d
+
+
+echo "----- symlinking .config/ directories"
 for direc in .config/* ; do
     base=$(basename $direc)
     if [ -h $HOME/$direc ] || [ -d $HOME/$direc ]; then
         rm -rf $HOME/$direc
     fi
-    ln -s $ln_verbose $DOTFILES/.config/$base $HOME/.config/$base
+    ln -s $ln_verbose $CODEDIR/dotfiles/.config/$base $HOME/.config/$base
 done
 
-echo "==================="
-echo "symlinking binaries"
-echo "==================="
-for bin in .bin/* ; do
+echo "----- symlinking bin/ binaries"
+for bin in bin/* ; do
     base=$(basename $bin)
-    if [ -f $HOME/.bin/$base ] || [ -h $HOME/.bin/$base ] ; then
-        rm $HOME/.bin/$base
+    if [ -f $HOME/bin/$base ] || [ -h $HOME/bin/$base ] ; then
+        rm $HOME/bin/$base
     fi
-    ln -s $ln_verbose $DOTFILES/.bin/$base $HOME/.bin/$base
-    chmod +x $DOTFILES/.bin/$base
+    ln -s $ln_verbose $CODEDIR/dotfiles/bin/$base $HOME/bin/$base
+    chmod +x $CODEDIR/dotfiles/bin/$base
 done
 
-echo "===================="
-echo "downloading my repos"
-echo "===================="
-for repo in checkmark animalhash repoutil scripts seqname tagsearch thesis thirtyday timer vim-cdroot;
-do
-    if [ ! -d "$CODEDIR/ChrisDavison/$repo" ]; then
-        [ $verbose -eq 1 ] && echo "\t$repo"
-        git clone --quiet git@github.com:ChrisDavison/"$repo" $CODEDIR/ChrisDavison/"$repo" > /dev/null
-    fi
-done
+echo "----- clone git repos from <dotfiles>/repos"
+if [ -f "repos" ]; then
+    while IFS= read -r repo; do
+        if [ ! -d $CODEDIR/$(basename $repo) ]; then
+            git clone --quiet git@github.com:$repo $CODEDIR/$(basename $repo) > /dev/null
+            if [ $? -gt 0 ]; then
+                echo "Error with: $repo"
+            fi
+        fi
+    done < repos
+fi
 
-echo "======================"
-echo "downloading work repos"
-echo "======================"
-for repo in cattleprod collar-outlier-removal cowhealth precisionbeef ee273 cybele-sat bolus heatstress iof;
-do
-    if [ ! -d "$CODEDIR/cidcom/$repo" ]; then
-        [ $verbose -eq 1 ] && echo "\t$repo"
-        git clone --quiet git@github.com:cidcom/"$repo" $CODEDIR/cidcom/"$repo" > /dev/null
-    fi
-done
-
-echo "==========="
-echo "install fzf"
-echo "==========="
-$DOTFILES/.vim/bundle/fzf/install --all > /dev/null
+echo "----- install fzf (from within git dir)"
+$CODEDIR/dotfiles/.vim/bundle/fzf/install --all > /dev/null

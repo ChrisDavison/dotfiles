@@ -146,7 +146,6 @@ let g:fzf_action = {
             \ 'ctrl-v': 'vsplit' }
 "      files, SPECIFIC files/dirs, buffers, tags {{{1
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
-nnoremap <leader>es :Files ~/src/github.com/ChrisDavison/scripts<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
