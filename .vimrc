@@ -168,10 +168,8 @@ let g:fzf_favourite_files = [
             \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
             \ {"name": "todos → projects", "path": "~/Dropbox/notes/projects.txt"},
             \ {"name": "todos → thesis", "path": "~/Dropbox/notes/thesis.txt"},
-            \ {"name": "habits → STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-            \ {"name": "habits → daily", "path": "~/Dropbox/notes/daily.txt"},
-            \ {"name": "habits → weekly", "path": "~/Dropbox/notes/weekly.txt"},
-            \ {"name": "habits → monthly", "path": "~/Dropbox/notes/monthly.txt"},
+            \ {"name": "habits STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
+            \ {"name": "habits & recurring tasks", "path": "~/Dropbox/notes/recurring-tasks-and-habits.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
 nnoremap <leader>f :Favourites<CR>
