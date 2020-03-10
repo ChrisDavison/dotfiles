@@ -11,6 +11,7 @@ set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux FINANCES "$HOME/Dropbox/budget"
+set -Ux VIRTUAL_ENV_DISABLE_PROMPT 1
 
 test -d $GOBIN; and set PATH $GOBIN $PATH
 test -d $HOME/bin; and set PATH $HOME/.bin $PATH

@@ -80,11 +80,9 @@ let g:is_bash=1
 let g:fzf_layout = {'window': 'enew'}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
-" 'nested' hides L_n+1 below L_n
-" 'stacked' folds all headers, but treats them as same level
-let g:markdown_fold_method='nested' " or 'stacked'
-
-" let g:EasyMotion_smartcase=1
+" 'nested' -- hides L_n+1 below L_n
+" 'stacked' -- folds all headers, but treats them as same level
+let g:markdown_fold_method='nested'
 
 " From .vim/plugin/foldtext
 set foldtext=CustomFoldText()
@@ -92,8 +90,6 @@ set foldtext=CustomFoldText()
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
 endif
-
-let g:sneak#label=1
 
 let &rtp.=",~/.vim/snippets"
 let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
@@ -153,7 +149,6 @@ nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>r :Rg 
-nnoremap <leader>r :Rg 
 " ctags definitions for markdown urls and @keywords
 nnoremap <leader>l :BTags LINK<CR>
 nnoremap <leader># :Tags @<CR>
@@ -169,7 +164,7 @@ let g:fzf_favourite_files = [
             \ {"name": "todos → projects", "path": "~/Dropbox/notes/projects.txt"},
             \ {"name": "todos → thesis", "path": "~/Dropbox/notes/thesis.txt"},
             \ {"name": "habits STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-            \ {"name": "habits & recurring tasks", "path": "~/Dropbox/notes/habits-and-recurring-tasks.txt"},
+            \ {"name": "habits", "path": "~/Dropbox/notes/my-habits.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
 nnoremap <leader>f :Favourites<CR>
@@ -181,7 +176,7 @@ nnoremap <leader>il :InsertLinkToNote
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
 nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
 nnoremap <leader>cd :let @+=resolve(expand("%:p:h"))<CR>
-" abbreviations - command mode {{{1
+" abbreviations {{{1
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
@@ -194,17 +189,10 @@ cnoreabbrev BD bp<bar>bd #
 cnoreabbrev BufOnly %bd\|e#
 cnoreabbrev ts Tagsearch
 cnoreabbrev fav Favourites
-" abbreviations - insert mode {{{1
-iabbrev meanstd μ±σ
-iabbrev ALSO **See also**:
 iabbrev <expr> DATE strftime("%Y-%m-%d")
-iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
-iabbrev <expr> DATED strftime("%b %d")
-iabbrev <expr> DATEFULL strftime("%Y-%m-%d %A")
-iabbrev <expr> DATENFULL strftime("%Y %b %d")
-iabbrev <expr> jhead strftime("# %Y-%m-%d")
+iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev TODO **TODO** -
+iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
 " custom commands {{{1
 command! CD exec "cd " . expand("%:p:h")
 command! SeeAlso Rg see also
@@ -221,6 +209,6 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
-    au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=0
+    au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=-1
 augroup END
 " }}}1

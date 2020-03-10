@@ -73,9 +73,6 @@
 [submodule ".vim/bundle/vim-pandoc-syntax"]
 	path = .vim/bundle/vim-pandoc-syntax
 	url = git@github.com:vim-pandoc/vim-pandoc-syntax
-[submodule ".vim/bundle/goyo.vim"]
-	path = .vim/bundle/goyo.vim
-	url = git@github.com:junegunn/goyo.vim
 [submodule ".vim/bundle/vim-one"]
 	path = .vim/bundle/vim-one
 	url = git@github.com:rakr/vim-one
@@ -91,12 +88,6 @@
 [submodule ".vim/bundle/auto-pairs"]
 	path = .vim/bundle/auto-pairs
 	url = git@github.com:jiangmiao/auto-pairs
-[submodule ".vim/bundle/vim-signature"]
-	path = .vim/bundle/vim-signature
-	url = git@github.com:kshenoy/vim-signature
-[submodule ".vim/bundle/vim-sneak"]
-	path = .vim/bundle/vim-sneak
-	url = git@github.com:justinmk/vim-sneak
 [submodule ".vim/bundle/vim-fugitive"]
 	path = .vim/bundle/vim-fugitive
 	url = git@github.com:tpope/vim-fugitive
