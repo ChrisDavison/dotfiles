@@ -130,6 +130,10 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+nnoremap <UP> :resize +2<CR>
+nnoremap <DOWN> :resize -2<CR>
+nnoremap <LEFT> :vertical resize +2<CR>
+nnoremap <RIGHT> :vertical resize -2<CR>
 "      terminal {{{1
 tnoremap <Esc> <C-\><C-n>
 "      fzf {{{1
@@ -187,8 +191,6 @@ cnoreabbrev oedit only<bar>edit
 cnoreabbrev oe only<bar>edit
 cnoreabbrev BD bp<bar>bd #
 cnoreabbrev BufOnly %bd\|e#
-cnoreabbrev ts Tagsearch
-cnoreabbrev fav Favourites
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
