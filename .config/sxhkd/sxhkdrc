@@ -3,10 +3,10 @@
 # ==========================
 # terminal emulator
 super + Return
-	gnome-terminal
+	alacritty
 
 super + d
-    j4-dmenu-desktop --dmenu="dmenu -i -fn 'Inconsolata-18' -p 'Program:'"
+    j4-dmenu-desktop --dmenu="dmenu -i -fn 'CamingoCode-18' -p 'Program:'"
 
 super + shift + d
     dmenu_win_switcher.sh

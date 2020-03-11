@@ -47,7 +47,7 @@ font: # CHANGES REQUIRE RESTART
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
     fontface: &fontface
-        Inconsolata
+        CamingoCode
     normal:
         family: *fontface
         style: Regular
@@ -57,7 +57,7 @@ font: # CHANGES REQUIRE RESTART
     bold:
         family: *fontface
         style: Bold
-    size: 14
+    size: 13
 
     offset:
         x: 0 # letterspacing
@@ -283,7 +283,16 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-colors: *seoul256
+#colors: *molokai
+#colors: *ayudark
+colors: *dracula
+#colors: *gruvbox
+#colors: *molokai
+#colors: *monokai
+#colors: *onedark
+#colors: *seoul256
+#colors: *seoul256_light
+#colors: *pencil_light
 
 visual_bell:
     animation: EaseOutExpo
