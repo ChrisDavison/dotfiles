@@ -1,1 +1,1 @@
-/home/davison/.local/share/omf/themes/agnoster/fish_prompt.fish
+/home/davison/.local/share/omf/themes/l/fish_prompt.fish
