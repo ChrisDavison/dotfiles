@@ -1,4 +1,4 @@
-setlocal equalprg=pandoc\ --from\ latex\ --to\ --latex\ --columns=80
+setlocal equalprg=pandoc\ --from\ latex\ --to\ latex\ --columns=80
 setlocal foldmethod=expr
 setlocal foldexpr=vimtex#fold#level(v:lnum)
 setlocal foldtext=vimtex#fold#text()
