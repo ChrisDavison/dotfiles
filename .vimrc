@@ -74,7 +74,7 @@ if !has('gui_running')
     set t_Co=256
 endif
 set bg=light
-silent! colorscheme yang
+silent! colorscheme xcodedark
 " settings for plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'window': 'enew'}
@@ -137,9 +137,6 @@ nnoremap <RIGHT> :vertical resize -2<CR>
 "      terminal {{{1
 tnoremap <Esc> <C-\><C-n>
 "      fzf {{{1
-imap <C-x><C-k> <plug>(fzf-complete-word)
-imap <C-x><C-f> <plug>(fzf-complete-path)
-imap <C-x><C-j> <plug>(fzf-complete-file)
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
