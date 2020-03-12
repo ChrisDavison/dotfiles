@@ -22,6 +22,7 @@ setlocal foldexpr=markdown#fold_level()
 setlocal conceallevel=1
 setlocal nospell
 let g:pandoc#syntax#conceal#urls=1
+let suggest#minTriggerInputLength=3
 
 au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
 

@@ -28,6 +28,10 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 
+set cmdheight=2
+set shortmess+=c
+
+
 " Some servers have issues with backup files
 set nobackup nowritebackup
 
@@ -43,7 +47,7 @@ set splitbelow splitright
 set showmode
 let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__,.*\.aux,.*\.log,.*\.bbl,.*\.blg,.*\.fdb_latexmk,.*\.fls,.*\.log,.*\.out,.*\.toc'
 
-set signcolumn=auto
+set signcolumn=yes
 set path=.,**
 set statusline=\ %t:%l:%c\ %m%r\ %{FugitiveStatusline()}
 "      undo (save undo history across sessions) {{{1
@@ -96,6 +100,7 @@ let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
 
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
+
 
 " keybinds {{{1
 nnoremap <silent> Q =ip
@@ -211,3 +216,64 @@ augroup vimrc
     au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=-1
 augroup END
 " }}}1
+" coc.nvim {{{1
+let g:suggest#enablePreview='true'
+inoremap <silent><expr> <TAB>
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "<TAB>" :
+            \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+"
+" position. Coc only does snippet and additional edit on confirm.
+if has('patch8.1.1068')
+  " Use `complete_info` if your (Neo)Vim version supports it.
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
