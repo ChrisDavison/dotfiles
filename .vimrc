@@ -27,6 +27,7 @@ set updatetime=300 " Write a swap file after 1 second
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
+set foldlevelstart=99
 
 set cmdheight=2
 set shortmess+=c
@@ -213,7 +214,6 @@ augroup vimrc
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au BufEnter * Root
     au Filetype make setlocal noexpandtab
-    au BufEnter logbook.txt,journal.txt setlocal foldlevelstart=-1
 augroup END
 " }}}1
 " coc.nvim {{{1
@@ -277,3 +277,7 @@ augroup mygroup
 augroup end
 
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
+command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
+command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
