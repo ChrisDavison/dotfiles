@@ -7,5 +7,9 @@ setlocal fillchars=fold:\
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 
-command! Todos :grep \\\\todo
+command! Todos :grep \\\\todo<CR>
 command! BTodos :grep \\\\todo %<CR>
+command! Tables :grep '\\\\begin\{table'<CR>
+command! BTables :grep '\\\\begin\{table' %<CR>
+command! Figures :grep '\\\\begin\{figure'<CR>
+command! BFigures :grep '\\\\begin\{figure' %<CR>
