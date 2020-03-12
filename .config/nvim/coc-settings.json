@@ -3,12 +3,37 @@
     "list.source.grep.args": [
         "--smart-case"
     ],
+    "suggest.minTriggerInputLength": 3,
+    "suggest.autoTrigger": "always",
     "suggest.triggerAfterInsertEnter": true,
     "suggest.enablePreview": true,
     "suggest.echodocSupport": true,
     "codeLens.enable": true,
+    "suggest.noselect": false,
     "coc.preferences.formatOnSaveFiletypes": [
-        "rust"
+        "rust",
+        "go"
     ],
-    "python.jediEnabled": false
+    "python.jediEnabled": false,
+    "languageServer": {
+        "haskell": {
+            "command": "hie-wrapper",
+            "args": ["--lsp"],
+            "rootPatterns": [
+                "stack.yaml",
+                "cabal.config",
+                "package.yaml"
+            ],
+            "filetypes": [
+                "hs",
+                "lhs",
+                "haskell"
+            ],
+            "initializationOptions": {
+                "languageServerHaskell": {
+                    "hlintOn": true
+                }
+            }
+        }
+    }
 }
