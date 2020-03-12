@@ -27,7 +27,7 @@ super + shift + r
 
 # email
 super + alt + ctrl + e
-    bspc rule -a \* -o state=floating center && firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com"
+    firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com"
 
 # make sxhkd reload its configuration files:
 super + Escape
