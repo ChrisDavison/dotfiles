@@ -39,9 +39,6 @@ scrolling:
     history: 100000 # Number of scrollback lines. '0' disables
     multiplier: 3 # Number of lines viewport moves when scrolled
 
-# Spaces per tab (some apps like emacs may need this)
-tabspaces: 4
-
 font: # CHANGES REQUIRE RESTART
     use_thin_strokes: false # macOS ONLY. false is better for non-retina displays
     # options are normal/italic/bold
