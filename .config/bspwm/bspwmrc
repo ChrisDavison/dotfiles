@@ -13,10 +13,11 @@ if [ -z "$EXTERNAL" ]; then
     bspc monitor $INTERNAL -d 1 2 3 4 5 6 7 8 9 0
     MONITOR=$INTERNAL polybar -r example &
 else
+    xrandr --output $EXTERNAL --left-of $INTERNAL --auto --noprimary
+    bspc monitor $EXTERNAL -d 1 2 3 4 5
     xrandr --output $INTERNAL --primary
-    bspc monitor $INTERNAL -d 1 2 3 4 5
-    xrandr --output $EXTERNAL --right-of $INTERNAL --auto --noprimary
-    bspc monitor $EXTERNAL -d 6 7 8 9 0
+    bspc monitor $INTERNAL -d 6 7 8 9 0
+
     MONITOR=$INTERNAL polybar -r example &
     MONITOR=$EXTERNAL polybar -r example &
 fi
