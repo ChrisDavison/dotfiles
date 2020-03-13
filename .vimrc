@@ -281,3 +281,4 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
+

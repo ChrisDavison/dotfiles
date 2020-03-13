@@ -34,3 +34,4 @@ vnoremap ml :call markdown#file_from_selection(1)<CR>
 nnoremap gml :call markdown#file_from_selection_and_edit(0)<CR>
 vnoremap gml :call markdown#file_from_selection_and_edit(1)<CR>
 nnoremap gf :call markdown#goto_file()<CR>
+nnoremap <CR> :call markdown#goto_file()<CR>
