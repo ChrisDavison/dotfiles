@@ -28,6 +28,7 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
+set autochdir
 
 set cmdheight=2
 set shortmess+=c
@@ -79,7 +80,7 @@ if !has('gui_running')
     set t_Co=256
 endif
 set bg=light
-silent! colorscheme xcodedark
+silent! colorscheme yang
 " settings for plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'window': 'enew'}
@@ -154,7 +155,7 @@ nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
-nnoremap <leader>p :Files<CR>
+nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>r :Rg 
 " ctags definitions for markdown urls and @keywords
 nnoremap <leader>l :BTags LINK<CR>
@@ -212,7 +213,6 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufEnter * Root
     au Filetype make setlocal noexpandtab
 augroup END
 " }}}1
@@ -282,3 +282,4 @@ command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdpe
 command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 
+command! EFiletype exec "edit ~/.vim/after/ftplugin/" . &filetype . ".vim"
