@@ -1,5 +1,6 @@
 let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 let g:pandoc#formatting#mode='hA'
+let g:pandoc#keyboard#use_default_mappings=0
 
 let g:markdown_reference_links=1
 let g:markdown_hard_wrap=1

@@ -85,9 +85,6 @@
 [submodule ".vim/ultisnips"]
 	path = .vim/bundle/ultisnips
 	url = git@github.com:sirver/ultisnips
-[submodule ".vim/bundle/auto-pairs"]
-	path = .vim/bundle/auto-pairs
-	url = git@github.com:jiangmiao/auto-pairs
 [submodule ".vim/bundle/vim-fugitive"]
 	path = .vim/bundle/vim-fugitive
 	url = git@github.com:tpope/vim-fugitive

@@ -158,7 +158,7 @@ nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
 nnoremap <leader>r :Rg 
 " ctags definitions for markdown urls and @keywords
-nnoremap <leader>l :BTags LINK<CR>
+nnoremap <leader>l :BTags link <CR>
 nnoremap <leader># :Tags @<CR>
 
 "      for my plugins (~/.vim/plugin) {{{1

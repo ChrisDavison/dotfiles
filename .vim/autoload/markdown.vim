@@ -32,7 +32,11 @@ function! markdown#goto_file() " {{{1
             normal f]
         end
         normal vi("by
-        execute "silent!edit " . getreg("b")
+        if filereadable(getreg("b"))
+            execute "silent!edit " . getreg("b")
+        else
+            echom "Couldn't find valid link."
+        end
     end
 endfunction " }}}1
 
