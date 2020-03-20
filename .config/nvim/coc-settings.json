@@ -9,6 +9,7 @@
     "suggest.enablePreview": true,
     "suggest.echodocSupport": true,
     "codeLens.enable": true,
+    "diagnostic.enable": false,
     "suggest.noselect": false,
     "coc.preferences.formatOnSaveFiletypes": [
         "rust",
