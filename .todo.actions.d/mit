@@ -1,0 +1,21 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "  List +mit, or mark as +mit:"
+  echo "    `basename $0` [ITEM#...]"
+  echo "      NO ITEM# - list +mit"
+  echo "      WITH ITEM# - mark items as +mit"
+  echo ""
+  exit
+}
+
+if [ $# = 0 ]; then
+    "$TODO_SH" ls +mit
+else
+    for item in ${*//,/ }; do
+        "$TODO_SH" command app $item +mit
+    done
+fi
