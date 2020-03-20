@@ -80,10 +80,10 @@ if !has('gui_running')
     set t_Co=256
 endif
 set bg=light
-silent! colorscheme yang
+silent! colorscheme xcodedarkhc
 " settings for plugins {{{1
 let g:is_bash=1
-let g:fzf_layout = {'window': 'enew'}
+let g:fzf_layout = {'down': '~40%'}
 
 " Used by .vim/plugin/markdown_foldlevel.vim
 " 'nested' -- hides L_n+1 below L_n
@@ -125,9 +125,6 @@ nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
-
-" Automatically use first spelling suggestion
-nnoremap <leader>s  z=1<CR><CR>
 
 " Close quickfix or location window
 nnoremap <leader>cc :cclose<bar>lclose<CR>
@@ -179,6 +176,8 @@ nnoremap <leader>f :Favourites<CR>
 nnoremap <F2> :e ~/Dropbox/notes/todo.txt<CR>
 nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
 nnoremap <leader>il :InsertLinkToNote 
+
+let g:checkmark_no_mappings=1
 
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
