@@ -12,6 +12,8 @@ set -Ux CODEDIR "$HOME/code/"
 set -Ux NOTESDIR "$HOME/Dropbox/notes"
 set -Ux FINANCES "$HOME/Dropbox/budget"
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 1
+set -Ux TODOFILE ~/Dropbox/notes/todo.txt
+set -Ux DONEFILE ~/Dropbox/notes/done.txt
 
 test -d $GOBIN; and set PATH $GOBIN $PATH
 test -d $HOME/bin; and set PATH $HOME/.bin $PATH
@@ -19,6 +21,7 @@ test -d $HOME/code/scripts/; and set PATH $HOME/code/scripts/ $PATH
 test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
 test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
 test -d /snap/bin; and set PATH /snap/bin $PATH
+test -d $HOME/.local/bin; and set PATH $HOME/.local/bin $PATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
@@ -39,6 +42,7 @@ alias b="bat --map-syntax txt:markdown --style=grid,header"
 alias n="echo '-  $argv' >> ~/Dropbox/notes/inbox.txt"
 alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
 alias inbox="nvim ~/Dropbox/notes/inbox.txt"
+alias t="todo.sh -f"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
@@ -56,3 +60,4 @@ alias ltg="lt --git-ignore"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
+test -f ~/code/todo.txt/todo_completion; and bash ~/code/todo.txt/todo_completion
