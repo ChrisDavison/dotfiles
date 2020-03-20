@@ -97,3 +97,6 @@
 [submodule ".vim/bundle/vim-pandoc"]
 	path = .vim/bundle/vim-pandoc
 	url = git@github.com:vim-pandoc/vim-pandoc
+[submodule ".vim/bundle/todo.txt-vim"]
+	path = .vim/bundle/todo.txt-vim
+	url = https://gitlab.com/dbeniamine/todo.txt-vim
