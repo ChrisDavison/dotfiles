@@ -45,7 +45,7 @@ vnoremap gml :call markdown#file_from_selection_and_edit(1)<CR>
 nnoremap gf :call markdown#goto_file()<CR>
 nnoremap <leader>g :call markdown#goto_file()<CR>
 
-let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt']
+let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt', 'daily.txt', 'weekly.txt', 'monthly.txt']
 
 
 nnoremap <leader>x :call checkmark#toggle()<CR>

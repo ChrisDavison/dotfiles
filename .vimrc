@@ -165,11 +165,13 @@ let g:fzf_favourite_files = [
             \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.txt"},
             \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.txt"},
             \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
-            \ {"name": "todos", "path": "~/Dropbox/notes/todo.txt"},
-            \ {"name": "todos → projects", "path": "~/Dropbox/notes/projects.txt"},
-            \ {"name": "todos → thesis", "path": "~/Dropbox/notes/thesis.txt"},
+            \ {"name": "todos", "path": "~/Dropbox/notes/todo/todo.txt"},
+            \ {"name": "todos - projects", "path": "~/Dropbox/notes/projects.txt"},
+            \ {"name": "todos - thesis", "path": "~/Dropbox/notes/thesis.txt"},
             \ {"name": "habits STACKS", "path": "~/Dropbox/notes/my-habit-stacks.txt"},
-            \ {"name": "habits", "path": "~/Dropbox/notes/my-habits.txt"},
+            \ {"name": "habits - daily", "path": "~/Dropbox/notes/todo/daily.txt"},
+            \ {"name": "habits - weekly", "path": "~/Dropbox/notes/todo/weekly.txt"},
+            \ {"name": "habits - monthly", "path": "~/Dropbox/notes/todo/monthly.txt"},
             \ {"name": "vimrc", "path": "~/.vimrc"},
             \]
 nnoremap <leader>f :Favourites<CR>
