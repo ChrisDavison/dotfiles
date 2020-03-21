@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # === HEAVY LIFTING ===
 shopt -s extglob extquote

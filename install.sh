@@ -20,6 +20,8 @@ remove_and_symlink .zshrc
 
 echo "----- symlinking vim and emacs dirs"
 remove_and_symlink .vim
+remove_and_symlink .todo
+remove_and_symlink .todo.actions.d
 # remove_and_symlink .emacs.d
 
 

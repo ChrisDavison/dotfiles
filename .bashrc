@@ -195,6 +195,8 @@ alias today="date +%F"
 alias tmux="tmux -2"
 alias sedit="sudo $EDITOR"
 alias envml="source $HOME/.envs/ml/bin/activate"
+alias t="todo.sh -a -f -d $HOME/.todo/config"
+alias habits="todo.sh -a -f -d $HOME/.todo/config ls +habit"
 
 if [ ! $(uname -s) = 'Darwin' ];then
     if grep -q Microsoft /proc/version; then
@@ -236,7 +238,7 @@ case $- in
 esac
 
 # Path to the bash it configuration
-export BASH_IT="/home/davison/code/bash-it"
+export BASH_IT="/home/davison/.bash_it"
 
 # .bash_it/themes/<theme>
 export BASH_IT_THEME='norbu'
