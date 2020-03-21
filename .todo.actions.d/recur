@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+import datetime
+import os
+import re
+import sys
+
+
+USAGE = """    recur ITEM#...
+      Mark each ITEM# as complete, and recreate following rec:X[dwm]
+"""
+
+
+rx_rec = re.compile(r"rec:(\d+)([dwm])")
+rx_rec_word = re.compile(r"rec:(\d+)(monday|tuesday|wednesday|thursday|friday|saturday|sunday|first|last)")
+
+    
+def shift_date(recur_string_match):
+    shift=datetime.timedelta(days=0)
+    shiftnum = int(recur_string_match.group(1))
+    freq=recur_string_match.group(2)
+    after = datetime.date.today()
+    if freq is 'd':
+        after += datetime.timedelta(days=shiftnum)
+    elif freq is 'w':
+        after += datetime.timedelta(weeks=shiftnum)
+    else:
+        after = after.replace(month=after.month+1)
+    return after
+
+
+def inc_date_till_weekday(weekday):
+    today = datetime.date.today()
+    shift = datetime.timedelta(days=1)
+
+def recur_date_word(word):
+    word = word.lower()
+    days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    if word in days:
+        return inc_date_till_weekday(days.index(word))
+    elif word == 'first':
+        return inc_date_till_first()
+    elif word == 'last':
+        return inc_date_till_last()
+
+def recur_task(task):
+    today = datetime.date.today()
+    m = rx_rec.search(task)
+    m2 = rx_rec_word.search(task)
+    done_task = "x {} {}".format(today, task)
+    if m:
+        next_date = shift_date(m)
+        if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
+            task = task[task.find(' ')+1:]
+        new_task = '{} {}'.format(next_date, task)
+    elif 'rec:' in task:
+        next_date = recur_date_word(m2.group(1))
+        if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
+            task = task[task.find(' ')+1:]
+        new_task = '{} {}'.format(next_date, task)
+    else:
+        new_task = task
+    return done_task, new_task
+
+
+args = sys.argv[2:]
+if not args:
+    print(USAGE)
+    sys.exit(0)
+if not args:
+    print("usage: No ITEM# given")
+    sys.exit(1)
+items = [int(a) for a in args]
+today = datetime.date.today()
+todos_to_print = []
+todos_to_append = []
+todofile = os.environ["TODO_FILE"]
+todos = open(todofile, 'r').read().splitlines()
+for i, t in enumerate(todos):
+    if not t:
+        continue
+    if i+1 in items:
+        done, new = recur_task(t)
+        print("DONE: {} {}".format(i+1, t))
+        print("ADDED:", new)
+        todos_to_print.append(done)
+        todos_to_append.append(new)
+    else:
+        todos_to_print.append(t)
+todos_to_print.extend(todos_to_append)
+todos_out = '\n'.join(todos_to_print)
+with open(todofile, 'w') as todo_file:
+    print(todos_out, file=todo_file) 
