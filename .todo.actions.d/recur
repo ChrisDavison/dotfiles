@@ -12,14 +12,14 @@ USAGE = """    recur ITEM#...
 
 rx_rec = re.compile(r"rec:(\d+)([dwm])")
 rx_due = re.compile(r"due:(\d\d\d\d-\d\d-\d\d)")
-rx_rec_word = re.compile(r"rec:(\d+)(monday|tuesday|wednesday|thursday|friday|saturday|sunday|first|last)")
+rx_rec_word = re.compile(r"rec:(monday|tuesday|wednesday|thursday|friday|saturday|sunday|first|last)")
 
     
-def shift_date(recur_string_match):
+def shift_date(recur_string_match, cur_due_date):
     shift=datetime.timedelta(days=0)
     shiftnum = int(recur_string_match.group(1))
     freq=recur_string_match.group(2)
-    after = datetime.date.today()
+    after = cur_due_date
     if freq is 'd':
         after += datetime.timedelta(days=shiftnum)
     elif freq is 'w':
@@ -29,59 +29,58 @@ def shift_date(recur_string_match):
     return after
 
 
-def inc_date_till_weekday(weekday):
-    today = datetime.date.today()
-    shift = datetime.timedelta(days=1)
-
-
-def recur_date_word(word):
+def recur_date_word(word, cur_due_date):
     word = word.lower()
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     if word in days:
-        return inc_date_till_weekday(days.index(word))
+        # Walk forward a day at a time until we reach the appropriate weekday
+        next_date = cur_due_date
+        while True:
+            if next_date.weekday() == days.index(word) and cur_due_date != next_date:
+                break
+            next_date += datetime.timedelta(days=1)
+        return next_date
     elif word == 'first':
-        return inc_date_till_first()
+        # Jump forward 1 month from the current due date, and take the first
+        # day of that month
+        return cur_due_date.replace(day=1, month=cur_due_date.month+1)
     elif word == 'last':
-        return inc_date_till_last()
+        # From the current due date, jump forward 2 months, then back 1 day, 
+        # to get the end of the NEXT month
+        next_date = cur_due_date.replace(day=1, month=cur_due_date.month+2)
+        return next_date - datetime.timedelta(days=1)
+
 
 def recur_task(task):
     today = datetime.date.today()
-    m = rx_rec.search(task)
-    m2 = rx_rec_word.search(task)
     done_task = "x {} {}".format(today, task)
-    if m:
-        next_date = shift_date(m)
-        if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
-            task = task[task.find(' ')+1:]
-        m_due = rx_due.search(task)
-        if m_due:
-            p0, p1 = m_due.span()
-            new_task = '{}due:{}{}'.format(
-                task[:p0],
-                next_date,
-                task[p1:]
-            )
-        else:
-            new_task = '{} {}'.format(next_date, task)
-    elif 'rec:' in task:
-        next_date = recur_date_word(m2.group(1))
-        if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
-            task = task[task.find(' ')+1:]
-        new_task = '{} {}'.format(next_date, task)
+
+    match_rec = rx_rec.search(task)
+    match_rec_word = rx_rec_word.search(task)
+    m_due = rx_due.search(task)
+    # Extract due date
+    cur_due_date = None
+    if m_due:
+        p0, p1 = m_due.span()
+        cur_due_date = datetime.datetime.strptime(task[p0+4:p1], "%Y-%m-%d").date()
+        task = task[:p0] + ' ' + task[p1:]
+    # Extract rec word and calc next due date
+    if match_rec:
+        next_date = shift_date(match_rec, cur_due_date)
+    elif match_rec_word:
+        next_date = recur_date_word(match_rec_word.group(1), cur_due_date)
     else:
-        new_task = task
+        next_date = datetime.date.today() + timedelta(days=1)
+    # Generate new task name
+    new_task = '{}due:{}'.format(task, next_date)
     return done_task, new_task
 
 
-args = sys.argv[2:]
-if not args:
+args = sys.argv[1:]
+if args[0] == "usage":
     print(USAGE)
     sys.exit(0)
-if not args:
-    print("usage: No ITEM# given")
-    sys.exit(1)
-items = [int(a) for a in args]
-today = datetime.date.today()
+items = [int(a) for a in args[1:]]
 todos_to_print = []
 todos_to_append = []
 todofile = os.environ["TODO_FILE"]
