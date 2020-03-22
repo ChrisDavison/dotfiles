@@ -4,10 +4,10 @@ action=$1
 shift
 
 [ "$action" = "usage" ] && {
-  echo "  List +mit, or mark as +mit:"
-  echo "    `basename $0` [ITEM#...]"
-  echo "      NO ITEM# - list +mit"
-  echo "      WITH ITEM# - mark items as +mit"
+  echo "    mit"
+  echo "      List all items with the +mit tag"
+  echo "    mit ITEM#..."
+  echo "      Mark each ITEM# with tag +mit"
   echo ""
   exit
 }

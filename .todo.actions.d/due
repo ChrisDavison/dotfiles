@@ -1,18 +1,104 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
+"""
+due.py
+Python 2/3 script for todo.txt add-on
+Created by Rebecca Morgan 2017-03-10
+Copyright (c) 2017 Rebecca Morgan. All rights reserved.
 
-action=$1
-flag=$2
-shift
+Edits by Steve Winslow 2017-06-25
+Edits copyright (c) 2017 Steve Winslow. Licensed under MIT.
+"""
 
-[ "$action" = "usage" ] && {
-  echo "  Visualize tasks by due date:"
-  echo "    due"
-  echo "      default behaviour generates a list tasks due today or overdue"
-  echo "      Optional argument (integer n) also shows tasks due in next n days."
-  echo ""
-  exit
-}
+from __future__ import print_function
+from __future__ import division
 
-[ "$action" = "due" ] && {
-     python $(dirname $0)/due.py "$TODO_FILE" $flag
-}
+import os
+import sys
+import math
+from datetime import datetime, timedelta
+from collections import defaultdict
+import re
+
+
+FUTURE_DAYS=None
+
+
+def task_print(task):
+    match = re.search(r"\s\(([A-Z])\)\s", task[1])
+
+    if match is None:
+        print("{:4d} {}".format(task[0], task[1]))
+    else:
+        pri = match.group(1)
+        color = os.getenv("PRI_" + pri)
+
+        if color is None:
+            color = os.getenv("PRI_X")
+
+        color = eval('u"' + color[1:] + '"')
+        print("{:4d} {}".format(task[0], color + task[1] + "\033[0m"))
+
+
+def print_header(message):
+    print("====", message, "="*(73 - len(message)))
+
+
+def group_todos_by_delta_days(todos):
+    rx_due = re.compile(r"(\([A-Z]\))?[A-Za-z0-9+@\s]+due:(\d{4}-\d{2}-\d{2})")
+    tasks_with_date = list()
+    tasks_by_delta = defaultdict(list)
+    today = datetime.today().date()
+    zero_pad = int(math.log10(len(todos))) + 1
+    for i, task in enumerate(todos):
+        if task.startswith('x '):
+            continue
+        m_due = rx_due.findall(task)
+        if m_due:
+            date = datetime.strptime(m_due[0][1], "%Y-%m-%d").date()
+            diff = (date - today).days
+            tasks_by_delta[diff].append((i, task.strip()))
+    return tasks_by_delta
+
+
+def main():
+    todo_file = os.environ["TODO_FILE"]
+    tasks_by_delta = dict()
+    with open(todo_file, "r") as f:
+        content = f.readlines()
+        date = datetime.today()
+        tasks_by_delta = group_todos_by_delta_days(content)
+    sorted_deltas = sorted(tasks_by_delta.keys())
+
+    overdue_keys = [k for k in sorted_deltas if k < 0]
+    if overdue_keys:
+        print_header("Overdue tasks")
+        for delta in overdue_keys:
+            for task in tasks_by_delta[delta]:
+                task_print(task)
+        print()
+    if 0 in sorted_deltas:
+        print_header("Tasks due today")
+        for task in tasks_by_delta[0]:
+            task_print(task)
+        print()
+   
+    if FUTURE_DAYS:
+        print_header("Tasks due in the next {} days".format(FUTURE_DAYS - 1))
+        for delta in range(1, FUTURE_DAYS):
+            if delta in sorted_deltas:
+                for task in tasks_by_delta[delta]:
+                    task_print(task)
+        print()
+           
+
+args = sys.argv[1:]
+if args[0] == "usage":
+    print("    due [N]")
+    print("      default behaviour generates a list tasks due today or overdue")
+    print("      With argument N (integer), also show tasks due in next N days")
+    print("")
+else:
+    if len(args) > 1:
+        FUTURE_DAYS = int(args[1])
+    main()
+

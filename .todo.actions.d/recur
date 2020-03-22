@@ -11,6 +11,7 @@ USAGE = """    recur ITEM#...
 
 
 rx_rec = re.compile(r"rec:(\d+)([dwm])")
+rx_due = re.compile(r"due:(\d\d\d\d-\d\d-\d\d)")
 rx_rec_word = re.compile(r"rec:(\d+)(monday|tuesday|wednesday|thursday|friday|saturday|sunday|first|last)")
 
     
@@ -32,6 +33,7 @@ def inc_date_till_weekday(weekday):
     today = datetime.date.today()
     shift = datetime.timedelta(days=1)
 
+
 def recur_date_word(word):
     word = word.lower()
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -51,7 +53,16 @@ def recur_task(task):
         next_date = shift_date(m)
         if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
             task = task[task.find(' ')+1:]
-        new_task = '{} {}'.format(next_date, task)
+        m_due = rx_due.search(task)
+        if m_due:
+            p0, p1 = m_due.span()
+            new_task = '{}due:{}{}'.format(
+                task[:p0],
+                next_date,
+                task[p1:]
+            )
+        else:
+            new_task = '{} {}'.format(next_date, task)
     elif 'rec:' in task:
         next_date = recur_date_word(m2.group(1))
         if re.match(r'\d\d\d\d-\d\d-\d\d ', task):
