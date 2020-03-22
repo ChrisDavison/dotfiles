@@ -2,6 +2,7 @@
 
 sxhkd &
 nm-applet &
+compton -b &
 udiskie &
 dropbox start &
 
@@ -25,9 +26,9 @@ fi
 feh --bg-scale ~/Dropbox/wallpapers/fireflies.jpg &
 
 #8620e6 is a nice purple
-bspc config border_width         2
+bspc config border_width         3
 bspc config focused_border_color "#8620e6"
-bspc config window_gap           10
+bspc config window_gap           0
 
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
