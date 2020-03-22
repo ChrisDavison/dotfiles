@@ -91,14 +91,14 @@ def main():
         print()
            
 
-args = sys.argv[1:]
-if args[0] == "usage":
+if 'usage' in sys.argv:
     print("    due [N]")
     print("      default behaviour generates a list tasks due today or overdue")
     print("      With argument N (integer), also show tasks due in next N days")
     print("")
 else:
+    args = [a for a in sys.argv if os.path.split(a)[-1] != 'due']
     if len(args) > 1:
-        FUTURE_DAYS = int(args[1])
+        FUTURE_DAYS = int(sys.argv[1])
     main()
 
