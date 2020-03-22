@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+import os
+import sys
+
+args = sys.argv[1:]
+if args[0] == "usage":
+    print("    done")
+    print("      List all tasks in $DONE_FILE")
+    print("")
+else:
+    donefile = os.environ["DONE_FILE"]
+    for line in open(donefile):
+        print(line.strip())
