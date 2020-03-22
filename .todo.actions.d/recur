@@ -13,6 +13,7 @@ USAGE = """    recur ITEM#...
 rx_rec = re.compile(r"rec:(\d+)([dwm])")
 rx_due = re.compile(r"due:(\d\d\d\d-\d\d-\d\d)")
 rx_rec_word = re.compile(r"rec:(monday|tuesday|wednesday|thursday|friday|saturday|sunday|first|last)")
+rx_space = re.compile(r"\s\s+")
 
     
 def shift_date(recur_string_match, cur_due_date):
@@ -76,7 +77,7 @@ def recur_task(task):
     else:
         next_date = datetime.date.today() + timedelta(days=1)
     # Generate new task name
-    new_task = '{}due:{}'.format(task, next_date)
+    new_task = '{} due:{}'.format(task, next_date)
     return done_task, new_task
 
 
@@ -101,6 +102,6 @@ for i, t in enumerate(todos):
     else:
         todos_to_print.append(t)
 todos_to_print.extend(todos_to_append)
-todos_out = '\n'.join(todos_to_print)
+todos_out = '\n'.join([rx_space.replace(" ", t) for t in todos_to_print])
 with open(todofile, 'w') as todo_file:
     print(todos_out, file=todo_file) 
