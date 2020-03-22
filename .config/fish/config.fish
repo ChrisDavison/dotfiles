@@ -43,7 +43,7 @@ alias n="echo '-  $argv' >> ~/Dropbox/notes/inbox.txt"
 alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
 alias inbox="nvim ~/Dropbox/notes/inbox.txt"
 alias t="todo.sh -a -f -d ~/.todo/config"
-alias habits="todo.sh -a -f -d ~/.todo/config ls +habit | ~/.todo.actions.d/recur_filter.py"
+alias habits="todo.sh -a -f -d ~/.todo/config-habits"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
