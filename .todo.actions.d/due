@@ -27,7 +27,7 @@ def task_print(task):
     match = re.search(r"\s\(([A-Z])\)\s", task[1])
 
     if match is None:
-        print("{:4d} {}".format(task[0], task[1]))
+        print("{:4d} {}".format(task[0]+1, task[1]))
     else:
         pri = match.group(1)
         color = os.getenv("PRI_" + pri)
@@ -36,7 +36,7 @@ def task_print(task):
             color = os.getenv("PRI_X")
 
         color = eval('u"' + color[1:] + '"')
-        print("{:4d} {}".format(task[0], color + task[1] + "\033[0m"))
+        print("{:4d} {}".format(task[0]+1, color + task[1] + "\033[0m"))
 
 
 def print_header(message):
