@@ -47,9 +47,8 @@ for project in $PROJECTS ; do
 	if [[ -n "${PROJECT_LIST}" ]]; then
 		echo  "+$project" 
 		echo  "${PROJECT_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
-		# If run as simplepv don't add newlines
+        echo ""
 	fi
-    echo ""
 done
 
 # Show todo items not associated to a project
