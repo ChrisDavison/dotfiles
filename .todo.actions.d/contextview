@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #===============================================================================
 #
-#          FILE: projectview
+#          FILE: contextview
 #
-#         USAGE: todo.sh projectview
+#         USAGE: todo.sh contextview
 #
 #   DESCRIPTION: 
 #
@@ -30,31 +30,31 @@ shift
 export TODOTXT_DISABLE_FILTER=1
 
 [ "$action" = "usage" ] && {
-	echo "    projectview [TERM...]"
-	echo "      Show todo items containing TERM, grouped by project, and displayed in"
+	echo "    contextview [TERM...]"
+	echo "      Show todo items containing TERM, grouped by context, and displayed in"
 	echo "      priority order. If no TERM provided, displays entire todo.txt."
 	echo ""
 	exit
 }
 
-# Find all projects and sort
-PROJECTS=$(grep -o '+[^ ]\+' "$TODO_FILE" | grep '^+' | sort -u | sed 's/^+//g' )
+# Find all contexts and sort
+contextS=$(grep -o '@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u | sed 's/^@//g' )
 
-# For each project show header and the list of todo items
-for project in $PROJECTS ; do 
+# For each context show header and the list of todo items
+for context in $contextS ; do 
 	# Use core _list function, does numbering and colouring for us
-	PROJECT_LIST=$(_list "$TODO_FILE" "+$project\\b" "$@" | sed 's/\ *+[a-zA-Z0-9._:\-]*\ */ /g' | sed 's/^/    /g')
-	if [[ -n "${PROJECT_LIST}" ]]; then
-		echo  "+$project" 
-		echo  "${PROJECT_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
+	context_LIST=$(_list "$TODO_FILE" "@$context\\b" "$@" | sed 's/\ *@[a-zA-Z0-9._:\-]*\ */ /g' | sed 's/^/    /g')
+	if [[ -n "${context_LIST}" ]]; then
+		echo  "@$context" 
+		echo  "${context_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
 		# If run as simplepv don't add newlines
 	fi
     echo ""
 done
 
-# Show todo items not associated to a project
-PROJECT_LIST=$(_list "$TODO_FILE" "$@" | grep -v "+[[:alnum:]]*" | sed 's/^/    /g')
-if [[ -n "${PROJECT_LIST}" ]]; then
-	echo "Not in projects" 
-	echo "${PROJECT_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
+# Show todo items not associated to a context
+context_LIST=$(_list "$TODO_FILE" "$@" | grep -v "@[[:alnum:]]*" | sed 's/^/    /g')
+if [[ -n "${context_LIST}" ]]; then
+	echo "Not in contexts" 
+	echo "${context_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
 fi
