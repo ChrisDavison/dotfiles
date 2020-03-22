@@ -57,9 +57,9 @@ def main():
     
     # get projects all done
     projects_finished = {}
-    for task in projects_in_done:
+    for task, count in projects_in_done.items():
         if task not in projects:
-            projects_finished[task] = 0
+            projects_finished[task] = count
 
     print("")
     print("TODO.TXT Bird's Eye View Report", date.today())
@@ -89,7 +89,7 @@ def main():
         print("Projects finished (No open TODOs)")
         print("=" * 42)
         for project, count_done in projects_finished.items():
-            print("    {} ({} todos)".format(project, count_done))
+            print("    {} ({} done)".format(project, count_done))
         print()
 
 
