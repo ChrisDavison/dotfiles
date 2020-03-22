@@ -8,5 +8,5 @@ function! s:maybe_filetype_markdown()
     endif
 endfunction
 
-au BufNewFile,BufFilePre,BufRead *.txt,*.md call s:maybe_filetype_markdown()
+au BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown.pandoc
 

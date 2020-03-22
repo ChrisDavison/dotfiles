@@ -65,7 +65,7 @@ function! markdown#file_from_selection(is_visual) " {{{1
     let text= a:is_visual ? selection#visual(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
-    let linktext="./" . sanitise#filename(l:text) . ".txt"
+    let linktext="./" . sanitise#filename(l:text) . ".md"
     let replacetext=s:make_markdown_link(l:text, linktext)
     if a:is_visual
         let around_visual = selection#before_and_after_visual()
