@@ -23,12 +23,12 @@ def shift_date(recur_string_match, cur_due_date):
     after = cur_due_date
     if freq is 'd':
         after += datetime.timedelta(days=shiftnum)
-        if after == datetime.date.today():
-            after += datetime.timedelta(days=shiftnum)
+        if after < datetime.date.today():
+            after = datetime.date.today() + datetime.timedelta(days=shiftnum)
     elif freq is 'w':
         after += datetime.timedelta(weeks=shiftnum)
-        if after == datetime.date.today():
-            after += datetime.timedelta(weeks=shiftnum)
+        if after < datetime.date.today():
+            after = datetime.date.today() + datetime.timedelta(weeks=shiftnum)
     else:
         after = after.replace(month=after.month+1)
     return after
@@ -102,6 +102,6 @@ for i, t in enumerate(todos):
     else:
         todos_to_print.append(t)
 todos_to_print.extend(todos_to_append)
-todos_out = '\n'.join([rx_space.replace(" ", t) for t in todos_to_print])
+todos_out = '\n'.join([rx_space.sub(" ", t) for t in todos_to_print])
 with open(todofile, 'w') as todo_file:
     print(todos_out, file=todo_file) 
