@@ -2,7 +2,7 @@
 import os
 import sys
 from datetime import date
-from collections import defaultdict
+from collections import Counter
 
 
 
@@ -11,17 +11,12 @@ def main():
     TODO_FILE = os.environ['TODO_FILE']
 
     # process todo.txt
-    contexts = defaultdict(lambda: 0)
+    contexts = Counter([])
     for line in open(TODO_FILE, "r"):
-        prioritized = False
-        seen_words = []
-        for word in line.split():
-            if word.startswith('@') and word not in seen_words:
-                contexts[word] += 1
-            seen_words.append(word)
-
-    for project, count in contexts.items():
-        print("{} ({} tasks)".format(project, count))
+        contexts.update({w for w in line.split() if w.startswith('@')})
+        
+    for context in contexts:
+        print("{} ({} tasks)".format(context, contexts[context]))
 
 
 if __name__ == "__main__":
