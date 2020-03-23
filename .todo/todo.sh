@@ -1169,8 +1169,8 @@ case $action in
         # Check if this item has already been done
         if  $(echo "${todo}" | grep -q "rec:") ; then
             "${TODO_FULL_SH}" recur "$item"
+            continue
         fi
-        continue
         if [ "${todo:0:2}" != "x " ]; then
             now=$(date '+%Y-%m-%d')
             # remove priority once item is done
