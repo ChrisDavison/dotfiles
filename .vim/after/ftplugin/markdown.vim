@@ -21,6 +21,7 @@ let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
 let g:pandoc#modules#disabled = ['hypertext', 'spell']
 let g:pandoc#folding#fdc=0
+let g:pandoc#folding#fold_fenced_codeblocks=1
 let g:pandoc#syntax#conceal#urls=1
 let g:pandoc#syntax#conceal#blacklist=['ellipses', 'atx', 'subscript', 'superscript', 'strikeout', 'codeblock_start', 'codeblock_delim', 'footnote', 'definition', 'list']
 let g:pandoc#spell#enabled=0
@@ -28,11 +29,12 @@ let g:pandoc#spell#enabled=0
 setlocal foldenable
 setlocal foldlevelstart=1
 setlocal foldmethod=expr
-setlocal foldexpr=markdown#fold_level()
+" setlocal foldexpr=markdown#fold_level()
 setlocal conceallevel=1
 setlocal nospell
 
-au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
+" au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
+au BufLeave *.txt,*.md exec "let @a=" . expand("@")
 
 command! -bang Backlinks call markdown#backlinks(<bang>1)
 nnoremap <leader>B :Backlinks!<CR>
@@ -42,8 +44,10 @@ nnoremap ml :call markdown#file_from_selection(0)<CR>
 vnoremap ml :call markdown#file_from_selection(1)<CR>
 nnoremap gml :call markdown#file_from_selection_and_edit(0)<CR>
 vnoremap gml :call markdown#file_from_selection_and_edit(1)<CR>
-nnoremap gf :call markdown#goto_file()<CR>
-nnoremap <leader>g :call markdown#goto_file()<CR>
+nnoremap gff :call markdown#goto_file(0)<CR>
+nnoremap gfs :call markdown#goto_file(1)<CR>
+nnoremap <leader>gf :call markdown#goto_file(0)<CR>
+nnoremap <leader>gs :call markdown#goto_file(1)<CR>
 
 let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt', 'daily.txt', 'weekly.txt', 'monthly.txt']
 

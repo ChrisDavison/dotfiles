@@ -23,17 +23,18 @@ function! markdown#fold_level() " {{{1
     end
 endfunction " }}}1
 
-function! markdown#goto_file() " {{{1
+function! markdown#goto_file(split) " {{{1
     let fname=expand("<cfile>")
+    let command = a:split ? "vsplit " : "edit "
     if filereadable(l:fname)
-        execute "silent!edit " . l:fname
+        execute "silent!" . l:command . l:fname
     else
         if getline(".")[col(".")] != "]"
             normal f]
         end
         normal vi("by
         if filereadable(getreg("b"))
-            execute "silent!edit " . getreg("b")
+            execute "silent!" . l:command . getreg("b")
         else
             echom "Couldn't find valid link."
         end
