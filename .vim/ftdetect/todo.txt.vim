@@ -1,4 +1,4 @@
-au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt set filetype=todo.txt
+au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt,thesis.txt set filetype=todo.txt
 set formatoptions-=a
 
 command! TodoSort call todo#Sort('')
