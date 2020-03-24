@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import datetime
+import os
+import re
+import sys
+from collections import defaultdict
+
+
+__USAGE__ = """    donesummary [DAYS]
+      show done tasks, grouped by date.
+      optionally only show tasks completed in the last DAYS days.
+"""
+
+args = [a for a in sys.argv if not os.path.basename(a) == os.path.basename(sys.argv[0])]
+n_days = 999
+if 'usage' in args:
+    print(__USAGE__)
+    sys.exit(0)
+elif args:
+    n_days = int(args[0])
+re_date = re.compile('\d\d\d\d-\d\d-\d\d')
+
+def header(msg):
+    return '... {} {}'.format(msg, '.' * (42 - len(msg) - 5))
+
+DONEFILE = os.environ['DONE_FILE']
+dones = open(DONEFILE, 'r').read().splitlines()
+dones_no_x = [d[2:] for d in dones if d != '\n']
+
+dones_by_date = defaultdict(list)
+for d in dones_no_x:
+    date = d.split(' ')[0]
+    dones_by_date[date].append(' '.join(d.split(' ')[1:]))
+
+today = datetime.date.today()
+for date in sorted(dones_by_date):
+    if not date:
+        continue
+    delta = today - datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    if delta.days > n_days:
+        continue
+    print(header(date))
+    for done in dones_by_date[date]:
+        print('    {}'.format(done))
+    print()
