@@ -43,7 +43,7 @@ contextS=$(grep -o '@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u | sed 's/^@//g' 
 # For each context show header and the list of todo items
 for context in $contextS ; do 
 	# Use core _list function, does numbering and colouring for us
-	context_LIST=$(_list "$TODO_FILE" "@$context\\b" "$@" | sed 's/\ *@[a-zA-Z0-9._:\-]*\ */ /g' | sed 's/^/    /g')
+	context_LIST=$(_list "$TODO_FILE" "\\s@$context\\b" "$@" | sed 's/\ *@[a-zA-Z0-9._:\-]*\ */ /g' | sed 's/^/    /g')
 	if [[ -n "${context_LIST}" ]]; then
 		echo  "@$context" 
 		echo  "${context_LIST}" | eval "${TODOTXT_FINAL_FILTER}"

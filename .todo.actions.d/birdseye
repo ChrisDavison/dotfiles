@@ -9,8 +9,9 @@ It was, as of 2016, licensed under GPL. Has been kept.
 """
 import os
 import sys
+import re
 from datetime import date
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 
 LICENSE = "GPL"
@@ -20,76 +21,53 @@ AUTHORS = [
     ("Gina Trapani (ginatrapani@gmail.com)", "Original author, Copyright")
 ]
 
+RX_PROJECT = re.compile('\+[a-zA-Z0-9]+')
+RX_CONTEXT = re.compile('@[a-zA-Z0-9]+')
+
+
+def projects_and_contexts_in_file(filename, with_completed=False):
+    # We COULD just run the regex on the entire file, but by iterating over
+    # lines we can handle the case where a project or context may be 
+    # accidentally duplicated and only count it once.
+    projects = Counter()
+    contexts = Counter()
+
+    for line in open(filename, "r"):
+        if not with_completed and line.startswith('x '):
+            continue
+        projects.update(set(RX_PROJECT.findall(line)))
+        contexts.update(set(RX_CONTEXT.findall(line)))
+    return projects, contexts
+
 
 def main():
-    # make sure you have all your args
     TODO_FILE = os.environ['TODO_FILE']
     DONE_FILE = os.environ['DONE_FILE']
 
-    # process todo.txt
-    projects = defaultdict(lambda: 0)
-    contexts = defaultdict(lambda: 0)
-    for line in open(TODO_FILE, "r"):
-        prioritized = False
-        seen_words = []
-        for word in line.split():
-            if word.startswith('+') and word not in seen_words:
-                projects[word] += 1
-            if word.startswith('@') and word not in seen_words:
-                contexts[word] += 1
-            seen_words.append(word)
-        
-    # process done.txt
-    projects_in_done = defaultdict(lambda: 0)
-    for line in open (DONE_FILE, "r"):
-        prioritized = False
-        seen_words = []
-        for word in line.split():
-            if word.startswith('+') and word not in seen_words:
-                projects_in_done[word] += 1
-            seen_words.append(word)
+    projects, contexts = projects_and_contexts_in_file(TODO_FILE, with_completed=False)
+    projects_in_done, contexts_done = projects_and_contexts_in_file(DONE_FILE, with_completed=True)
     
-    # calculate percentages
-    percentage_project_completed = dict()
-    for project, count in projects.items():
-        total = count + projects_in_done.get(project, 0)
-        percentage_project_completed[project] = projects_in_done.get(project, 0) / total * 100
-    
-    # get projects all done
-    projects_finished = {}
-    for task, count in projects_in_done.items():
-        if task not in projects:
-            projects_finished[task] = count
+    print("Projects & Contexts with OPEN todos -", date.today())
+    print("")
 
-    print("")
-    print("TODO.TXT Bird's Eye View Report", date.today())
-    print("")
+    def header(msg):
+        padding = "." * (40 - len(msg) - 5)
+        return "... {} {}".format(msg, padding)
 
     if projects:
-        print("=" * 42)
-        print("Projects with Open TODOs")
-        print("=" * 42)
+        print(header("projects"))
         for project, count_open in projects.items():
             count_closed = projects_in_done.get(project, 0)
             count_total = count_open + count_closed
-            pct = int(count_open / count_total * 100)
-            print("    {} ({}/{} todos -- {:3d}%)".format(project, count_open, count_total, pct))
+            remaining = count_total - count_open
+            pct = int(remaining / count_total * 100)
+            print("    {} ({}/{} todos -- {}% done)".format(project, count_open, count_total, pct))
         print()
 
     if contexts:
-        print("=" * 42)
-        print("Contexts with Open TODOs")
-        print("=" * 42)
+        print(header("contexts"))
         for context, count_open in contexts.items():
             print("    {} ({} todos)".format(context, count_open))
-        print()
-
-    if projects_finished:
-        print("=" * 42)
-        print("Projects finished (No open TODOs)")
-        print("=" * 42)
-        for project, count_done in projects_finished.items():
-            print("    {} ({} done)".format(project, count_done))
         print()
 
 
