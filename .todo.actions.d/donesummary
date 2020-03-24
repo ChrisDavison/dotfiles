@@ -8,17 +8,23 @@ from collections import defaultdict
 
 __USAGE__ = """    donesummary [DAYS]
       show done tasks, grouped by date.
-      optionally only show tasks completed in the last DAYS days.
+      optionally only show tasks completed today and in the last DAYS days.
+    donesummary YYYY-MM-DD
+      show tasks completed on date YYYY-MM-DD
 """
 
 args = [a for a in sys.argv if not os.path.basename(a) == os.path.basename(sys.argv[0])]
 n_days = 999
+matching_date = None
+re_date = re.compile('\d\d\d\d-\d\d-\d\d')
 if 'usage' in args:
     print(__USAGE__)
     sys.exit(0)
 elif args:
-    n_days = int(args[0])
-re_date = re.compile('\d\d\d\d-\d\d-\d\d')
+    if re_date.match(args[0]):
+        matching_date = args[0]
+    else:
+        n_days = int(args[0])
 
 def header(msg):
     return '... {} {}'.format(msg, '.' * (42 - len(msg) - 5))
@@ -37,7 +43,9 @@ for date in sorted(dones_by_date):
     if not date:
         continue
     delta = today - datetime.datetime.strptime(date, "%Y-%m-%d").date()
-    if delta.days > n_days:
+    if not matching_date and delta.days > n_days:
+        continue
+    elif matching_date and date != matching_date:
         continue
     print(header(date))
     for done in dones_by_date[date]:
