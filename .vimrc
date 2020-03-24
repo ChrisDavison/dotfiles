@@ -79,11 +79,12 @@ set t_ut= " Fix issues with background color on some terminals
 if !has('gui_running')
     set t_Co=256
 endif
-set bg=light
-silent! colorscheme xcodedarkhc
+set bg=dark
+silent! colorscheme seoul256
 " settings for plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
+let g:fzf_preview_window=''
 
 " Used by .vim/plugin/markdown_foldlevel.vim
 " 'nested' -- hides L_n+1 below L_n
@@ -118,6 +119,7 @@ vnoremap k      gk
 nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
+vnoremap W      :w <BAR>norm gvD<LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
 " nmap s <Plug>(easymotion-sn)
 
 " Run 'equalprg' and return to mark
