@@ -44,6 +44,7 @@ alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
 alias inbox="nvim ~/Dropbox/notes/inbox.txt"
 alias t="todo.sh -a -f -d ~/.todo/config"
 alias habits="todo.sh -a -f -d ~/.todo/config-habits"
+alias thesis="todo.sh -a -f -d ~/.todo/config-thesis"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
