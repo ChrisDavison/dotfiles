@@ -39,7 +39,8 @@ set nobackup nowritebackup
 
 set directory=~/.temp,.
 set ignorecase smartcase " ignore case unless i specifically mix letter case
-set wildmode=list:longest:full,full
+set wildmenu
+set wildmode=longest:list,full
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif,*.aux,*.*~,*tags*
 set wildignore+=*.swp,*.so,*.fls,*.log,*.out,*.toc,*.xdv,*.bbl,*.blg,*.fdb_latexmk
 set wildignorecase
@@ -144,11 +145,12 @@ nnoremap <RIGHT> :vertical resize -2<CR>
 tnoremap <Esc> <C-\><C-n>
 "      fzf {{{1
 let g:fzf_action = {
-            \ 'ctrl-t': 'tab split',
-            \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit' }
+        \ 'ctrl-t': 'tab split',
+        \ 'ctrl-x': 'split',
+        \ 'ctrl-v': 'vsplit' }
 "      files, SPECIFIC files/dirs, buffers, tags {{{1
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
+nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>t :Tags<CR>
 nnoremap <leader>T :BTags<CR>
@@ -161,22 +163,18 @@ nnoremap <leader>l :BTags link <CR>
 nnoremap <leader># :Tags @<CR>
 
 "      for my plugins (~/.vim/plugin) {{{1
+" \ {"name": "VIMRC", "path": "~/.vimrc"},
 let g:fzf_favourite_files = [
-            \ {"name": "index of notes", "path": "~/Dropbox/notes/index.md"},
-            \ {"name": "journal", "path": "~/Dropbox/notes/journal.md"},
-            \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
-            \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
-            \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
-            \ {"name": "todos", "path": "~/Dropbox/notes/todo/todo.txt"},
-            \ {"name": "todos - projects", "path": "~/Dropbox/notes/projects.md"},
-            \ {"name": "todos - thesis", "path": "~/Dropbox/notes/thesis.md"},
-            \ {"name": "habits STACKS", "path": "~/Dropbox/notes/my-habit-stacks.md"},
-            \ {"name": "habits", "path": "~/Dropbox/notes/todo/habits.txt"},
-            \ {"name": "vimrc", "path": "~/.vimrc"},
-            \]
-nnoremap <leader>f :Favourites<CR>
-nnoremap <F2> :e ~/Dropbox/notes/todo.txt<CR>
-nnoremap <F3> :silent!only<BAR>silent!edit ~/Dropbox/notes/index.txt<CR>
+        \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
+        \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
+        \ {"name": "journal", "path": "~/Dropbox/notes/inbox.md"},
+        \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
+        \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
+        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
+        \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
+        \]
+" nnoremap <leader>f :Favourites<CR>
+nnoremap <leader>f :Fav 
 nnoremap <leader>il :InsertLinkToNote 
 
 let g:checkmark_no_mappings=1
@@ -284,3 +282,12 @@ command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh 
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 
 command! EFiletype exec "edit ~/.vim/after/ftplugin/" . &filetype . ".vim"
+
+function! s:favourite_files(A, L, P)
+    let paths=map(copy(g:fzf_favourite_files), {_, v -> fnamemodify(expand(v["path"]), ":p:t")})
+    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
+    return paths_filtered
+endfunction
+
+command! -nargs=1 -complete=customlist,<sid>favourite_files Fav edit $HOME/Dropbox/notes/<args>
+
