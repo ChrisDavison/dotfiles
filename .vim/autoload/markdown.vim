@@ -25,7 +25,13 @@ endfunction " }}}1
 
 function! markdown#goto_file(split) " {{{1
     let fname=expand("<cfile>")
-    let command = a:split ? "vsplit " : "edit "
+    if a:split == 2
+        let command = "split "
+    elseif a:split == 1
+        let command = "vsplit "
+    else
+        let command = "edit "
+    endif
     if filereadable(l:fname)
         execute "silent!" . l:command . l:fname
     else

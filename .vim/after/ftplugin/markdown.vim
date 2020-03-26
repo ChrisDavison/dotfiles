@@ -45,9 +45,11 @@ vnoremap ml :call markdown#file_from_selection(1)<CR>
 nnoremap gml :call markdown#file_from_selection_and_edit(0)<CR>
 vnoremap gml :call markdown#file_from_selection_and_edit(1)<CR>
 nnoremap gff :call markdown#goto_file(0)<CR>
-nnoremap gfs :call markdown#goto_file(1)<CR>
+nnoremap gfv :call markdown#goto_file(1)<CR>
+nnoremap gfs :call markdown#goto_file(2)<CR>
 nnoremap <leader>gf :call markdown#goto_file(0)<CR>
-nnoremap <leader>gs :call markdown#goto_file(1)<CR>
+nnoremap <leader>gv :call markdown#goto_file(1)<CR>
+nnoremap <leader>gs :call markdown#goto_file(2)<CR>
 
 let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt', 'daily.txt', 'weekly.txt', 'monthly.txt']
 
