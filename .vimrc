@@ -19,6 +19,7 @@ set nocompatible
 let &showbreak = '····'
 set cpo+=n
 set number
+set relativenumber
 set wrap lbr
 set breakindent
 set breakindentopt=shift:4,sbr
