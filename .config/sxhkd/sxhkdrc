@@ -17,17 +17,13 @@ super + shift + s
 super + alt + a
     bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki
 
-# 'startup'
+# 'standard' firefox tabs
 super + alt + ctrl + s
-    firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com" "https://calendar.google.com" "https://news.ycombinator.com" "https://lobste.rs" "https://reddit.com/r/programming"  "https://reddit.com/r/rust" "https://reddit.com/r/videos"
+    firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com" "https://calendar.google.com" "https://news.ycombinator.com" "https://lobste.rs" "https://reddit.com/r/programming"  "https://reddit.com/r/rust" "https://reddit.com/r/videos" "https://tweetdeck.twitter.com"
 
 # Open a 'reference' website from ~/.reference file
 super + shift + r
     dmenu_reference.sh
-
-# email
-super + alt + ctrl + e
-    firefox "https://outlook.office365.com/mail/inbox" "https://mail.google.com"
 
 # make sxhkd reload its configuration files:
 super + Escape
