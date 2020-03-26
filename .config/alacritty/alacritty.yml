@@ -5,6 +5,13 @@
     # otherwise xterm-256color
     #TERM: xterm-256color
 
+
+cdsettings: # a place for my custom settings
+    myfont: &fontface
+        Iosevka Term
+    myfontsize: &fontsize
+        14
+
 window:
     dimensions:
         columns: 0
@@ -43,8 +50,6 @@ font: # CHANGES REQUIRE RESTART
     use_thin_strokes: false # macOS ONLY. false is better for non-retina displays
     # options are normal/italic/bold
     # can also specify 'style' alongside 'family' to choose a specific face
-    fontface: &fontface
-        CamingoCode
     normal:
         family: *fontface
         style: Regular
@@ -54,7 +59,7 @@ font: # CHANGES REQUIRE RESTART
     bold:
         family: *fontface
         style: Bold
-    size: 13
+    size: *fontsize
 
     offset:
         x: 0 # letterspacing
@@ -280,16 +285,9 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-#colors: *molokai
-#colors: *ayudark
-colors: *dracula
-#colors: *gruvbox
-#colors: *molokai
-#colors: *monokai
-#colors: *onedark
-#colors: *seoul256
-#colors: *seoul256_light
-#colors: *pencil_light
+# molokai, ayudark, dracula, gruvbox, molokai, monokai, onedark, seoul256,
+# seoul256_light, pencil_light
+colors: *seoul256
 
 visual_bell:
     animation: EaseOutExpo
