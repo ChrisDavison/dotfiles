@@ -1,17 +1,15 @@
 #!/bin/bash
 
-menu="Latex
-Python
-Rust
-Pandoc
-Go
-"
+menu="focused window
+all displays
+select rectangle"
 
-opt=$(dmenu -l 10 -fn "Ubuntu Mono-18" -p "Reference: " <<< $menu | cut -d' ' -f1)
+args="--quality 100"
+opt=$(dmenu -l 10 -fn "Ubuntu Mono-18" -p "Screenshot: " <<< $menu | cut -d' ' -f1)
 
+output_fn="$HOME/Dropbox/Camera Uploads/screenshot--%Y%m%d-%H%M%S.png"
 case "$opt" in
-    latex) firefox https://en.wikibooks.org/wiki/LaTeX
-;;
+    focused) scrot -u $args "$output_fn" ;;
     all) scrot -m $args "$output_fn" ;;
     select) scrot -s $args "$output_fn" ;;
     *) ;;
