@@ -284,11 +284,32 @@ command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' 
 
 command! EFiletype exec "edit ~/.vim/after/ftplugin/" . &filetype . ".vim"
 
-function! s:favourite_files(A, L, P)
-    let paths=map(copy(g:fzf_favourite_files), {_, v -> fnamemodify(expand(v["path"]), ":p:t")})
+let g:my_configs=[
+            \ {"name": "vim", "path": "$HOME/.vimrc"},
+            \ {"name": "bspwm", "path": "$HOME/.config/bspwm/bspwmrc"},
+            \ {"name": "sxkhd", "path": "$HOME/.config/sxhkd/sxhkdrc"},
+            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
+            \ {"name": "todo", "path": "$HOME/.todo/config"},
+            \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
+            \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
+            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
+\]
+
+function! s:config_files(A, L, P)
+    let paths=map(copy(g:my_configs), {_, v -> v["name"]})
     let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
     return paths_filtered
 endfunction
 
-command! -nargs=1 -complete=customlist,<sid>favourite_files Fav edit $HOME/Dropbox/notes/<args>
+function! s:edit_config(name)
+    let matching=filter(copy(g:my_configs), {_, v -> v["name"] == a:name})[0]
+    let matchingpath=expand(l:matching["path"])
+    if filereadable(l:matchingpath)
+        exec "edit " . l:matchingpath
+    else
+        echom "File not readable: " . l:matchingpath
+    endif
+endfunction
+
+command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_config(<q-args>)
 
