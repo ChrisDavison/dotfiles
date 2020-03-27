@@ -53,7 +53,6 @@ modules-right = battery date
 tray-position = left
 tray-padding = 0
 tray-background = ${colors.background}
-tray-transparent = true
 
 wm-restack = bspwm
 ; wm-restack = i3
