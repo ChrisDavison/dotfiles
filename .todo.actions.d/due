@@ -31,7 +31,7 @@ def task_print(task):
     match = re.search(r"\s\(([A-Z])\)\s", task[1])
 
     if match is None:
-        print("{:4d} {}".format(task[0]+1, task[1]))
+        print("    {:4d}  {}".format(task[0]+1, task[1]))
     else:
         pri = match.group(1)
         color = os.getenv("PRI_" + pri)
@@ -40,7 +40,7 @@ def task_print(task):
             color = os.getenv("PRI_X")
 
         color = eval('u"' + color[1:] + '"')
-        print("{:4d} {}".format(task[0]+1, color + task[1] + "\033[0m"))
+        print("    {:4d}  {}".format(task[0]+1, color + task[1] + "\033[0m"))
 
 
 def group_todos_by_delta_days(todos):
@@ -76,7 +76,7 @@ def matches_filter(filter, task):
 
 
 def print_list(message, list_of_tasks, filter):
-    print("====", message, "="*(73 - len(message)))
+    print(message, "." * 20)
     num_displayed = 0
     for task in list_of_tasks:
         if not matches_filter(filter, task):
@@ -104,15 +104,18 @@ def main(future_days=None, filter=[]):
     overdue_tasks = [t for key in sorted_delta_keys if key < 0
                     for t in tasks_by_delta[key]]
     if overdue_tasks:
-        num_displayed += print_list("Overdue tasks", overdue_tasks, filter)
+        num_displayed += print_list("OVERDUE", overdue_tasks, filter)
 
     if 0 in sorted_delta_keys:
-        num_displayed += print_list("Tasks due today", tasks_by_delta[0], filter)
+        num_displayed += print_list("TODAY", tasks_by_delta[0], filter)
    
     if future_days:
-        future_tasks = [t for key in sorted_delta_keys if key > 0 and key <= future_days
-                        for t in tasks_by_delta[key]]
-        num_displayed += print_list("Tasks due in the next {} days".format(future_days), future_tasks, filter)
+        future_keys = [k for k in sorted_delta_keys if k > 0 and k <= future_days]
+        for key in future_keys:
+            num_displayed += print_list("due in {} days".format(key), tasks_by_delta[key], filter)
+        # future_tasks = [t for key in sorted_delta_keys if key > 0 and key <= future_days
+        #                 for t in tasks_by_delta[key]]
+        # num_displayed += print_list("Tasks due in the next {} days".format(future_days), future_tasks, filter)
 
     print("TODO: {} of {} tasks shown".format(num_displayed, task_count))
            
