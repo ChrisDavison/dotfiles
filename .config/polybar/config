@@ -42,16 +42,16 @@ font-0 = Inconsolata:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
-modules-left = cpu memory backlight-acpi pulseaudio filesystem 
-modules-center = bspwm i3
-modules-right = battery date
+modules-left = bspwm i3
+modules-center = cpu memory backlight-acpi pulseaudio filesystem battery
+modules-right = date
 
 ; NOT USING
 ; filesystem (mount pointand memory used, e.g. '/:32%')
 ; xkeyboard (layout, e.g. 'gb')
 
-tray-position = left
-tray-padding = 0
+tray-position = right
+tray-padding = 5
 tray-background = ${colors.background}
 
 wm-restack = bspwm
