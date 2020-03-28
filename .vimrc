@@ -81,8 +81,10 @@ set t_ut= " Fix issues with background color on some terminals
 if !has('gui_running')
     set t_Co=256
 endif
+let g:molokai_original=1
+let g:rehash256 = 1
 set bg=dark
-silent! colorscheme seoul256
+silent! colorscheme molokai
 " settings for plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -153,8 +155,8 @@ let g:fzf_action = {
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>t :Tags<CR>
-nnoremap <leader>T :BTags<CR>
+nnoremap <leader>T :Tags<CR>
+nnoremap <leader>t :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :call MaybeGFiles()<CR>
@@ -168,13 +170,15 @@ nnoremap <leader># :Tags @<CR>
 let g:fzf_favourite_files = [
         \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
         \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
-        \ {"name": "journal", "path": "~/Dropbox/notes/inbox.md"},
+        \ {"name": "INBOX", "path": "~/Dropbox/notes/inbox.md"},
         \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
+        \ {"name": "wishlist", "path": "~/Dropbox/notes/want.txt"},
         \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
         \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
         \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
         \]
 " nnoremap <leader>f :Favourites<CR>
+cnoreabbrev F Fav
 nnoremap <leader>f :Fav 
 nnoremap <leader>il :InsertLinkToNote 
 
@@ -292,8 +296,18 @@ let g:my_configs=[
             \ {"name": "todo", "path": "$HOME/.todo/config"},
             \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
             \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
+            \ {"name": "alacritty", "path": "$HOME/.config/alacritty/alacritty.yml"},
             \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
 \]
+
+function! s:favourite_files(A, L, P)
+    let paths=map(copy(g:fzf_favourite_files), {_, v -> v["name"]})
+    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
+    return paths_filtered
+endfunction
+
+command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:fzf_favourite_files, <q-args>)
+
 
 function! s:config_files(A, L, P)
     let paths=map(copy(g:my_configs), {_, v -> v["name"]})
@@ -301,8 +315,8 @@ function! s:config_files(A, L, P)
     return paths_filtered
 endfunction
 
-function! s:edit_config(name)
-    let matching=filter(copy(g:my_configs), {_, v -> v["name"] == a:name})[0]
+function! s:edit_matching(dict, name)
+    let matching=filter(copy(a:dict), {_, v -> v["name"] == a:name})[0]
     let matchingpath=expand(l:matching["path"])
     if filereadable(l:matchingpath)
         exec "edit " . l:matchingpath
@@ -311,5 +325,4 @@ function! s:edit_config(name)
     endif
 endfunction
 
-command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_config(<q-args>)
-
+command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
