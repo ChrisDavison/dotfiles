@@ -46,6 +46,7 @@
     # Remove branch from remote
     unpublish="!git push origin :$(git branch-name)"
     editmodified="!$EDITOR $(git ls-files -m -o)"
+    sa="!git submodule add https://github.com/$@"
 [core]
 	excludesfile = /home/davison/.global_ignore
 	commitGraph = true

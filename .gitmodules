@@ -103,3 +103,12 @@
 [submodule ".vim/bundle/vim-easy-align"]
 	path = .vim/bundle/vim-easy-align
 	url = git@github.com:junegunn/vim-easy-align
+[submodule ".vim/bundle/vim-racket"]
+	path = .vim/bundle/vim-racket
+	url = https://github.com/wlangstroth/vim-racket.git
+[submodule ".vim/bundle/vim-monokai"]
+	path = .vim/bundle/vim-monokai
+	url = https://github.com/sickill/vim-monokai
+[submodule ".vim/bundle/molokai"]
+	path = .vim/bundle/molokai
+	url = https://github.com/tomasr/molokai
