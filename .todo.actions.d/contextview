@@ -1,60 +1,89 @@
-#!/usr/bin/env bash
-#===============================================================================
-#
-#          FILE: contextview
-#
-#         USAGE: todo.sh contextview
-#
-#   DESCRIPTION: 
-#
-#       OPTIONS: ---
-#  REQUIREMENTS: ---
-#          BUGS: ---
-#         NOTES: todo.sh action
-#        AUTHOR: Paul Mansfield (paul.mansfield@mansteck.co.uk), 
-#     COPYRIGHT: 2009-2019 Paul Mansfield
-#       LICENSE: GPL, http://www.gnu.org/copyleft/gpl.html
-#       CREATED: 19/09/09 10:52:44
-#      REVISION:  ---
-#===============================================================================
+#!/usr/bin/env python3
+import os
+import sys
+import string
+from datetime import date
+from collections import defaultdict
 
-# Stop Verbose lines, thanks to Mark Harrison
-export TODOTXT_VERBOSE=0
-# Allow control of wrapping if using as simplepv action
-NOWRAP=0
-# move arguments one to left, therefore eating action name
-action=$1
-shift
 
-# Stop filter now and run in a controlled manner after the _list function is run
-export TODOTXT_DISABLE_FILTER=1
+tasks = []
+context_to_task_index = defaultdict(list)
+priority_colours = dict()
+project_colour = os.environ.get("COLOR_PROJECT", "").replace('\\\\033', '\033')
+context_colour = os.environ.get("COLOR_CONTEXT", "").replace('\\\\033', '\033')
+clear_colour = os.environ.get("DEFAULT", "").replace('\\\\033', '\033')
+done_colour = os.environ.get("COLOR_DONE", "").replace('\\\\033', '\033')
 
-[ "$action" = "usage" ] && {
-	echo "    contextview [TERM...]"
-	echo "      Show todo items containing TERM, grouped by context, and displayed in"
-	echo "      priority order. If no TERM provided, displays entire todo.txt."
-	echo ""
-	exit
-}
 
-# Find all contexts and sort
-contextS=$(grep -o '@[^ ]\+' "$TODO_FILE" | grep '^@' | sort -u | sed 's/^@//g' )
+def format_line(line):
+    if line[0] == 'x':
+        return done_colour + line + clear_colour
+    priority = 'NONE'
+    if line[0] == '(' and line[1] in string.ascii_uppercase and line[2] == ')':
+        priority = line[1]
+    pri_colour = priority_colours[priority]
+    line = pri_colour + line
+    projects = { w for w in line.split(' ') if w.startswith('+') }
+    contexts = { w for w in line.split(' ') if w.startswith('@') }
+    for word in projects:
+        line = line.replace(word, project_colour+word+clear_colour)
+    for word in contexts:
+        line = line.replace(word, context_colour+word+clear_colour)
+    return line + clear_colour
 
-# For each context show header and the list of todo items
-for context in $contextS ; do 
-	# Use core _list function, does numbering and colouring for us
-	context_LIST=$(_list "$TODO_FILE" "\\s@$context\\b" "$@" | sed 's/\ *@[a-zA-Z0-9._:\-]*\ */ /g' | sed 's/^/    /g')
-	if [[ -n "${context_LIST}" ]]; then
-		echo  "@$context" 
-		echo  "${context_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
-		# If run as simplepv don't add newlines
-        echo ""
-	fi
-done
 
-# Show todo items not associated to a context
-context_LIST=$(_list "$TODO_FILE" "$@" | grep -v "@[[:alnum:]]*" | sed 's/^/    /g')
-if [[ -n "${context_LIST}" ]]; then
-	echo "Not in contexts" 
-	echo "${context_LIST}" | eval "${TODOTXT_FINAL_FILTER}"
-fi
+def matches_filter(line, filter):
+    for word in filter:
+        if word.startswith('-') and word[1:] in line:
+            return False
+        elif not word.startswith('-') and not word in line:
+            return False
+    return True
+
+
+def main(filter):
+    # make sure you have all your args
+    TODO_FILE = os.environ['TODO_FILE']
+    for letter in string.ascii_uppercase:
+        if "PRI_" + letter in os.environ:
+            priority_colours[letter] = os.environ["PRI_" + letter].replace('\\\\033', '\033')
+        else:
+            priority_colours[letter] = ''
+    priority_colours['NONE'] = ''
+
+    no_context = []
+    for i, line in enumerate(open(TODO_FILE, "r")):
+        line = line.strip()
+        if not matches_filter(line, filter):
+            tasks.append(line)
+            continue
+        contexts_in_line = { w for w in line.split() if w.startswith('@') }
+        if not contexts_in_line:
+            contexts_in_line = ['None']
+        tasks.append(format_line(line))
+        for context in contexts_in_line:
+            context_to_task_index[context].append(i)
+        
+    no_context = context_to_task_index['None']
+    del context_to_task_index['None']
+    for context in sorted(context_to_task_index):
+        print(context)
+        for i in context_to_task_index[context]:
+            print("  {:4d}  {}".format(i+1, tasks[i]))
+        print()
+
+    if not no_context:
+        return
+    print("Tasks with no context")
+    for i in no_context:
+        print("  {:4d}  {}".format(i+1, tasks[i]))
+
+
+if __name__ == "__main__":
+    if sys.argv[1] == "usage":
+        print("    contextview [FILTER...]")
+        print("      Show tasks grouped by context")
+        print("      Optionally filter by tasks containing FILTER...")
+        print()
+    else:
+        main(sys.argv[2:])
