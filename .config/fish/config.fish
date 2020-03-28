@@ -45,6 +45,8 @@ alias inbox="nvim ~/Dropbox/notes/inbox.txt"
 alias t="todo.sh -a -f"
 alias habits="todo.sh -a -f due +@habit"
 alias thesis="todo.sh -a -f lsp @thesis"
+alias tp="todo.sh -a -f contextview @personal"
+alias tm="todo.sh -a -f contextview @media"
 alias n="note.py"
 
 alias ru="repoutil unclean"
