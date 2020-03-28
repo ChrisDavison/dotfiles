@@ -1,16 +1,9 @@
+filetype plugin indent on
+syntax enable
 let mapleader=" "
 
-" .vim/autoload...
-"     markdown(fold_level, backlinks, gotofile, file_from_selection)
-"     selection(visual, before_and_after_visual)
-"     file(make_nonexistent_dir)
-"     sanitise(filename)
-" .vim/after/ftplugin...
-"     markdown,  tex
-" .vim/plugin
-"     foldtext, maybe_gfiles, window_width, fzf_favourite_files
-" .vim/ftdetect...
-"     markdown, latex
+" filetype config in ~/.vim/after/ftplugin
+" custom functions in ~/.vim/autoload and ~/.vim/plugin
 
 " Load plugins from submodules (using tpope/pathogen.vim)
 execute pathogen#infect("~/.vim/bundle/{}")
@@ -21,22 +14,38 @@ set cpo+=n
 set number
 set relativenumber
 set wrap lbr
+set autoindent
 set breakindent
 set breakindentopt=shift:4,sbr
+set backspace=indent,eol,start
 set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
+setglobal tags-=./tags tags-=./tags; tags^=./tags;
+set incsearch
 set updatetime=300 " Write a swap file after 1 second
+set autoread
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
 set autochdir
 
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 set cmdheight=2
 set shortmess+=c
 
+set scrolloff=1
+set sidescrolloff=5
+set display+=lastline
 
 " Some servers have issues with backup files
 set nobackup nowritebackup
+set history=1000
+set tabpagemax=50
+if !empty(&viminfo)
+    set viminfo^=!
+endif
+set sessionoptions-=options
+set viewoptions-=options
 
 set directory=~/.temp,.
 set ignorecase smartcase " ignore case unless i specifically mix letter case
@@ -51,13 +60,29 @@ set splitbelow splitright
 set showmode
 let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__,.*\.aux,.*\.log,.*\.bbl,.*\.blg,.*\.fdb_latexmk,.*\.fls,.*\.log,.*\.out,.*\.toc'
 
+set smarttab
+set nrformats-=octal
+set formatoptions+=j
 set signcolumn=yes
 set path=.,**
+set laststatus=2
 set statusline=\ %t:%l:%c\ %m%r\ %{FugitiveStatusline()}
+set ruler
+set encoding=utf-8
+
+if !exists('g:loaded_matchit')
+    runtime! macros/matchit.vim
+endif
 "      undo (save undo history across sessions) {{{1
 set undodir=~/.undodir
 set undofile
+set complete-=i
 set completeopt=menu,menuone,preview
+
+if !has('nvim') && &ttimeoutlen == -1
+  set ttimeout
+  set ttimeoutlen=100
+endif
 "      shell (specialised per os) {{{1
 if has('win32')
     set shell=cmd.exe
@@ -78,6 +103,7 @@ endif
 "      appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
+set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
@@ -124,6 +150,14 @@ nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
 vnoremap W      :w <BAR>norm gvD<LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
+
+if empty(mapcheck('<C-U>', 'i'))
+    inoremap <C-U> <C-G>u<C-U>
+endif
+
+if empty(mapcheck('<C-W>', 'i'))
+    inoremap <C-W> <C-G>u<C-W>
+endif
 " nmap s <Plug>(easymotion-sn)
 
 " Run 'equalprg' and return to mark
@@ -307,7 +341,7 @@ function! s:favourite_files(A, L, P)
 endfunction
 
 command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:fzf_favourite_files, <q-args>)
-
+cnoreabbrev fav Fav
 
 function! s:config_files(A, L, P)
     let paths=map(copy(g:my_configs), {_, v -> v["name"]})
@@ -326,3 +360,4 @@ function! s:edit_matching(dict, name)
 endfunction
 
 command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
+cnoreabbrev conf Conf

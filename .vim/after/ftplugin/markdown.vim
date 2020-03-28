@@ -22,7 +22,7 @@ let g:pandoc#formatting#extra_equalprg=''
 let g:pandoc#modules#disabled = ['hypertext', 'spell']
 let g:pandoc#folding#fdc=0
 let g:pandoc#folding#fold_fenced_codeblocks=1
-let g:pandoc#syntax#conceal#urls=1
+let g:pandoc#syntax#conceal#urls=0
 let g:pandoc#syntax#conceal#blacklist=['ellipses', 'atx', 'subscript', 'superscript', 'strikeout', 'codeblock_start', 'codeblock_delim', 'footnote', 'definition', 'list']
 let g:pandoc#spell#enabled=0
 
@@ -34,7 +34,7 @@ setlocal conceallevel=1
 setlocal nospell
 
 " au BufLeave *.txt,*.md call markdown#copy_filename_as_link()
-au BufLeave *.txt,*.md exec "let @a=" . expand("@")
+" au BufLeave *.txt,*.md exec "let @a=" . expand("@")
 
 command! -bang Backlinks call markdown#backlinks(<bang>1)
 nnoremap <leader>B :Backlinks!<CR>
@@ -51,8 +51,3 @@ nnoremap <leader>gs :call markdown#goto_file(1)<CR>
 
 let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt', 'daily.txt', 'weekly.txt', 'monthly.txt']
 
-
-nnoremap <leader>x :call checkmark#toggle()<CR>
-vnoremap <leader>x :call checkmark#toggle()<CR>
-nnoremap <leader>X :call checkmark#checkbox_remove()<CR>
-vnoremap <leader>X :call checkmark#checkbox_remove()<CR>
