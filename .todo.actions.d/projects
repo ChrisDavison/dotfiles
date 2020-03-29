@@ -15,8 +15,9 @@ def main():
     for line in open(TODO_FILE, "r"):
         projects.update({w for w in line.split() if w.startswith('+')})
 
-    for project in sorted(projects):
-        print("{} ({} tasks)".format(project, projects[project]))
+    sorted_items = sorted(list(projects.items()), key=lambda k: k[1], reverse=True)
+    for project, count in sorted_items:
+        print("{} ({} tasks)".format(project, count))
 
 
 if __name__ == "__main__":

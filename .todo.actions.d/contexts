@@ -15,8 +15,9 @@ def main():
     for line in open(TODO_FILE, "r"):
         contexts.update({w for w in line.split() if w.startswith('@')})
         
-    for context in contexts:
-        print("{} ({} tasks)".format(context, contexts[context]))
+    sorted_items = sorted(list(contexts.items()), key=lambda k: k[1], reverse=True)
+    for context, count in sorted_items:
+        print("{} ({} tasks)".format(context, count))
 
 
 if __name__ == "__main__":
