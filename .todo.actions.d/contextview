@@ -69,7 +69,8 @@ def main(filter):
     for context in sorted(context_to_task_index):
         print(context)
         for i in context_to_task_index[context]:
-            print("  {:4d}  {}".format(i+1, tasks[i]))
+            tidytask = tasks[i].replace(context, '')
+            print("  {:4d}  {}".format(i+1, tidytask))
         print()
 
     if not no_context:

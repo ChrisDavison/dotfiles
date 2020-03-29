@@ -68,7 +68,8 @@ def main(filter):
     for project in sorted(project_to_task_index):
         print(project)
         for i in project_to_task_index[project]:
-            print("  {:4d} {}".format(i+1, tasks[i]))
+            tidytask = tasks[i].replace(project, "")
+            print("  {:4d} {}".format(i+1, tidytask))
         print()
 
     if not no_project:
