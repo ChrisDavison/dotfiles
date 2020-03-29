@@ -50,9 +50,7 @@ endfunction " }}}1
 
 function! markdown#backlinks(use_grep) " {{{1
     if a:use_grep
-        normal mZ
-        exec "grep '\\((\./)*" . expand("%") . "'"
-        normal `Z
+        exec "grep! '\\((\./)*" . expand("%") . "'"
     else
         call fzf#vim#grep(
         \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
