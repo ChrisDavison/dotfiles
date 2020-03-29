@@ -51,3 +51,4 @@ nnoremap <leader>gs :call markdown#goto_file(1)<CR>
 
 let g:forced_plaintext_files=['calendar.txt', 'todo.txt', 'shopping.txt', 'done.txt', 'daily.txt', 'weekly.txt', 'monthly.txt']
 
+au BufEnter *.md :CocDisable
