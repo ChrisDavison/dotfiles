@@ -13,6 +13,8 @@ from __future__ import print_function
 from __future__ import division
 
 import os
+import re
+import string
 import sys
 import math
 from datetime import datetime, timedelta
@@ -24,23 +26,50 @@ __USAGE__ = """    due [N]
       default behaviour generates a list tasks due today or overdue
       With argument N (integer), also show tasks due in next N days
 """
+priority_colours = dict()
+project_colour = os.environ.get("COLOR_PROJECT", "").replace('\\\\033', '\033')
+context_colour = os.environ.get("COLOR_CONTEXT", "").replace('\\\\033', '\033')
+clear_colour = os.environ.get("DEFAULT", "").replace('\\\\033', '\033')
+done_colour = os.environ.get("COLOR_DONE", "").replace('\\\\033', '\033')
+
+
+def format_line(line):
+    if line[0] == 'x':
+        return done_colour + line + clear_colour
+    re_priority = re.compile(r"\(([A-Z])\)")
+    m_pri = re_priority.search(line)
+    priority = 'NONE'
+    if m_pri:
+        priority = m_pri.group(1)
+    pri_colour = priority_colours[priority]
+    line = pri_colour + line
+    projects = { w for w in line.split(' ') if w.startswith('+') }
+    contexts = { w for w in line.split(' ') if w.startswith('@') }
+    for word in projects:
+        line = line.replace(word, project_colour+word+clear_colour)
+    for word in contexts:
+        line = line.replace(word, context_colour+word+clear_colour)
+    return line + clear_colour
+
 
 
 
 def task_print(task):
-    match = re.search(r"\s\(([A-Z])\)\s", task[1])
+    print("     {:4d}  {}".format(task[0] + 1, format_line(task[1])))
+    # match = re.search(r"\s\(([A-Z])\)\s", task[1])
 
-    if match is None:
-        print("    {:4d}  {}".format(task[0]+1, task[1]))
-    else:
-        pri = match.group(1)
-        color = os.getenv("PRI_" + pri)
 
-        if color is None:
-            color = os.getenv("PRI_X")
+    # if match is None:
+    #     print("    {:4d}  {}".format(task[0]+1, task[1]))
+    # else:
+    #     pri = match.group(1)
+    #     color = os.getenv("PRI_" + pri)
 
-        color = eval('u"' + color[1:] + '"')
-        print("    {:4d}  {}".format(task[0]+1, color + task[1] + "\033[0m"))
+    #     if color is None:
+    #         color = os.getenv("PRI_X")
+
+    #     color = eval('u"' + color[1:] + '"')
+    #     print("    {:4d}  {}".format(task[0]+1, color + task[1] + "\033[0m"))
 
 
 def group_todos_by_delta_days(todos):
@@ -124,6 +153,14 @@ def main(future_days=None, filter=[]):
 if 'usage' in sys.argv:
     print(__USAGE__)
 else:
+    for letter in string.ascii_uppercase:
+        PRI = "PRI_" + letter
+        if PRI  in os.environ:
+            priority_colours[letter] = os.environ[PRI].replace('\\\\033', '\033')
+        else:
+            priority_colours[letter] = ''
+    priority_colours['NONE'] = ''
+
     scriptname = os.path.basename(__file__)
     future_days = None
     filters = []
