@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
 import string
 from datetime import date
@@ -41,6 +42,22 @@ def matches_filter(line, filter):
     return True
 
 
+def order_priority_then_number(tasklist):
+    re_pri = re.compile("(\([A-Z]\))")
+    tasks_with_priority = []
+    tasks_no_priority = []
+    for i, line in tasklist:
+        line = line.strip()
+        pri = re_pri.search(line)
+        if pri:
+            tasks_with_priority.append((pri.group(1), i, line))
+        else:
+            tasks_no_priority.append((i, line))
+    output = [(i, task) for _pri, i, task in sorted(tasks_with_priority, key=lambda x: x[0])]
+    output.extend(tasks_no_priority)
+    return output
+
+
 def main(filter):
     # make sure you have all your args
     TODO_FILE = os.environ['TODO_FILE']
@@ -67,16 +84,21 @@ def main(filter):
     del project_to_task_index['None']
     for project in sorted(project_to_task_index):
         print(project)
-        for i in project_to_task_index[project]:
-            tidytask = tasks[i].replace(project, "")
+        tasks_for_project = [(i, tasks[i]) for i in project_to_task_index[project]]
+        output = order_priority_then_number(tasks_for_project)
+        for (i, task) in output:
+        # for i in project_to_task_index[project]:
+            tidytask = task.replace(project, "")
             print("  {:4d} {}".format(i+1, tidytask))
         print()
 
     if not no_project:
         return
     print("Tasks with no project")
-    for i in no_project:
-        print("  {:4d} {}".format(i+1, tasks[i]))
+    tasks_no_project = [(i, tasks[i]) for i in no_project]
+    output = order_priority_then_number(tasks_no_project)
+    for i, task in output:
+        print("  {:4d} {}".format(i+1, task))
 
 
 if __name__ == "__main__":

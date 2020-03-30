@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
 import string
 from datetime import date
@@ -41,6 +42,22 @@ def matches_filter(line, filter):
     return True
 
 
+def order_priority_then_number(tasklist):
+    re_pri = re.compile("(\([A-Z]\))")
+    tasks_with_priority = []
+    tasks_no_priority = []
+    for i, line in tasklist:
+        line = line.strip()
+        pri = re_pri.search(line)
+        if pri:
+            tasks_with_priority.append((pri.group(1), i, line))
+        else:
+            tasks_no_priority.append((i, line))
+    output = [(i, task) for _pri, i, task in sorted(tasks_with_priority, key=lambda x: x[0])]
+    output.extend(tasks_no_priority)
+    return output
+
+
 def main(filter):
     # make sure you have all your args
     TODO_FILE = os.environ['TODO_FILE']
@@ -68,16 +85,21 @@ def main(filter):
     del context_to_task_index['None']
     for context in sorted(context_to_task_index):
         print(context)
-        for i in context_to_task_index[context]:
-            tidytask = tasks[i].replace(context, '')
-            print("  {:4d}  {}".format(i+1, tidytask))
+        tasks_for_context = [(i, tasks[i]) for i in context_to_task_index[context]]
+        output = order_priority_then_number(tasks_for_context)
+        for (i, task) in output:
+        # for i in context_to_task_index[context]:
+            tidytask = task.replace(context, "")
+            print("  {:4d} {}".format(i+1, tidytask))
         print()
 
     if not no_context:
         return
     print("Tasks with no context")
-    for i in no_context:
-        print("  {:4d}  {}".format(i+1, tasks[i]))
+    tasks_no_context = [(i, tasks[i]) for i in no_context]
+    output = order_priority_then_number(tasks_no_context)
+    for i, task in output:
+        print("  {:4d} {}".format(i+1, task))
 
 
 if __name__ == "__main__":
