@@ -82,3 +82,6 @@
 [submodule ".vim/bundle/molokai"]
 	path = .vim/bundle/molokai
 	url = https://github.com/tomasr/molokai
+[submodule ".vim/bundle/lightline.vim"]
+	path = .vim/bundle/lightline.vim
+	url = git://github.com/itchyny/lightline.vim.git
