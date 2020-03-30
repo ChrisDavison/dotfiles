@@ -63,6 +63,8 @@ alias lt="exa --tree -L 2 --group-directories-first"
 alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
+alias clip="xclip -sel clipboard"
+
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
 test -f ~/code/todo.txt/todo_completion; and bash ~/code/todo.txt/todo_completion
