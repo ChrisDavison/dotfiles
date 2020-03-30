@@ -65,7 +65,7 @@ def matches_filter(filter, task):
     negatives = [w[1:] for w in filter if w.startswith('-')]
     if negatives:
         for neg in negatives:
-            if neg in task:
+            if neg in task[1]:
                 return False
     if not positives:
         return True
@@ -76,14 +76,18 @@ def matches_filter(filter, task):
 
 
 def print_list(message, list_of_tasks, filter):
-    print(message, "." * 20)
+    header_printed = False
     num_displayed = 0
     for task in list_of_tasks:
         if not matches_filter(filter, task):
             continue
+        if not header_printed:
+            print(message, "." * 20)
+            header_printed = True
         task_print(task)
         num_displayed += 1
-    print()
+    if num_displayed:
+        print()
     return num_displayed
 
 
@@ -113,9 +117,6 @@ def main(future_days=None, filter=[]):
         future_keys = [k for k in sorted_delta_keys if k > 0 and k <= future_days]
         for key in future_keys:
             num_displayed += print_list("due in {} days".format(key), tasks_by_delta[key], filter)
-        # future_tasks = [t for key in sorted_delta_keys if key > 0 and key <= future_days
-        #                 for t in tasks_by_delta[key]]
-        # num_displayed += print_list("Tasks due in the next {} days".format(future_days), future_tasks, filter)
 
     print("TODO: {} of {} tasks shown".format(num_displayed, task_count))
            
