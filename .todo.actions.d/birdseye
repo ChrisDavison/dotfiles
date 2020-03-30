@@ -21,8 +21,8 @@ AUTHORS = [
     ("Gina Trapani (ginatrapani@gmail.com)", "Original author, Copyright")
 ]
 
-RX_PROJECT = re.compile('\+[a-zA-Z0-9]+')
-RX_CONTEXT = re.compile('@[a-zA-Z0-9]+')
+RX_PROJECT = re.compile('\s(\+[a-zA-Z0-9]+)\s')
+RX_CONTEXT = re.compile('\s(@[a-zA-Z0-9]+)\s')
 
 
 def projects_and_contexts_in_file(filename, with_completed=False):
@@ -35,9 +35,19 @@ def projects_and_contexts_in_file(filename, with_completed=False):
     for line in open(filename, "r"):
         if not with_completed and line.startswith('x '):
             continue
-        projects.update(set(RX_PROJECT.findall(line)))
-        contexts.update(set(RX_CONTEXT.findall(line)))
+        projects.update({m.group(1) for m in RX_PROJECT.finditer(line)})
+        contexts.update({m.group(1) for m in RX_CONTEXT.finditer(line)})
     return projects, contexts
+
+
+def print_all(lst, lst_done, len_name):
+    sorted_by_count = sorted(lst.items(), key=lambda x: x[1], reverse=True)
+    for elem, count_open in sorted_by_count:
+        count_closed = lst_done.get(elem, 0)
+        count_total = count_open + count_closed
+        remaining = count_total - count_open
+        pct = int(remaining / count_total * 100)
+        print("{:{len_longest}} {:3} / {}".format(elem, count_open, count_total, len_longest=len_name))
 
 
 def main():
@@ -47,28 +57,24 @@ def main():
     projects, contexts = projects_and_contexts_in_file(TODO_FILE, with_completed=False)
     projects_in_done, contexts_done = projects_and_contexts_in_file(DONE_FILE, with_completed=True)
     
-    print("Projects & Contexts with OPEN todos -", date.today())
+    print("Projects & Contexts with OPEN todos")
+    print(date.today())
     print("")
 
-    def header(msg):
-        padding = "." * (40 - len(msg) - 5)
-        return "... {} {}".format(msg, padding)
+    len_longest = 0
+    if projects or contexts:
+        len_longest = max([len(p) for p in projects] + [len(c) for c in contexts])
+        msg = "{:{len_longest}} {:3} / {}".format("", "OPEN", "TOTAL", len_longest=len_longest)
+        print("{}".format(msg))
+        print("{}".format('-'*len(msg)))
 
-    if projects:
-        print(header("projects"))
-        for project, count_open in projects.items():
-            count_closed = projects_in_done.get(project, 0)
-            count_total = count_open + count_closed
-            remaining = count_total - count_open
-            pct = int(remaining / count_total * 100)
-            print("    {} ({}/{} todos -- {}% done)".format(project, count_open, count_total, pct))
-        print()
-
+    need_divider = False
     if contexts:
-        print(header("contexts"))
-        for context, count_open in contexts.items():
-            print("    {} ({} todos)".format(context, count_open))
-        print()
+        print_all(contexts, contexts_done, len_longest)
+    if projects:
+        if contexts:
+            print('-'*len(msg))
+        print_all(projects, projects_in_done, len_longest)
 
 
 if __name__ == "__main__":
