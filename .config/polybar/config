@@ -3,17 +3,17 @@
 [colors]
 background = #00222222
 background-alt = #444
-; foreground = #dfdfdf
-foreground = #cc241d
-foreground-alt = #555
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
 white = #ffffff
+black = #000000
 red = #cc241d
 purple = #8620e6
 bright_purple = #af59ff
 cyan = #21a4ad
+foreground = ${colors.white}
+foreground-alt = ${colors.cyan}
 
 [bar/example]
 monitor = ${env:MONITOR:}
@@ -58,7 +58,7 @@ tray-background = ${colors.background}
 wm-restack = bspwm
 ; wm-restack = i3
 
-; override-redirect = true
+; override.blackirect = true
 
 ;scroll-up = bspwm-desknext
 ;scroll-down = bspwm-deskprev
@@ -95,12 +95,12 @@ type = internal/bspwm
 padding=20
 
 label-focused = %name% 
-label-focused-foreground = ${colors.white}
-label-focused-background = ${colors.red}
+label-focused-foreground = ${colors.foreground}
+label-focused-background = ${colors.background}
 label-focused-padding = ${settings.bspwm-padding}
 
 label-occupied = %name%
-label-occupied-foreground = ${colors.red}
+label-occupied-foreground = ${colors.foreground-alt}
 label-occupied-padding = ${settings.bspwm-padding}
 
 label-urgent = %name%!
@@ -132,13 +132,13 @@ label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-background = ${colors.red}
+label-focused-background = ${colors.foreground}
 label-focused-padding = ${settings.bspwm-padding}
 
 ; unfocused = Inactive workspace on any monitor
 label-unfocused = %name%
 label-unfocused-padding = ${settings.bspwm-padding}
-label-unfocused-foreground = ${colors.red}
+label-unfocused-foreground = ${colors.foreground}
 
 ; visible = Active workspace on unfocused monitor
 label-visible = %name%
@@ -191,7 +191,7 @@ interval = 2
 format-prefix = " "
 label = %percentage_used%%
 
-[module/wired-network]
+[module/w.black-network]
 type=internal/network
 interface=enp3s0
 interval = 3.0
@@ -215,8 +215,8 @@ interval = 5
 date = %a, %b %d
 time = %H:%M
 label = " %date% - %time% "
-label-foreground=${colors.white}
-label-background=${colors.red}
+label-foreground=${colors.foreground}
+/* label-background=${colors.foreground} */
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -295,13 +295,13 @@ menu-0-3-exec = gnome-session-quit --power-off
 menu-0-4 = Logout
 menu-0-4-exec = gnome-session-quit --logout
 
-format-prefix-foreground = ${colors.red}
+format-prefix-foreground = ${colors.foreground}
 label-open = " "
 label-open-foreground = ${colors.foreground}
 label-close = " "
-label-close-foreground = ${colors.red}
+label-close-foreground = ${colors.foreground}
 label-separator = |
-label-separator-foreground = ${colors.red}
+label-separator-foreground = ${colors.foreground}
 
 [settings]
 screenchange-reload = true
