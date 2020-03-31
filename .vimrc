@@ -107,35 +107,214 @@ set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
+let g:lightline={'colorscheme':"seoul256"}
 let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-silent! colorscheme molokai
-" settings for plugins {{{1
+silent! colorscheme seoul256
+"      plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
 let g:fzf_preview_window=''
-
-" Used by .vim/plugin/markdown_foldlevel.vim
-" 'nested' -- hides L_n+1 below L_n
-" 'stacked' -- folds all headers, but treats them as same level
-let g:markdown_fold_method='nested'
-
-" From .vim/plugin/foldtext
-set foldtext=CustomFoldText()
-
+let g:checkmark_no_mappings=1
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
 endif
 
-let &rtp.=",~/.vim/snippets"
-let g:UltiSnipsSnippetDirectories=["~/.vim/UltiSnips"]
-
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
+"      markdown {{{1
 
+" 'nested' -- hides L_n+1 below L_n
+" 'stacked' -- folds all headers, but treats them as same level
+let g:markdown_fold_method='nested'
 
-" keybinds {{{1
+let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
+let g:pandoc#formatting#mode='hA'
+let g:pandoc#keyboard#use_default_mappings=0
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+
+let g:markdown_reference_links=0
+let g:markdown_hard_wrap=1
+
+if g:markdown_hard_wrap
+    setlocal formatoptions+=a
+    setlocal textwidth=79
+endif
+
+let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
+let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
+let md_equalprg.=g:markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
+let md_equalprg.="\ --atx-headers"
+
+let &l:equalprg=md_equalprg
+let g:pandoc#formatting#equalprg=md_equalprg
+let g:pandoc#formatting#extra_equalprg=''
+let g:pandoc#modules#disabled = ['hypertext', 'spell']
+let g:pandoc#folding#fdc=0
+let g:pandoc#folding#fold_fenced_codeblocks=1
+let g:pandoc#syntax#conceal#urls=0
+let g:pandoc#syntax#conceal#blacklist=['ellipses', 'atx', 'subscript', 'superscript', 'strikeout', 'codeblock_start', 'codeblock_delim', 'footnote', 'definition', 'list']
+let g:pandoc#spell#enabled=0
+
+function! Markdown_fold_level() " {{{2
+let matches_atx = matchlist(getline(v:lnum), '^\(_\+\)\s')
+let line_len = len(getline(v:lnum))
+let matches_setex_one = len(matchlist(getline(v:lnum+1), '^=\+$')) > 0
+let matches_setex_two = len(matchlist(getline(v:lnum+1), '^-\+$')) > 0
+let prev_not_blank = len(getline(v:lnum)) > 0
+if len(l:matches_atx) > 0 
+    if g:markdown_fold_method == 'stacked'
+        return ">1"
+    else
+        return ">" . len(l:matches_atx[1])
+    end
+elseif l:matches_setex_one && prev_not_blank
+    return ">1"
+elseif l:matches_setex_two && prev_not_blank
+    if g:markdown_fold_method == 'stacked'
+        return ">1"
+    else
+        return ">2"
+    endif
+else
+    return "="
+end
+endfunction " 
+
+function! Markdown_goto_file(split) " {{{2
+    let fname=expand("<cfile>")
+    let command = "edit "
+    if a:split > 0
+        if ActualWindowWidth() > 160
+            let command = "vsplit "
+        else
+            let command = "split "
+        endif
+    endif
+    if filereadable(l:fname)
+        execute "silent!" . l:command . l:fname
+    else
+        if getline(".")[col(".")] != "]"
+            normal f]
+        end
+        normal vi("by
+        if filereadable(getreg("b"))
+            execute "silent!" . l:command . getreg("b")
+        else
+            echom "Couldn't find valid link."
+        end
+    end
+endfunction " 
+
+function! Markdown_backlinks(use_grep) " {{{2
+    if a:use_grep
+        exec "grep! '\\((\./)*" . expand("%") . "'"
+    else
+        call fzf_vim_grep(
+        \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
+        \ fzf_vim_with_preview('right:50%:hidden', '?'), 0)
+    end
+endfunction " 
+
+function! Markdown_copy_filename_as_link() " {{{2
+    let link=s:make_markdown_link(expand('%'), "./" . expand('%'))
+    let @a=l:link
+endfunction " 
+
+function! s:make_markdown_link(text, url) " {{{2
+    return "[" . a:text . "](" . a:url . ")"
+endfunction " 
+
+function! Markdown_file_from_selection(is_visual) " {{{2
+    let text= a:is_visual ? GetVisualSelection(1) : expand('<cword>')
+    let l:start_line = line(".")
+    let l:start_col = col(".")
+    let linktext="./" . SanitiseFilename(l:text) . ".md"
+    let replacetext=s:make_markdown_link(l:text, linktext)
+    if a:is_visual
+        let around_visual = GetBeforeAndAfterVisualSelection()
+        let l:line=around_visual[0] . replacetext . around_visual[1]
+        call setline(l:start_line, l:line)
+    else
+        execute "normal ciw" . l:replacetext
+    end
+    call cursor(l:start_line, l:start_col+1)
+    return linktext
+endfunction " 
+
+function! Markdown_file_from_selection_and_edit(is_visual) " {{{2
+    exec "w|edit " . Markdown_file_from_selection(a:is_visual)
+endfunction " 
+
+augroup markdown
+    au!
+    au BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown.pandoc
+    au Filetype markdown* setlocal foldenable 
+                \ foldmethod=expr foldlevelstart=1 
+                \ nospell conceallevel=1
+    au Filetype markdown* nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
+    au Filetype markdown* vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
+    au Filetype markdown* nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
+    au Filetype markdown* vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
+    au Filetype markdown* nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown* nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown* nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown* nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
+    au Filetype markdown* CocDisable
+    au Filetype markdown* command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown* nnoremap <buffer> <leader>B :Backlinks!<CR>
+augroup end
+"      golang {{{1
+let g:go_fmt_command="goimports"
+let g:go_fmt_autosave=1
+let g:go_version_warning=0
+augroup go
+    au!
+    au Filetype go setlocal foldmethod=syntax
+augroup end
+"      python {{{1
+let g:pymode_python = 'python3'
+augroup python
+    au! Filetype python setlocal foldmethod=indent
+augroup end
+"      rust {{{1
+let g:rustfmt_autosave=1
+augroup rust
+    au!
+    au Filetype rust setlocal foldmethod=syntax
+augroup end
+"      latex {{{1
+let g:vimtex_format_enabled=1
+let g:tex_flavor = "latex"
+let g:vimtex_compiler_progname = 'nvr'
+
+augroup latex
+    au!
+    au BufRead,BufNewFile *.latex set filetype=tex
+    au Filetype tex setlocal foldmethod=expr
+                \ foldexpr=vimtex#fold#level(v:lnum)
+                \ foldtext=vimtex#fold#text()
+                \ fillchars=fold:\  
+                \ formatoptions-=a
+    au Filetype tex command! Todos :silent!grep \\\\todo<CR>
+    au Filetype tex command! BTodos :silent!lgrep \\\\todo %<CR>
+    au Filetype tex command! Tables :silent!grep '\\\\begin\{table'<CR>
+    au Filetype tex command! BTables :silent!lgrep '\\\\begin\{table' %<CR>
+    au Filetype tex command! Figures :silent!grep '\\\\begin\{figure'<CR>
+    au Filetype tex command! BFigures :silent!lgrep '\\\\begin\{figure' %<CR>
+augroup end
+"      Todo.txt  {{{1 
+augroup todotxt
+    au!
+    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt,thesis.txt set filetype=todo.txt 
+    au Filetype todo.txt setlocal formatoptions -=a
+    au Filetype todo.txt command! TodoSort call todo#Sort('')
+    au Filetype todo.txt command! TodoSortDue call todo#SortDue()
+    au Filetype todo.txt command! TodoSortCP call todo#HierarchicalSort('@', '+', 1)
+    au Filetype todo.txt command! TodoSortPC call todo#HierarchicalSort('+', '@', 1)
+augroup end
+" keybinds {{{1 
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
@@ -200,23 +379,7 @@ nnoremap <leader>l :BTags link <CR>
 nnoremap <leader># :Tags @<CR>
 
 "      for my plugins (~/.vim/plugin) {{{1
-" \ {"name": "VIMRC", "path": "~/.vimrc"},
-let g:fzf_favourite_files = [
-        \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
-        \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
-        \ {"name": "INBOX", "path": "~/Dropbox/notes/inbox.md"},
-        \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
-        \ {"name": "wishlist", "path": "~/Dropbox/notes/want.txt"},
-        \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
-        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
-        \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
-        \]
-" nnoremap <leader>f :Favourites<CR>
-cnoreabbrev F Fav
-nnoremap <leader>f :Fav 
-nnoremap <leader>il :InsertLinkToNote 
 
-let g:checkmark_no_mappings=1
 
 "      copy file basename, full-path, or parent dir {{{1
 nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
@@ -243,17 +406,192 @@ command! SeeAlso Rg see also
 command! Scratch edit ~/Dropbox/notes/.scratch | normal <C-End>
 command! BD bp|bd#
 cnoreabbrev Bd BD
-" autocommands {{{1
-augroup vimrc
-    autocmd!
-    au TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd BufWritePre * call file#make_nonexistent_dirs()
-    au CursorHold * silent! checktime " Check for external changes to files
-    au VimResized * wincmd= " equally resize splits on window resize
-    au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au Filetype make setlocal noexpandtab
-augroup END
-" }}}1
+" custom fold text {{{1
+function! CustomFoldText()
+    let curline = getline(v:foldstart)
+    return curline . "…" .repeat(" ", ActualWindowWidth() - len(curline)-1)
+endfunction
+set foldtext=CustomFoldText()
+" Navigation commands {{{1
+"
+"       'Favourite' files {{{1
+let g:favourite_files = [
+        \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
+        \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
+        \ {"name": "INBOX", "path": "~/Dropbox/notes/inbox.md"},
+        \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
+        \ {"name": "wishlist", "path": "~/Dropbox/notes/want.txt"},
+        \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
+        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
+        \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
+        \]
+" nnoremap <leader>f :Favourites<CR>
+cnoreabbrev F Fav
+nnoremap <leader>f :Fav 
+
+function! s:edit_favourite(key)
+    let names=map(copy(g:favourite_files), {_, v -> v["name"]})
+    let paths=map(copy(g:favourite_files), {_, v -> v["path"]})
+    let idx=index(names, a:key)
+    if idx == -1
+        return
+    end
+    let filename = expand(paths[idx])
+    if isdirectory(l:filename)
+        exec "Explore " . l:filename
+    elseif filereadable(l:filename)
+        exec "e " . l:filename
+    else
+        echom "Can't open file/dir " . l:filename
+    endif
+endfunction
+
+command! Favourites call fzf#run(fzf#wrap({
+            \ 'source': reverse(map(copy(g:favourite_files), {_, v -> v["name"]})), 
+            \ 'sink': function("<SID>edit_favourite"),
+            \ 'options': '--prompt Favourite: '}))
+
+" Simpler version, not using FZF (faster, but less hand-holdy)
+function! s:favourite_files(A, L, P)
+    let paths=map(copy(g:favourite_files), {_, v -> v["name"]})
+    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
+    return paths_filtered
+endfunction
+
+command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:favourite_files, <q-args>)
+cnoreabbrev fav Fav
+
+"       Common 'configuration' files {{{1
+let g:my_configs=[
+            \ {"name": "vim", "path": "$HOME/.vimrc"},
+            \ {"name": "bspwm", "path": "$HOME/.config/bspwm/bspwmrc"},
+            \ {"name": "sxkhd", "path": "$HOME/.config/sxhkd/sxhkdrc"},
+            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
+            \ {"name": "todo", "path": "$HOME/.todo/config"},
+            \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
+            \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
+            \ {"name": "alacritty", "path": "$HOME/.config/alacritty/alacritty.yml"},
+            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
+\]
+
+
+function! s:config_files(A, L, P)
+    let paths=map(copy(g:my_configs), {_, v -> v["name"]})
+    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
+    return paths_filtered
+endfunction
+
+function! s:edit_matching(dict, name)
+    let matching=filter(copy(a:dict), {_, v -> v["name"] == a:name})[0]
+    let matchingpath=expand(l:matching["path"])
+    if filereadable(l:matchingpath)
+        exec "edit " . l:matchingpath
+    else
+        echom "File not readable: " . l:matchingpath
+    endif
+endfunction
+
+command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
+cnoreabbrev conf Conf
+
+
+"       Links in markdown buffers {{{1
+function! s:open_link_from_buffer(line)
+    let matches=matchlist(a:line, "](\\(.*\\))")
+    if len(matches) > 1
+        let match = matches[1]
+        if filereadable(l:match)
+            exec "e " . l:match
+        else
+            exec "!firefox " . l:match
+        end
+    endif
+endfunction
+
+command! -bang LinksInBuffer call fzf#run(fzf#wrap({
+            \ 'source': 'rg --only-matching "\[.*\]\(.*\)" ' . expand("%"),
+            \ 'sink': function("<SID>open_link_from_buffer"),
+            \ 'options': '--exact --prompt Link: '}))
+"       '@tags' using `Tagsearch` {{{1
+function! s:find_tag(tag)
+    exec "silent!Rg @" . a:tag
+    call feedkeys("i")
+endfunction
+
+function! s:find_tag_grep(tag)
+    exec "silent!grep @" . a:tag
+endfunction
+
+command! -bang Tagsearch call fzf#run(fzf#wrap({
+            \ 'source': 'tagsearch --long', 
+            \ 'sink': <bang>0 ? function("<SID>find_tag") : function("<SID>find_tag_grep"),
+            \ 'options': '--prompt Tag: '}))
+" Insert a link to a note, with first line as title {{{1
+function! s:FirstLineFromFileAsLink(filename)
+    let title=trim(system('head -n1 ' . a:filename))
+    let matches = matchlist(title, '#\+ \(.*\)')
+    if len(l:matches) > 1
+        let l:title = l:matches[1]
+    endif
+    let filename=resolve(expand(a:filename))
+    if l:filename[0] != '.'
+        let filename = './' . a:filename
+    endif
+    let link="[" . title . "](" . a:filename . ")"
+    exec "normal a" . l:link
+endfunction
+
+command! -complete=file -nargs=1 InsertLinkToNote call <SID>FirstLineFromFileAsLink(<q-args>)
+nnoremap <leader>il :InsertLinkToNote 
+
+" Use GFiles rather than Files if within a git repo {{{1
+function! MaybeGFiles()
+    " system is only called to test for it's error code
+    call system('git rev-parse --show-toplevel')
+    if !v:shell_error
+        GFiles
+    else 
+        Files
+    endif
+endfunction
+
+" window width {{{1
+function! ActualWindowWidth()
+    return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
+endfunction
+
+function! s:SignsWidth()
+    let l:signs_width = 0
+    if has('signs')
+        " This seems to be the only way to find out if the signs column is even
+        " showing.
+        let l:signs = []
+        let l:signs_string = ''
+        redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
+        let l:signs = split(l:signs_string, "\n")[1:]
+
+        if !empty(signs)
+            let l:signs_width = 2
+        endif
+    endif
+
+    return l:signs_width
+endfunction
+
+function! s:NumberColumnWidth()
+    let l:number_col_width = 0
+    if &number
+        let l:number_col_width = max([strlen(line('$')) + 1, 3])
+    elseif &relativenumber
+        let l:number_col_width = 3
+    endif
+
+    if l:number_col_width != 0
+        let l:number_col_width = max([l:number_col_width, &numberwidth])
+    endif
+
+    return l:number_col_width
+endfunction
 " coc.nvim {{{1
 let g:suggest#enablePreview='true'
 inoremap <silent><expr> <TAB>
@@ -316,48 +654,59 @@ augroup end
 
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
+" "Grammar Police" for my writing {{{1
 command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
-
-command! EFiletype exec "edit ~/.vim/after/ftplugin/" . &filetype . ".vim"
-
-let g:my_configs=[
-            \ {"name": "vim", "path": "$HOME/.vimrc"},
-            \ {"name": "bspwm", "path": "$HOME/.config/bspwm/bspwmrc"},
-            \ {"name": "sxkhd", "path": "$HOME/.config/sxhkd/sxhkdrc"},
-            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
-            \ {"name": "todo", "path": "$HOME/.todo/config"},
-            \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
-            \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
-            \ {"name": "alacritty", "path": "$HOME/.config/alacritty/alacritty.yml"},
-            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
-\]
-
-function! s:favourite_files(A, L, P)
-    let paths=map(copy(g:fzf_favourite_files), {_, v -> v["name"]})
-    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
-    return paths_filtered
-endfunction
-
-command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:fzf_favourite_files, <q-args>)
-cnoreabbrev fav Fav
-
-function! s:config_files(A, L, P)
-    let paths=map(copy(g:my_configs), {_, v -> v["name"]})
-    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
-    return paths_filtered
-endfunction
-
-function! s:edit_matching(dict, name)
-    let matching=filter(copy(a:dict), {_, v -> v["name"] == a:name})[0]
-    let matchingpath=expand(l:matching["path"])
-    if filereadable(l:matchingpath)
-        exec "edit " . l:matchingpath
-    else
-        echom "File not readable: " . l:matchingpath
+" Make non-existent directories on save {{{1 
+function! MakeDirectoriesIfDontExist()
+    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
+        call mkdir(expand('<afile>:h'), 'p')
     endif
 endfunction
+" Sanitise filenames {{{1
+function! SanitiseFilename(filename)
+    let nospace = substitute(a:filename, " ", "-", "g")
+    let lower = tolower(nospace)
+    let nosyms = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
+    return nosyms
+endfunction
+" Manage visual selections {{{1
+function! GetVisualSelection(only_on_line)
+    let l:start_line = line("'<")
+    let l:start_col = col("'<")
+    let l:end_line = line("'>")
+    let l:end_col = col("'>")
+    if a:only_on_line && (l:start_line != l:end_line)
+        echom "FileFromSelected: Start and end must be same line number"
+        return
+    end
+    return getline(".")[l:start_col-1:l:end_col-1]
+endfunction
 
-command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
-cnoreabbrev conf Conf
+function! GetBeforeAndAfterVisualSelection()
+    let start_line = line("'<")
+    let start_col = col("'<")
+    let end_line = line("'>")
+    let end_col = col("'>")
+    let before=getline(start_line)[:start_col-2]
+    if start_col == 1
+        let before = ""
+    end
+    let after=getline(start_line)[end_col:]
+    return [before, after]
+endfunction
+
+" autocommands {{{1
+augroup vimrc
+    autocmd!
+    au TextChanged,InsertLeave,FocusLost * silent! wall
+    autocmd BufWritePre * call MakeDirectoriesIfDontExist()
+    au CursorHold * silent! checktime " Check for external changes to files
+    au VimResized * wincmd= " equally resize splits on window resize
+    au BufWritePost .vimrc,init.vim source $MYVIMRC
+    au Filetype make setlocal noexpandtab
+    au Filetype txt setlocal formatoptions-=a
+    au Filetype vim setlocal foldmethod=marker
+augroup END
+
