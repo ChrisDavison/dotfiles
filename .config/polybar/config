@@ -58,7 +58,7 @@ tray-background = ${colors.background}
 wm-restack = bspwm
 ; wm-restack = i3
 
-; override.blackirect = true
+; override.redirect = true
 
 ;scroll-up = bspwm-desknext
 ;scroll-down = bspwm-deskprev
