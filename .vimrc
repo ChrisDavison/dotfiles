@@ -137,10 +137,6 @@ let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:markdown_reference_links=0
 let g:markdown_hard_wrap=1
 
-if g:markdown_hard_wrap
-    setlocal formatoptions+=a
-    setlocal textwidth=79
-endif
 
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
 let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
@@ -156,6 +152,28 @@ let g:pandoc#folding#fold_fenced_codeblocks=1
 let g:pandoc#syntax#conceal#urls=0
 let g:pandoc#syntax#conceal#blacklist=['ellipses', 'atx', 'subscript', 'superscript', 'strikeout', 'codeblock_start', 'codeblock_delim', 'footnote', 'definition', 'list']
 let g:pandoc#spell#enabled=0
+
+augroup markdown
+    au!
+    au BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown.pandoc
+    au Filetype markdown* setlocal foldenable 
+                \ foldmethod=expr foldlevelstart=1 
+                \ nospell conceallevel=1
+    au Filetype markdown* nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
+    au Filetype markdown* vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
+    au Filetype markdown* nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
+    au Filetype markdown* vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
+    au Filetype markdown* nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown* nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown* nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown* nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
+    au Filetype markdown* CocDisable
+    au Filetype markdown* command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown* nnoremap <buffer> <leader>B :Backlinks!<CR>
+    au Filetype markdown* if g:markdown_hard_wrap
+                \ setlocal formatoptions+=a textwidth=79
+                \ endif
+augroup end
 
 function! Markdown_fold_level() " {{{2
 let matches_atx = matchlist(getline(v:lnum), '^\(_\+\)\s')
@@ -246,25 +264,6 @@ endfunction "
 function! Markdown_file_from_selection_and_edit(is_visual) " {{{2
     exec "w|edit " . Markdown_file_from_selection(a:is_visual)
 endfunction " 
-
-augroup markdown
-    au!
-    au BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown.pandoc
-    au Filetype markdown* setlocal foldenable 
-                \ foldmethod=expr foldlevelstart=1 
-                \ nospell conceallevel=1
-    au Filetype markdown* nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
-    au Filetype markdown* vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
-    au Filetype markdown* nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
-    au Filetype markdown* vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
-    au Filetype markdown* nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown* nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
-    au Filetype markdown* nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown* nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
-    au Filetype markdown* CocDisable
-    au Filetype markdown* command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown* nnoremap <buffer> <leader>B :Backlinks!<CR>
-augroup end
 "      golang {{{1
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
