@@ -63,6 +63,7 @@ let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\
 set smarttab
 set nrformats-=octal
 set formatoptions+=j
+set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
@@ -137,7 +138,6 @@ let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
 let g:markdown_reference_links=0
 let g:markdown_hard_wrap=1
 
-
 let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
 let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
 let md_equalprg.=g:markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
@@ -155,24 +155,23 @@ let g:pandoc#spell#enabled=0
 
 augroup markdown
     au!
-    au BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown.pandoc
-    au Filetype markdown* setlocal foldenable 
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+    au Filetype markdown,markdown.pandoc set foldenable 
                 \ foldmethod=expr foldlevelstart=1 
                 \ nospell conceallevel=1
-    au Filetype markdown* nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
-    au Filetype markdown* vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
-    au Filetype markdown* nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
-    au Filetype markdown* vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
-    au Filetype markdown* nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown* nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
-    au Filetype markdown* nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown* nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
-    au Filetype markdown* CocDisable
-    au Filetype markdown* command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown* nnoremap <buffer> <leader>B :Backlinks!<CR>
-    au Filetype markdown* if g:markdown_hard_wrap
-                \ setlocal formatoptions+=a textwidth=79
-                \ endif
+                \ formatoptions+=a textwidth=79
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
+    au Filetype markdown,markdown.pandoc vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
+    au Filetype markdown,markdown.pandoc vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
+    au Filetype markdown,markdown.pandoc CocDisable
+    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>B :Backlinks!<CR>
+au BufEnter,BufRead markdown,markdown.pandoc let &l:equalprg=md_equalprg
 augroup end
 
 function! Markdown_fold_level() " {{{2
@@ -270,18 +269,18 @@ let g:go_fmt_autosave=1
 let g:go_version_warning=0
 augroup go
     au!
-    au Filetype go setlocal foldmethod=syntax
+    au Filetype go set foldmethod=syntax
 augroup end
 "      python {{{1
 let g:pymode_python = 'python3'
 augroup python
-    au! Filetype python setlocal foldmethod=indent
+    au! Filetype python set foldmethod=indent
 augroup end
 "      rust {{{1
 let g:rustfmt_autosave=1
 augroup rust
     au!
-    au Filetype rust setlocal foldmethod=syntax
+    au Filetype rust set foldmethod=syntax
 augroup end
 "      latex {{{1
 let g:vimtex_format_enabled=1
@@ -291,7 +290,7 @@ let g:vimtex_compiler_progname = 'nvr'
 augroup latex
     au!
     au BufRead,BufNewFile *.latex set filetype=tex
-    au Filetype tex setlocal foldmethod=expr
+    au Filetype tex set foldmethod=expr
                 \ foldexpr=vimtex#fold#level(v:lnum)
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
@@ -307,7 +306,7 @@ augroup end
 augroup todotxt
     au!
     au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt,thesis.txt set filetype=todo.txt 
-    au Filetype todo.txt setlocal formatoptions -=a
+    au Filetype todo.txt set formatoptions -=a
     au Filetype todo.txt command! TodoSort call todo#Sort('')
     au Filetype todo.txt command! TodoSortDue call todo#SortDue()
     au Filetype todo.txt command! TodoSortCP call todo#HierarchicalSort('@', '+', 1)
@@ -537,7 +536,10 @@ function! s:FirstLineFromFileAsLink(filename)
         let filename = './' . a:filename
     endif
     let link="[" . title . "](" . a:filename . ")"
+    let lfo=&formatoptions
+    set fo-=a
     exec "normal a" . l:link
+    let &fo=lfo
 endfunction
 
 command! -complete=file -nargs=1 InsertLinkToNote call <SID>FirstLineFromFileAsLink(<q-args>)
@@ -704,8 +706,10 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au Filetype make setlocal noexpandtab
-    au Filetype txt setlocal formatoptions-=a
-    au Filetype vim setlocal foldmethod=marker
+    au Filetype make set noexpandtab
+    au Filetype txt set formatoptions-=a
+    au Filetype vim set foldmethod=marker
 augroup END
+" NEW {{{1 
 
+command! -bang BadLinks call setqflist([], 'r', {'lines': systemlist('nonexistent_notes.py --vimgrep ' . (<bang>1 ? '*.md' : expand('%')))})<BAR>:copen
