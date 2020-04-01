@@ -12,7 +12,6 @@ set nocompatible
 let &showbreak = '····'
 set cpo+=n
 set number
-set relativenumber
 set wrap lbr
 set autoindent
 set breakindent
@@ -143,7 +142,7 @@ let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --refe
 let md_equalprg.=g:markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
 let md_equalprg.="\ --atx-headers"
 
-let &l:equalprg=md_equalprg
+" let &l:equalprg=md_equalprg
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
 let g:pandoc#modules#disabled = ['hypertext', 'spell']
@@ -171,7 +170,7 @@ augroup markdown
     au Filetype markdown,markdown.pandoc CocDisable
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>B :Backlinks!<CR>
-au BufEnter,BufRead markdown,markdown.pandoc let &l:equalprg=md_equalprg
+    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
 augroup end
 
 function! Markdown_fold_level() " {{{2
@@ -306,11 +305,11 @@ augroup end
 augroup todotxt
     au!
     au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt,thesis.txt set filetype=todo.txt 
-    au Filetype todo.txt set formatoptions -=a
-    au Filetype todo.txt command! TodoSort call todo#Sort('')
-    au Filetype todo.txt command! TodoSortDue call todo#SortDue()
-    au Filetype todo.txt command! TodoSortCP call todo#HierarchicalSort('@', '+', 1)
-    au Filetype todo.txt command! TodoSortPC call todo#HierarchicalSort('+', '@', 1)
+    au Filetype todo.txt,text setlocal formatoptions -=a
+    au Filetype todo.txt,text command! TodoSort call todo#Sort('')
+    au Filetype todo.txt,text command! TodoSortDue call todo#SortDue()
+    au Filetype todo.txt,text command! TodoSortCP call todo#HierarchicalSort('@', '+', 1)
+    au Filetype todo.txt,text command! TodoSortPC call todo#HierarchicalSort('+', '@', 1)
 augroup end
 " keybinds {{{1 
 nnoremap <silent> Q =ip
@@ -318,11 +317,9 @@ nnoremap S      :%s///<LEFT>
 vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
-nnoremap j      gj
-vnoremap j      gj
+nnoremap <expr> j      (v:count == 0? 'gj' : 'j')
+nnoremap <expr> k      (v:count == 0? 'gk' : 'k')
 nnoremap D      dd
-nnoremap k      gk
-vnoremap k      gk
 nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
@@ -701,14 +698,17 @@ endfunction
 " autocommands {{{1
 augroup vimrc
     autocmd!
+    au InsertEnter * set norelativenumber
+    au InsertLeave * set relativenumber
     au TextChanged,InsertLeave,FocusLost * silent! wall
-    autocmd BufWritePre * call MakeDirectoriesIfDontExist()
+    au BufWritePre * call MakeDirectoriesIfDontExist()
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
     au Filetype make set noexpandtab
-    au Filetype txt set formatoptions-=a
+    au Filetype text set formatoptions-=a
     au Filetype vim set foldmethod=marker
+    au ColorScheme * call lightline#colorscheme()
 augroup END
 " NEW {{{1 
 

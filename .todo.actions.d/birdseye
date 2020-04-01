@@ -47,7 +47,7 @@ def print_all(lst, lst_done, len_name):
         count_total = count_open + count_closed
         remaining = count_total - count_open
         pct = int(remaining / count_total * 100)
-        print("{:{len_longest}} {:3} / {}".format(elem, count_open, count_total, len_longest=len_name))
+        print("{:{len_longest}} {:3} / {}".format(elem, count_open, count_closed, len_longest=len_name))
 
 
 def main():
@@ -64,7 +64,7 @@ def main():
     len_longest = 0
     if projects or contexts:
         len_longest = max([len(p) for p in projects] + [len(c) for c in contexts])
-        msg = "{:{len_longest}} {:3} / {}".format("", "OPEN", "TOTAL", len_longest=len_longest)
+        msg = "{:{len_longest}} {:3} / {}".format("", "OPEN", "DONE", len_longest=len_longest)
         print("{}".format(msg))
         print("{}".format('-'*len(msg)))
 
