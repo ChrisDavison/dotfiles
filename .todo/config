@@ -85,7 +85,7 @@ export UNDERLINE='\\033[4m'
 #
 export PRI_A=$RED
 # export PRI_A=$YELLOW        # color for A priority
-export PRI_B=$ORANGE         # color for B priority
+export PRI_B=$HOTPINK         # color for B priority
 export PRI_C=$GREEN    # color for C priority
 export PRI_D=$BLUE            # define your own
 export PRI_X=$WHITE         # color unless explicitly defined

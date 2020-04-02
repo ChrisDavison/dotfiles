@@ -88,7 +88,7 @@ if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
 else
-    let shells=['/usr/bin/fish', '/usr/bin/zsh', '/usr/bin/bash', '/bin/bash']
+    let shells=['/usr/bin/zsh', '/usr/bin/fish', '/usr/bin/bash', '/bin/bash']
     for possibleshell in shells
         if executable(possibleshell)
             exec "set shell=".possibleshell
@@ -465,6 +465,7 @@ let g:my_configs=[
             \ {"name": "todo", "path": "$HOME/.todo/config"},
             \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
             \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
+            \ {"name": "zsh", "path": "$HOME/.zshrc"},
             \ {"name": "alacritty", "path": "$HOME/.config/alacritty/alacritty.yml"},
             \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
 \]
