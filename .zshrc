@@ -8,29 +8,28 @@ export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-# source scripts and modify PATH {{{1
+# add paths to dir, if they exists {{{1
 function export_to_path_if_exists {
     [[ -d "$1" ]] && export PATH="$1":$PATH
 }
 
+
 export_to_path_if_exists $GOBIN
 export_to_path_if_exists $HOME/bin
 export_to_path_if_exists $HOME/.bin
+export_to_path_if_exists $HOME/.vim/bundle/fzf/bin/
 export_to_path_if_exists $HOME/code/scripts/
 export_to_path_if_exists $HOME/.cargo/bin
 export_to_path_if_exists /usr/local/go/bin
 export_to_path_if_exists /snap/bin
 export_to_path_if_exists $HOME/.local/bin
 
-function source_if_exists {
-    [[ -f "$1" ]] && source "$1"
-}
-
-source_if_exists $HOME/.cargo/env
-source_if_exists ~/code/todo.txt/todo_completion
-source_if_exists ~/.vim/bundle/fzf/shell/key-bindings.zsh
-
 [[ -x rvm ]] && rvm default
+# prompt {{{1
+autoload -U colors && colors
+PROMPT="%{$fg[red]%}%~ %{$fg[green]%}→ %{$reset_color%}"
+RPROMPT="%*"
+
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
 
@@ -43,32 +42,20 @@ setopt hist_reduce_blanks # remove superfluous blanks from history items
 setopt inc_append_history # save history entries as soon as they are entered
 setopt share_history # share history between different instances of the shell
 setopt auto_cd # cd by typing directory name if it's not a command
-setopt correct_all # autocorrect commands
 setopt auto_list # automatically list choices on ambiguous completion
 setopt auto_menu # automatically use menu completion
 setopt always_to_end # move cursor to end if word had one match
 setopt no_beep #turn off terminal bell
 setopt extended_glob
 
-# prompt {{{1
-autoload -U colors && colors
-PROMPT="%{$fg[red]%}%~ → %{$reset_color%}"
-RPROMPT="%*"
-
-# functions {{{1
-function monospace-fonts(){
-	fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
-}
-
-
-# completion {{{1
+# completion 
 zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate #enable approximate matches for completion
 
 autoload -Uz compinit;compinit -i
 
-# Aliases {{{1
+# aliases {{{1
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
@@ -95,12 +82,19 @@ bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
 # don't let '^d' exit the shell if there's nothing on the line
 stty eof undef
-# alias - Todo.sh {{{1
+#     Todo.sh {{{1
 alias t="todo.sh -a -f"
 alias thesis="todo.sh lsp +thesis"
 alias tp="todo.sh projectview -+work"
 alias tm="todo.sh projectview +media"
-# alias - Repoutil {{{1
+function ttom(){
+    todo.sh app "$1" due:$(date -d 'tomorrow' +%F)
+}
+
+function ttod(){
+    todo.sh app "$1" due:$(date +%F)
+}
+#     Repoutil {{{1
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
 alias rl="repoutil list"
@@ -116,7 +110,7 @@ alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
 
-# alias - Jump to recent directories {{{1
+#     Jump to recent directories {{{1
 alias d='dirs -v | head -10'
 alias 1='cd -'
 alias 2='cd -2'
@@ -128,7 +122,15 @@ alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
 
-# fzf configuration {{{1
+# source other scripts {{{1
+function source_if_exists {
+    [[ -f "$1" ]] && source "$1"
+    [[ $VERBOSE_ZSHRC -eq 1 ]] && echo "Sourced" "$1"
+}
+source_if_exists $HOME/.cargo/env
+source_if_exists $HOME/.vim/bundle/fzf/shell/key-bindings.zsh
+
+# fzf functions {{{1
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.
 # - The first argument to the function ($1) is the base path to start traversal
@@ -164,6 +166,67 @@ fco() {
   git checkout $(awk '{print $2}' <<<"$target" )
 }
 
-function git-fixup () {
-  git ll -n 20 | fzf | cut -f 1 | xargs git commit --no-verify --fixup
+# fgst - pick files from `git status -s` 
+is_in_git_repo() {
+  git rev-parse HEAD > /dev/null 2>&1
+}
+
+fgst() {
+  # "Nothing to see here, move along"
+  is_in_git_repo || return 1
+
+  local cmd="${FZF_CTRL_T_COMMAND:-"command git status -s"}"
+
+  eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS" fzf -m "$@" | while read -r item; do
+    echo "$item" | awk '{print $2}'
+  done
+  echo
+}
+alias vfg='nvim $(fgst)'
+
+# functions {{{1
+sanitise(){
+    direc=$(dirname $1)
+    base=$(basename $1)
+    echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
+}
+
+ppath(){
+    echo "$PATH" | tr ":" "\n"
+}
+
+monospace-fonts(){
+	fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
+}
+
+aliases(){
+    grep "^\s*alias.*=" ~/.zshrc | sed -e 's/^[ ]\+//g' | column -s '=' -t | cut -d' ' -f2-
+}
+
+nonascii(){
+    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
+}
+
+is_tmux_alive(){
+    if [ $(tmux list-sessions | wc -l) -gt 0 ];
+    then
+        echo "TMUX"
+    else
+        echo "noMUX"
+        fi
+}
+
+git_num_unclean(){
+    set -e
+
+    unclean=$(repoutil unclean | wc -l)
+    echo "Unclean: $unclean"
+}
+
+datezipdir(){
+    dirname=$(basename $1)
+    shift
+    zipname=$(date +"$dirname--%Y-%m-%d.zip")
+    echo $zipname
+    zip -r $zipname $@
 }
