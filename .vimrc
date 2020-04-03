@@ -710,6 +710,7 @@ augroup vimrc
     au Filetype text set formatoptions-=a
     au Filetype vim set foldmethod=marker
     au ColorScheme * call lightline#colorscheme()
+    au Filetype zsh,bash,sh set foldmethod=marker
 augroup END
 " NEW {{{1 
 
