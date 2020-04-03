@@ -186,6 +186,7 @@ alias vfg='nvim $(fgst)'
 
 # functions {{{1
 sanitise(){
+    [[ $# -eq 0 ]] && echo "usage: sanitise <filename>" && return
     direc=$(dirname $1)
     base=$(basename $1)
     echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
@@ -216,14 +217,8 @@ is_tmux_alive(){
         fi
 }
 
-git_num_unclean(){
-    set -e
-
-    unclean=$(repoutil unclean | wc -l)
-    echo "Unclean: $unclean"
-}
-
 datezipdir(){
+    [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
     dirname=$(basename $1)
     shift
     zipname=$(date +"$dirname--%Y-%m-%d.zip")
