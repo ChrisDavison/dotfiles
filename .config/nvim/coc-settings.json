@@ -17,6 +17,9 @@
     ],
     "python.jediEnabled": false,
     "languageServer": {
+        "nim": {
+            "command": "nimlsp"
+        },
         "haskell": {
             "command": "hie-wrapper",
             "args": ["--lsp"],
