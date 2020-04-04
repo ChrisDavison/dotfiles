@@ -23,11 +23,12 @@ export_to_path_if_exists $HOME/.cargo/bin
 export_to_path_if_exists /usr/local/go/bin
 export_to_path_if_exists /snap/bin
 export_to_path_if_exists $HOME/.local/bin
+export_to_path_if_exists $HOME/.nimble/bin
 
 [[ -x rvm ]] && rvm default
 # prompt {{{1
 autoload -U colors && colors
-PROMPT="%{$fg[red]%}%~ %{$fg[green]%}→ %{$reset_color%}"
+PROMPT="%{$fg[red]%}%~ %{$fg[green]%}» %{$reset_color%}"
 RPROMPT="%*"
 
 # settings {{{1
@@ -225,3 +226,16 @@ datezipdir(){
     echo $zipname
     zip -r $zipname $@
 }
+
+aesenc(){
+    [[ $# = 0 ]] && echo "usage: aesenc <file>" && return
+    gpg --symmetric -a --cipher-algo aes256 --output "$1".asc "$1"
+    echo "$1.asc created"
+}
+
+# find duplicate words
+duplicate_words(){
+    [[ $# -eq 0 ]] && echo "usage: duplicate_words <file>..." && return
+    grep -Eo '(\b.+) \1\b' $1 || true
+}
+
