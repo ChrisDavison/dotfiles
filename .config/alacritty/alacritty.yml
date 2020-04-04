@@ -8,9 +8,9 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        Iosevka Term
+        Hermit
     myfontsize: &fontsize
-        14
+        9
 
 window:
     dimensions:
@@ -63,7 +63,7 @@ font: # CHANGES REQUIRE RESTART
 
     offset:
         x: 0 # letterspacing
-        y: 0 # linespacing
+        y: 2 # linespacing
 
     glyph_offset: # move glyphs WITHIN their cells
         x: 0
