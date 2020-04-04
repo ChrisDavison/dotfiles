@@ -17,9 +17,9 @@ if [ -z "$EXTERNAL" ]; then
     MONITOR=$INTERNAL polybar -r example &
 else
     xrandr --output $EXTERNAL $MONITOR_DIRECTION $INTERNAL -s 1920x1080 --noprimary
-    bspc monitor $EXTERNAL -d 1 2 
+    bspc monitor $EXTERNAL -d 1
     xrandr --output $INTERNAL --primary
-    bspc monitor $INTERNAL -d 3 4 5 6 7 8 9 0
+    bspc monitor $INTERNAL -d 2 3 4 5 6 7 8 9 0
 
     MONITOR=$INTERNAL polybar -r example &
     MONITOR=$EXTERNAL polybar -r example &
