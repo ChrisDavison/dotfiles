@@ -206,7 +206,7 @@ aliases(){
 }
 
 nonascii(){
-    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
+    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
 }
 
 is_tmux_alive(){

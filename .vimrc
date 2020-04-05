@@ -2,10 +2,6 @@ filetype plugin indent on
 syntax enable
 let mapleader=" "
 
-" filetype config in ~/.vim/after/ftplugin
-" custom functions in ~/.vim/autoload and ~/.vim/plugin
-
-" Load plugins from submodules (using tpope/pathogen.vim)
 execute pathogen#infect("~/.vim/bundle/{}")
 " settings {{{1
 set nocompatible
@@ -83,6 +79,7 @@ if !has('nvim') && &ttimeoutlen == -1
   set ttimeout
   set ttimeoutlen=100
 endif
+
 "      shell (specialised per os) {{{1
 if has('win32')
     set shell=cmd.exe
@@ -225,7 +222,7 @@ endfunction "
 
 function! Markdown_backlinks(use_grep) " {{{2
     if a:use_grep
-        exec "grep! '\\((\./)*" . expand("%") . "'"
+        exec "silent grep! '\\((\./)*" . expand("%") . "'"
     else
         call fzf_vim_grep(
         \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
@@ -246,7 +243,10 @@ function! Markdown_file_from_selection(is_visual) " {{{2
     let text= a:is_visual ? GetVisualSelection(1) : expand('<cword>')
     let l:start_line = line(".")
     let l:start_col = col(".")
-    let linktext="./" . SanitiseFilename(l:text) . ".md"
+    let nospace = substitute(a:filename, " ", "-", "g")
+    let lower = tolower(nospace)
+    let sanitised = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
+    let linktext="./" . sanitised . ".md"
     let replacetext=s:make_markdown_link(l:text, linktext)
     if a:is_visual
         let around_visual = GetBeforeAndAfterVisualSelection()
@@ -294,12 +294,12 @@ augroup latex
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
-    au Filetype tex command! Todos :silent!grep \\\\todo<CR>
-    au Filetype tex command! BTodos :silent!lgrep \\\\todo %<CR>
-    au Filetype tex command! Tables :silent!grep '\\\\begin\{table'<CR>
-    au Filetype tex command! BTables :silent!lgrep '\\\\begin\{table' %<CR>
-    au Filetype tex command! Figures :silent!grep '\\\\begin\{figure'<CR>
-    au Filetype tex command! BFigures :silent!lgrep '\\\\begin\{figure' %<CR>
+    au Filetype tex command! Todos :silent grep \\\\todo<CR>
+    au Filetype tex command! BTodos :silent lgrep \\\\todo %<CR>
+    au Filetype tex command! Tables :silent grep '\\\\begin\{table'<CR>
+    au Filetype tex command! BTables :silent lgrep '\\\\begin\{table' %<CR>
+    au Filetype tex command! Figures :silent grep '\\\\begin\{figure'<CR>
+    au Filetype tex command! BFigures :silent lgrep '\\\\begin\{figure' %<CR>
 augroup end
 "      Todo.txt  {{{1 
 augroup todotxt
@@ -367,20 +367,14 @@ nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
-nnoremap <leader>p :call MaybeGFiles()<CR>
-nnoremap <leader>r :Rg 
+nnoremap <leader>p :Files<CR>
+
 " ctags definitions for markdown urls and @keywords
 nnoremap <leader>l :BTags link <CR>
 nnoremap <leader># :Tags @<CR>
-
-"      for my plugins (~/.vim/plugin) {{{1
-
-
-"      copy file basename, full-path, or parent dir {{{1
-nnoremap <leader>cf :let @+=resolve(expand("%"))<CR>
-nnoremap <leader>cF :let @+=resolve(expand("%:p"))<CR>
-nnoremap <leader>cd :let @+=resolve(expand("%:p:h"))<CR>
 " abbreviations {{{1
+cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
+cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
 cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
@@ -395,21 +389,7 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
-" custom commands {{{1
-command! CD exec "cd " . expand("%:p:h")
-command! SeeAlso Rg see also
-command! Scratch edit ~/Dropbox/notes/.scratch | normal <C-End>
-command! BD bp|bd#
-cnoreabbrev Bd BD
-" custom fold text {{{1
-function! CustomFoldText()
-    let curline = getline(v:foldstart)
-    return curline . "…" .repeat(" ", ActualWindowWidth() - len(curline)-1)
-endfunction
-set foldtext=CustomFoldText()
-" Navigation commands {{{1
-"
-"       'Favourite' files {{{1
+" Navigate 'Favourite' files {{{1
 let g:favourite_files = [
         \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
         \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
@@ -456,7 +436,7 @@ endfunction
 command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:favourite_files, <q-args>)
 cnoreabbrev fav Fav
 
-"       Common 'configuration' files {{{1
+" Navigate common 'configuration' files {{{1
 let g:my_configs=[
             \ {"name": "vim", "path": "$HOME/.vimrc"},
             \ {"name": "bspwm", "path": "$HOME/.config/bspwm/bspwmrc"},
@@ -491,7 +471,7 @@ command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_mat
 cnoreabbrev conf Conf
 
 
-"       Links in markdown buffers {{{1
+" Navigate links in markdown buffers {{{1
 function! s:open_link_from_buffer(line)
     let matches=matchlist(a:line, "](\\(.*\\))")
     if len(matches) > 1
@@ -508,14 +488,14 @@ command! -bang LinksInBuffer call fzf#run(fzf#wrap({
             \ 'source': 'rg --only-matching "\[.*\]\(.*\)" ' . expand("%"),
             \ 'sink': function("<SID>open_link_from_buffer"),
             \ 'options': '--exact --prompt Link: '}))
-"       '@tags' using `Tagsearch` {{{1
+" Navigate '@tags' using `Tagsearch` {{{1
 function! s:find_tag(tag)
     exec "silent!Rg @" . a:tag
     call feedkeys("i")
 endfunction
 
 function! s:find_tag_grep(tag)
-    exec "silent!grep @" . a:tag
+    exec "silent grep @" . a:tag
 endfunction
 
 command! -bang Tagsearch call fzf#run(fzf#wrap({
@@ -543,16 +523,6 @@ endfunction
 command! -complete=file -nargs=1 InsertLinkToNote call <SID>FirstLineFromFileAsLink(<q-args>)
 nnoremap <leader>il :InsertLinkToNote 
 
-" Use GFiles rather than Files if within a git repo {{{1
-function! MaybeGFiles()
-    " system is only called to test for it's error code
-    call system('git rev-parse --show-toplevel')
-    if !v:shell_error
-        GFiles
-    else 
-        Files
-    endif
-endfunction
 
 " window width {{{1
 function! ActualWindowWidth()
@@ -653,23 +623,11 @@ augroup end
 
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" "Grammar Police" for my writing {{{1
+" QuickFix utils - "Grammar Police" and nonexistent links {{{1
+command! -bang BadLinks call setqflist([], 'r', {'lines': systemlist('nonexistent_notes.py --vimgrep ' . (<bang>1 ? '*.md' : expand('%')))})<BAR>:copen
 command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
-" Make non-existent directories on save {{{1 
-function! MakeDirectoriesIfDontExist()
-    if '<afile>' !~ '^scp:' && !isdirectory(expand('<afile>:h'))
-        call mkdir(expand('<afile>:h'), 'p')
-    endif
-endfunction
-" Sanitise filenames {{{1
-function! SanitiseFilename(filename)
-    let nospace = substitute(a:filename, " ", "-", "g")
-    let lower = tolower(nospace)
-    let nosyms = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
-    return nosyms
-endfunction
 " Manage visual selections {{{1
 function! GetVisualSelection(only_on_line)
     let l:start_line = line("'<")
@@ -702,7 +660,6 @@ augroup vimrc
     au InsertEnter * set norelativenumber
     au InsertLeave * set relativenumber
     au TextChanged,InsertLeave,FocusLost * silent! wall
-    au BufWritePre * call MakeDirectoriesIfDontExist()
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
@@ -714,4 +671,3 @@ augroup vimrc
 augroup END
 " NEW {{{1 
 
-command! -bang BadLinks call setqflist([], 'r', {'lines': systemlist('nonexistent_notes.py --vimgrep ' . (<bang>1 ? '*.md' : expand('%')))})<BAR>:copen
