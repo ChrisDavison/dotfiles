@@ -9,7 +9,6 @@ It was, as of 2016, licensed under GPL. Has been kept.
 """
 import os
 import sys
-import re
 from datetime import date
 from collections import defaultdict, Counter
 
@@ -21,9 +20,6 @@ AUTHORS = [
     ("Gina Trapani (ginatrapani@gmail.com)", "Original author, Copyright")
 ]
 
-RX_PROJECT = re.compile('\s(\+[a-zA-Z0-9]+)\s')
-RX_CONTEXT = re.compile('\s(@[a-zA-Z0-9]+)\s')
-
 
 def projects_and_contexts_in_file(filename, with_completed=False):
     # We COULD just run the regex on the entire file, but by iterating over
@@ -32,11 +28,11 @@ def projects_and_contexts_in_file(filename, with_completed=False):
     projects = Counter()
     contexts = Counter()
 
-    for line in open(filename, "r"):
+    for line in open(filename, "r").read().splitlines():
         if not with_completed and line.startswith('x '):
             continue
-        projects.update({m.group(1) for m in RX_PROJECT.finditer(line)})
-        contexts.update({m.group(1) for m in RX_CONTEXT.finditer(line)})
+        projects.update({w for w in line.split() if w.startswith('+')})
+        contexts.update({w for w in line.split() if w.startswith('@')})
     return projects, contexts
 
 

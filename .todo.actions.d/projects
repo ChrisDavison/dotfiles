@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import os
-import re
 import sys
 from datetime import date
 from collections import Counter
@@ -9,16 +8,17 @@ from collections import Counter
 def main():
     # make sure you have all your args
     TODO_FILE = os.environ['TODO_FILE']
-    RX_PROJECT = re.compile('\s(\+[a-zA-Z0-9]+)\s')
 
     # process todo.txt
     projects = Counter([])
-    for line in open(TODO_FILE, "r"):
-        projects.update({m.group(1) for m in RX_PROJECT.finditer(line)})
+    for line in open(TODO_FILE, "r").read().splitlines():
+        projects.update({w for w in line.split() if w.startswith('+')})
 
-    sorted_items = sorted(list(projects.items()), key=lambda k: k[1], reverse=True)
+    # sorted_items = sorted(list(projects.items()), key=lambda k: k[1], reverse=True)
+    sorted_items = sorted(list(projects.items()))
+    print("COUNT TASK")
     for project, count in sorted_items:
-        print("{} ({} tasks)".format(project, count))
+        print("{:5d} {}".format(count, project))
 
 
 if __name__ == "__main__":
