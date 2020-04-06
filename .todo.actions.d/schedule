@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+import datetime
+import os
+import re
+import sys
+
+
+USAGE = """    schedule ITEM# WHEN
+      Add or replace due date on ITEM# with WHEN
+      WHEN can be date (YYYY-MM-DD)
+                  '[next ]week|month|year'
+                  'today|tomorrow'
+                  'monday'..'sunday'
+"""
+
+rx_due = re.compile(r"due:(\d\d\d\d-\d\d-\d\d)")
+rx_date = re.compile(r"\d\d\d\d-\d\d-\d\d")
+rx_space = re.compile(r"\s\s+")
+
+
+weekdays = ['monday', 'tuesday', 'wednesday', 
+    'thursday', 'friday', 'saturday', 'sunday']
+
+
+def next_weekday(date, weekday):
+    if weekdays[date.weekday()] == weekday:
+        return date
+    else:
+        return next_weekday(date + datetime.timedelta(days=1), weekday)
+
+
+def next_from_word(date, word):
+    if word == 'month':
+        return date.replace(month=date.month + 1)
+    elif word == 'week':
+        return date.replace(day=date.day + 6)
+    elif word == 'year':
+        return date.replace(year=date.year + 1)
+    else:
+        raise "Unknown word: " + word
+
+
+def parse_when(when):
+    if rx_date.match(when):
+        return when
+    elif when in weekdays:
+        tomorrow = datetime.date.today()+datetime.timedelta(days=1)
+        return next_weekday(tomorrow, when).strftime("%F")
+    elif when == 'tomorrow':
+        tomorrow = datetime.date.today()+datetime.timedelta(days=1)
+        return tomorrow
+    elif when == 'today':
+        today = datetime.date.today()
+        return today
+    else:
+        if when.startswith('next '):
+            when = when.split(' ')[1]
+        today = datetime.date.today()
+        return next_from_word(today, when).strftime("%F")
+
+
+def main(item, when):
+    todos_to_print = []
+    todofile = os.environ["TODO_FILE"]
+    todos = open(todofile, 'r').read().splitlines()
+    if item > len(todos):
+        print("ITEM# out of range")
+        return
+    todos[item-1] = rx_due.sub("", todos[item-1])
+    todos[item-1] += ' due:{}'.format(parse_when(when))
+    print("SCHEDULED:", todos[item-1])
+    with open(todofile, 'w') as todo_file:
+        for task in todos:
+            print(rx_space.sub(" ", task), file=todo_file)
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if args[0] == "usage":
+        print(USAGE)
+        sys.exit(0)
+    item = int(args[1])
+    when = ' '.join(args[2:])
+    main(item, when)
+
