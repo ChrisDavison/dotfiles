@@ -330,53 +330,6 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
-" Navigate 'Favourite' files {{{1
-let g:favourite_files = [
-        \ {"name": "INDEX", "path": "~/Dropbox/notes/index.md"},
-        \ {"name": "TODO", "path": "~/Dropbox/notes/todo.txt"},
-        \ {"name": "INBOX", "path": "~/Dropbox/notes/inbox.md"},
-        \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
-        \ {"name": "wishlist", "path": "~/Dropbox/notes/want.txt"},
-        \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
-        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.md"},
-        \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
-        \]
-" nnoremap <leader>f :Favourites<CR>
-cnoreabbrev F Fav
-nnoremap <leader>f :Fav 
-
-function! s:edit_favourite(key)
-    let names=map(copy(g:favourite_files), {_, v -> v["name"]})
-    let paths=map(copy(g:favourite_files), {_, v -> v["path"]})
-    let idx=index(names, a:key)
-    if idx == -1
-        return
-    end
-    let filename = expand(paths[idx])
-    if isdirectory(l:filename)
-        exec "Explore " . l:filename
-    elseif filereadable(l:filename)
-        exec "e " . l:filename
-    else
-        echom "Can't open file/dir " . l:filename
-    endif
-endfunction
-
-command! Favourites call fzf#run(fzf#wrap({
-            \ 'source': reverse(map(copy(g:favourite_files), {_, v -> v["name"]})), 
-            \ 'sink': function("<SID>edit_favourite"),
-            \ 'options': '--prompt Favourite: '}))
-
-" Simpler version, not using FZF (faster, but less hand-holdy)
-function! s:favourite_files(A, L, P)
-    let paths=map(copy(g:favourite_files), {_, v -> v["name"]})
-    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
-    return paths_filtered
-endfunction
-
-command! -nargs=1 -complete=customlist,<sid>favourite_files Fav call <sid>edit_matching(g:favourite_files, <q-args>)
-cnoreabbrev fav Fav
-
 " Navigate common 'configuration' files {{{1
 let g:my_configs=[
             \ {"name": "vim", "path": "$HOME/.vimrc"},
