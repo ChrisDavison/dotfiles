@@ -49,7 +49,7 @@ def format_line(line):
         line = line.replace(word, project_colour+word+clear_colour)
     for word in contexts:
         line = line.replace(word, context_colour+word+clear_colour)
-    return line + clear_colour
+    return re.sub(r'\s\s+', ' ', line + clear_colour)
 
 
 def group_todos_by_delta_days(todos):
