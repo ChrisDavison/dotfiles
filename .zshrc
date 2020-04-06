@@ -86,8 +86,8 @@ stty eof undef
 #     Todo.sh {{{1
 alias t="todo.sh -a -f"
 alias thesis="todo.sh lsp +thesis"
-alias tp="todo.sh projectview -+work"
-alias tm="todo.sh projectview +media"
+alias tp="todo.sh projectview | less"
+alias habits="todo.sh ls rec:"
 function ttom(){
     todo.sh app "$1" due:$(date -d 'tomorrow' +%F)
 }
