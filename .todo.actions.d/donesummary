@@ -20,7 +20,12 @@ re_date = re.compile('\d\d\d\d-\d\d-\d\d')
 if 'usage' in args:
     print(__USAGE__)
     sys.exit(0)
-elif args:
+
+
+count = '-c' in args or '--count' in args
+if count:
+    args = [a for a in args if a not in ['-c', '--count']]
+if args:
     if re_date.match(args[0]):
         matching_date = args[0]
     else:
@@ -47,7 +52,11 @@ for date in sorted(dones_by_date):
         continue
     elif matching_date and date != matching_date:
         continue
-    print(header(date))
-    for done in dones_by_date[date]:
-        print('    {}'.format(done))
-    print()
+    if not count:
+        print(header(date))
+        for done in dones_by_date[date]:
+            print('    {}'.format(done))
+        print()
+    else:
+        print("{}  {}".format(date, len(dones_by_date[date])))
+    
