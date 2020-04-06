@@ -46,7 +46,7 @@ def print_all(lst, lst_done, len_name):
         print("{:{len_longest}} {:3} / {}".format(elem, count_open, count_closed, len_longest=len_name))
 
 
-def main():
+def main(filter):
     TODO_FILE = os.environ['TODO_FILE']
     DONE_FILE = os.environ['DONE_FILE']
 
@@ -65,12 +65,17 @@ def main():
         print("{}".format('-'*len(msg)))
 
     need_divider = False
-    if contexts:
-        print_all(contexts, contexts_done, len_longest)
-    if projects:
-        if contexts:
+    filtered_contexts = {c:count for c,count in contexts.items()
+            if all([f in c for f in filter]) or not filter}
+    if filtered_contexts:
+        print_all(filtered_contexts, contexts_done, len_longest)
+
+    filtered_projects = {p:c for p,c in projects.items() 
+            if all([f in p for f in filter]) or not filter}
+    if filtered_projects:
+        if filtered_contexts:
             print('-'*len(msg))
-        print_all(projects, projects_in_done, len_longest)
+        print_all(filtered_projects, projects_in_done, len_longest)
 
 
 if __name__ == "__main__":
@@ -79,4 +84,4 @@ if __name__ == "__main__":
         print("      report pending and completed tasks for projects and contexts")
         print()
     else:
-        main()
+        main(filter=sys.argv[2:])
