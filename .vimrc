@@ -152,14 +152,10 @@ let g:pandoc#spell#enabled=0
 augroup markdown
     au!
     au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
-    au Filetype markdown,markdown.pandoc set foldenable 
+    au Filetype markdown,markdown.pandoc setlocal foldenable 
                 \ foldmethod=expr foldlevelstart=1 
                 \ nospell conceallevel=1
                 \ formatoptions+=a textwidth=79
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> ml :call Markdown_file_from_selection(0)<CR>
-    au Filetype markdown,markdown.pandoc vnoremap <buffer> ml :call Markdown_file_from_selection(1)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(0)<CR>
-    au Filetype markdown,markdown.pandoc vnoremap <buffer> gml :call Markdown_file_from_selection_and_edit(1)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
@@ -169,31 +165,6 @@ augroup markdown
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>B :Backlinks!<CR>
     au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
 augroup end
-
-function! Markdown_fold_level() " {{{2
-let matches_atx = matchlist(getline(v:lnum), '^\(_\+\)\s')
-let line_len = len(getline(v:lnum))
-let matches_setex_one = len(matchlist(getline(v:lnum+1), '^=\+$')) > 0
-let matches_setex_two = len(matchlist(getline(v:lnum+1), '^-\+$')) > 0
-let prev_not_blank = len(getline(v:lnum)) > 0
-if len(l:matches_atx) > 0 
-    if g:markdown_fold_method == 'stacked'
-        return ">1"
-    else
-        return ">" . len(l:matches_atx[1])
-    end
-elseif l:matches_setex_one && prev_not_blank
-    return ">1"
-elseif l:matches_setex_two && prev_not_blank
-    if g:markdown_fold_method == 'stacked'
-        return ">1"
-    else
-        return ">2"
-    endif
-else
-    return "="
-end
-endfunction " 
 
 function! Markdown_goto_file(split) " {{{2
     let fname=expand("<cfile>")
@@ -235,33 +206,6 @@ function! Markdown_copy_filename_as_link() " {{{2
     let @a=l:link
 endfunction " 
 
-function! s:make_markdown_link(text, url) " {{{2
-    return "[" . a:text . "](" . a:url . ")"
-endfunction " 
-
-function! Markdown_file_from_selection(is_visual) " {{{2
-    let text= a:is_visual ? GetVisualSelection(1) : expand('<cword>')
-    let l:start_line = line(".")
-    let l:start_col = col(".")
-    let nospace = substitute(a:filename, " ", "-", "g")
-    let lower = tolower(nospace)
-    let sanitised = substitute(lower, "[^a-zA-Z0-9\-]", "", "g")
-    let linktext="./" . sanitised . ".md"
-    let replacetext=s:make_markdown_link(l:text, linktext)
-    if a:is_visual
-        let around_visual = GetBeforeAndAfterVisualSelection()
-        let l:line=around_visual[0] . replacetext . around_visual[1]
-        call setline(l:start_line, l:line)
-    else
-        execute "normal ciw" . l:replacetext
-    end
-    call cursor(l:start_line, l:start_col+1)
-    return linktext
-endfunction " 
-
-function! Markdown_file_from_selection_and_edit(is_visual) " {{{2
-    exec "w|edit " . Markdown_file_from_selection(a:is_visual)
-endfunction " 
 "      golang {{{1
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
@@ -274,6 +218,7 @@ augroup end
 let g:pymode_python = 'python3'
 augroup python
     au! Filetype python set foldmethod=indent
+    au! Filetype python set formatoptions-=a
 augroup end
 "      rust {{{1
 let g:rustfmt_autosave=1
@@ -304,12 +249,8 @@ augroup end
 "      Todo.txt  {{{1 
 augroup todotxt
     au!
-    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt,habits.txt,report.txt,thesis.txt set filetype=todo.txt 
+    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt set filetype=todo.txt 
     au Filetype todo.txt,text setlocal formatoptions -=a
-    au Filetype todo.txt,text command! TodoSort call todo#Sort('')
-    au Filetype todo.txt,text command! TodoSortDue call todo#SortDue()
-    au Filetype todo.txt,text command! TodoSortCP call todo#HierarchicalSort('@', '+', 1)
-    au Filetype todo.txt,text command! TodoSortPC call todo#HierarchicalSort('+', '@', 1)
 augroup end
 " keybinds {{{1 
 nnoremap <silent> Q =ip
@@ -397,7 +338,7 @@ let g:favourite_files = [
         \ {"name": "logbook", "path": "~/Dropbox/notes/logbook.md"},
         \ {"name": "wishlist", "path": "~/Dropbox/notes/want.txt"},
         \ {"name": "stuff to learn", "path": "~/Dropbox/notes/stuff-to-learn.md"},
-        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.txt"},
+        \ {"name": "calendar", "path": "~/Dropbox/notes/calendar.md"},
         \ {"name": "projects", "path": "~/Dropbox/notes/projects.md"},
         \]
 " nnoremap <leader>f :Favourites<CR>
@@ -469,6 +410,7 @@ endfunction
 
 command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
 cnoreabbrev conf Conf
+nnoremap <leader>C :Conf 
 
 
 " Navigate links in markdown buffers {{{1
@@ -628,32 +570,6 @@ command! -bang BadLinks call setqflist([], 'r', {'lines': systemlist('nonexisten
 command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
 command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
-" Manage visual selections {{{1
-function! GetVisualSelection(only_on_line)
-    let l:start_line = line("'<")
-    let l:start_col = col("'<")
-    let l:end_line = line("'>")
-    let l:end_col = col("'>")
-    if a:only_on_line && (l:start_line != l:end_line)
-        echom "FileFromSelected: Start and end must be same line number"
-        return
-    end
-    return getline(".")[l:start_col-1:l:end_col-1]
-endfunction
-
-function! GetBeforeAndAfterVisualSelection()
-    let start_line = line("'<")
-    let start_col = col("'<")
-    let end_line = line("'>")
-    let end_col = col("'>")
-    let before=getline(start_line)[:start_col-2]
-    if start_col == 1
-        let before = ""
-    end
-    let after=getline(start_line)[end_col:]
-    return [before, after]
-endfunction
-
 " autocommands {{{1
 augroup vimrc
     autocmd!
