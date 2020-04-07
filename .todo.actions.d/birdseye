@@ -28,12 +28,15 @@ def projects_and_contexts_in_file(filename, with_completed=False):
     projects = Counter()
     contexts = Counter()
 
+    no_projects = 0
     for line in open(filename, "r").read().splitlines():
         if not with_completed and line.startswith('x '):
             continue
+        if not ' +' in line:
+            no_projects += 1
         projects.update({w for w in line.split() if w.startswith('+')})
         contexts.update({w for w in line.split() if w.startswith('@')})
-    return projects, contexts
+    return projects, contexts, no_projects
 
 
 def print_all(lst, lst_done, len_name):
@@ -43,15 +46,15 @@ def print_all(lst, lst_done, len_name):
         count_total = count_open + count_closed
         remaining = count_total - count_open
         pct = int(remaining / count_total * 100)
-        print("{:{len_longest}} {:3} / {}".format(elem, count_open, count_closed, len_longest=len_name))
+        print("{:{len_longest}} {:3} | {}".format(elem, count_open, count_closed, len_longest=len_name))
 
 
 def main(filter):
     TODO_FILE = os.environ['TODO_FILE']
     DONE_FILE = os.environ['DONE_FILE']
 
-    projects, contexts = projects_and_contexts_in_file(TODO_FILE, with_completed=False)
-    projects_in_done, contexts_done = projects_and_contexts_in_file(DONE_FILE, with_completed=True)
+    projects, contexts, n_no_project = projects_and_contexts_in_file(TODO_FILE, with_completed=False)
+    projects_in_done, contexts_done, _ = projects_and_contexts_in_file(DONE_FILE, with_completed=True)
     
     print("Projects & Contexts with OPEN todos")
     print(date.today())
@@ -60,7 +63,7 @@ def main(filter):
     len_longest = 0
     if projects or contexts:
         len_longest = max([len(p) for p in projects] + [len(c) for c in contexts])
-        msg = "{:{len_longest}} {:3} / {}".format("", "OPEN", "DONE", len_longest=len_longest)
+        msg = "{:{len_longest}} {:3} | {}".format("", "OPEN", "DONE", len_longest=len_longest)
         print("{}".format(msg))
         print("{}".format('-'*len(msg)))
 
@@ -76,6 +79,10 @@ def main(filter):
         if filtered_contexts:
             print('-'*len(msg))
         print_all(filtered_projects, projects_in_done, len_longest)
+
+    if filtered_projects or filtered_contexts:
+        print('-'*len(msg))
+    print_all({"NO PROJECT": n_no_project}, dict(), len_longest)
 
 
 if __name__ == "__main__":
