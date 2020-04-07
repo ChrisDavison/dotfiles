@@ -33,6 +33,17 @@ clear_colour = os.environ.get("DEFAULT", "").replace('\\\\033', '\033')
 done_colour = os.environ.get("COLOR_DONE", "").replace('\\\\033', '\033')
 
 
+def create_priority_colours():
+    global priority_colours
+    for letter in string.ascii_uppercase:
+        PRI = "PRI_" + letter
+        if PRI  in os.environ:
+            priority_colours[letter] = os.environ[PRI].replace('\\\\033', '\033')
+        else:
+            priority_colours[letter] = ''
+    priority_colours['NONE'] = ''
+
+
 def format_line(line):
     if line[0] == 'x':
         return done_colour + line + clear_colour
@@ -66,7 +77,7 @@ def group_todos_by_delta_days(todos):
             date = datetime.strptime(m_due[0][1], "%Y-%m-%d").date()
             diff = (date - today).days
             no_due = task.replace('due:'+str(date), '')
-            tasks_by_delta[diff].append((i, no_due.strip()))
+            tasks_by_delta[diff].append((i, date, no_due.strip()))
     return tasks_by_delta
 
 
@@ -75,31 +86,31 @@ def matches_filter(filter, task):
     negatives = [w[1:] for w in filter if w.startswith('-')]
     if negatives:
         for neg in negatives:
-            if neg in task[1]:
+            if neg in task:
                 return False
     if not positives:
         return True
     for pos in positives:
-        if pos not in task[1]:
+        if pos not in task:
             return False
     return True
 
 
-def print_list(message, list_of_tasks, filter):
-    header_printed = False
+def print_list(list_of_tasks, filter):
     num_displayed = 0
-    for task in list_of_tasks:
-        if not matches_filter(filter, task):
+    date_printed = False
+    today = datetime.today().date()
+    for num, date, text in list_of_tasks:
+        if not matches_filter(filter, text):
             continue
-        if not header_printed:
-            n_repeat = ((60 - len(message)) / 2) - 1
-            rep = '.' * int(n_repeat)
-            print('{} {} {}'.format(rep, message, rep))
-            header_printed = True
-        print("{:<3d} {}".format(task[0] + 1, format_line(task[1])))
+        if date_printed:
+            date = ""
+        if date == today:
+            date = "...TODAY..."
+        print("{:12} {:<3d} {}".format(str(date), num + 1, format_line(text)))
+        date_printed = True
         num_displayed += 1
     return num_displayed
-
 
 
 def main(future_days=None, filter=[]):
@@ -118,17 +129,17 @@ def main(future_days=None, filter=[]):
     overdue_tasks = [t for key in sorted_delta_keys if key < 0
                     for t in tasks_by_delta[key]]
     if overdue_tasks:
-        num_displayed += print_list("OVERDUE", overdue_tasks, filter)
+        num_displayed += print_list(overdue_tasks, filter)
         print()
 
     if 0 in sorted_delta_keys:
-        num_displayed += print_list("TODAY", tasks_by_delta[0], filter)
+        num_displayed += print_list(tasks_by_delta[0], filter)
         print()
    
     if future_days:
         future_keys = [k for k in sorted_delta_keys if k > 0 and k <= future_days]
         for key in future_keys:
-            num_displayed += print_list("DUE IN {} DAYS".format(key), tasks_by_delta[key], filter)
+            num_displayed += print_list(tasks_by_delta[key], filter)
             print()
 
     print("TODO: {} of {} tasks shown".format(num_displayed, task_count))
@@ -137,14 +148,7 @@ def main(future_days=None, filter=[]):
 if 'usage' in sys.argv:
     print(__USAGE__)
 else:
-    for letter in string.ascii_uppercase:
-        PRI = "PRI_" + letter
-        if PRI  in os.environ:
-            priority_colours[letter] = os.environ[PRI].replace('\\\\033', '\033')
-        else:
-            priority_colours[letter] = ''
-    priority_colours['NONE'] = ''
-
+    create_priority_colours()    
     scriptname = os.path.basename(__file__)
     future_days = None
     filters = []
