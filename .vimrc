@@ -107,8 +107,8 @@ endif
 let g:lightline={'colorscheme':"seoul256"}
 let g:molokai_original=1
 let g:rehash256 = 1
-set bg=dark
-silent! colorscheme seoul256
+set bg=light
+silent! colorscheme seoul256-light
 "      plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -121,51 +121,17 @@ endif
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
 "      markdown {{{1
+let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --reference-links\ --reference-location=section\ --columns=79\ --wrap=auto\ --atx-headers"
 
-" 'nested' -- hides L_n+1 below L_n
-" 'stacked' -- folds all headers, but treats them as same level
-let g:markdown_fold_method='nested'
-
-let g:markdown_fenced_languages = ['python', 'rust', 'cpp', 'go']
 let g:pandoc#formatting#mode='hA'
 let g:pandoc#keyboard#use_default_mappings=0
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
-
-let g:markdown_reference_links=0
-let g:markdown_hard_wrap=1
-
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block"
-let md_equalprg.=g:markdown_reference_links ? "-shortcut_reference_links\ --reference-links\ --reference-location=section" : ""
-let md_equalprg.=g:markdown_hard_wrap ? "\ --columns=79\ --wrap=auto" : "\ --wrap=none"
-let md_equalprg.="\ --atx-headers"
-
-" let &l:equalprg=md_equalprg
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
-let g:pandoc#modules#disabled = ['hypertext', 'spell']
 let g:pandoc#folding#fdc=0
 let g:pandoc#folding#fold_fenced_codeblocks=1
-let g:pandoc#syntax#conceal#urls=0
-let g:pandoc#syntax#conceal#blacklist=['ellipses', 'atx', 'subscript', 'superscript', 'strikeout', 'codeblock_start', 'codeblock_delim', 'footnote', 'definition', 'list']
+let g:pandoc#syntax#conceal#use=0
 let g:pandoc#spell#enabled=0
-
-augroup markdown
-    au!
-    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
-    au Filetype markdown,markdown.pandoc setlocal foldenable 
-                \ foldmethod=expr foldlevelstart=1 
-                \ nospell conceallevel=1
-                \ formatoptions+=a textwidth=79
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
-    au Filetype markdown,markdown.pandoc CocDisable
-    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>B :Backlinks!<CR>
-    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
-augroup end
-
 function! Markdown_goto_file(split) " {{{2
     let fname=expand("<cfile>")
     let command = "edit "
@@ -206,52 +172,18 @@ function! Markdown_copy_filename_as_link() " {{{2
     let @a=l:link
 endfunction " 
 
-"      golang {{{1
+"      programming languages {{{1
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
-augroup go
-    au!
-    au Filetype go set foldmethod=syntax
-augroup end
-"      python {{{1
+
 let g:pymode_python = 'python3'
-augroup python
-    au! Filetype python set foldmethod=indent
-    au! Filetype python set formatoptions-=a
-augroup end
-"      rust {{{1
+
 let g:rustfmt_autosave=1
-augroup rust
-    au!
-    au Filetype rust set foldmethod=syntax
-augroup end
-"      latex {{{1
+
 let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
-
-augroup latex
-    au!
-    au BufRead,BufNewFile *.latex set filetype=tex
-    au Filetype tex set foldmethod=expr
-                \ foldexpr=vimtex#fold#level(v:lnum)
-                \ foldtext=vimtex#fold#text()
-                \ fillchars=fold:\  
-                \ formatoptions-=a
-    au Filetype tex command! Todos :silent grep \\\\todo<CR>
-    au Filetype tex command! BTodos :silent lgrep \\\\todo %<CR>
-    au Filetype tex command! Tables :silent grep '\\\\begin\{table'<CR>
-    au Filetype tex command! BTables :silent lgrep '\\\\begin\{table' %<CR>
-    au Filetype tex command! Figures :silent grep '\\\\begin\{figure'<CR>
-    au Filetype tex command! BFigures :silent lgrep '\\\\begin\{figure' %<CR>
-augroup end
-"      Todo.txt  {{{1 
-augroup todotxt
-    au!
-    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt set filetype=todo.txt 
-    au Filetype todo.txt,text setlocal formatoptions -=a
-augroup end
 " keybinds {{{1 
 nnoremap <silent> Q =ip
 nnoremap S      :%s///<LEFT>
@@ -266,24 +198,11 @@ nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
 vnoremap W      :w <BAR>norm gvD<LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
 
-if empty(mapcheck('<C-U>', 'i'))
-    inoremap <C-U> <C-G>u<C-U>
-endif
-
-if empty(mapcheck('<C-W>', 'i'))
-    inoremap <C-W> <C-G>u<C-W>
-endif
-" nmap s <Plug>(easymotion-sn)
-
-" Run 'equalprg' and return to mark
+" Run 'equalprg' (format) and return to mark
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
-
-" Close quickfix or location window
-nnoremap <leader>cc :cclose<bar>lclose<CR>
-
 "      window split navigation {{{1
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -309,10 +228,6 @@ nnoremap <leader>t :BTags<CR>
 nnoremap <leader>k :Tagsearch<CR>
 nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
 nnoremap <leader>p :Files<CR>
-
-" ctags definitions for markdown urls and @keywords
-nnoremap <leader>l :BTags link <CR>
-nnoremap <leader># :Tags @<CR>
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
@@ -344,10 +259,9 @@ let g:my_configs=[
             \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
 \]
 
-
 function! s:config_files(A, L, P)
     let paths=map(copy(g:my_configs), {_, v -> v["name"]})
-    let paths_filtered=filter(l:paths, {_, val -> val =~ "^" . a:A})
+    let paths_filtered=filter(l:paths, {_, val -> val =~ a:A})
     return paths_filtered
 endfunction
 
@@ -364,42 +278,6 @@ endfunction
 command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
 cnoreabbrev conf Conf
 nnoremap <leader>C :Conf 
-
-
-" Navigate '@tags' using `Tagsearch` {{{1
-function! s:find_tag(tag)
-    exec "silent!Rg @" . a:tag
-    call feedkeys("i")
-endfunction
-
-function! s:find_tag_grep(tag)
-    exec "silent grep @" . a:tag
-endfunction
-
-command! -bang Tagsearch call fzf#run(fzf#wrap({
-            \ 'source': 'tagsearch --long', 
-            \ 'sink': <bang>0 ? function("<SID>find_tag") : function("<SID>find_tag_grep"),
-            \ 'options': '--prompt Tag: '}))
-" Insert a link to a note, with first line as title {{{1
-function! s:FirstLineFromFileAsLink(filename)
-    let title=trim(system('head -n1 ' . a:filename))
-    let matches = matchlist(title, '#\+ \(.*\)')
-    if len(l:matches) > 1
-        let l:title = l:matches[1]
-    endif
-    let filename=resolve(expand(a:filename))
-    if l:filename[0] != '.'
-        let filename = './' . a:filename
-    endif
-    let link="[" . title . "](" . a:filename . ")"
-    let lfo=&formatoptions
-    set fo-=a
-    exec "normal a" . l:link
-    let &fo=lfo
-endfunction
-
-command! -complete=file -nargs=1 InsertLinkToNote call <SID>FirstLineFromFileAsLink(<q-args>)
-nnoremap <leader>il :InsertLinkToNote 
 
 
 " window width {{{1
@@ -502,10 +380,19 @@ augroup end
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " QuickFix utils - "Grammar Police" and nonexistent links {{{1
-command! -bang BadLinks call setqflist([], 'r', {'lines': systemlist('nonexistent_notes.py --vimgrep ' . (<bang>1 ? '*.md' : expand('%')))})<BAR>:copen
-command! -bang ThirdPerson call setqflist([], 'r', {'lines': systemlist('thirdperson.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
-command! -bang Passive call setqflist([], 'r', {'lines': systemlist('passive.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
-command! -bang Weasel call setqflist([], 'r', {'lines': systemlist('weasel.sh ' . (<bang>0 ? '*.tex' : expand('%')))})<BAR>:copen
+function! s:fill_qf(command, file_ext, all_files)
+    let file_ext_glob = '*.' . a:file_ext
+    echom l:file_ext_glob
+    let lines = systemlist(a:command . " " . (a:all_files ? l:file_ext_glob : expand('%')))
+    for l in l:lines
+        echom l:l
+    endfor
+    call setqflist([], 'r', {'lines': l:lines})
+endfunction
+command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md', <bang>1)<BAR>:copen
+command! -bang ThirdPerson call <sid>fill_qf('thirdperson.sh', 'tex', <bang>1)<BAR>:copen
+command! -bang Passive call <sid>fill_qf('passive.sh', 'tex', <bang>1)<BAR>:copen
+command! -bang Weasel call <sid>fill_qf('weasel.sh', 'tex', <bang>1)<BAR>:copen
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -520,6 +407,30 @@ augroup vimrc
     au Filetype vim set foldmethod=marker
     au ColorScheme * call lightline#colorscheme()
     au Filetype zsh,bash,sh set foldmethod=marker
+    au Filetype go set foldmethod=syntax
+    au Filetype rust set foldmethod=syntax
+    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt set filetype=todo.txt 
+    au Filetype todo.txt,text setlocal formatoptions -=a
+    au Filetype rust set foldmethod=syntax
+    au Filetype python set foldmethod=indent
+    au Filetype python set formatoptions-=a
+    au Filetype go set foldmethod=syntax
+    au BufRead,BufNewFile *.latex set filetype=tex
+    au Filetype tex set foldmethod=expr
+                \ foldexpr=vimtex#fold#level(v:lnum)
+                \ foldtext=vimtex#fold#text()
+                \ fillchars=fold:\  
+                \ formatoptions-=a
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+    au Filetype markdown,markdown.pandoc setlocal foldenable 
+                \ foldmethod=expr foldlevelstart=1 
+                \ nospell conceallevel=1
+                \ formatoptions+=a textwidth=79
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
+    au Filetype markdown,markdown.pandoc CocDisable
+    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
 augroup END
-" NEW {{{1 
-
