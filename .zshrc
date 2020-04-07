@@ -84,7 +84,7 @@ bindkey "^[[B" history-beginning-search-forward-end
 # don't let '^d' exit the shell if there's nothing on the line
 stty eof undef
 #     Todo.sh {{{1
-alias t="todo.sh -a -f"
+alias t="todo.sh -A -f"
 alias thesis="todo.sh lsp +thesis"
 alias tp="todo.sh projectview | less"
 alias habits="todo.sh ls rec:"
