@@ -33,6 +33,20 @@ clear_colour = os.environ.get("DEFAULT", "").replace('\\\\033', '\033')
 done_colour = os.environ.get("COLOR_DONE", "").replace('\\\\033', '\033')
 
 
+def sort_priority_then_item(tasklist):
+    tasks_with_priority = []
+    tasks_no_priority = []
+    for line in tasklist:
+        pri = re.match("\(([A-Z])\)", line[2])
+        if pri:
+            tasks_with_priority.append((pri.group(1), line))
+        else:
+            tasks_no_priority.append(line)
+    sorted_priority = [todo for p, todo in sorted(tasks_with_priority)]
+    sorted_priority.extend(tasks_no_priority)
+    return sorted_priority
+
+
 def create_priority_colours():
     global priority_colours
     for letter in string.ascii_uppercase:
@@ -100,7 +114,7 @@ def print_list(list_of_tasks, filter):
     num_displayed = 0
     date_printed = False
     today = datetime.today().date()
-    for num, date, text in list_of_tasks:
+    for num, date, text in sort_priority_then_item(list_of_tasks):
         if not matches_filter(filter, text):
             continue
         if date_printed:
