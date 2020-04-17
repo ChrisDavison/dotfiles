@@ -14,7 +14,7 @@ SetCapsLockState, alwaysoff
 #Include, WindowManip.ahk
 
 ; Text substitution.  Dates, and personal pinboard
-#Include, TextSub.ahk
+; #Include, TextSub.ahk
 
 ; Media functionality
 +^PgDn::Send  {Volume_Down}
@@ -45,7 +45,7 @@ return
 ^#!s::switchDesktop()
 
 switchedDesktop := false
-switchDesktop() 
+switchDesktop()
 {
   global switchedDesktop
     if switchedDesktop
