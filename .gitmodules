@@ -91,3 +91,12 @@
 [submodule ".vim/bundle/insertlink"]
 	path = .vim/bundle/insertlink
 	url = git@github.com:ChrisDavison/insertlink
+[submodule ".vim/bundle/goyo.vim"]
+	path = .vim/bundle/goyo.vim
+	url = git@github.com:junegunn/goyo.vim
+[submodule ".vim/bundle/limelight.vim"]
+	path = .vim/bundle/limelight.vim
+	url = git@github.com:junegunn/limelight.vim
+[submodule ".vim/bundle/nord-vim"]
+	path = .vim/bundle/nord-vim
+	url = https://github.com/arcticicestudio/nord-vim
