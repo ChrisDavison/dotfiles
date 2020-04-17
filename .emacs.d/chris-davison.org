@@ -14,7 +14,7 @@ This sets up the load path so that we can override it.  We also install /use-pac
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
 
 (package-refresh-contents)
 
@@ -827,8 +827,6 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (use-package org-bullets :ensure t)
 (add-hook 'org-mode-hook 'org-bullets-mode)
-(setq  org-bullets-bullet-list
-       '("①" "②" "③ " "④" "⑤" "⑥" "⑦" "⑧"))
 #+END_SRC
 
 ** Fix indentation for org source blocks
