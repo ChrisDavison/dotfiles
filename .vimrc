@@ -104,11 +104,10 @@ set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
-let g:lightline={'colorscheme':"seoul256"}
+let g:lightline={'colorscheme':"nord"}
 let g:molokai_original=1
 let g:rehash256 = 1
-set bg=light
-silent! colorscheme seoul256-light
+silent! colorscheme yang
 "      plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -121,11 +120,12 @@ endif
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
 "      markdown {{{1
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --reference-links\ --reference-location=section\ --columns=79\ --wrap=auto\ --atx-headers"
+" let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --reference-links\ --reference-location=section\ --columns=79\ --wrap=auto\ --atx-headers"
+let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --wrap=none\ --atx-headers"
 
-let g:pandoc#formatting#mode='hA'
+let g:pandoc#formatting#mode='s'
 let g:pandoc#keyboard#use_default_mappings=0
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
 let g:pandoc#folding#fdc=0
@@ -161,9 +161,9 @@ function! Markdown_backlinks(use_grep) " {{{2
     if a:use_grep
         exec "silent grep! '\\((\./)*" . expand("%") . "'"
     else
-        call fzf_vim_grep(
+        call fzf#vim#grep(
         \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
-        \ fzf_vim_with_preview('right:50%:hidden', '?'), 0)
+        \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
     end
 endfunction " 
 
@@ -393,11 +393,38 @@ command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md'
 command! -bang ThirdPerson call <sid>fill_qf('thirdperson.sh', 'tex', <bang>1)<BAR>:copen
 command! -bang Passive call <sid>fill_qf('passive.sh', 'tex', <bang>1)<BAR>:copen
 command! -bang Weasel call <sid>fill_qf('weasel.sh', 'tex', <bang>1)<BAR>:copen
+" close :terminal after exit {{{1
+" Get the exit status from a terminal buffer by looking for a line near the end
+" of the buffer with the format, '[Process exited ?]'.
+func! s:getExitStatus() abort
+  let ln = line('$')
+  " The terminal buffer includes several empty lines after the 'Process exited'
+  " line that need to be skipped over.
+  while ln >= 1
+    let l = getline(ln)
+    let ln -= 1
+    let exitCode = substitute(l, '^\[Process exited \([0-9]\+\)\]$', '\1', '')
+    if l != '' && l == exitCode
+      " The pattern did not match, and the line was not empty. It looks like
+      " there is no process exit message in this buffer.
+      break
+    elseif exitCode != ''
+      return str2nr(exitCode)
+    endif
+  endwhile
+  throw 'Could not determine exit status for buffer, ' . expand('%')
+endfunc
+
+func! s:afterTermClose() abort
+  if s:getExitStatus() == 0
+    bdelete!
+  endif
+endfunc
 " autocommands {{{1
 augroup vimrc
     autocmd!
-    au InsertEnter * set norelativenumber
-    au InsertLeave * set relativenumber
+    " au InsertEnter * set norelativenumber
+    " au InsertLeave * set relativenumber
     au TextChanged,InsertLeave,FocusLost * silent! wall
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
@@ -425,12 +452,17 @@ augroup vimrc
     au Filetype markdown,markdown.pandoc setlocal foldenable 
                 \ foldmethod=expr foldlevelstart=1 
                 \ nospell conceallevel=1
-                \ formatoptions+=a textwidth=79
+                \ formatoptions-=a textwidth=0
+                \ norelativenumber
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#/:p<CR>:
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
     au Filetype markdown,markdown.pandoc CocDisable
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
+    au user GoyoEnter Limelight
+    au user GoyoLeave Limelight!
+    au TermClose * call timer_start(20, { -> s:afterTermClose() })
 augroup END
