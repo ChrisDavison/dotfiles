@@ -3,7 +3,7 @@
 set -e
 
 notes_source="$HOME/Dropbox/notes/"
-notes_dest="$HOME/src/github.com/ChrisDavison/knowledge/"
+notes_dest="$HOME/code/knowledge/"
 
 # sync everything from source (dropbox notes) to dest (github 'knowledge' repo)
 rsync -r $notes_source $notes_dest
