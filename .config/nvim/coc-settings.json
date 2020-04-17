@@ -3,20 +3,20 @@
     "list.source.grep.args": [
         "--smart-case"
     ],
-    "suggest.minTriggerInputLength": 2,
-    "suggest.autoTrigger": "always",
+    "suggest.minTriggerInputLength": 3,
+    "suggest.autoTrigger":"always",
     "suggest.triggerAfterInsertEnter": true,
     "suggest.enablePreview": true,
     "suggest.floatEnable": false,
-    "suggest.echodocSupport": true,
-    "codeLens.enable": false,
+    "suggest.echodocSupport": false,
+    "codeLens.enable": true,
     "diagnostic.enable": false,
     "suggest.noselect": false,
     "coc.preferences.formatOnSaveFiletypes": [
         "rust",
         "go"
     ],
-    "coc.preferences.hoverTarget": "preview",
+    "coc.preferences.hoverTarget": "echo",
     "python.jediEnabled": false,
     "languageServer": {
         "nim": {

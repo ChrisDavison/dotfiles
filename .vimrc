@@ -5,7 +5,7 @@ let mapleader=" "
 execute pathogen#infect("~/.vim/bundle/{}")
 " settings {{{1
 set nocompatible
-let &showbreak = '····'
+let &showbreak = '   ┆'
 set cpo+=n
 set number
 set wrap lbr
@@ -120,8 +120,12 @@ endif
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
 "      markdown {{{1
-" let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --reference-links\ --reference-location=section\ --columns=79\ --wrap=auto\ --atx-headers"
-let md_equalprg="pandoc\ --to\ markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links\ --wrap=none\ --atx-headers"
+let md_wrap=' --columns=79 --wrap=auto'
+let md_nowrap=' --wrap=none'
+let md_reflinks=' --reference-links --reference-location=section'
+
+let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
+let md_equalprg .= md_nowrap
 
 let g:pandoc#formatting#mode='s'
 let g:pandoc#keyboard#use_default_mappings=0
@@ -132,11 +136,36 @@ let g:pandoc#folding#fdc=0
 let g:pandoc#folding#fold_fenced_codeblocks=1
 let g:pandoc#syntax#conceal#use=0
 let g:pandoc#spell#enabled=0
-function! Markdown_goto_file(split) " {{{2
+
+augroup markdown
+    au!
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+    au Filetype markdown,markdown.pandoc setlocal foldenable 
+                \ foldmethod=expr foldlevelstart=1 
+                \ nospell conceallevel=1
+                \ formatoptions-=a textwidth=0
+                \ norelativenumber
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#/:p<CR>:
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> ]] :call pandoc#keyboard#sections#NextHeader()<CR>
+    au Filetype markdown,markdown.pandoc nnoremap <buffer> [[ :call pandoc#keyboard#sections#NextHeader()<CR>
+    au Filetype markdown,markdown.pandoc vmap <buffer> aS <Plug>(pandoc-keyboard-select-section-inclusive)
+    au Filetype markdown,markdown.pandoc omap <buffer> aS :normal VaS<CR>
+    au Filetype markdown,markdown.pandoc vmap <buffer> iS <Plug>(pandoc-keyboard-select-section-exclusive)
+    au Filetype markdown,markdown.pandoc omap <buffer> iS :normal ViS<CR>
+    au Filetype markdown,markdown.pandoc CocDisable
+    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
+augroup end
+"    markdown functions {{{2
+function! Markdown_goto_file(split)
     let fname=expand("<cfile>")
     let command = "edit "
     if a:split > 0
-        if ActualWindowWidth() > 160
+        if winwidth(0) > 160
             let command = "vsplit "
         else
             let command = "split "
@@ -157,7 +186,7 @@ function! Markdown_goto_file(split) " {{{2
     end
 endfunction " 
 
-function! Markdown_backlinks(use_grep) " {{{2
+function! Markdown_backlinks(use_grep)
     if a:use_grep
         exec "silent grep! '\\((\./)*" . expand("%") . "'"
     else
@@ -167,7 +196,7 @@ function! Markdown_backlinks(use_grep) " {{{2
     end
 endfunction " 
 
-function! Markdown_copy_filename_as_link() " {{{2
+function! Markdown_copy_filename_as_link()
     let link=s:make_markdown_link(expand('%'), "./" . expand('%'))
     let @a=l:link
 endfunction " 
@@ -247,27 +276,25 @@ iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
 " Navigate common 'configuration' files {{{1
 let g:my_configs=[
-            \ {"name": "vim", "path": "$HOME/.vimrc"},
-            \ {"name": "bspwm", "path": "$HOME/.config/bspwm/bspwmrc"},
-            \ {"name": "sxkhd", "path": "$HOME/.config/sxhkd/sxhkdrc"},
-            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
-            \ {"name": "todo", "path": "$HOME/.todo/config"},
-            \ {"name": "dotfiles", "path": "$HOME/code/dotfiles"},
-            \ {"name": "fish", "path": "$HOME/.config/fish/config.fish"},
-            \ {"name": "zsh", "path": "$HOME/.zshrc"},
-            \ {"name": "alacritty", "path": "$HOME/.config/alacritty/alacritty.yml"},
-            \ {"name": "polybar", "path": "$HOME/.config/polybar/config"},
+            \ ["vim",       "$HOME/.vimrc"],
+            \ ["bspwm",     "$HOME/.config/bspwm/bspwmrc"],
+            \ ["sxkhd",     "$HOME/.config/sxhkd/sxhkdrc"],
+            \ ["polybar",   "$HOME/.config/polybar/config"],
+            \ ["dotfiles",  "$HOME/code/dotfiles"],
+            \ ["zsh",       "$HOME/.zshrc"],
+            \ ["alacritty", "$HOME/.config/alacritty/alacritty.yml"],
+            \ ["polybar",   "$HOME/.config/polybar/config"],
 \]
 
 function! s:config_files(A, L, P)
-    let paths=map(copy(g:my_configs), {_, v -> v["name"]})
-    let paths_filtered=filter(l:paths, {_, val -> val =~ a:A})
+    let paths=map(copy(g:my_configs), {_, v -> v[0]})
+    let paths_filtered=filter(l:paths, {_, entry -> entry =~ a:A})
     return paths_filtered
 endfunction
 
 function! s:edit_matching(dict, name)
-    let matching=filter(copy(a:dict), {_, v -> v["name"] == a:name})[0]
-    let matchingpath=expand(l:matching["path"])
+    let matching=filter(copy(a:dict), {_, v -> v[0] =~ a:name})[0]
+    let matchingpath=expand(l:matching[1])
     if filereadable(l:matchingpath)
         exec "edit " . l:matchingpath
     else
@@ -277,46 +304,6 @@ endfunction
 
 command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
 cnoreabbrev conf Conf
-nnoremap <leader>C :Conf 
-
-
-" window width {{{1
-function! ActualWindowWidth()
-    return winwidth(0) - s:NumberColumnWidth() - &foldcolumn - s:SignsWidth()
-endfunction
-
-function! s:SignsWidth()
-    let l:signs_width = 0
-    if has('signs')
-        " This seems to be the only way to find out if the signs column is even
-        " showing.
-        let l:signs = []
-        let l:signs_string = ''
-        redir =>l:signs_string|exe "sil sign place buffer=".bufnr('')|redir end
-        let l:signs = split(l:signs_string, "\n")[1:]
-
-        if !empty(signs)
-            let l:signs_width = 2
-        endif
-    endif
-
-    return l:signs_width
-endfunction
-
-function! s:NumberColumnWidth()
-    let l:number_col_width = 0
-    if &number
-        let l:number_col_width = max([strlen(line('$')) + 1, 3])
-    elseif &relativenumber
-        let l:number_col_width = 3
-    endif
-
-    if l:number_col_width != 0
-        let l:number_col_width = max([l:number_col_width, &numberwidth])
-    endif
-
-    return l:number_col_width
-endfunction
 " coc.nvim {{{1
 let g:suggest#enablePreview='true'
 inoremap <silent><expr> <TAB>
@@ -333,7 +320,6 @@ inoremap <silent><expr> <c-space> coc#refresh()
 
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-"
 " position. Coc only does snippet and additional edit on confirm.
 if has('patch8.1.1068')
   " Use `complete_info` if your (Neo)Vim version supports it.
@@ -379,47 +365,20 @@ augroup end
 
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
-" QuickFix utils - "Grammar Police" and nonexistent links {{{1
-function! s:fill_qf(command, file_ext, all_files)
-    let file_ext_glob = '*.' . a:file_ext
-    echom l:file_ext_glob
-    let lines = systemlist(a:command . " " . (a:all_files ? l:file_ext_glob : expand('%')))
-    for l in l:lines
-        echom l:l
-    endfor
-    call setqflist([], 'r', {'lines': l:lines})
+" quickfix - Writing critic {{{1
+function! s:qf_critic(only_current_file)
+    let file_ext_glob = '*.' . expand('%:e')
+    let files=(a:only_current_file ? expand('%') : l:file_ext_glob)
+    let lines_passive = systemlist("passive.sh " . l:files)
+    let lines_weasel = systemlist("weasel.sh " . l:files)
+    let lines_third = systemlist("thirdperson.sh " . l:files)
+    call extend(lines_passive, lines_weasel)
+    call extend(lines_passive, lines_third)
+    call setqflist([], 'r', {'lines': l:lines_passive})
 endfunction
-command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md', <bang>1)<BAR>:copen
-command! -bang ThirdPerson call <sid>fill_qf('thirdperson.sh', 'tex', <bang>1)<BAR>:copen
-command! -bang Passive call <sid>fill_qf('passive.sh', 'tex', <bang>1)<BAR>:copen
-command! -bang Weasel call <sid>fill_qf('weasel.sh', 'tex', <bang>1)<BAR>:copen
-" close :terminal after exit {{{1
-" Get the exit status from a terminal buffer by looking for a line near the end
-" of the buffer with the format, '[Process exited ?]'.
-func! s:getExitStatus() abort
-  let ln = line('$')
-  " The terminal buffer includes several empty lines after the 'Process exited'
-  " line that need to be skipped over.
-  while ln >= 1
-    let l = getline(ln)
-    let ln -= 1
-    let exitCode = substitute(l, '^\[Process exited \([0-9]\+\)\]$', '\1', '')
-    if l != '' && l == exitCode
-      " The pattern did not match, and the line was not empty. It looks like
-      " there is no process exit message in this buffer.
-      break
-    elseif exitCode != ''
-      return str2nr(exitCode)
-    endif
-  endwhile
-  throw 'Could not determine exit status for buffer, ' . expand('%')
-endfunc
-
-func! s:afterTermClose() abort
-  if s:getExitStatus() == 0
-    bdelete!
-  endif
-endfunc
+command! -bang Critic call <sid>qf_critic(<bang>1)<bar>:copen
+" quickfix - nonexistent links {{{1
+command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md', <bang>1, 0)<BAR>:copen
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -448,21 +407,6 @@ augroup vimrc
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
-    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
-    au Filetype markdown,markdown.pandoc setlocal foldenable 
-                \ foldmethod=expr foldlevelstart=1 
-                \ nospell conceallevel=1
-                \ formatoptions-=a textwidth=0
-                \ norelativenumber
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#/:p<CR>:
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
-    au Filetype markdown,markdown.pandoc CocDisable
-    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
     au user GoyoEnter Limelight
     au user GoyoLeave Limelight!
-    au TermClose * call timer_start(20, { -> s:afterTermClose() })
 augroup END
