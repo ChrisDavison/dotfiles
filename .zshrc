@@ -28,8 +28,7 @@ export_to_path_if_exists $HOME/.nimble/bin
 [[ -x rvm ]] && rvm default
 # prompt {{{1
 autoload -U colors && colors
-PROMPT="%{$fg[red]%}%~ %{$fg[green]%}» %{$reset_color%}"
-RPROMPT="%*"
+PROMPT="%~ » "
 
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
@@ -49,7 +48,7 @@ setopt always_to_end # move cursor to end if word had one match
 setopt no_beep #turn off terminal bell
 setopt extended_glob
 
-# completion 
+# completion
 zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate #enable approximate matches for completion
@@ -151,6 +150,8 @@ fshow(){
         commit=$(echo "$commits" | fzf --preview 'git show --abbrev-commit --stat --color=always $(echo {} | cut -d" " -f1)') &&
     git checkout $(echo "$branch" | cut -d' ' -f1)
 }
+zle -N fshow
+bindkey '^gc' fshow
 
 fco() {
   local tags branches target
@@ -166,8 +167,10 @@ fco() {
         --ansi) || return
   git checkout $(awk '{print $2}' <<<"$target" )
 }
+zle -N fco
+bindkey '^gb' fco
 
-# fgst - pick files from `git status -s` 
+# fgst - pick files from `git status -s`
 is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
 }
@@ -221,10 +224,9 @@ is_tmux_alive(){
 datezipdir(){
     [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
     dirname=$(basename $1)
-    shift
     zipname=$(date +"$dirname--%Y-%m-%d.zip")
     echo $zipname
-    zip -r $zipname $@
+    zip -r $zipname $1
 }
 
 aesenc(){
