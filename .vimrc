@@ -62,7 +62,6 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ %t:%l:%c\ %m%r\ %{FugitiveStatusline()}
 set ruler
 set encoding=utf-8
 
