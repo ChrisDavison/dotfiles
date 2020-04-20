@@ -88,3 +88,6 @@
 [submodule ".vim/bundle/vim-tmux-navigator"]
 	path = .vim/bundle/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator
+[submodule ".vim/bundle/vim-gitgutter"]
+	path = .vim/bundle/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter
