@@ -1,0 +1,73 @@
+.TH note 1 "2019-09-16" "v0.1"
+
+.SH NAME
+note - noteteaking, viewing, and searching
+
+.SH DEPENDENCIES
+.HP
+.B fzf - https://github.com/junegunn/fzf
+.br
+Fuzzy finder for the commandline. Used for filtering notes.
+
+.HP
+.B bat - https://github.com/sharkdp/bat 
+.br
+Better $PAGER, providing syntax highlighting, line numbers, heading etc.
+
+.HP
+.B $NOTESFILE (environment variable, set by user)
+.br
+A single file used for 'ubiquitous capture'
+
+.HP
+.B $NOTESDIR (environment variable, set by user)
+.br
+A source of notes to find, edit, and view.
+
+.SH DESCRIPTION
+note COMMAND [QUERY...|TEXT...]
+
+.HP
+.B a|add TEXT...
+.br
+add TEXT... to the end of $NOTESFILE
+
+.HP
+.B v|view
+.br
+view $NOTESFILE using $PAGER
+
+.HP
+.B e|edit
+.br
+open $NOTESFILE in $EDITOR
+
+.HP
+.B d|delete
+.br
+clear all contents of $NOTESFILE
+
+.HP
+.B f|find QUERY...
+.br
+find notes matching title, directory, or contents.
+
+.HP
+.B o|open [QUERY...] 
+.br
+open files selected by fzf (filtered) in $EDITOR
+
+.HP
+.B p|preview [QUERY...]
+.br
+preview notes files using fzf, returning the paths of any selected
+
+
+.SH AUTHOR
+.br
+Chris Davison <c.jr.davison@gmail.com>
+.br
+University of Strathclyde
+.br
+Scotland
+
