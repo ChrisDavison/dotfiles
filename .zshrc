@@ -35,7 +35,7 @@ setopt  autocd autopushd pushdignoredups
 
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
-SAVEHIST=$HISTSIZ
+SAVEHIST=$HISTSIZE
 
 setopt hist_ignore_all_dups # remove older duplicate entries from history
 setopt hist_reduce_blanks # remove superfluous blanks from history items
@@ -108,6 +108,8 @@ alias la="ll -a --group-directories-first"
 alias lt="exa --tree -L 2 --group-directories-first"
 alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
+
+alias cat="bat --tabs 2 --color=always --style=numbers,changes "
 
 
 #     Jump to recent directories {{{1
@@ -241,3 +243,6 @@ duplicate_words(){
     grep -Eo '(\b.+) \1\b' $1 || true
 }
 
+# up and down do history search
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
