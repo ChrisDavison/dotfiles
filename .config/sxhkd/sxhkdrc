@@ -3,7 +3,13 @@
 # ==========================
 # terminal emulator
 super + Return
-	alacritty
+	terminator
+
+super + alt + {n,s,f}
+    terminator -e 'nvim $HOME/Dropbox/notes/{inbox.md,.scratch,flowtime-tracker.md}'
+
+super + alt + t
+    firefox --new-window "https://to-do.live.com/tasks/myday"
 
 super + d
     j4-dmenu-desktop --dmenu="dmenu -i -fn 'Iosevka Term-18' -p 'Program:'"
