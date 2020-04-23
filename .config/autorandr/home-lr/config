@@ -1,0 +1,15 @@
+output DP1
+off
+output DP2
+off
+output VIRTUAL1
+off
+output DP3
+mode 1360x768
+pos 0x0
+rate 60.02
+output eDP1
+mode 1920x1080
+pos 0x768
+primary
+rate 60.00
