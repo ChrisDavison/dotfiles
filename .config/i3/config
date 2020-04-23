@@ -2,16 +2,16 @@
 #
 # Mod1 = alt, Mod4 = win
 set $mod Mod4
-gaps inner 4
+gaps inner 0
 gaps outer 0
-smart_gaps on
+# smart_gaps no_gaps
 smart_borders on
 default_border pixel 2
 
 client.unfocused      #8620e6 #8620e6 #ffffff #ffffff #8620e6
 client.focused        #ed38d8 #ed38d8 #ffffff #ffffff #ed38d8
 
-font pango:Iosevka Term 12
+font pango:Fira Code 10
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -92,7 +92,7 @@ set $internal eDP1
 # The direct HDMI feed reports typically as DP3
 # while my Dell hub reports as DP1
 # set $external DP3
-set $external DP1
+set $external DP3
 workspace $ws1 output $internal
 workspace $ws2 output $internal
 workspace $ws3 output $internal
@@ -146,12 +146,12 @@ bindsym $mod+Ctrl+l resize grow width 2 px or 2 ppt
 exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
-exec_always --no-startup-id autorandr -c
+exec_always --no-startup-id autorandr home-lr
 exec --no-startup-id sh ~/.fehbg
 
 bar {
-    position top
-    status_command SCRIPT_DIR=/home/davison/src/github.com/ChrisDavison/dotfiles/.config/i3blocks i3blocks -c /home/davison/src/github.com/ChrisDavison/dotfiles/.config/i3blocks/config
+    position bottom
+    status_command SCRIPT_DIR=/home/davison/code/dotfiles/.config/i3blocks i3blocks -c /home/davison/code/dotfiles/.config/i3blocks/config
     tray_output primary
     tray_padding 0
 }
@@ -163,8 +163,9 @@ bar {
 # |_|\_\___|\__, |_.__/|_|_| |_|\__,_|___/
 #           |___/
 # start a terminal
-bindsym $mod+Return exec "alacritty"
+bindsym $mod+Return exec "gnome-terminal"
 bindsym $mod+space exec "rofi -combi-modi window,drun -show combi"
+bindsym $mod+Shift+space exec "dmenu_win_switcher_i3.sh"
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 
 bindsym --whole-window $mod+o workspace next_on_output
@@ -221,11 +222,11 @@ for_window [class="spotify"] move container to workspace $ws7
 for_window [class="Blueman-manager"] floating enable
 for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position enter
 
-##start in opposite orientation from your monitor
+#start in opposite orientation from your monitor
 default_orientation vertical 
-##toggles split at each new window
-#for_window [class=".*"] split toggle 
-##kill command resets the split
-#bindsym $mod+shift+q split toggle kill 
-## should already exist but use if split orientation  messes up
-#bindsym $mod+e layout toggle split 
+#toggles split at each new window
+for_window [class=".*"] split toggle 
+#kill command resets the split
+bindsym $mod+shift+q split toggle kill 
+# should already exist but use if split orientation  messes up
+# bindsym $mod+e layout toggle split 
