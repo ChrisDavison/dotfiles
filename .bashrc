@@ -219,7 +219,7 @@ function o() {
 #############################
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 [ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
-source `which virtualenvwrapper.sh`
+# source `which virtualenvwrapper.sh`
 
 ####################
 # MY CUSTOM PROMPT #
