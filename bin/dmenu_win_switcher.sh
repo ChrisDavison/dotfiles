@@ -10,6 +10,7 @@ if [[ $height -gt 30 ]]
 	else heightfit=$height
 fi
 
-num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -l $heightfit -i -p "Win:" -fn "Ubuntu Mono-18" | cut -d '-' -f 0)
+num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -l $heightfit -i -p "Win:" -fn "Ubuntu Mono-18" | cut -d '-' -f 1)
+echo $num
 [[ -z "$num" ]] && exit
 wmctrl -l | sed -n "$num p" | cut -c -10 | xargs wmctrl -i -a
