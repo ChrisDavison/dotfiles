@@ -72,7 +72,6 @@ fi
 alias today="date +%F"
 alias tmux="tmux -2"
 alias ts="tagsearch"
-alias b="bat --map-syntax txt:markdown --style=grid,header"
 alias clip="xclip -sel clipboard"
 alias n="note.py"
 # keybinds
@@ -109,7 +108,7 @@ alias lt="exa --tree -L 2 --group-directories-first"
 alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
-alias cat="bat --tabs 2 --color=always --style=numbers,changes "
+alias b="bat --tabs 2 --color=always --style=numbers,changes "
 
 
 #     Jump to recent directories {{{1
