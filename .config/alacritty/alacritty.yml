@@ -8,7 +8,7 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        Hermit
+        Fira Code
     myfontsize: &fontsize
         9
 
