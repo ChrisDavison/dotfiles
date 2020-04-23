@@ -3,6 +3,7 @@
 [colors]
 background = #00222222
 background-alt = #444
+grey50=#777
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
@@ -18,11 +19,12 @@ foreground-alt = ${colors.cyan}
 [bar/example]
 monitor = ${env:MONITOR:}
 width = 100%
-height = 30
+height = 25
 offset-x = 0%
 offset-y = 0%
 radius = 0
 fixed-center = true
+bottom=false
 
 background = ${colors.background}
 foreground = ${colors.foreground}
@@ -33,7 +35,7 @@ line-color = #f00
 border-size = 0
 border-color = #00000000
 
-padding-left = 1
+padding-left = 0
 padding-right = 0
 
 module-margin-left = 1
@@ -43,9 +45,10 @@ font-0 = Inconsolata:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
-modules-left = bspwm i3
-modules-center = cpu memory backlight-acpi pulseaudio filesystem battery
-modules-right = date
+modules-left = date 
+modules-center = bspwm i3
+; modules-center = cpu memory backlight-acpi pulseaudio filesystem battery
+modules-right = battery backlight-acpi pulseaudio
 
 ; NOT USING
 ; filesystem (mount pointand memory used, e.g. '/:32%')
@@ -107,11 +110,9 @@ label-urgent = %name%!
 label-urgent-background = ${colors.alert}
 label-urgent-padding = ${settings.bspwm-padding}
 
-label-empty = · 
-label-empty-foreground = ${colors.foreground}
+label-empty = . 
+label-empty-foreground = ${colors.grey50}
 label-empty-padding = ${settings.bspwm-padding}
-
-ws-icon-0 = 1
 
 ; Separator in between workspaces
 ; label-separator = |
@@ -212,9 +213,9 @@ format-disconnected =
 [module/date]
 type = internal/date
 interval = 5
-date = %a, %b %d
+date = %Y-%m-%d
 time = %H:%M
-label = " %date% - %time% "
+label = " %date% %time% "
 label-foreground=${colors.foreground}
 /* label-background=${colors.foreground} */
 
@@ -224,7 +225,7 @@ type = internal/pulseaudio
 format-volume = <label-volume> 
 format-volume-prefix=" "
 format-volume-prefix-font=1
-label-volume = %percentage%%
+label-volume = "%percentage%% "
 label-volume-foreground = ${colors.foreground}
 
 format-muted = <label-muted>
