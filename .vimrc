@@ -408,4 +408,5 @@ augroup vimrc
                 \ formatoptions-=a
     au user GoyoEnter Limelight
     au user GoyoLeave Limelight!
+    au BufEnter .scratch setlocal filetype=markdown.pandoc
 augroup END
