@@ -54,9 +54,9 @@ interval=60
 # label=C
 # interval=10
 
-#[temperature]
-#label=
-#interval=10
+# [temperature]
+# label=
+# interval=10
 
 [battery]
 label=B
