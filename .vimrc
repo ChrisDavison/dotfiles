@@ -409,4 +409,5 @@ augroup vimrc
     au user GoyoEnter Limelight
     au user GoyoLeave Limelight!
     au BufEnter .scratch setlocal filetype=markdown.pandoc
+    au BufEnter books-to-* silent lgrep '\*\*!\*\*' %
 augroup END
