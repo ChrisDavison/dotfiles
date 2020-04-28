@@ -2,7 +2,7 @@ filetype plugin indent on
 syntax enable
 let mapleader=" "
 
-execute pathogen#infect("~/.vim/bundle/{}")
+packloadall
 " settings {{{1
 set nocompatible
 let &showbreak = '   ┆'
