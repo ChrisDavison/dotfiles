@@ -103,10 +103,11 @@ set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
-let g:lightline={'colorscheme':"nord"}
+let g:lightline={'colorscheme':"seoul256"}
 let g:molokai_original=1
 let g:rehash256 = 1
-silent! colorscheme yang
+set bg=dark
+silent! colorscheme seoul256
 "      plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
