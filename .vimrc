@@ -158,7 +158,10 @@ augroup markdown
     au Filetype markdown,markdown.pandoc omap <buffer> iS :normal ViS<CR>
     au Filetype markdown,markdown.pandoc CocDisable
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
+    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
+    au Filetype markdown,markdown.pandoc command! H1 g/^#\{1,1\} /
+    au Filetype markdown,markdown.pandoc command! H2 g/^#\{1,2\} /
+    au Filetype markdown,markdown.pandoc  command! H3 g/^#\{1,3\} /
 augroup end
 "    markdown functions {{{2
 function! Markdown_goto_file(split)
@@ -412,3 +415,4 @@ augroup vimrc
     au BufEnter .scratch setlocal filetype=markdown.pandoc
     au BufEnter books-to-* silent lgrep '\*\*!\*\*' %
 augroup END
+
