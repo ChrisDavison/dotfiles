@@ -1,3 +1,4 @@
+PROMPT="%~ » "
 # exports {{{1
 export EDITOR="nvim"
 export GOPATH="$HOME"
@@ -9,26 +10,22 @@ export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # add paths to dir, if they exists {{{1
-function export_to_path_if_exists {
+export_to_path_if_exists() {
     [[ -d "$1" ]] && export PATH="$1":$PATH
 }
-
 
 export_to_path_if_exists $GOBIN
 export_to_path_if_exists $HOME/bin
 export_to_path_if_exists $HOME/.bin
-export_to_path_if_exists $HOME/.vim/bundle/fzf/bin/
+export_to_path_if_exists $HOME/.vim/pack/plugins/start/fzf/bin/
 export_to_path_if_exists $HOME/code/scripts/
 export_to_path_if_exists $HOME/.cargo/bin
-export_to_path_if_exists /usr/local/go/bin
-export_to_path_if_exists /snap/bin
 export_to_path_if_exists $HOME/.local/bin
 export_to_path_if_exists $HOME/.nimble/bin
+export_to_path_if_exists /usr/local/go/bin
+export_to_path_if_exists /snap/bin
 
 [[ -x rvm ]] && rvm default
-# prompt {{{1
-autoload -U colors && colors
-PROMPT="%~ » "
 
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
@@ -81,18 +78,6 @@ bindkey "^[[A" history-beginning-search-backward-end
 bindkey "^[[B" history-beginning-search-forward-end
 # don't let '^d' exit the shell if there's nothing on the line
 stty eof undef
-#     Todo.sh {{{1
-alias t="todo.sh -A -f"
-alias thesis="todo.sh lsp +thesis"
-alias tp="todo.sh projectview | less"
-alias habits="todo.sh ls rec:"
-function ttom(){
-    todo.sh app "$1" due:$(date -d 'tomorrow' +%F)
-}
-
-function ttod(){
-    todo.sh app "$1" due:$(date +%F)
-}
 #     Repoutil {{{1
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
@@ -247,3 +232,14 @@ bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
 export RANGER_LOAD_DEFAULT_RC=0
+
+# Windows / WSL-specific config
+if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
+    export BROWSER=/mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe
+fi
+
+if [[ $(tmux list-sessions | grep -q 'default:') -eq 0 ]]; then
+    tmux attach -t default
+elif [[ $(tmux list-sessions | grep -q '.*:') -eq 0 ]]; then
+    tmux attach
+fi
