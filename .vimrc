@@ -140,6 +140,7 @@ let g:pandoc#spell#enabled=0
 augroup markdown
     au!
     au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
+    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
     au Filetype markdown,markdown.pandoc setlocal foldenable 
                 \ foldmethod=expr foldlevelstart=1 
                 \ nospell conceallevel=1

@@ -243,3 +243,5 @@ if [[ $(tmux list-sessions | grep -q 'default:') -eq 0 ]]; then
 elif [[ $(tmux list-sessions | grep -q '.*:') -eq 0 ]]; then
     tmux attach
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
