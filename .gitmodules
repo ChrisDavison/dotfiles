@@ -91,3 +91,6 @@
 [submodule ".vim/bundle/vim-gitgutter"]
 	path = .vim/pack/plugins/start/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
+[submodule ".vim/pack/plugins/start/vim-cdroot"]
+	path = .vim/pack/plugins/start/vim-cdroot
+	url = https://github.com/chrisdavison/vim-cdroot

@@ -383,6 +383,8 @@ command! -bang Critic call <sid>qf_critic(<bang>1)<bar>:copen
 " quickfix - nonexistent links {{{1
 command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md', <bang>1, 0)<BAR>:copen
 " autocommands {{{1
+let g:non_git_roots=['~/Dropbox/notes',
+            \ '/mnt/e/Dropbox/notes']
 augroup vimrc
     autocmd!
     " au InsertEnter * set norelativenumber
@@ -414,5 +416,6 @@ augroup vimrc
     au user GoyoLeave Limelight!
     au BufEnter .scratch setlocal filetype=markdown.pandoc
     au BufEnter books-to-* silent lgrep '\*\*!\*\*' %
+    au BufEnter * Root!
 augroup END
 
