@@ -134,15 +134,12 @@ augroup markdown
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#/:p<CR>:
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>gs :call Markdown_goto_file(1)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> ]] :call pandoc#keyboard#sections#NextHeader()<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> [[ :call pandoc#keyboard#sections#PrevHeader()<CR>
     au Filetype markdown,markdown.pandoc vmap <buffer> aS <Plug>(pandoc-keyboard-select-section-inclusive)
     au Filetype markdown,markdown.pandoc omap <buffer> aS :normal VaS<CR>
     au Filetype markdown,markdown.pandoc vmap <buffer> iS <Plug>(pandoc-keyboard-select-section-exclusive)
     au Filetype markdown,markdown.pandoc omap <buffer> iS :normal ViS<CR>
-    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc command! H1 g/^#\{1,1\} /
     au Filetype markdown,markdown.pandoc command! H2 g/^#\{1,2\} /
@@ -288,7 +285,7 @@ augroup vimrc
                 \ fillchars=fold:\  
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown.pandoc
-    au BufEnter books-to-* silent lgrep '\*\*!\*\*' %
-    au BufEnter * Root!
+    au BufEnter * Root
 augroup END
 
+nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : ":set colorcolumn=0<cr>"
