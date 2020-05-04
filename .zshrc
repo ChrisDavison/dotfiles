@@ -114,7 +114,7 @@ function source_if_exists {
     [[ $VERBOSE_ZSHRC -eq 1 ]] && echo "Sourced" "$1"
 }
 source_if_exists $HOME/.cargo/env
-source_if_exists $HOME/.vim/bundle/fzf/shell/key-bindings.zsh
+source_if_exists $HOME/.vim/pack/plugins/start/fzf/shell/key-bindings.zsh
 
 # fzf functions {{{1
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
