@@ -226,7 +226,8 @@ for_window [class="spotify"] move container to workspace $ws7
 
 # Other window modifications
 for_window [class="Blueman-manager"] floating enable
-for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position enter
+for_window [class="Anki"] floating enable; move position center
+for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position center
 
 #start in opposite orientation from your monitor
 # default_orientation vertical 
