@@ -68,29 +68,16 @@ set encoding=utf-8
 if !exists('g:loaded_matchit')
     runtime! macros/matchit.vim
 endif
-"      undo (save undo history across sessions) {{{1
+
 set undodir=~/.undodir
 set undofile
 set complete-=i
 set completeopt=menu,menuone,preview
 
-if !has('nvim') && &ttimeoutlen == -1
-  set ttimeout
-  set ttimeoutlen=100
-endif
-
-"      shell (specialised per os) {{{1
+set shell=/usr/bin/zsh
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
-else
-    let shells=['/usr/bin/zsh', '/usr/bin/fish', '/usr/bin/bash', '/bin/bash']
-    for possibleshell in shells
-        if executable(possibleshell)
-            exec "set shell=".possibleshell
-            break
-        endif
-    endfor
 endif
 
 if has('nvim')
@@ -103,16 +90,14 @@ set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
-let g:lightline={'colorscheme':"seoul256"}
 let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-silent! colorscheme seoul256
+colorscheme seoul256
 "      plugins {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
 let g:fzf_preview_window=''
-let g:checkmark_no_mappings=1
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
 endif
@@ -157,12 +142,11 @@ augroup markdown
     au Filetype markdown,markdown.pandoc omap <buffer> aS :normal VaS<CR>
     au Filetype markdown,markdown.pandoc vmap <buffer> iS <Plug>(pandoc-keyboard-select-section-exclusive)
     au Filetype markdown,markdown.pandoc omap <buffer> iS :normal ViS<CR>
-    au Filetype markdown,markdown.pandoc CocDisable
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
     au Filetype markdown,markdown.pandoc command! H1 g/^#\{1,1\} /
     au Filetype markdown,markdown.pandoc command! H2 g/^#\{1,2\} /
-    au Filetype markdown,markdown.pandoc  command! H3 g/^#\{1,3\} /
+    au Filetype markdown,markdown.pandoc command! H3 g/^#\{1,3\} /
 augroup end
 "    markdown functions {{{2
 function! Markdown_goto_file(split)
@@ -278,118 +262,13 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
-" Navigate common 'configuration' files {{{1
-let g:my_configs=[
-            \ ["vim",       "$HOME/.vimrc"],
-            \ ["bspwm",     "$HOME/.config/bspwm/bspwmrc"],
-            \ ["sxkhd",     "$HOME/.config/sxhkd/sxhkdrc"],
-            \ ["polybar",   "$HOME/.config/polybar/config"],
-            \ ["dotfiles",  "$HOME/code/dotfiles"],
-            \ ["zsh",       "$HOME/.zshrc"],
-            \ ["alacritty", "$HOME/.config/alacritty/alacritty.yml"],
-            \ ["polybar",   "$HOME/.config/polybar/config"],
-\]
-
-function! s:config_files(A, L, P)
-    let paths=map(copy(g:my_configs), {_, v -> v[0]})
-    let paths_filtered=filter(l:paths, {_, entry -> entry =~ a:A})
-    return paths_filtered
-endfunction
-
-function! s:edit_matching(dict, name)
-    let matching=filter(copy(a:dict), {_, v -> v[0] =~ a:name})[0]
-    let matchingpath=expand(l:matching[1])
-    if filereadable(l:matchingpath)
-        exec "edit " . l:matchingpath
-    else
-        echom "File not readable: " . l:matchingpath
-    endif
-endfunction
-
-command! -nargs=1 -complete=customlist,<sid>config_files Conf call <sid>edit_matching(g:my_configs, <q-args>)
-cnoreabbrev conf Conf
-" coc.nvim {{{1
-let g:suggest#enablePreview='true'
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-if has('patch8.1.1068')
-  " Use `complete_info` if your (Neo)Vim version supports it.
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" quickfix - Writing critic {{{1
-function! s:qf_critic(only_current_file)
-    let file_ext_glob = '*.' . expand('%:e')
-    let files=(a:only_current_file ? expand('%') : l:file_ext_glob)
-    let lines_passive = systemlist("passive.sh " . l:files)
-    let lines_weasel = systemlist("weasel.sh " . l:files)
-    let lines_third = systemlist("thirdperson.sh " . l:files)
-    call extend(lines_passive, lines_weasel)
-    call extend(lines_passive, lines_third)
-    call setqflist([], 'r', {'lines': l:lines_passive})
-endfunction
-command! -bang Critic call <sid>qf_critic(<bang>1)<bar>:copen
-" quickfix - nonexistent links {{{1
-command! -bang BadLinks call <sid>fill_qf('nonexistent_notes.py --vimgrep', 'md', <bang>1, 0)<BAR>:copen
 " autocommands {{{1
 let g:non_git_roots=['~/Dropbox/notes',
             \ '/mnt/e/Dropbox/notes']
 augroup vimrc
     autocmd!
-    " au InsertEnter * set norelativenumber
-    " au InsertLeave * set relativenumber
+    au InsertEnter * set norelativenumber
+    au InsertLeave * set relativenumber
     au TextChanged,InsertLeave,FocusLost * silent! wall
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
@@ -401,20 +280,13 @@ augroup vimrc
     au Filetype zsh,bash,sh set foldmethod=marker
     au Filetype go set foldmethod=syntax
     au Filetype rust set foldmethod=syntax
-    au BufNewFile,BufFilePre,BufRead todo.txt,done.txt set filetype=todo.txt 
-    au Filetype todo.txt,text setlocal formatoptions -=a
-    au Filetype rust set foldmethod=syntax
-    au Filetype python set foldmethod=indent
-    au Filetype python set formatoptions-=a
-    au Filetype go set foldmethod=syntax
+    au Filetype python set foldmethod=indent formatoptions-=a
     au BufRead,BufNewFile *.latex set filetype=tex
     au Filetype tex set foldmethod=expr
                 \ foldexpr=vimtex#fold#level(v:lnum)
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
-    au user GoyoEnter Limelight
-    au user GoyoLeave Limelight!
     au BufEnter .scratch setlocal filetype=markdown.pandoc
     au BufEnter books-to-* silent lgrep '\*\*!\*\*' %
     au BufEnter * Root!
