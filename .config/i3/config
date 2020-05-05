@@ -215,25 +215,25 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 #   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/   |_| |_| |_|\__, |_| |_| |_|\__(_)
 #                                                   |___/
 # Workspaces - 'Monitor 1'
-for_window [class="GitKraken"] move container to workspace $ws7
-for_window [class="Mendeley Desktop"] move container to workspace $ws8
+# for_window [class="GitKraken"] move container to workspace $ws7
+# for_window [class="Mendeley Desktop"] move container to workspace $ws8
 
 # Workspaces - 'Monitor 2 (inbuilt)'
-for_window [class="Code"] move container to workspace $ws1
-for_window [class="libreoffice-writer"] move container to workspace $ws2
-for_window [class="keepassxc"] move container to workspace $ws5
-for_window [class="spotify"] move container to workspace $ws7
+# for_window [class="Code"] move container to workspace $ws1
+# for_window [class="libreoffice-writer"] move container to workspace $ws2
+# for_window [class="keepassxc"] move container to workspace $ws5
+# for_window [class="spotify"] move container to workspace $ws7
 
 # Other window modifications
-for_window [class="Blueman-manager"] floating enable
-for_window [class="Anki"] floating enable; move position center
-for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position center
+# for_window [class="Blueman-manager"] floating enable
+# for_window [class="Anki"] floating enable; move position center
+# for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position center
 
 #start in opposite orientation from your monitor
-# default_orientation vertical 
+# default_orientation vertical
 #toggles split at each new window
-# for_window [class=".*"] split toggle 
+# for_window [class=".*"] split toggle
 #kill command resets the split
-# bindsym $mod+shift+q split toggle kill 
+# bindsym $mod+shift+q split toggle kill
 # should already exist but use if split orientation  messes up
-# bindsym $mod+e layout toggle split 
+# bindsym $mod+e layout toggle split
