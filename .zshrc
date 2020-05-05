@@ -53,7 +53,7 @@ zstyle ':completion:::::' completer _expand _complete _ignored _approximate #ena
 autoload -Uz compinit;compinit -i
 
 # aliases {{{1
-alias tmux="set TERM xterm-256color; tmux"
+alias tmux="set TERM xterm-256color; tmux -2"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
 alias mv="mv -v"     # Always explain move actions
@@ -67,7 +67,6 @@ if [[ -x $HOME/bin/hub ]] || [[ -x $HOME/.bin/hub ]]; then
     alias g="hub"
 fi
 alias today="date +%F"
-alias tmux="tmux -2"
 alias ts="tagsearch"
 alias clip="xclip -sel clipboard"
 alias n="note.py"
@@ -236,12 +235,6 @@ export RANGER_LOAD_DEFAULT_RC=0
 # Windows / WSL-specific config
 if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
     export BROWSER=/mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe
-fi
-
-if [[ $(tmux list-sessions | grep -q 'default:') -eq 0 ]]; then
-    tmux attach -t default
-elif [[ $(tmux list-sessions | grep -q '.*:') -eq 0 ]]; then
-    tmux attach
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

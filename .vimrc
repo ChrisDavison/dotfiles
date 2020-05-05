@@ -62,6 +62,7 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
+set statusline=\ (%n)\ %t:%l:%c\ %m%r\ %y
 set ruler
 set encoding=utf-8
 
@@ -190,18 +191,13 @@ endfunction "
 let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
-
 let g:pymode_python = 'python3'
-
 let g:rustfmt_autosave=1
-
 let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 " keybinds {{{1 
 nnoremap <silent> Q =ip
-nnoremap S      :%s///<LEFT>
-vnoremap S      :s///<LEFT>
 vnoremap <      <gv
 vnoremap >      >gv
 nnoremap <expr> j      (v:count == 0? 'gj' : 'j')
@@ -210,38 +206,27 @@ nnoremap D      dd
 nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
-vnoremap W      :w <BAR>norm gvD<LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
-
+tnoremap <Esc> <C-\><C-n>
 " Run 'equalprg' (format) and return to mark
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
-
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
-"      window split navigation {{{1
+" Keybinds for common commands
+nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
+nnoremap <leader>p :Files<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>T :Tags<CR>
+nnoremap <leader>t :BTags<CR>
+" keybinds - window split navigation {{{1
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-nnoremap <UP> :resize +2<CR>
-nnoremap <DOWN> :resize -2<CR>
-nnoremap <LEFT> :vertical resize +2<CR>
-nnoremap <RIGHT> :vertical resize -2<CR>
-"      terminal {{{1
-tnoremap <Esc> <C-\><C-n>
-"      fzf {{{1
+" keybinds - fzf {{{1
 let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
         \ 'ctrl-x': 'split',
         \ 'ctrl-v': 'vsplit' }
-"      files, SPECIFIC files/dirs, buffers, tags {{{1
-nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
-nnoremap <leader>ev :e ~/.vimrc<CR>
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>T :Tags<CR>
-nnoremap <leader>t :BTags<CR>
-nnoremap <leader>k :Tagsearch<CR>
-nnoremap <leader>K :exec "Rg " . expand('<cWORD>')<CR>
-nnoremap <leader>p :Files<CR>
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
@@ -249,14 +234,8 @@ cnoreabbrev W w
 cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
-cnoreabbrev GIt Git
-cnoreabbrev Set set
-cnoreabbrev oedit only<bar>edit
-cnoreabbrev oe only<bar>edit
 cnoreabbrev BD bp<bar>bd #
-cnoreabbrev BufOnly %bd\|e#
 iabbrev <expr> DATE strftime("%Y-%m-%d")
-iabbrev <expr> DATEN strftime("%Y-%m-%d %a")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
 " autocommands {{{1
