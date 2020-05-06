@@ -1,11 +1,11 @@
 !copied from someone's dotfiles..tune myself
 !Rofi Settings
-rofi.lines: 20
-rofi.width: 60
+rofi.lines: 15
+rofi.width: 80
 rofi.columns: 1
 rofi.padding: 20
 rofi.location: 0
-rofi.font: Inconsolata 20
+rofi.font: JetBrains Mono 20
 rofi.sidebar-mode: false
 rofi.color-enabled: true
 rofi.color-window: #46187a, #46187a, #46187a
