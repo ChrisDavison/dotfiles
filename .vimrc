@@ -84,7 +84,7 @@ endif
 if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
-"      appearance {{{1
+" appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
 set t_Co=16
@@ -94,18 +94,26 @@ endif
 let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-colorscheme seoul256
-"      plugins {{{1
+colorscheme yin
+" plugins & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
 let g:fzf_preview_window=''
 if executable('rg')
     set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
 endif
-
+let g:non_git_roots=['~/Dropbox/notes', '/mnt/e/Dropbox/notes']
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
-"      markdown {{{1
+let g:go_fmt_command="goimports"
+let g:go_fmt_autosave=1
+let g:go_version_warning=0
+let g:pymode_python = 'python3'
+let g:rustfmt_autosave=1
+let g:vimtex_format_enabled=1
+let g:tex_flavor = "latex"
+let g:vimtex_compiler_progname = 'nvr'
+" markdown {{{1
 let md_wrap=' --columns=79 --wrap=auto'
 let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links --reference-location=section'
@@ -146,6 +154,7 @@ augroup markdown
     au Filetype markdown,markdown.pandoc command! H2 g/^#\{1,2\} /
     au Filetype markdown,markdown.pandoc command! H3 g/^#\{1,3\} /
 augroup end
+
 "    markdown functions {{{2
 function! Markdown_goto_file(split)
     let fname=expand("<cfile>")
@@ -181,21 +190,6 @@ function! Markdown_backlinks(use_grep)
         \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
     end
 endfunction " 
-
-function! Markdown_copy_filename_as_link()
-    let link=s:make_markdown_link(expand('%'), "./" . expand('%'))
-    let @a=l:link
-endfunction " 
-
-"      programming languages {{{1
-let g:go_fmt_command="goimports"
-let g:go_fmt_autosave=1
-let g:go_version_warning=0
-let g:pymode_python = 'python3'
-let g:rustfmt_autosave=1
-let g:vimtex_format_enabled=1
-let g:tex_flavor = "latex"
-let g:vimtex_compiler_progname = 'nvr'
 " keybinds {{{1 
 nnoremap <silent> Q =ip
 vnoremap <      <gv
@@ -207,6 +201,7 @@ nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
 tnoremap <Esc> <C-\><C-n>
+nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : ":set colorcolumn=0<cr>"
 " Run 'equalprg' (format) and return to mark
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
@@ -239,8 +234,6 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
 " autocommands {{{1
-let g:non_git_roots=['~/Dropbox/notes',
-            \ '/mnt/e/Dropbox/notes']
 augroup vimrc
     autocmd!
     au InsertEnter * set norelativenumber
@@ -252,7 +245,6 @@ augroup vimrc
     au Filetype make set noexpandtab
     au Filetype text set formatoptions-=a
     au Filetype vim set foldmethod=marker
-    au ColorScheme * call lightline#colorscheme()
     au Filetype zsh,bash,sh set foldmethod=marker
     au Filetype go set foldmethod=syntax
     au Filetype rust set foldmethod=syntax
@@ -267,4 +259,3 @@ augroup vimrc
     au BufEnter * Root
 augroup END
 
-nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : ":set colorcolumn=0<cr>"

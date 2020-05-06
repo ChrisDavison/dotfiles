@@ -76,3 +76,6 @@
 [submodule ".vim/pack/plugins/start/vim-cdroot"]
 	path = .vim/pack/plugins/start/vim-cdroot
 	url = https://github.com/chrisdavison/vim-cdroot
+[submodule ".vim/pack/plugins/start/vim-buftabline"]
+	path = .vim/pack/plugins/start/vim-buftabline
+	url = https://github.com/ap/vim-buftabline
