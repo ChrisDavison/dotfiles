@@ -22,7 +22,8 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
-set autochdir
+set noautochdir
+set cursorline
 
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 set cmdheight=2
@@ -210,8 +211,10 @@ inoremap <C-c> <ESC>
 nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
+nnoremap <F2> :NERDTreeToggle<CR>
 " keybinds - window split navigation {{{1
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -233,6 +236,8 @@ cnoreabbrev BD bp<bar>bd #
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
+" commands {{{1
+command! MakeTags !ctags -R .
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -256,6 +261,7 @@ augroup vimrc
                 \ fillchars=fold:\  
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown.pandoc
+    " Don't use autochdir when using 'Root'
     au BufEnter * Root
 augroup END
 

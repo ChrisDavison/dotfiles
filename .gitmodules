@@ -79,3 +79,6 @@
 [submodule ".vim/pack/plugins/start/vim-buftabline"]
 	path = .vim/pack/plugins/start/vim-buftabline
 	url = https://github.com/ap/vim-buftabline
+[submodule ".vim/pack/plugins/start/nerdtree"]
+	path = .vim/pack/plugins/start/nerdtree
+	url = https://github.com/preservim/nerdtree
