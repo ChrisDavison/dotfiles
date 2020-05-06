@@ -2,10 +2,6 @@
 #
 # Mod1 = alt, Mod4 = win
 set $mod Mod4
-gaps inner 0
-gaps outer 0
-# smart_gaps no_gaps
-smart_borders on
 default_border pixel 2
 
 client.unfocused      #8620e6 #8620e6 #ffffff #ffffff #8620e6
@@ -182,7 +178,7 @@ bindsym $mod+Mod1+c exec $HOME/.bin/dmenu_cheatsheets.sh
 
 #bindsym $mod+Mod1+t exec firefox --new-window "https://to-do.live.com/tasks/myday"
 bindsym $mod+Mod1+n exec terminator -e 'nvim $HOME/Dropbox/notes/inbox.md'
-bindsym $mod+Mod1+t exec terminator -e 'nvim $HOME/Dropbox/today.md -c "spl $HOME/Dropbox/todo.md"'
+bindsym $mod+Mod1+t exec terminator -e 'nvim $HOME/Dropbox/notes/todo.md'
 bindsym $mod+Mod1+f exec terminator -e 'nvim $HOME/Dropbox/notes/flowtime-tracker.md'
 
 
