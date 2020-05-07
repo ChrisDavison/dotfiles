@@ -4,7 +4,7 @@ export EDITOR="nvim"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
 # export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
-export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow --color=always"
+export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
 export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
@@ -20,6 +20,7 @@ export_to_path_if_exists $HOME/bin
 export_to_path_if_exists $HOME/.bin
 export_to_path_if_exists $HOME/.vim/pack/plugins/start/fzf/bin/
 export_to_path_if_exists $HOME/code/scripts/
+export_to_path_if_exists $HOME/code/scripts/covid/
 export_to_path_if_exists $HOME/.cargo/bin
 export_to_path_if_exists $HOME/.local/bin
 export_to_path_if_exists $HOME/.nimble/bin
