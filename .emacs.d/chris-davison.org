@@ -867,7 +867,7 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq cd-org-capture-templates
       `(
-        ("t" "Todos" entry (file+headline "todo.org" "REFILE") "** TODO %?")
+        ("t" "Todos" entry (file+headline "projects/todo.org" "REFILE") "** TODO %?")
         ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
 
         ("n" "Note")
