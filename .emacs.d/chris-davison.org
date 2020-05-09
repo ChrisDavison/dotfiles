@@ -1,20 +1,23 @@
 #+TITLE: Chris Davison's Emacs Config
 #+PROPERTY: header-args emacs-lisp :tangle yes :results silent
 
-* Configuration
+This configuration uses =org-babel= to tangle this =org= file into an =el= file which is loaded in =init.el=. /Tangle/ this file using =C-c C-v t=, and then use =(load "chris-davison.el" t)= inside =init.el=.
 
-You /tangle/ this file, using org-babel ~C-c C-v t~, which will create ~chris-davison.el~.  This file can either be loaded from an ~init.el~ (using ~(load "chris-davison.el" t)~), or by directly symlinking ~chris-davison.el~ to ~init.el~.  The symlinking may be a bit iffy on platforms like windows...
+Set up my 'identity'.
+#+BEGIN_SRC emacs-lisp
+(setq
+ user-full-name "Chris Davison"
+ user-mail-address "c.jr.davison@gmail.com"
+ user-emacs-directory "~/code/dotfiles/.emacs.d"
+ config-file (expand-file-name "chris-davison.org" user-emacs-directory))
+#+END_SRC
 
-# #+BEGIN_SRC emacs-lisp
-# (load "chris-davison.el" t)
-# #+END_SRC
-
+* Configure package management
 This sets up the load path so that we can override it.  We also install /use-package/ to make all package config easier.
-
 #+BEGIN_SRC emacs-lisp
 (package-initialize)
 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.2")
 
 (package-refresh-contents)
 
@@ -29,74 +32,41 @@ This sets up the load path so that we can override it.  We also install /use-pac
 (setq use-package-always-ensure t)
 (eval-when-compile (require 'use-package))
 (setq lexical-binding t)
-
-(setq
- user-full-name "Chris Davison"
- user-mail-address "c.jr.davison@gmail.com"
- user-emacs-directory "~/code/dotfiles/.emacs.d"
- config-file (expand-file-name "chris-davison.org" user-emacs-directory))
-
-(defun if-exists-kill-buffer (buffer)
-  "If a buffer matching BUFFER exists, kill it"
-  (when (get-buffer buffer)
-    (kill-buffer buffer)))
-
-(defun file-name-new-extension (filename ext)
-  "Replace extension of FILENAME with EXT"
-  (concat (file-name-sans-extension filename) ext))
-
-(defun eval-config ()
-  "Tangle my org-mode config and then immediately evaluate"
-  (interactive)
-  (let* ((config-el (file-name-new-extension config-file ".el")))
-    (if-exists-kill-buffer (file-name-base config-el))
-    (org-babel-tangle-file config-file)
-    (load config-el t)))
 #+END_SRC
 
-* General init
-Define a few constants to make it easy to modify behaviour by-system.
+* Minor tweaks
+Generally useful common-lisp library (functions)
 #+BEGIN_SRC emacs-lisp
-;; Make list-packages take up the entire window
-(use-package fullframe :ensure t :defer t
-  :config (fullframe list-packages quit-window))
-
-;; Generally useful common-lisp library (functions)
 (use-package cl-lib :ensure t :config (require 'cl-lib))
 (use-package s :ensure t :defer t)  ; Useful string functions
 (use-package f :ensure t :defer t)  ; Useful file and dir functions
 (use-package diminish :ensure t)
+#+END_SRC
 
-;; Make /apropos/ bring up everything, rather than requiring separate keybinds
+Make =apropos= bring up all help, rather than requiring separate keybinds
+#+BEGIN_SRC emacs-lisp
 (setq apropos-do-all t)
+#+END_SRC
 
-(setq-default initial-scratch-message ";; SCRATCH")
-
+Simplify keys needed for /yes or no/ prompt
+#+BEGIN_SRC emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-** Delete the current file
+Make list-packages take up the full frame
 #+BEGIN_SRC emacs-lisp
-(defun delete-this-file ()
-  "Delete the current file, and kill the buffer."
-  (interactive)
-  (or (buffer-file-name) (error "No file is currently being edited"))
-  (when (yes-or-no-p (format "Really delete '%s'?"
-                             (file-name-nondirectory buffer-file-name)))
-    (delete-file (buffer-file-name))
-    (kill-this-buffer)))
+(use-package fullframe :ensure t :defer t
+  :config (fullframe list-packages quit-window))
 #+END_SRC
 
-** Echo path of the current file
+Popup potential keybinds after a delay
 #+BEGIN_SRC emacs-lisp
-(defun filepath ()
-  "Echo the filepath as a message."
-  (interactive)
-  (message (buffer-file-name)))
+(use-package guide-key :ensure t :defer t
+  :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+  :config (guide-key-mode 1))
 #+END_SRC
 
-** Try to make everything UTF8
-From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html][here]]
+Try to make everything UTF8. From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html][here]]
 #+BEGIN_SRC emacs-lisp
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -106,16 +76,7 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+END_SRC
-
-** Popup to help with keybinds
-#+BEGIN_SRC emacs-lisp
-(use-package guide-key :ensure t :defer t
-  :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-  :config (guide-key-mode 1))
-#+END_SRC
-
-* Persistence (history, sessions, version control)
-** General session and history settings
+* History (sessions and file history)
 #+BEGIN_SRC emacs-lisp
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))
       delete-old-versions -1
@@ -153,7 +114,7 @@ From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.h
 (setq create-lockfiles nil)
 #+END_SRC
 
-** Magit - Git in Emacs
+* Magit - Git in Emacs
 #+BEGIN_SRC emacs-lisp
 (use-package magit :ensure t :defer t
   :config
@@ -193,6 +154,59 @@ command was called, go to its unstaged changes section."
                       (magit-section-forward)
                     (error (cl-return (magit-status-goto-initial-section-1))))))))
 #+end_src
+* Utility functions
+** Files - rename or delete, and update buffer
+#+begin_src emacs-lisp
+(defun rename-this-buffer-and-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name))
+        (read-file-name-function 'read-file-name-default))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond ((get-buffer new-name)
+               (error "A buffer named '%s' already exists!" new-name))
+              (t
+               (rename-file filename new-name 1)
+               (rename-buffer new-name)
+               (set-visited-file-name new-name)
+               (set-buffer-modified-p nil)
+               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
+
+(defun delete-this-buffer-and-file (force)
+  "Delete the file connected to this buffer and kill it, FORCE is universal argument."
+  (interactive "P")
+  (let ((filename (buffer-file-name))
+        (buffer (current-buffer))
+        (name (buffer-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "'%s' is not a file buffer" name)
+      (when (or force (yes-or-no-p (format  "Delete '%s', Are you sure? " filename)))
+        (delete-file filename)
+        (kill-buffer buffer)
+        (message "Deleted '%s'" filename)))))
+#+end_src
+** Echo path of the current file
+#+BEGIN_SRC emacs-lisp
+(defun filepath ()
+  "Echo the filepath as a message."
+  (interactive)
+  (message (buffer-file-name)))
+#+END_SRC
+
+** Delete the current file
+#+BEGIN_SRC emacs-lisp
+(defun delete-this-file ()
+  "Delete the current file, and kill the buffer."
+  (interactive)
+  (or (buffer-file-name) (error "No file is currently being edited"))
+  (when (yes-or-no-p (format "Really delete '%s'?"
+                             (file-name-nondirectory buffer-file-name)))
+    (delete-file (buffer-file-name))
+    (kill-this-buffer)))
+#+END_SRC
 
 * Editing
 ** General Editing Config
@@ -252,7 +266,7 @@ command was called, go to its unstaged changes section."
   :config (global-aggressive-indent-mode))
 #+END_SRC
 
-** Offer to create parent dirs if they do not exist
+** Create parent dirs on file write
 [[http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/][From this blog]]
 #+BEGIN_SRC emacs-lisp
 
@@ -284,11 +298,11 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
          " # File: " (file-name-nondirectory buffer-file-name) "\n"
          " # Description: " _ "\n\n")
         ((org-mode . "Org mode") nil
-        "#+TITLE: " (read-string "Title: ") "\n"
-        "#+AUTHOR: Chris Davison\n"
-        "#+EMAIL: c.jr.davison@gmail.com\n"
-        "#+OPTIONS: toc:2 num:nil html-postamble:nil\n"
-        "#+PROPERTY: header-args :tangle " (read-string "Tangle filename: ") "\n")
+         "#+TITLE: " (read-string "Title: ") "\n"
+         "#+AUTHOR: Chris Davison\n"
+         "#+EMAIL: c.jr.davison@gmail.com\n"
+         "#+OPTIONS: toc:2 num:nil html-postamble:nil\n"
+         "#+PROPERTY: header-args :tangle " (read-string "Tangle filename: ") "\n")
         ((python-mode . "Python") nil
          "#!/usr/bin/env python3")
         ((awk-mode . "Awk") nil
@@ -300,42 +314,9 @@ Use ~auto-insert~ when in a new file of that kind to insert header.
          "END { "
          "    /* AFTER-ACTION */"
          "}")
-      ))
+        ))
 #+END_SRC
-** Move files
-#+begin_src emacs-lisp
-(defun rename-this-buffer-and-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let ((name (buffer-name))
-        (filename (buffer-file-name))
-        (read-file-name-function 'read-file-name-default))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond ((get-buffer new-name)
-               (error "A buffer named '%s' already exists!" new-name))
-              (t
-               (rename-file filename new-name 1)
-               (rename-buffer new-name)
-               (set-visited-file-name new-name)
-               (set-buffer-modified-p nil)
-               (message "File '%s' successfully renamed to '%s'" name (file-name-nondirectory new-name))))))))
-
-(defun delete-this-buffer-and-file (force)
-  "Delete the file connected to this buffer and kill it, FORCE is universal argument."
-  (interactive "P")
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "'%s' is not a file buffer" name)
-      (when (or force (yes-or-no-p (format  "Delete '%s', Are you sure? " filename)))
-        (delete-file filename)
-        (kill-buffer buffer)
-        (message "Deleted '%s'" filename)))))
-#+end_src
-** Multiple cursors
+** TODO Multiple cursors
 Use multiple cursors
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -360,7 +341,7 @@ People often struggle with the Emacs undo model, where there's really no concept
 
 This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the changes you've made, undo back to a certain point (or redo), and go down different branches.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package undo-tree :ensure t :defer t :diminish
   :config
   (global-undo-tree-mode)
@@ -383,24 +364,34 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
 (setq search-whitespace-regexp "[ \t\r\n-_]+")
 #+END_SRC
 
-* Terminal Improvements
-** Windows Shell Config
+* Platform-specific
+** OSX
+#+BEGIN_SRC emacs-lisp
+(when (eq system-type 'darwin)
+  (use-package exec-path-from-shell :ensure t
+    :config
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-initialize))
+    (exec-path-from-shell-copy-env "GOPATH"))
+
+  (setq mac-command-modifier 'meta
+        mac-option-modifier 'none
+        default-input-method "MacOSX")
+  (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen))
+#+END_SRC
+
+** Windows - use git bash as shell, and fix shell settings
 Use git-bash as windows shell
 #+BEGIN_SRC emacs-lisp
-(defun cd/set-windows-shell ()
-  "If on windows, set the shell to git bash."
-  (interactive)
-  (when (eq system-type 'windows-nt)
-    (progn (setq explicit-shell-file-name
-                 "C:/Program Files/Git/bin/sh.exe"
-                 shell-file-name "bash"
-                 explicit-sh.exe-args '("--login" "-i"))
-           (setenv "SHELL" shell-file-name)
-           (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))))
-
-(cd/set-windows-shell)
+(when (eq system-type 'windows-nt)
+  (progn (setq explicit-shell-file-name
+               "C:/Program Files/Git/bin/sh.exe"
+               shell-file-name "bash"
+               explicit-sh.exe-args '("--login" "-i"))
+         (setenv "SHELL" shell-file-name)
+         (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
 #+END_SRC
-** Improvements for ansi-term
+* TERMINAL - ansi-term improvements
 #+BEGIN_SRC emacs-lisp
 (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
   "Close an ansi-term buffer if I quit the terminal."
@@ -436,8 +427,7 @@ Use git-bash as windows shell
 (add-hook 'term-mode-hook 'my-term-hook)
 #+END_SRC
 
-* PROGRAMMING LANGUAGES
-** Completion (for multiple languages)
+* COMPLETION
 Company will *COMP*lete *ANY*thing.
 
 #+BEGIN_SRC emacs-lisp
@@ -476,18 +466,20 @@ Company will *COMP*lete *ANY*thing.
 
 (add-hook 'org-mode-hook '(lambda () (add-to-list 'company-backends 'company-ispell)))
 #+END_SRC
-** Syntax/error checking/linting, on the /fly/ (flycheck)
+* LINTING - flycheck, Syntax/error checking/linting, on the /fly/
 Flycheck basically runs linters and stuff, and lets you know problems in your code.
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck :ensure t :defer t
-    :config
-    (setq-default
-     flycheck-disabled-checkers
-     (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
-     flycheck-temp-prefix ".flycheck")
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+(use-package flycheck :ensure t :defer t
+  :config
+  (setq-default
+   flycheck-disabled-checkers
+   (append flycheck-disabled-checkers '(javascript-jshint) '(json-jsonlist))
+   flycheck-temp-prefix ".flycheck")
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
+
+* PROGRAMMING LANGUAGES
 ** Markdown
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.txt$" . markdown-mode))
@@ -550,43 +542,43 @@ Use elpy for python
 #+END_SRC
 ** TODO Latex
 #+BEGIN_SRC emacs-lisp :tangle no
-  (use-package auctex :ensure t :defer t
-    :config
-    (setq TeX-auto-save t
-          TeX-parse-self t
-          TeX-save-query nil
-          ispell-program-name "aspell"
-          ispell-dictionary "english")
-    :hook ((LaTeX-mode . flyspell-mode)
-           (LaTeX-mode . flyspell-buffer)
-           (LaTeX-mode . outline-minor-mode)
-           (LaTeX-mode . visual-line-mode)
-           (LaTeX-mode . turn-on-reftex)))
+(use-package auctex :ensure t :defer t
+  :config
+  (setq TeX-auto-save t
+        TeX-parse-self t
+        TeX-save-query nil
+        ispell-program-name "aspell"
+        ispell-dictionary "english")
+  :hook ((LaTeX-mode . flyspell-mode)
+         (LaTeX-mode . flyspell-buffer)
+         (LaTeX-mode . outline-minor-mode)
+         (LaTeX-mode . visual-line-mode)
+         (LaTeX-mode . turn-on-reftex)))
 
-  ;; Manage citations
-  ;; (require 'tex-site)
-  ;; (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-  ;; (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-  ;; (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-  ;; (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+;; Manage citations
+;; (require 'tex-site)
+;; (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+;; (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+;; (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+;; (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
 
-  ;; (setq LaTeX-eqnarray-label "eq"
-  ;;       LaTeX-equation-label "eq"
-  ;;       LaTeX-figure-label "fig"
-  ;;       LaTeX-table-label "tab"
-  ;;       LaTeX-myChapter-label "chap"
-  ;;       TeX-auto-save t
-  ;;       TeX-newline-function 'reindent-then-newline-and-indent
-  ;;       TeX-parse-self t
-  ;;       TeX-style-path '("style/" "auto/"
-  ;;                        "/usr/share/emacs21/site-lisp/auctex/style/"
-  ;;                        "/var/lib/auctex/emacs21/"
-  ;;                        "/usr/local/share/emacs/site-lisp/auctex/style/")
-  ;;       LaTeX-section-hook '(LaTeX-section-heading
-  ;;                            LaTeX-section-title
-  ;;                            LaTeX-section-toc
-  ;;                            LaTeX-section-section
-  ;;                            LaTeX-section-label))
+;; (setq LaTeX-eqnarray-label "eq"
+;;       LaTeX-equation-label "eq"
+;;       LaTeX-figure-label "fig"
+;;       LaTeX-table-label "tab"
+;;       LaTeX-myChapter-label "chap"
+;;       TeX-auto-save t
+;;       TeX-newline-function 'reindent-then-newline-and-indent
+;;       TeX-parse-self t
+;;       TeX-style-path '("style/" "auto/"
+;;                        "/usr/share/emacs21/site-lisp/auctex/style/"
+;;                        "/var/lib/auctex/emacs21/"
+;;                        "/usr/local/share/emacs/site-lisp/auctex/style/")
+;;       LaTeX-section-hook '(LaTeX-section-heading
+;;                            LaTeX-section-title
+;;                            LaTeX-section-toc
+;;                            LaTeX-section-section
+;;                            LaTeX-section-label))
 #+END_SRC
 ** Web-stuff
 #+BEGIN_SRC emacs-lisp
@@ -634,7 +626,7 @@ Use elpy for python
         (flycheck-clojure-setup)))))
 #+END_SRC
 
-* Navigation (windows, menus, buffers)
+* NAVIGATION (windows, menus, buffers)
 ** Ivy (counsel, swiper, ivy) for navigation most menu-type things
 Navigation of pretty much any /menu-type/ thing.
 
@@ -654,7 +646,9 @@ Navigation of pretty much any /menu-type/ thing.
 		ivy-height 15
 		ivy-count-format ""
 		ivy-initial-inputs-alist nil
-		ivy-re-builders-alist '((t . ivy--regex-plus))))
+ivy-display-style 'fancy
+		ivy-re-builders-alist '((counsel-M-x . ivy--regex-fuzzy)
+                                (t . ivy--regex-plus))))
 
 (use-package counsel :ensure t :defer t
   :bind*
@@ -713,25 +707,10 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
       '(("home"
          ("Code" (filename . "code/"))
          ("Notes" (and
-                         (mode . org-mode)
-                         (filename . "Dropbox/notes/")))
+                   (mode . org-mode)
+                   (filename . "Dropbox/notes/")))
          )))
 (add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-switch-to-saved-filter-groups "home")))
-#+END_SRC
-
-* OSX
-#+BEGIN_SRC emacs-lisp
-(when (eq system-type 'darwin)
-  (use-package exec-path-from-shell :ensure t
-    :config
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize))
-    (exec-path-from-shell-copy-env "GOPATH"))
-
-  (setq mac-command-modifier 'meta
-        mac-option-modifier 'none
-        default-input-method "MacOSX")
-  (global-set-key (kbd "<f10>") 'toggle-frame-fullscreen))
 #+END_SRC
 
 * Org-mode
@@ -783,7 +762,7 @@ You can easily /capture/ information using various different templates (includin
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files '("~/Dropbox/notes" "~/Dropbox/notes/literature" "~/Dropbox/notes/book-writeups/")
+        org-agenda-files '("~/Dropbox/notes/calendar.org" "~/Dropbox/notes/inbox.org" "~/Dropbox/notes/projects/")
         org-agenda-time-grid nil
         org-agenda-confirm-kill nil
         org-log-done nil
@@ -798,16 +777,15 @@ You can easily /capture/ information using various different templates (includin
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
                                (emacs-lisp . t)))
-  (setq org-confirm-babel-evaluate nil)
-  ;; Settings for refiling
-  (setq org-reverse-note-order t
+  (setq org-confirm-babel-evaluate nil
+        ;; Settings for refiling
+        org-reverse-note-order t
         org-refile-use-outline-path nil
+        org-yank-adjusted-subtrees nil
         org-outline-path-complete-in-steps nil
         org-refile-allow-creating-parent-nodes 'confirm
         org-refile-use-cache nil
-        org-refile-targets '(
-                             (org-agenda-files . (:maxlevel . 3))
-                             ))
+        org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-indent-mode)
@@ -888,16 +866,13 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq cd-org-capture-templates
       `(
-        ("t" "Todos")
-        ("tt" "TASK TO REFILE" item (file "inbox.org")
-         ("%^{TASK}") :empty-lines-before 1)
-        ("ta" "Add to Anki" item (file"inbox.org")
-         ("(ANKI) %^{Add to Anki}") :empty-lines-before 1)
-        ("tt" "Buy" item (file "inbox.org")
-         ("(BUY) %^{Buy}") :empty-lines-before 1)
+        ("t" "Todos" entry (file "inbox.org") "** %?")
+        ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
 
-        ("n" "Note" item (file "inbox.org") "%?")
-        ("L" "link" item (file "inbox.org") "[[%^{URL}][%^{Description}]] %?")
+        ("n" "Note")
+        ("nn" "List item" item (file+headline "inbox.org" "Notes") "- %?")
+        ("nl" "List link" item (file+headline "inbox.org" "Notes") "- [[%^{URL}][%^{Description}]] %?")
+        ("nN" "Entry" entry (file "inbox.org") "* %?")
 
         ("l" "Logbook")
         ("ll" "Logbook" item
@@ -918,9 +893,11 @@ You can easily /capture/ information using various different templates (includin
 
         ("f" "Film" item (file "films-to-watch.org") "%^{Film} (%^{YEAR})\n")
 
+        ("b" "book" entry (file+headline "books-to-read.org" "REFILE") "** %?")
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ("c" "Calendar" entry (file+headline "calendar.org" "Calendar")
-         "* TODO %^t %^{EVENT}")
+        ("c" "Calendar" entry (file+olp+datetree "calendar.org")
+         "* TODO %?\nDEADLINE: %t")
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
@@ -931,7 +908,6 @@ You can easily /capture/ information using various different templates (includin
 (defun refresh-capture-templates ()
   (interactive)
   (setq org-capture-templates cd-org-capture-templates))
-(refresh-capture-templates)
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -939,7 +915,7 @@ You can easily /capture/ information using various different templates (includin
   (org-update-checkbox-count t))
 (add-hook 'org-mode-hook
           (lambda ()
-             (add-hook 'after-save-hook 'custom_org_auto_check)))
+            (add-hook 'after-save-hook 'custom_org_auto_check)))
 #+END_SRC
 ** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1054,6 +1030,13 @@ otherwise use the subtree title"
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t :defer t)
 
+(defhydra cd/hydra/gist (:exit t)
+ ("b" gist-buffer "Buffer")
+ ("B" gist-buffer-private "Buffer Private")
+ ("r" gist-region "Region")
+ ("f" gist-fetch "Fetch")
+ ("l" gist-list "List"))
+
 (defhydra cd/hydra/windowmove (:exit t)
   ("r" (progn (split-window-right) (windmove-right)) "Split right")
   ("d" (progn (split-window-below) (windmove-down)) "Split down")
@@ -1065,12 +1048,15 @@ otherwise use the subtree title"
   ("<" indent-rigidly-left-to-tab-stop "De-dent" :exit nil))
 
 (defhydra cd/hydra/main (:exit t :columns 3)
-  ("z" (modi/toggle-one-window nil) "zoom")
+  ("f" (modi/toggle-one-window nil) "focus")
   ("C-z" company-try-hard "Company TryHard")
   ("w" cd/hydra/windowmove/body "WINDOW")
   ("s" counsel-grep-or-swiper "search")
   ("S" ispell-word "Spell")
   ("g" deadgrep "grep")
+  ("G" cd/hydra/gist/body "Gists")
+  ("d" deft "deft")
+  ("R" helm-org-rifle "Org Rifle")
   ("r" anzu-query-replace-regexp "replace")
   ("i" ivy-imenu-anywhere "imenu")
   ("e" iedit-mode "iedit")
@@ -1088,9 +1074,11 @@ List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
       (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-                    '("CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
+                    '("JetBrains Mono" "Inconsolata" "Source Code Pro" "Cascadia Code" "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
 (when cd-fonts
-  (set-frame-font (car cd-fonts) 1))
+  (let ((first (car cd-fonts)))
+    (set-frame-font first 1)
+    first))
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
@@ -1106,9 +1094,10 @@ List some pretty fonts, and grab the first one that's available.
   (let ((next-font-name (nth current-font-idx cd-fonts)))
     (set-frame-font next-font-name 1)
     (message next-font-name)))
+(global-set-key (kbd "C-c f") 'next-font)
 
 (setq line-spacing 0.2)
-(set-face-attribute 'default nil :height (if (eq system-type 'windows-nt) 140 200))
+(set-face-attribute 'default nil :height (if (eq system-type 'windows-nt) 140 180))
 (setq auto-window-vscroll nil)
 #+END_SRC
 
@@ -1136,7 +1125,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package doom-themes)
 (use-package doom-modeline :ensure t)
 
-(load-theme 'doom-nord t)
+(load-theme 'doom-gruvbox t)
 (doom-modeline-mode)
 ;; (load-theme 'darkokai t)
 #+END_SRC
@@ -1205,7 +1194,7 @@ the current window and the windows state prior to that."
       (when modi/toggle-one-window--buffer-name
         (set-window-configuration modi/toggle-one-window--window-configuration)
         (switch-to-buffer modi/toggle-one-window--buffer-name)))))
-  (define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
+(define-key global-map (kbd "C-x 1") 'modi/toggle-one-window)
 
 #+END_SRC
 ** Code-folding
@@ -1247,7 +1236,7 @@ the current window and the windows state prior to that."
     (set-buffer-modified-p nil)))
 
 (defadvice dired-readin
-  (after dired-after-updating-hook first () activate)
+    (after dired-after-updating-hook first () activate)
   "Sort dired listings with directories first before adding marks."
   (mydired-sort))
 
@@ -1279,9 +1268,9 @@ When double clicking a file, or launching from terminal, always use the same ins
 (setq ns-pop-up-frames nil)
 #+END_SRC
 
-Use a very narrow window border.
+Set width of the window border
 #+BEGIN_SRC emacs-lisp
-(fringe-mode 1)
+(fringe-mode 10)
 #+END_SRC
 
 
@@ -1319,9 +1308,89 @@ Shortcut function to move all checked checkboxes to the top of the list
 (use-package hide-lines :ensure t :defer t)
 #+END_SRC
 
+Read epub from within emacs
+#+BEGIN_SRC emacs-lisp
+(use-package nov :ensure t)
+#+END_SRC
+
+Switch to the new window when we create a split
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x 2") (lambda () (interactive) (split-window-vertically) (other-window 1)))
+(global-set-key (kbd "C-x 3") (lambda () (interactive) (split-window-horizontally) (other-window 1)))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (defun logbook ()
   (interactive)
-  (find-file (format-time-string "~/Dropbox/notes/logbook/%Y/%m/%d.org"))
+  (find-file (format-time-string "~/Dropbox/notes/work/logbook.org"))
   (save-buffer-and-clear-modify))
+
+
+
+(use-package lsp-mode :ensure t
+  :config
+  (add-hook 'c++-mode-hook #'lsp)
+  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'rust-mode-hook #'lsp))
+#+END_SRC
+
+Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in a query, and it'll narrow the files that match)
+#+BEGIN_SRC emacs-lisp
+(use-package deft :ensure t
+  :config
+  (setq deft-extension "org"
+        deft-text-mode 'org-mode
+        deft-directory "~/Dropbox/notes"
+        deft-use-filename-as-title t
+        deft-auto-save-interval 0
+        deft-recursive t))
+#+END_SRC
+
+Fix up titles from reading repes
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun cd-fix-title ()
+  "Fix a line like TODO this-was-a-filename into 'This Was A Filename'"
+  (interactive)
+  (kill-line)
+  (insert (let* ((text (substring-no-properties (car kill-ring)))
+                 (no-todo (replace-regexp-in-string "TODO " "" text))
+                 (fixed (replace-regexp-in-string "-" " " no-todo)))
+            (s-titleize fixed))))
+#+END_SRC
+
+Keybind to delete =CUSTOM_ID= property caused by pandoc conversion
+#+BEGIN_SRC emacs-lisp :tangle no
+(define-key org-mode-map
+  (kbd "<f9>")
+  '(lambda () (interactive)
+     (org-delete-property-globally "CUSTOM_ID")
+     (save-buffer-and-clear-modify)
+     (kill-buffer)
+     (deadgrep-forward-filename)
+     (deadgrep-visit-result)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle :ensure t
+:config
+(setq helm-org-rifle-show-path t))
+#+END_SRC
+
+EVIL mode?
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package evil :ensure t)
+(use-package evil-commentary :ensure t :defer t)
+(use-package evil-iedit-state :ensure t :defer t)
+(use-package evil-org :ensure t :defer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package projectile :ensure t
+:config (projectile-mode 1))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package gist :ensure t
+  :config
+  (setq gist-ask-for-description t))
 #+END_SRC

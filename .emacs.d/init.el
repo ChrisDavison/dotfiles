@@ -43,7 +43,7 @@
     ("#8f4e8b" "#8f684e" "#c3a043" "#397460" "#54ab8e" "#20a6ab" "#3573b1" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (ivy-posframe posframe which-key-posframe hydra-posframe evil-org evil-iedit-state evil-commentary evil deadgrep ivy-hydra deft lsp-mode org-sidebar electric-indent nov dired-single gist undo-tree company-try-hard hide-lines rainbow-delimiters rotate helpful visual-fill-column fold-dwim-org fold-dwim yafolding doom-modeline doom-themes darkokai-theme doneburn-theme hydra org-download org-bullets htmlize exec-path-from-shell switch-window avy dumb-jump imenu-anywhere counsel ivy js2-mode sass-mode company-anaconda anaconda-mode pyvenv racer cargo flycheck-rust flymake-rust rust-mode go-mode flycheck company-quickhelp company anzu aggressive-indent yasnippet-snippets yasnippet iedit expand-region forge magit guide-key diminish f s fullframe use-package)))
+    (projectile hydra-posframe evil-org evil-iedit-state evil-commentary evil deadgrep ivy-hydra deft lsp-mode org-sidebar electric-indent nov dired-single gist undo-tree company-try-hard hide-lines rainbow-delimiters rotate helpful visual-fill-column fold-dwim-org fold-dwim yafolding doom-modeline doom-themes darkokai-theme doneburn-theme hydra org-download org-bullets htmlize exec-path-from-shell switch-window avy dumb-jump imenu-anywhere counsel ivy js2-mode sass-mode company-anaconda anaconda-mode pyvenv racer cargo flycheck-rust flymake-rust rust-mode go-mode flycheck company-quickhelp company anzu aggressive-indent yasnippet-snippets yasnippet iedit expand-region forge magit guide-key diminish f s fullframe use-package)))
  '(pos-tip-background-color "#E6DB74")
  '(pos-tip-foreground-color "#242728")
  '(weechat-color-list
