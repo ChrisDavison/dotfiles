@@ -23,3 +23,5 @@ tags
 /.emacs.d/savehist
 /.emacs.d/transient/
 /.emacs.dvar/
+.emacs.d/.emacs.desktop.lock
+.emacs.d/projectile-bookmarks.eld
