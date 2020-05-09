@@ -11,3 +11,15 @@ tags
 .emacs.d/backups/
 .emacs.d/elpa/
 .emacs.d/chris-davison.el
+/.emacs.d/.emacs.desktop
+/.emacs.d/.lsp-session-v1
+/.emacs.d/auto-save-list/
+/.emacs.d/bookmarks
+/.emacs.d/chris-davison.ema
+/.emacs.d/eshell/
+/.emacs.d/forge-database.sqlite
+/.emacs.d/nov-places
+/.emacs.d/recentf
+/.emacs.d/savehist
+/.emacs.d/transient/
+/.emacs.dvar/
