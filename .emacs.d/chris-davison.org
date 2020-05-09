@@ -776,6 +776,7 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
+                               (rust . t)
                                (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil
         ;; Settings for refiling
@@ -866,7 +867,7 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq cd-org-capture-templates
       `(
-        ("t" "Todos" entry (file "inbox.org") "** %?")
+        ("t" "Todos" entry (file+headline "todo.org" "REFILE") "** TODO %?")
         ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
 
         ("n" "Note")
@@ -1031,11 +1032,11 @@ otherwise use the subtree title"
 (use-package hydra :ensure t :defer t)
 
 (defhydra cd/hydra/gist (:exit t)
- ("b" gist-buffer "Buffer")
- ("B" gist-buffer-private "Buffer Private")
- ("r" gist-region "Region")
- ("f" gist-fetch "Fetch")
- ("l" gist-list "List"))
+  ("b" gist-buffer "Buffer")
+  ("B" gist-buffer-private "Buffer Private")
+  ("r" gist-region "Region")
+  ("f" gist-fetch "Fetch")
+  ("l" gist-list "List"))
 
 (defhydra cd/hydra/windowmove (:exit t)
   ("r" (progn (split-window-right) (windmove-right)) "Split right")
@@ -1074,7 +1075,7 @@ List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
       (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-                    '("JetBrains Mono" "Inconsolata" "Source Code Pro" "Cascadia Code" "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
+                    '("Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
 (when cd-fonts
   (let ((first (car cd-fonts)))
     (set-frame-font first 1)
