@@ -943,39 +943,36 @@ You can easily /capture/ information using various different templates (includin
             (add-hook 'after-save-hook 'custom_org_auto_check)))
 #+END_SRC
 ** Agenda view WITHOUT archived
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(
         ("1" "Today"
          ((agenda "" ((org-agenda-span 1)))))
-        ("2" "Two days"
-         ((agenda "" ((org-agenda-span 2)))))
-        ("3" "Three days"
-         ((agenda "" ((org-agenda-span 3)))))
 
-        ("w" . "Work Schedules")
-        ("ww" "Work and Thesis"
-         ((todo "TODO|WIP" ((org-agenda-files '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))))
-        ("wu" "Unscheduled Work and Thesis"
-         ((todo ""
-                ((org-agenda-overriding-header "\nUnscheduled Work and Thesis")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
-                 (org-agenda-files
-                  '("~/Dropbox/notes/work.org"p "~/Dropbox/notes/thesis.org"))))
-          nil
-          nil))
+        ;; ("w" . "Work Schedules")
+        ;; ("ww" "Work and Thesis"
+        ;;  ((todo "TODO|WIP" ((org-agenda-files '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))))
+        ;; ("wu" "Unscheduled Work and Thesis"
+        ;;  ((todo ""
+        ;;         ((org-agenda-overriding-header "\nUnscheduled Work and Thesis")
+        ;;          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+        ;;          (org-agenda-files
+        ;;           '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))
+        ;;   nil
+        ;;   nil))
 
-        ("ngt" "Non-gaming Todos"
-         ((todo "TODO|WIP" ((org-agenda-overriding-header "Non-gaming Todos")
-                            (org-agenda-files
-                             (seq-filter
-                              (lambda (x) (not (string-match "gaming" x)))
-                              (file-expand-wildcards "~/Dropbox/notes/*.org"))
-                             )))))))
+        ;; ("ngt" "Non-gaming Todos"
+        ;;  ((todo "TODO|WIP" ((org-agenda-overriding-header "Non-gaming Todos")
+        ;;                     (org-agenda-files
+        ;;                      (seq-filter
+        ;;                       (lambda (x) (not (string-match "gaming" x)))
+        ;;                       (file-expand-wildcards "~/Dropbox/notes/*.org"))
+        ;;                      )))))
+        ))
 
 (global-set-key
  (kbd "<f3>")
- '(lambda () (interactive) (org-agenda nil "3")))
+ '(lambda () (interactive) (org-agenda nil "1")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1437,4 +1434,35 @@ EVIL mode?
 (use-package gist :ensure t
   :config
   (setq gist-ask-for-description t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun notes ()
+  (interactive)
+  (counsel-file-jump "" "~/Dropbox/notes"))
+(global-set-key (kbd "C-c n") 'notes)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-recur
+  :hook ((org-mode . org-recur-mode)
+         (org-agenda-mode . org-recur-agenda-mode))
+  :demand t
+  :config
+  (define-key org-recur-mode-map (kbd "C-c d") 'org-recur-finish)
+
+  ;; Rebind the 'd' key in org-agenda (default: `org-agenda-day-view').
+  (define-key org-recur-agenda-mode-map (kbd "d") 'org-recur-finish)
+  (define-key org-recur-agenda-mode-map (kbd "C-c d") 'org-recur-finish)
+
+  (setq org-recur-finish-done t
+        org-recur-finish-archive t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-ref :ensure t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 #+END_SRC
