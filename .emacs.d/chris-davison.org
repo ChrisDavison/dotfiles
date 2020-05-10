@@ -746,7 +746,7 @@ You can easily /capture/ information using various different templates (includin
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
         org-src-window-setup 'reorganize-frame
-        org-agenda-window-setup 'only-window
+        org-agenda-window-setup 'current-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil
@@ -772,8 +772,9 @@ You can easily /capture/ information using various different templates (includin
         org-cycle-separator-lines 0
         org-list-indent-offset 1
         org-modules '(org-bibtex org-habit)
-        org-agenda-files '("~/Dropbox/notes/calendar.org" "~/Dropbox/notes/inbox.org" "~/Dropbox/notes/projects/")
-        org-agenda-time-grid nil
+        org-agenda-files '("~/Dropbox/notes/" "~/Dropbox/notes/projects/")
+        org-agenda-use-time-grid t
+        org-agenda-time-grid '((daily today require-timed) (900 1000 1200 1400 1700) "....." "----------")
         org-agenda-confirm-kill nil
         org-log-done nil
         org-log-repeat nil
