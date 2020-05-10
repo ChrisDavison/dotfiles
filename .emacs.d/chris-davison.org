@@ -188,6 +188,14 @@ command was called, go to its unstaged changes section."
         (kill-buffer buffer)
         (message "Deleted '%s'" filename)))))
 #+end_src
+** Detect windows OS
+This is a bit of a cludge to handle both windows and WSL.
+#+BEGIN_SRC emacs-lisp
+(defvar is-windows?
+  (or (eq system-type 'windows-nt)
+      (string-match "/mnt/" (getenv "PATH"))
+      (string-match "Windows" (getenv "PATH"))))
+#+END_SRC
 ** Echo path of the current file
 #+BEGIN_SRC emacs-lisp
 (defun filepath ()
@@ -383,7 +391,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
 ** Windows - use git bash as shell, and fix shell settings
 Use git-bash as windows shell
 #+BEGIN_SRC emacs-lisp
-(when (eq system-type 'windows-nt)
+(when is-windows?
   (progn (setq explicit-shell-file-name
                "C:/Program Files/Git/bin/sh.exe"
                shell-file-name "bash"
@@ -523,7 +531,7 @@ Use elpy for python
 
 (defun ipython()
   (interactive)
-  (if (eq system-type 'windows-nt)
+  (if is-windows?
       (progn (setq explicit-shell-file-name
                    "C:/python3/scripts/ipython.exe")
              (setq shell-file-name "ipython")
@@ -534,7 +542,7 @@ Use elpy for python
              (cd/set-windows-shell))
     (ansi-term "~/.envs/ml/bin/ipython" "ipython")))
 
-(if (eq system-type 'windows-nt)
+(if is-windows?
     (when (boundp 'python-shell-exec-path)
       (add-to-list 'python-shell-exec-path "c:/ProgramData/Miniconda3/"))
   (when (boundp 'python-shell-exec-path)
@@ -604,7 +612,7 @@ Use elpy for python
   (add-hook 'julia-mode-hook 'julia-repl-mode))
 
 (add-to-list 'load-path "C:/Julia-1.1.0/bin")
-(if (eq system-type 'windows-nt)
+(if is-windows?
     (setq julia-repl-executable-records '((default "julia.exe" :basedir "C:/Julia-1.1.0/bin" ))))
 
 ;; (setq julia-repl-executable-records '((default "julia")))
@@ -1095,10 +1103,13 @@ List some pretty fonts, and grab the first one that's available.
   (let ((next-font-name (nth current-font-idx cd-fonts)))
     (set-frame-font next-font-name 1)
     (message next-font-name)))
+(if is-windows?
+  (set-frame-font "CamingoCode" 1)
+  (next-font))
 (global-set-key (kbd "C-c f") 'next-font)
 
 (setq line-spacing 0.2)
-(set-face-attribute 'default nil :height (if (eq system-type 'windows-nt) 140 180))
+(set-face-attribute 'default nil :height (if is-windows? 140 140))
 (setq auto-window-vscroll nil)
 #+END_SRC
 
