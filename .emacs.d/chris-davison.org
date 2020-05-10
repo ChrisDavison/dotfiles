@@ -880,8 +880,10 @@ You can easily /capture/ information using various different templates (includin
         ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
 
         ("n" "Note")
-        ("nn" "List item" item (file+headline "inbox.org" "Notes") "- %?")
-        ("nl" "List link" item (file+headline "inbox.org" "Notes") "- [[%^{URL}][%^{Description}]] %?")
+        ("nn" "List item" item (file+headline "inbox.org" "Notes")
+         "- %?")
+        ("nl" "List link" item (file+headline "inbox.org" "Notes")
+         "- [[%^{URL}][%^{Description}]] %?")
         ("nN" "Entry" entry (file "inbox.org") "* %?")
 
         ("l" "Logbook")
@@ -894,16 +896,22 @@ You can easily /capture/ information using various different templates (includin
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
-        ("gp" "PC" entry (file+headline "gaming.org" "PC")
+        ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
          "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
-        ("gn" "Nintendo Switch" entry (file+headline "gaming.org" "Nintendo Switch")
+        ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
          "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
-        ("gt" "Tabletop" entry (file+headline "gaming.org" "Tabletop")
+        ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
          "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
 
-        ("f" "Film" item (file "films-to-watch.org") "%^{Film} (%^{YEAR})\n")
+        ("w" "Watch")
+        ("wt" "TV" item
+         (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
+         "%^{TV}")
+        ("wf" "film" item
+         (file+olp "tv-shows-and-films.org" "Films" "To Watch")
+         "%^{Film}")
 
-        ("b" "book" entry (file+headline "books-to-read.org" "REFILE") "** %?")
+        ("b" "book" item (file+olp "books.org" "Books to Read" "Refile") "%^{Book}")
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("c" "Calendar" entry (file+olp+datetree "calendar.org")
@@ -911,6 +919,12 @@ You can easily /capture/ information using various different templates (includin
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
+
+        ("e" "emacs config" plain (file+headline "~/.emacs.d/chris-davison.org" "Testing Ground")
+         "%?
+,#+BEGIN_SRC emacs-lisp
+
+,#+END_SRC" :empty-lines 1)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
          "* TODO %^{Article}\n%u\n\nAbstract: %?")))
