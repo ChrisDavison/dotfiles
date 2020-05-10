@@ -240,3 +240,10 @@ if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
+    alias eme='export DISPLAY=:0.0
+export LIBGL_ALWAYS_INDIRECT=1
+setsid emacs
+exit'
+fi
