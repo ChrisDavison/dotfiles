@@ -780,6 +780,7 @@ You can easily /capture/ information using various different templates (includin
         org-log-repeat nil
         org-log-into-drawer nil
         org-log-done-with-time nil
+        org-hierarchical-todo-statistics t
         org-ellipsis "…"
         org-archive-location "~/Dropbox/notes/archive.org::")
   ;; Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
@@ -787,6 +788,8 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
+                               (rust . t)
+                               (sh . t)
                                (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil
         ;; Settings for refiling
@@ -802,12 +805,19 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
          (org-mode . (lambda () (set-face-italic 'italic t)))))
+(custom-set-faces
+ '(org-done ((t (:italic t :weight normal
+                             :strike-through t))))
+ '(org-headline-done
+   ((((class color) (min-colors 16) (background dark))
+     (:italic t :strike-through t)))))
+
 ;; Need ~htmlize~ so that I can export org buffers to HTML.
 (use-package htmlize :ensure t :defer t)
 (diminish 'abbrev-mode)
 (diminish 'org-indent-mode)
 
-(global-set-key (kbd "<f1>") '(lambda () (interactive) (progn (refresh-capture-templates) (org-capture))))
+(global-set-key (kbd "<f1>") 'org-capture)
 (global-set-key (kbd "<f2>") 'org-agenda)
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c S-O") 'cd/org-open-link-same)
@@ -845,7 +855,7 @@ You can easily /capture/ information using various different templates (includin
         '(("a" "#+BEGIN_EXPORT ascii\n?\n#+END_EXPORT")
           ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER")
           ("C" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
-          ("e" "#+BEGIN_EXAMPLE\n?\n#+END_EXAMPLE")
+          ("e" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
           ("E" "#+BEGIN_EXPORT\n?\n#+END_EXPORT")
           ("h" "#+BEGIN_EXPORT html\n?\n#+END_EXPORT")
           ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
@@ -875,7 +885,7 @@ You can easily /capture/ information using various different templates (includin
 #+END_SRC
 ** Capture templates
 #+BEGIN_SRC emacs-lisp
-(setq cd-org-capture-templates
+(setq org-capture-templates
       `(
         ("t" "Todos" entry (file+headline "projects/todo.org" "REFILE") "** TODO %?")
         ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
@@ -894,6 +904,9 @@ You can easily /capture/ information using various different templates (includin
         ("lL" "Logbook" item
          (file ,(format-time-string "~/Dropbox/notes/logbook/%Y/%m/%Y-%m-%d.org"))
          "%?")
+
+        ("L" "Literature" entry (file+headline "literature.org" "REFILE")
+         "** TODO %^{TITLE}\n\nAuthors: %^{Authors}\n" :immediate-finish t)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
@@ -922,17 +935,10 @@ You can easily /capture/ information using various different templates (includin
          "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
 
         ("e" "emacs config" plain (file+headline "~/.emacs.d/chris-davison.org" "Testing Ground")
-         "%?
-,#+BEGIN_SRC emacs-lisp
-
-,#+END_SRC" :empty-lines 1)
+         "%?\n\n#+BEGIN_SRC emacs-lisp\n\n#+END_SRC" :empty-lines 1)
 
         ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
          "* TODO %^{Article}\n%u\n\nAbstract: %?")))
-
-(defun refresh-capture-templates ()
-  (interactive)
-  (setq org-capture-templates cd-org-capture-templates))
 #+END_SRC
 ** Update checkboxes on save
 #+BEGIN_SRC emacs-lisp :tangle no
