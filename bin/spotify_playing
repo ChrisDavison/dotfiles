@@ -1,20 +1,9 @@
 #!/usr/bin/env bash
 
-# msg=`playerctl metadata --format "{{ title }} - {{ artist }} <{{ album }}>"`
-title=`playerctl metadata --format "{{ title }}"`
-artist=`playerctl metadata --format "{{ artist }}"`
-album=`playerctl metadata --format "{{ album }}"`
+title=`playerctl metadata --format "{{ title }}, by {{ artist }} ({{ album }})"`
 if [ -z "$title" ]; then
     echo "No music playing"
 else
     status=`playerctl status`
-    msg=$title
-    if [ ${#title} > 30 ]; then
-        msg=`echo $title | cut -d' ' -f1-4`"..."
-    fi
-    msg+=" - $artist"
-    if [ ! -z "$album" ]; then
-        msg+=" <$album>"
-    fi
-    echo "$status: $msg"
+    echo "$status: $title"
 fi

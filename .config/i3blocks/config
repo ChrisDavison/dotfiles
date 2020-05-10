@@ -11,10 +11,10 @@ separator_block_width=20
 markup=none
 
 
-# [mediaplayer]
-# command=~/.bin/spotify_playing
-# interval=5
-# signal=10
+[mediaplayer]
+command=~/bin/spotify_playing
+interval=5
+signal=10
 
 [tmux]
 command=is_tmux_alive.sh
