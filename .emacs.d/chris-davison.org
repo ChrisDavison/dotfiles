@@ -776,7 +776,6 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
-                               (rust . t)
                                (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil
         ;; Settings for refiling
