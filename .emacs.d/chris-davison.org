@@ -1062,6 +1062,7 @@ otherwise use the subtree title"
   ("e" iedit-mode "iedit")
   ("j" avy-goto-word-1 "Jump to word")
   ("o" cd/org-open-link-same "org-open")
+  ("t" (term "/usr/bin/zsh") "terminal")
   ("O" org-mark-ring-goto "Return from link")
   ("<up>" delete-indentation "join-up" :exit nil )
   ("<down>" (join-line -1) "join-down" :exit nil ))
