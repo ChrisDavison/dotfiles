@@ -3,29 +3,18 @@
 ; ! ALT
 ; + SHIFT
 SetCapsLockState, alwaysoff
-^#!XButton1::SendInput c.jr.davison@gmail.com
-^#!XButton2::SendInput christopher.davison@strath.ac.uk
-
-; DON'T DECLARE KEYBINDS IN ANY OTHER FILES.
-; Those are only for functions, so all keybinds are declared in here.
-
 ; WindowManip provides:
 ; Resize, Move, Center, and GetCurrentMonitor
 #Include, WindowManip.ahk
 
-; Text substitution.  Dates, and personal pinboard
-; #Include, TextSub.ahk
-
 ; Media functionality
-+^PgDn::Send  {Volume_Down}
-+^PgUp::Send {Volume_Up}
-+^Del::Send {Media_Prev}
-+^End::Send {Media_Next}
-+^Home::Send  {Media_Play_Pause}
 CapsLock::F13
 
-!^XButton1::Send  {Volume_Down}
-!^XButton2::Send {Volume_Up}
+CapsLock & w::SoundSet, +10
+CapsLock & s::SoundSet, -10
+CapsLock & a::Send {Media_Prev}
+CapsLock & d::Send {Media_Next}
+CapsLock & Space::Send {Media_Play_Pause}
 
 ; UTILITY
 ^#!SPACE::WinSet, Alwaysontop, , A
@@ -42,7 +31,7 @@ return
     Move("right", "bottom")
 return
 
-^#!s::switchDesktop()
+#s::switchDesktop()
 
 switchedDesktop := false
 switchDesktop()
