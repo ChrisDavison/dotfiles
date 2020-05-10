@@ -655,7 +655,9 @@ Navigation of pretty much any /menu-type/ thing.
 		ivy-count-format ""
 		ivy-initial-inputs-alist nil
 ivy-display-style 'fancy
-		ivy-re-builders-alist '((counsel-M-x . ivy--regex-fuzzy)
+		ivy-re-builders-alist '((counsel-imenu . ivy--regex-fuzzy)
+                                (counsel-file-jump . ivy--regex-fuzzy)
+                                (find-file . ivy--regex-fuzzy)
                                 (t . ivy--regex-plus))))
 
 (use-package counsel :ensure t :defer t
