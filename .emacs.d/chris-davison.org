@@ -1125,9 +1125,24 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package doom-themes)
 (use-package doom-modeline :ensure t)
 
-(load-theme 'doom-gruvbox t)
+;; (load-theme 'doom-gruvbox t)
 (doom-modeline-mode)
-;; (load-theme 'darkokai t)
+(load-theme 'darkokai t)
+#+END_SRC
+
+Utility function to loop through themes
+#+BEGIN_SRC emacs-lisp
+(defvar current-theme-idx 0)
+(defun next-theme ()
+  (interactive)
+  (let* ((themes (custom-available-themes))
+         (nthemes (length themes))
+         (nnext (% (+ 1 current-theme-idx) nthemes))
+         (tnext (nth nnext themes)))
+    (setq current-theme-idx nnext)
+    (load-theme tnext t)
+    tnext))
+(global-set-key (kbd "C-c t") '(lambda () (interactive) (message (symbol-name (next-theme)))))
 #+END_SRC
 ** Suppress GUI features
 #+BEGIN_SRC emacs-lisp
