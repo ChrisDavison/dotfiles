@@ -26,3 +26,4 @@ tags
 .emacs.d/.emacs.desktop.lock
 .emacs.d/projectile-bookmarks.eld
 /.emacs.d/anaconda-mode/
+/.emacs.d/url/
