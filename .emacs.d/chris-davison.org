@@ -788,8 +788,6 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
-                               (rust . t)
-                               (sh . t)
                                (emacs-lisp . t)))
   (setq org-confirm-babel-evaluate nil
         ;; Settings for refiling
@@ -805,6 +803,7 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . org-indent-mode)
          (org-mode . abbrev-mode)
          (org-mode . (lambda () (set-face-italic 'italic t)))))
+
 (custom-set-faces
  '(org-done ((t (:italic t :weight normal
                              :strike-through t))))
@@ -820,7 +819,7 @@ You can easily /capture/ information using various different templates (includin
 (global-set-key (kbd "<f1>") 'org-capture)
 (global-set-key (kbd "<f2>") 'org-agenda)
 (global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c S-O") 'cd/org-open-link-same)
+(global-set-key (kbd "C-c o") 'cd/org-open-link-same)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -888,6 +887,7 @@ You can easily /capture/ information using various different templates (includin
 (setq org-capture-templates
       `(
         ("t" "Todos" entry (file+headline "projects/todo.org" "REFILE") "** TODO %?")
+        ("r" "Research" entry (file+headline "projects/todo.org" "Research") "** TODO %?")
         ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
 
         ("n" "Note")
@@ -906,7 +906,7 @@ You can easily /capture/ information using various different templates (includin
          "%?")
 
         ("L" "Literature" entry (file+headline "literature.org" "REFILE")
-         "** TODO %^{TITLE}\n\nAuthors: %^{Authors}\n" :immediate-finish t)
+         "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n" :immediate-finish t)
 
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ("g" "Games")
@@ -978,7 +978,7 @@ You can easily /capture/ information using various different templates (includin
 
 (global-set-key
  (kbd "<f3>")
- '(lambda () (interactive) (org-agenda nil "1")))
+ '(lambda () (interactive) (org-agenda nil "a")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1129,7 +1129,7 @@ List some pretty fonts, and grab the first one that's available.
 (global-set-key (kbd "C-c f") 'next-font)
 
 (setq line-spacing 0.2)
-(set-face-attribute 'default nil :height (if is-windows? 140 140))
+(set-face-attribute 'default nil :height (if is-windows? 140 150))
 (setq auto-window-vscroll nil)
 #+END_SRC
 
@@ -1159,7 +1159,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 
 ;; (load-theme 'doom-gruvbox t)
 (doom-modeline-mode)
-(load-theme 'darkokai t)
+(load-theme 'doom-dracula t)
 #+END_SRC
 
 Utility function to loop through themes
@@ -1471,4 +1471,39 @@ EVIL mode?
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+#+END_SRC
+
+Cludge to make S-SPC not delete everything in ivy buffer (it's actually 'restrict to matches')
+#+BEGIN_SRC emacs-lisp
+(define-key ivy-minibuffer-map (kbd "S-SPC") (insert " "))
+#+END_SRC
+
+These are helpers to make entering a literature entry easier.
+#+BEGIN_SRC emacs-lisp
+(defun read-capitalized-title ()
+  (s-titleize (read-string "Title: ")))
+
+(defun read-author ()
+  (let ((name (read-string "Author: " "" nil nil)))
+    (if (s-equals? name nil)
+        nil
+      (format-author-name name))))
+
+(defun format-author-name (author)
+  (concat (seq-mapcat
+           (lambda (author-part)
+             (if (> (length author-part) 1)
+                 (s-concat " " (s-capitalize author-part))
+               (s-concat (s-capitalize author-part) ".")))
+           (s-split " " author))))
+
+(defun read-authors ()
+  (setq authors (read-author)
+        running t)
+  (while running
+    (setq input (read-string "Author: " "" nil nil))
+    (if (s-equals? input "")
+        (setq running nil)
+      (setq authors (concat authors " and " (format-author input)))))
+  authors)
 #+END_SRC
