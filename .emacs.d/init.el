@@ -22,36 +22,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-quickhelp-color-background "#e8e8e8")
- '(company-quickhelp-color-foreground "#444444")
- '(compilation-message-face (quote default))
- '(electric-indent-mode nil)
- '(highlight-changes-colors (quote ("#ff8eff" "#ab7eff")))
+ '(compilation-message-face 'default)
+ '(highlight-changes-colors '("#ff8eff" "#ab7eff"))
  '(highlight-tail-colors
-   (quote
-    (("#323342" . 0)
+   '(("#323342" . 0)
      ("#63de5d" . 20)
      ("#4BBEAE" . 30)
      ("#1DB4D0" . 50)
      ("#9A8F21" . 60)
      ("#A75B00" . 70)
      ("#F309DF" . 85)
-     ("#323342" . 100))))
- '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#51afef"))
- '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
- '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
+     ("#323342" . 100)))
  '(magit-diff-use-overlays nil)
- '(nrepl-message-colors
-   (quote
-    ("#8f4e8b" "#8f684e" "#c3a043" "#397460" "#54ab8e" "#20a6ab" "#3573b1" "#DC8CC3")))
- '(objed-cursor-color "#ff6c6b")
  '(package-selected-packages
-   (quote
-    (ob-sh org-ref org-recur projectile hydra-posframe evil-org evil-iedit-state evil-commentary evil deadgrep ivy-hydra deft lsp-mode org-sidebar electric-indent nov dired-single gist undo-tree company-try-hard hide-lines rainbow-delimiters rotate helpful visual-fill-column fold-dwim-org fold-dwim yafolding doom-modeline doom-themes darkokai-theme doneburn-theme hydra org-download org-bullets htmlize exec-path-from-shell switch-window avy dumb-jump imenu-anywhere counsel ivy js2-mode sass-mode company-anaconda anaconda-mode pyvenv racer cargo flycheck-rust flymake-rust rust-mode go-mode flycheck company-quickhelp company anzu aggressive-indent yasnippet-snippets yasnippet iedit expand-region forge magit guide-key diminish f s fullframe use-package)))
+   '(evil-org evil-iedit-state evil-commentary evil flycheck-clojure julia-repl julia-mode alchemist auctex multiple-cursors ob-sh ob-rust org-ref org-recur projectile gist helm-org-rifle deft lsp-mode nov undo-tree company-try-hard hide-lines rainbow-delimiters rotate helpful visual-fill-column fold-dwim-org fold-dwim yafolding doom-modeline doom-themes darkokai-theme doneburn-theme hydra org-download org-bullets htmlize exec-path-from-shell switch-window avy dumb-jump imenu-anywhere counsel ivy js2-mode sass-mode company-anaconda anaconda-mode pyvenv racer cargo flycheck-rust flymake-rust rust-mode go-mode flycheck company-quickhelp company anzu aggressive-indent yasnippet-snippets yasnippet iedit expand-region forge magit guide-key diminish f s fullframe use-package))
  '(pos-tip-background-color "#E6DB74")
  '(pos-tip-foreground-color "#242728")
- '(rustic-ansi-faces
-   ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])
  '(weechat-color-list
    (unspecified "#242728" "#323342" "#F70057" "#ff0066" "#86C30D" "#63de5d" "#BEB244" "#E6DB74" "#40CAE4" "#06d8ff" "#FF61FF" "#ff8eff" "#00b2ac" "#53f2dc" "#f8fbfc" "#ffffff")))
 (custom-set-faces

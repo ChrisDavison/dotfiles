@@ -195,6 +195,10 @@ This is a bit of a cludge to handle both windows and WSL.
   (or (eq system-type 'windows-nt)
       (string-match "/mnt/" (getenv "PATH"))
       (string-match "Windows" (getenv "PATH"))))
+
+(defvar is-wsl?
+   (and is-windows? (s-matches? "Linux" (shell-command-to-string "uname -a"))))
+
 #+END_SRC
 ** Echo path of the current file
 #+BEGIN_SRC emacs-lisp
@@ -391,7 +395,7 @@ This lets you use =C-x u= (=undo-tree-visualize=) to visually walk through the c
 ** Windows - use git bash as shell, and fix shell settings
 Use git-bash as windows shell
 #+BEGIN_SRC emacs-lisp
-(when is-windows?
+(when (and is-windows? (not (s-matches? "Linux" (shell-command-to-string "uname -a"))))
   (progn (setq explicit-shell-file-name
                "C:/Program Files/Git/bin/sh.exe"
                shell-file-name "bash"
@@ -527,11 +531,15 @@ Use elpy for python
 (add-hook 'python-mode-hook 'anaconda-mode)
 (use-package company-anaconda :ensure t :defer t)
 (eval-after-load "company" '(add-to-list 'company-backends 'company-anaconda))
-(setq-default python-indent-offset 4)
+(setq python-indent-offset 4
+      python-shell-virtualenv-root "~/.envs/ml/"
+      python-shell-interpreter "jupyter"
+      python-shell-interpreter-args "console --simple-prompt")
+(add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
 
 (defun ipython()
   (interactive)
-  (if is-windows?
+  (if (and is-windows? (not (s-matches? "Linux" (shell-command-to-string "uname -a"))))
       (progn (setq explicit-shell-file-name
                    "C:/python3/scripts/ipython.exe")
              (setq shell-file-name "ipython")
@@ -952,8 +960,12 @@ You can easily /capture/ information using various different templates (includin
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
       '(
-        ("1" "Today"
-         ((agenda "" ((org-agenda-span 1)))))
+        ("1" "Today, no upcoming deadlines"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-deadline-warning-days 0)))))
+        ("7" "Week, no upcoming deadlines"
+         ((agenda "" ((org-agenda-span 7)
+                      (org-deadline-warning-days 0)))))
 
         ;; ("w" . "Work Schedules")
         ;; ("ww" "Work and Thesis"
@@ -978,7 +990,7 @@ You can easily /capture/ information using various different templates (includin
 
 (global-set-key
  (kbd "<f3>")
- '(lambda () (interactive) (org-agenda nil "a")))
+ '(lambda () (interactive) (org-agenda nil "7")))
 #+END_SRC
 ** Enable drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1155,6 +1167,8 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 (use-package doneburn-theme)
 (use-package darkokai-theme)
 (use-package doom-themes)
+(use-package cyberpunk-theme)
+(use-package cyberpunk-2019-theme)
 (use-package doom-modeline :ensure t)
 
 ;; (load-theme 'doom-gruvbox t)
@@ -1384,6 +1398,8 @@ Switch to the new window when we create a split
 Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in a query, and it'll narrow the files that match)
 #+BEGIN_SRC emacs-lisp
 (use-package deft :ensure t
+  :bind (("<f8>" . deft)
+         ("<f7>" . deft-find-file))
   :config
   (setq deft-extension "org"
         deft-text-mode 'org-mode
@@ -1391,6 +1407,13 @@ Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in
         deft-use-filename-as-title t
         deft-auto-save-interval 0
         deft-recursive t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun notes ()
+  (interactive)
+  (counsel-file-jump "" "~/Dropbox/notes"))
+(global-set-key (kbd "C-c n") 'notes)
 #+END_SRC
 
 Fix up titles from reading repes
@@ -1442,12 +1465,7 @@ EVIL mode?
   (setq gist-ask-for-description t))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(defun notes ()
-  (interactive)
-  (counsel-file-jump "" "~/Dropbox/notes"))
-(global-set-key (kbd "C-c n") 'notes)
-#+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-recur
@@ -1474,8 +1492,9 @@ EVIL mode?
 #+END_SRC
 
 Cludge to make S-SPC not delete everything in ivy buffer (it's actually 'restrict to matches')
-#+BEGIN_SRC emacs-lisp
-(define-key ivy-minibuffer-map (kbd "S-SPC") (insert " "))
+ #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ivy-mode
+   (define-key ivy-minibuffer-map (kbd "S-SPC") (insert " ")))
 #+END_SRC
 
 These are helpers to make entering a literature entry easier.
@@ -1485,7 +1504,7 @@ These are helpers to make entering a literature entry easier.
 
 (defun read-author ()
   (let ((name (read-string "Author: " "" nil nil)))
-    (if (s-equals? name nil)
+    (if (s-equals? name "")
         nil
       (format-author-name name))))
 
@@ -1501,9 +1520,15 @@ These are helpers to make entering a literature entry easier.
   (setq authors (read-author)
         running t)
   (while running
-    (setq input (read-string "Author: " "" nil nil))
-    (if (s-equals? input "")
+    (setq input (read-author))
+    (if (s-equals? input nil)
         (setq running nil)
-      (setq authors (concat authors " and " (format-author input)))))
+      (setq authors (concat authors " and " input))))
   authors)
 #+END_SRC
+
+#+begin_src emacs-lisp
+(use-package engine-mode :ensure t :defer t)
+(defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
+(defengine github "https://github.com/search?ref=simplesearch&q=%s")
+#+end_src
