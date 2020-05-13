@@ -656,16 +656,15 @@ Use elpy for python
 (use-package flycheck-clojure :ensure t)
 (use-package smartparens :ensure t)
 (use-package cider :ensure t
+  :hook ((cider-mode . eldoc-mode)
+         (cider-repl-mode . subword-mode)
+         (cider-repl-mode . smartparens-mode)
+         (cider-repl-mode . paredit-mode))
   :config
   (setq nrepl-popup-stacktraces nil)
-  (with-eval-after-load 'cider
-    (add-hook 'cider-mode-hook 'eldoc-mode)
-    (add-hook 'cider-repl-mode-hook 'subword-mode)
-    (add-hook 'cider-repl-mode-hook 'smartparens-mode)
-    (add-hook 'cider-repl-mode-hook 'paredit-mode)
-    (with-eval-after-load 'clojure-mode
-      (with-eval-after-load 'flycheck
-        (flycheck-clojure-setup)))))
+  (with-eval-after-load 'clojure-mode
+    (with-eval-after-load 'flycheck
+      (flycheck-clojure-setup))))
 #+END_SRC
 
 * NAVIGATION (windows, menus, buffers)
@@ -708,8 +707,8 @@ Navigation of pretty much any /menu-type/ thing.
 (use-package imenu-anywhere :ensure t)
 
 (use-package dumb-jump :ensure t
+  :hook (prog-mode . dumb-jump-mode)
   :config
-  (add-hook 'prog-mode-hook 'dumb-jump-mode)
   (setq dumb-jump-selector 'ivy)
   (setq dumb-jump-prefer-searcher 'rg))
 
@@ -871,8 +870,8 @@ You can easily /capture/ information using various different templates (includin
   (org-edit-src-exit))
 (global-set-key (kbd "C-x c") 'cd/org-cleanup)
 #+END_SRC
-** Templates for src/latex/etc blocks
-#+BEGIN_SRC emacs-lisp
+** TODO Templates for src/latex/etc blocks
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq org-structure-template-alist
       (if (string-greaterp (org-version) "9.2")
           '(("a" . "export ascii")
@@ -976,12 +975,14 @@ You can easily /capture/ information using various different templates (includin
          "* TODO %^{Article}\n%u\n\nAbstract: %?")))
 #+END_SRC
 ** Update checkboxes on save
+On saving org files, update checkbox counts in all headers. This will only work if the buffer is actually modified, otherwise you get a 'nothing to save' message and the hook doesn't run. This shouldn't really be an issue unless I've somehow managed to modify the buffer and save it without this hook running (maybe using orgly for example).
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun custom_org_auto_check()
+  (interactive)
   (org-update-checkbox-count t))
+
 (add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'after-save-hook 'custom_org_auto_check)))
+          (lambda ()(add-hook 'before-save-hook 'custom_org_auto_check)))
 #+END_SRC
 ** Agenda view WITHOUT archived
 #+BEGIN_SRC emacs-lisp
