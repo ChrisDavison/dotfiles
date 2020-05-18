@@ -32,6 +32,9 @@ This sets up the load path so that we can override it.  We also install /use-pac
 (setq use-package-always-ensure t)
 (eval-when-compile (require 'use-package))
 (setq lexical-binding t)
+
+(setq load-path (append (list (expand-file-name "~/.emacs.d/elisp")) load-path))
+(require 'breadcrumb)
 #+END_SRC
 
 * Minor tweaks
@@ -57,13 +60,6 @@ Make list-packages take up the full frame
 #+BEGIN_SRC emacs-lisp
 (use-package fullframe :ensure t
   :config (fullframe list-packages quit-window))
-#+END_SRC
-
-Popup potential keybinds after a delay
-#+BEGIN_SRC emacs-lisp
-(use-package guide-key :ensure t
-  :init (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-  :config (guide-key-mode 1))
 #+END_SRC
 
 Try to make everything UTF8. From [[http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html][here]]
@@ -220,7 +216,13 @@ This is a bit of a cludge to handle both windows and WSL.
     (delete-file (buffer-file-name))
     (kill-this-buffer)))
 #+END_SRC
-
+** Jump to file in my notes dir
+#+BEGIN_SRC emacs-lisp
+(defun notes ()
+  (interactive)
+  (counsel-file-jump "" "~/Dropbox/notes"))
+(global-set-key (kbd "C-c n") 'notes)
+#+END_SRC
 * Editing
 ** General Editing Config
 #+BEGIN_SRC emacs-lisp
@@ -415,17 +417,9 @@ Use git-bash as windows shell
     ad-do-it))
 (ad-activate 'term-sentinel)
 
-;; By default, use fish in ansi-term
-;; e.g. don't prompt for a shell
-(defvar my-term-shell "/usr/local/bin/zsh")
-(defadvice ansi-term (before force-bash)
-  (interactive (list my-term-shell)))
-(ad-activate 'ansi-term)
-
 ;; Use UTF8 in terminals
-(defun my-term-use-utf8 ()
-  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
-(add-hook 'term-exec-hook 'my-term-use-utf8)
+(add-hook 'term-exec-hook
+          '(lambda () (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix)))
 
 ;; Make URLs in the term clickable
 (defun my-term-paste (&optional string)
@@ -433,11 +427,10 @@ Use git-bash as windows shell
   (process-send-string
    (get-buffer-process (current-buffer))
    (if string string (current-kill 0))))
-
-(defun my-term-hook ()
-  (goto-address-mode)
-  (define-key term-raw-map "\C-y" 'my-term-paste))
-(add-hook 'term-mode-hook 'my-term-hook)
+(add-hook 'term-mode-hook
+          '(lambda ()
+             (goto-address-mode)
+             (define-key term-raw-map (kbd "C-y") 'my-term-paste)))
 #+END_SRC
 
 * COMPLETION
@@ -527,9 +520,9 @@ Auto-completion for rust, using racer
 #+BEGIN_SRC emacs-lisp
 (use-package pyvenv :ensure t)
 (use-package anaconda-mode :ensure t
-:config
-(add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
-:hook (python-mode . anaconda-mode))
+  :config
+  (add-to-list 'python-shell-completion-native-disabled-interpreters "jupyter")
+  :hook (python-mode . anaconda-mode))
 
 (use-package company-anaconda :ensure t)
 (eval-after-load "company" '(add-to-list 'company-backends 'company-anaconda))
@@ -537,7 +530,6 @@ Auto-completion for rust, using racer
       python-shell-virtualenv-root "~/.envs/ml/"
       python-shell-interpreter "jupyter"
       python-shell-interpreter-args "console --simple-prompt")
-
 
 (defun ipython()
   (interactive)
@@ -626,23 +618,22 @@ Auto-completion for rust, using racer
 (use-package paredit-mode :ensure t)
 (use-package parinfer
   :ensure t
+  :hook ((clojure-mode . parinfer-mode)
+         (emacs-lisp-mode . parinfer-mode)
+         (common-lisp-mode . parinfer-mode)
+         (scheme-mode-hook . parinfer-mode)
+         (lisp-mode . parinfer-mode))
   :bind
   (("C-," . parinfer-toggle-mode))
-  :init
-  (progn
-    (setq parinfer-extensions
-          '(defaults       ; should be included.
-            pretty-parens  ; different paren styles for different modes.
-            evil           ; If you use Evil.
-            lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
-            paredit        ; Introduce some paredit commands.
-            smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
-            smart-yank))   ; Yank behavior depend on mode.
-    (add-hook 'clojure-mode-hook #'parinfer-mode)
-    (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
-    (add-hook 'common-lisp-mode-hook #'parinfer-mode)
-    (add-hook 'scheme-mode-hook #'parinfer-mode)
-    (add-hook 'lisp-mode-hook #'parinfer-mode)))
+  :config
+  (setq parinfer-extensions
+        '(defaults       ; should be included.
+           pretty-parens  ; different paren styles for different modes.
+           evil           ; If you use Evil.
+           lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
+           paredit        ; Introduce some paredit commands.
+           smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+           smart-yank)))   ; Yank behavior depend on mode.
 (use-package flycheck-clojure :ensure t)
 (use-package smartparens :ensure t)
 (use-package cider :ensure t
@@ -668,28 +659,25 @@ Navigation of pretty much any /menu-type/ thing.
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
   :after ivy
-  :bind*
-  (("C-x f" . counsel-find-file)
-   ("C-c i" . counsel-imenu)
-   ("C-c a" . counsel-rg)
-   ("C-c g s" . counsel-grep-or-swiper)
-   ("C-c b" . counsel-descbinds)
-   ("M-x" . counsel-M-x))
+  :bind* (("C-x f" . counsel-find-file)
+          ("C-c i" . counsel-imenu)
+          ("C-c a" . counsel-rg)
+          ("C-c g s" . counsel-grep-or-swiper)
+          ("C-c b" . counsel-descbinds)
+          ("M-x" . counsel-M-x))
   :config
   (setq counsel-grep-base-command
 		"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package ivy :ensure t :diminish
-  :bind (:map ivy-mode-map
-			  ("C-x b" . ivy-switch-buffer)
-			  ("C-c s" . swiper))
+  :bind (("C-x b" . ivy-switch-buffer)
+		 ("C-c s" . swiper))
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 		ivy-count-format ""
-                                        ;		ivy-initial-inputs-alist nil
-		ivy-re-builders-alist '((counsel-imenu . ivy--regex-fuzzy)
-                                (counsel-file-jump . ivy--regex-fuzzy)
+		;; ivy-initial-inputs-alist nil
+		ivy-re-builders-alist '((counsel-file-jump . ivy--regex-fuzzy)
                                 (find-file . ivy--regex-fuzzy)
                                 (t . ivy--regex-plus))))
 
@@ -765,11 +753,15 @@ You can easily /capture/ information using various different templates (includin
 (load-library "find-lisp")
 (use-package org
   :ensure t
+  :hook ((org-mode . visual-line-mode)
+         (org-mode . org-indent-mode)
+         (org-mode . abbrev-mode)
+         (org-mode . (lambda () (set-face-italic 'italic t))))
   :config
   (setq org-directory "~/Dropbox/notes"
         org-default-notes-file "~/Dropbox/notes/inbox.org"
-        org-src-window-setup 'reorganize-frame
-        org-agenda-window-setup 'current-window
+        org-src-window-setup 'current-window
+        org-agenda-window-setup 'only-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil
@@ -779,7 +771,7 @@ You can easily /capture/ information using various different templates (includin
         org-catch-invisible-edits 'show-and-error
         org-fontify-done-headline t
         org-insert-heading-respect-content t
-        org-imenu-depth 3
+        org-imenu-depth 4
         ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
         org-replace-disputed-keys t
         org-blank-before-new-entry '((heading . nil) (plain-list-item . auto))
@@ -793,11 +785,11 @@ You can easily /capture/ information using various different templates (includin
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
-        org-list-indent-offset 1
+        org-list-indent-offset 2
         org-modules '(org-bibtex org-habit org-tempo)
-        org-agenda-files '("~/Dropbox/notes/" "~/Dropbox/notes/projects/")
-        org-agenda-use-time-grid t
-        org-agenda-time-grid '((daily today require-timed) (900 1100 1300 1500 1700) "  --- " "")
+        org-agenda-files '("~/Dropbox/notes/")
+        org-agenda-use-time-grid nil
+        org-agenda-time-grid '((daily today require-timed) (900 1300 1700 2100) "  --- " "")
         org-agenda-confirm-kill nil
         org-log-done nil
         org-log-repeat nil
@@ -805,34 +797,23 @@ You can easily /capture/ information using various different templates (includin
         org-log-done-with-time nil
         org-hierarchical-todo-statistics t
         org-ellipsis "…"
-        org-archive-location "~/Dropbox/notes/archive.org::")
+        org-archive-location "~/Dropbox/notes/archive.org::"
+        org-confirm-babel-evaluate nil
+        ;; Settings for refiling
+        org-reverse-note-order t
+        org-refile-use-outline-path t
+        org-yank-adjusted-subtrees nil
+        org-outline-path-complete-in-steps nil
+        org-refile-allow-creating-parent-nodes 'confirm
+        org-refile-use-cache nil
+        org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
   ;; Allow 2 newlines inside an org-mode 'emphasis' (e.g. bold or italic)
   (setcar (nthcdr 4 org-emphasis-regexp-components) 2)
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
                                (emacs-lisp . t)))
-  (setq org-confirm-babel-evaluate nil
-        ;; Settings for refiling
-        org-reverse-note-order t
-        org-refile-use-outline-path nil
-        org-yank-adjusted-subtrees nil
-        org-outline-path-complete-in-steps nil
-        org-refile-allow-creating-parent-nodes 'confirm
-        org-refile-use-cache nil
-        org-refile-targets '((org-agenda-files . (:maxlevel . 3))))
-  (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal)
-  :hook ((org-mode . visual-line-mode)
-         (org-mode . org-indent-mode)
-         (org-mode . abbrev-mode)
-         (org-mode . (lambda () (set-face-italic 'italic t)))))
-
-(custom-set-faces
- '(org-done ((t (:italic t :weight normal
-                         :strike-through t))))
- '(org-headline-done
-   ((((class color) (min-colors 16) (background dark))
-     (:italic t :strike-through t)))))
+  (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal))
 
 ;; Need ~htmlize~ so that I can export org buffers to HTML.
 (use-package htmlize :ensure t)
@@ -840,16 +821,21 @@ You can easily /capture/ information using various different templates (includin
 (diminish 'org-indent-mode)
 
 (define-key org-mode-map (kbd "C-c ,") 'org-time-stamp-inactive)
-(global-set-key (kbd "<f1>") 'org-capture)
+(global-set-key (kbd "<f1>")
+                (lambda () (interactive)
+                  (refresh-capture-templates)
+                  (org-capture)))
 (global-set-key (kbd "<f2>") 'org-agenda)
-(global-set-key (kbd "<f4>") (lambda () (interactive) (org-capture nil "nn")))
+(global-set-key (kbd "<f4>")
+                (lambda () (interactive)
+                  (refresh-capture-templates)
+                  (org-capture nil "nn")))
+(global-set-key (kbd "<f9>")
+                (lambda () (interactive)
+                  (refresh-capture-templates)
+                  (org-capture nil "L")))
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c o") 'cd/org-open-link-same)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-bullets :ensure t)
-(add-hook 'org-mode-hook 'org-bullets-mode)
 #+END_SRC
 
 ** Fix indentation for org source blocks
@@ -861,35 +847,7 @@ You can easily /capture/ information using various different templates (includin
   (org-edit-src-exit))
 (global-set-key (kbd "C-x c") 'cd/org-cleanup)
 #+END_SRC
-** TODO Templates for src/latex/etc blocks
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-structure-template-alist
-      (if (string-greaterp (org-version) "9.2")
-          '(("a" . "export ascii")
-            ("c" . "center")
-            ("C" . "comment")
-            ("e" . "example")
-            ("E" . "export")
-            ("h" . "export html")
-            ("l" . "src emacs-lisp")
-            ("q" . "quote")
-            ("s" . "src")
-            ("v" . "verse")
-            ("V" . "verbatim"))
-        '(("a" "#+BEGIN_EXPORT ascii\n?\n#+END_EXPORT")
-          ("c" "#+BEGIN_CENTER\n?\n#+END_CENTER")
-          ("C" "#+BEGIN_COMMENT\n?\n#+END_COMMENT")
-          ("e" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
-          ("E" "#+BEGIN_EXPORT\n?\n#+END_EXPORT")
-          ("h" "#+BEGIN_EXPORT html\n?\n#+END_EXPORT")
-          ("l" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC")
-          ("q" "#+BEGIN_QUOTE\n?\n#+END_QUOTE")
-          ("s" "#+BEGIN_SRC\n?\n#+END_SRC")
-          ("v" "#+BEGIN_VERSE\n?\n#+END_VERSE")
-          ("V" "#+BEGIN_VERBATIM\n?\n#+END_VERBATIM"))
-        ))
-#+END_SRC
-** Move to prev/next narrow
+** defun: Move to prev/next narrow
 #+BEGIN_SRC emacs-lisp
 (defun cd/move-to-previous-narrow ()
   (interactive)
@@ -908,62 +866,134 @@ You can easily /capture/ information using various different templates (includin
     (org-narrow-to-subtree)))
 #+END_SRC
 ** Capture templates
+Split the org-capture-template into multiple source blocks and functions so that when I use 'helper' functions, they are defined alongside the relevant capture template.
 #+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      `(
-        ("t" "Todos" entry (file+headline "projects/todo.org" "REFILE") "** TODO %?")
-        ("r" "Research" entry (file+headline "projects/todo.org" "REFILE") "** TODO Research %?")
-        ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")
-
-        ("n" "Note")
-        ("nn" "List item" item (file+headline "inbox.org" "Notes")
-         "- %?")
-        ("nl" "List link" item (file+headline "inbox.org" "Notes")
-         "- [[%^{URL}][%^{Description}]] %?")
-        ("nN" "Entry" entry (file "inbox.org") "* %?")
-
-        ("l" "Logbook")
-        ("ll" "Logbook item" item (file+datetree "logbook.org")
-         "- %?")
-        ("lL" "Logbook entry" entry (file+datetree "logbook.org")
-         "* %?")
-
-        ("L" "Literature" entry (file+headline "literature.org" "REFILE")
-         "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n" :immediate-finish t)
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ("g" "Games")
-        ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
-         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
-        ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
-         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
-        ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
-         "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
-
-        ("w" "Watch")
-        ("wt" "TV" item
-         (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
-         "%^{TV}")
-        ("wf" "film" item
-         (file+olp "tv-shows-and-films.org" "Films" "To Watch")
-         "%^{Film}")
-
-        ("b" "book" item (file+olp "books.org" "Books to Read" "Refile") "%^{Book}")
-
-        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ("c" "Calendar" entry (file+olp+datetree "calendar.org")
-         "* TODO %?\nDEADLINE: %t" :time-prompt t)
-
-        ("Q" "Quote" entry (file "quotes.org")
-         "* %^{Quote Topic} :quote:\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
-
-        ("e" "emacs config" plain (file+headline "~/.emacs.d/chris-davison.org" "Testing Ground")
-         "%?\n\n#+BEGIN_SRC emacs-lisp\n\n#+END_SRC" :empty-lines 1)
-
-        ("a" "Article" entry (file+headline "academic-literature.org" "UNFILED")
-         "* TODO %^{Article}\n%u\n\nAbstract: %?")))
+(defun refresh-capture-templates ()
+  (interactive)
+  (setq org-capture-templates
+        (append (cd/capture-template-notes)
+                (cd/capture-template-todos)
+                (cd/capture-template-logbooks)
+                (cd/capture-template-watch)
+                (cd/capture-template-gaming)
+                (cd/capture-template-emacsconfig)
+                (cd/capture-template-calendar)
+                (cd/capture-template-quote)
+                (cd/capture-template-literature))))
 #+END_SRC
-** Update checkboxes on save
+
+*** Simple 'todo' captures
+#+BEGIN_SRC emacs-lisp
+(defun cd/capture-template-todos ()
+  `(("t" "Todos" entry (file+headline "todo.org" "REFILE") "** TODO %?")
+    ("r" "Research" entry (file+headline "todo.org" "REFILE") "** TODO Research %?")
+    ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")))
+#+END_SRC
+
+*** 'notes'
+#+begin_src emacs-lisp
+(defun cd/capture-template-notes ()
+  `(("n" "Note")
+    ("nn" "List item" item (file+headline "inbox.org" "Notes")
+     "- %?")
+    ("nl" "List link" item (file+headline "inbox.org" "Notes")
+     "- [[%^{URL}][%^{Description}]] %?")
+    ("nN" "Entry" entry (file "inbox.org") "* %?")))
+#+end_src
+
+*** logbook
+#+begin_src emacs-lisp
+(defun cd/capture-template-logbooks ()
+  `(("l" "Logbook")
+    ("ll" "Logbook item" item (file+datetree "logbook.org")
+     "- %?")
+    ("lL" "Logbook entry" entry (file+datetree "logbook.org")
+     "* %?")))
+#+end_src
+*** gaming
+#+begin_src emacs-lisp
+(defun cd/capture-template-gaming ()
+  `(("g" "Games")
+    ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
+     "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
+    ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
+     "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
+    ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
+     "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")))
+#+end_src
+*** stuff to watch
+#+begin_src emacs-lisp
+(defun cd/capture-template-watch ()
+  `(("w" "Watch")
+    ("wt" "TV" item
+     (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
+     "%^{TV}" :immediate-finish t)
+    ("wf" "film" item
+     (file+olp "tv-shows-and-films.org" "Films" "To Watch")
+     "%^{Film}" :immediate-finish t)))
+#+end_src
+*** stuff to read (books and literature)
+These are helpers to make entering a literature entry easier.
+#+BEGIN_SRC emacs-lisp
+(defun read-capitalized-title ()
+  (s-titleize (read-string "Title: ")))
+
+(defun read-author ()
+  (let ((name (read-string "Author: " "" nil nil)))
+    (if (s-equals? name "")
+        nil
+      (format-author-name name))))
+
+(defun format-author-name (author)
+  (concat (seq-mapcat
+           (lambda (author-part)
+             (if (> (length author-part) 1)
+                 (s-concat " " (s-capitalize author-part))
+               (s-concat (s-capitalize author-part) ".")))
+           (s-split " " author))))
+
+(defun maybe-get-bibtex ()
+  (let ((doi (read-string "DOI: " "" nil nil)))
+    (if (s-equals? doi "")
+        nil
+      (s-concat ("\n")))))
+
+(defun read-authors ()
+  (setq authors (read-author)
+        running t)
+  (while running
+    (setq input (read-author))
+    (if (s-equals? input nil)
+        (setq running nil)
+      (setq authors (concat authors " and " input))))
+  authors)
+
+(defun cd/capture-template-literature ()
+  `(("L" "Literature" entry (file+headline "literature.org" "REFILE")
+     "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n%(doi-insert-bibtex)\n#+END_SRC" :immediate-finish t)
+
+    ("b" "book" entry (file+olp "books.org" "Book List" "Refile")
+     "** TO-READ %^{Book}\n%^{AUTHOR}p")))
+#+end_src
+*** emacs config testing
+#+begin_src emacs-lisp
+(defun cd/capture-template-emacsconfig ()
+  `(("e" "emacs config" plain (file+headline "~/.emacs.d/chris-davison.org" "Testing Ground")
+     "%?\n\n#+BEGIN_SRC emacs-lisp\n\n#+END_SRC" :empty-lines 1)))
+#+end_src
+*** calendar entry
+#+begin_src emacs-lisp
+(defun cd/capture-template-calendar ()
+  `(("c" "Calendar" entry (file+olp+datetree "calendar.org")
+     "* TODO %?\nDEADLINE: %t" :time-prompt t)))
+#+end_src
+*** quote entry
+#+begin_src emacs-lisp
+(defun cd/capture-template-quote ()
+  `(("Q" "Quote" entry (file "quotes.org")
+     "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")))
+#+end_src
+** defun: Update checkboxes on save
 On saving org files, update checkbox counts in all headers. This will only work if the buffer is actually modified, otherwise you get a 'nothing to save' message and the hook doesn't run. This shouldn't really be an issue unless I've somehow managed to modify the buffer and save it without this hook running (maybe using orgly for example).
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun custom_org_auto_check()
@@ -979,6 +1009,7 @@ On saving org files, update checkbox counts in all headers. This will only work 
       '(
         ("1" "Today, no upcoming deadlines"
          ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-use-time-grid t)
                       (org-deadline-warning-days 0)))))
         ("7" "Week, no upcoming deadlines"
          ((agenda "" ((org-agenda-span 7)
@@ -1009,7 +1040,7 @@ On saving org files, update checkbox counts in all headers. This will only work 
  (kbd "<f3>")
  '(lambda () (interactive) (org-agenda nil "7")))
 #+END_SRC
-** Enable drag-and-drop of files into org-files
+** drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
 
 In this case, I've set it up to copy to a local 'assets' folder.  If ~org-download-heading-lvl~ is non-nil, it would create a subfolder based on the Nth heading.
@@ -1020,11 +1051,19 @@ In this case, I've set it up to copy to a local 'assets' folder.  If ~org-downlo
   (setq-default org-download-heading-lvl nil))
 (add-hook 'dired-mode-hook 'org-download-enable)
 #+END_SRC
-** Refile to a specific file
+** Refile
+*** ..to a specific file
 
 This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
 
 #+BEGIN_SRC emacs-lisp
+(defun my/refile (file headline &optional arg)
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile arg nil (list headline file nil pos)))
+  (switch-to-buffer (current-buffer)))
+
 (defun refile-to-file (&optional target)
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
@@ -1037,32 +1076,7 @@ This is a general helper function that will refile the subtree at point to a spe
   (interactive)
   (refile-to-file (buffer-name)))
 #+END_SRC
-** Custom keybind functions
-#+BEGIN_SRC emacs-lisp
-(defun org-insert-indented-header ()
-  (interactive)
-  (org-insert-heading-respect-content)
-  (org-do-demote))
-(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-indented-header)
-#+END_SRC
-** Reset all checkboxes in a repeating todo when the state change is toggled through ~DONE~
-#+BEGIN_SRC emacs-lisp
-(defun glasser-org-reset-check-on-repeat ()
-  (when (and (org-get-repeat) (member org-state org-done-keywords))
-    (org-reset-checkbox-state-subtree)))
-(add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
-#+END_SRC
-
-** Mark a tree as DONE if it's TODO and all children are DONE
-If a tree has a todo state and TODO children, then mark it as done when all children are done.
-#+BEGIN_SRC emacs-lisp
-(defun org-summary-todo (n-done n-not-done)
-  "Switch entry to DONE when all subentries are done."
-  (let (org-log-done org-log-states) ; turn off logging
-    (org-todo (if (= n-not-done 0) "DONE" (if (> n-done 0) "WIP" "TODO")))))
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-#+END_SRC
-** Refile a subtree to a new file (with filename prompt)
+*** ..to subtree of a new file (with file prompt)
 #+BEGIN_SRC emacs-lisp
 (require 'org-element)
 
@@ -1083,6 +1097,23 @@ otherwise use the subtree title"
 (define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
 #+END_SRC
 
+** Insert an indented header
+#+BEGIN_SRC emacs-lisp
+(defun org-insert-indented-header ()
+  (interactive)
+  (org-insert-heading-respect-content)
+  (org-do-demote))
+(define-key org-mode-map (kbd "C-M-<return>") 'org-insert-indented-header)
+#+END_SRC
+** Mark a tree as DONE if it's TODO and all children are DONE
+If a tree has a todo state and TODO children, then mark it as done when all children are done.
+#+BEGIN_SRC emacs-lisp
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done."
+  (let (org-log-done org-log-states) ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" (if (> n-done 0) "WIP" "TODO")))))
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+#+END_SRC
 ** Recurring tasks
 #+BEGIN_SRC emacs-lisp
 (use-package org-recur
@@ -1107,37 +1138,8 @@ otherwise use the subtree title"
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 #+END_SRC
-** Easily add literature
-These are helpers to make entering a literature entry easier.
-#+BEGIN_SRC emacs-lisp
-(defun read-capitalized-title ()
-  (s-titleize (read-string "Title: ")))
-
-(defun read-author ()
-  (let ((name (read-string "Author: " "" nil nil)))
-    (if (s-equals? name "")
-        nil
-      (format-author-name name))))
-
-(defun format-author-name (author)
-  (concat (seq-mapcat
-           (lambda (author-part)
-             (if (> (length author-part) 1)
-                 (s-concat " " (s-capitalize author-part))
-               (s-concat (s-capitalize author-part) ".")))
-           (s-split " " author))))
-
-(defun read-authors ()
-  (setq authors (read-author)
-        running t)
-  (while running
-    (setq input (read-author))
-    (if (s-equals? input nil)
-        (setq running nil)
-      (setq authors (concat authors " and " input))))
-  authors)
-#+END_SRC
 ** Checkboxes
+*** defun: occur - highlight checkboxes
 Simple function shortcuts to do an org-occur, or normal occur, for unticked checkboxes
 #+BEGIN_SRC emacs-lisp
 (defun checkboxes ()
@@ -1148,12 +1150,23 @@ Simple function shortcuts to do an org-occur, or normal occur, for unticked chec
   (occur "\\[ \\]"))
 #+END_SRC
 
+*** defun: Sort checkboxes to top of list
 Shortcut function to move all checked checkboxes to the top of the list
 #+BEGIN_SRC emacs-lisp
 (defun sort-checkboxes ()
   (interactive)
   (org-sort-list nil ?X))
 #+END_SRC
+*** defun: Reset recurring todo's checkboxes
+Reset all checkboxes in a repeating todo when the state change is toggled through ~DONE~
+#+BEGIN_SRC emacs-lisp
+(defun glasser-org-reset-check-on-repeat ()
+  (when (and (org-get-repeat) (member org-state org-done-keywords))
+    (org-reset-checkbox-state-subtree)))
+(add-hook 'org-after-todo-state-change-hook 'glasser-org-reset-check-on-repeat)
+#+END_SRC
+
+
 ** Count subtree words
 #+BEGIN_SRC emacs-lisp
 (defun org-subtree-count-words ()
@@ -1162,50 +1175,129 @@ Shortcut function to move all checked checkboxes to the top of the list
     (org-mark-subtree)
     (count-words-region (region-beginning) (region-end))))
 #+END_SRC
-
+** Archive all done tasks in file
+#+begin_src emacs-lisp
+(defun cd/org-archive-all-done-tasks ()
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+#+end_src
 * Hydra -- General utility HUDs
 #+BEGIN_SRC emacs-lisp
 (use-package hydra :ensure t)
-
-(defhydra cd/hydra/gist (:exit t)
-  ("b" gist-buffer "Buffer")
-  ("C-b" gist-buffer-private "Buffer Private")
-  ("r" gist-region "Region")
-  ("f" gist-fetch "Fetch")
-  ("l" gist-list "List"))
-
-(defhydra cd/hydra/windowmove (:exit t)
-  ("r" (progn (split-window-right) (windmove-right)) "Split right")
-  ("d" (progn (split-window-below) (windmove-down)) "Split down")
-  ("C-r" rotate-layout "Rotate Layout" :exit nil)
-  ("n" cd/move-to-next-narrow "Next narrow" :exit nil)
-  ("p" cd/move-to-previous-narrow "Prev narrow" :exit nil)
-  ("o" other-frame "Other window")
-  (">" indent-rigidly-right-to-tab-stop "Indent" :exit nil)
-  ("<" indent-rigidly-left-to-tab-stop "De-dent" :exit nil))
-
-(defhydra cd/hydra/main (:exit t :columns 3)
-  ("f" (modi/toggle-one-window nil) "focus")
-  ("C-z" company-try-hard "Company TryHard")
-  ("w" cd/hydra/windowmove/body "WINDOW")
-  ("s" counsel-grep-or-swiper "search")
-  ("S" ispell-word "Spell")
-  ("g" deadgrep "grep")
-  ("C-g" cd/hydra/gist/body "Gists")
-  ("d" deft "deft")
-  ("C-r" helm-org-rifle "Org Rifle")
-  ("r" anzu-query-replace-regexp "replace")
-  ("i" ivy-imenu-anywhere "imenu")
-  ("e" iedit-mode "iedit")
-  ("j" avy-goto-word-1 "Jump to word")
-  ("C-j" jump-to-register "Jump to register")
-  ("o" cd/org-open-link-same "org-open")
+(defhydra hydra/main (:hint nil :exit t)
+  ("w" hydra-window/body "+WINDOW")
+  ("o" hydra/org/body "+ORG")
+  ("g" hydra/gist/body "+GIST")
+  ("e" hydra/edit/body "+EDIT")
+  ("b" hydra/bookmarks/body "+BOOKMARKS")
+  ("j" hydra/indent-or-join-lines/body "+INDENT OR JOIN")
+  ("n" hydra/navigation-and-search/body "+NAV")
+  ("C-z" company-try-hard "complete")
   ("t" (term "/usr/bin/zsh") "terminal")
-  ("C-o" org-mark-ring-goto "Return from link")
-  ("<up>" delete-indentation "join-up" :exit nil )
-  ("<down>" (join-line -1) "join-down" :exit nil ))
-(define-key global-map (kbd "C-z") 'cd/hydra/main/body)
+  ("q" nil nil))
+(define-key global-map (kbd "C-z") 'hydra/main/body)
+
 #+END_SRC
+** Navigation and search
+#+begin_src emacs-lisp
+(defhydra hydra/navigation-and-search (:hint nil :exit t)
+  "NAVIGATE"
+  ("c" avy-goto-char-2 "char")
+  ("l" avy-goto-line "line")
+  ("w" avy-goto-word-0 "word")
+  ("s" counsel-grep-or-swiper "swiper")
+  ("g" deadgrep "grep")
+  ("i" ivy-imenu-anywhere "imenu")
+  ("b" hydra-breadcrumb/body "+BREADCRUMBS")
+  ("n" notes "notes")
+  ("q" nil nil))
+#+end_src
+
+** Bookmarks / common files
+#+begin_src emacs-lisp
+(defhydra hydra/bookmarks (:hint nil :exit t)
+  "Bookmarks"
+  ("e" (find-file "~/.emacs.d/chris-davison.org") "emacs config")
+  ("c" (find-file "~/Dropbox/notes/calendar.org") "calendar")
+  ("t" (find-file "~/Dropbox/notes/todo.org") "todos")
+  ("l" (find-file "~/Dropbox/notes/logbook.org") "logbook")
+  ("i" (find-file "~/Dropbox/notes/inbox.org") "inbox")
+  ("q" nil nil))
+#+end_src
+** Windows / splits
+#+begin_src emacs-lisp
+(defhydra hydra-window (:hint nil :exit t)
+  "
+_h_ ←  _j_ ↓  _k_ ↑  _l_ →
+split _r_ight _d_own _c_hoose
+_z_oom (focus one window)
+_D_elete
+"
+  ("h" windmove-left )
+  ("j" windmove-down )
+  ("k" windmove-up )
+  ("l" windmove-right )
+  ("c" (lambda ()
+         (interactive)
+         (switch-window)
+         (add-hook 'aceq-window-end-once-hook
+                   'hydra-window/body)))
+  ("r" (lambda () (interactive) (split-window-right) (windmove-right)))
+  ("d" (lambda () (interactive) (split-window-below) (windmove-down)))
+  ("D" delete-window)
+  ("z" modi/toggle-one-window)
+  ("q" nil))
+(global-set-key (kbd "C-S-w") 'hydra-window/body)
+#+end_src
+** Breadcrumbs (like vim C-o C-i)
+#+begin_src emacs-lisp
+(defhydra hydra-breadcrumb
+  (:exit t)
+  "
+  Breadcrumb bookmarks:
+  _<up>_:   prev   _S-<up>_:   local prev
+  _<down>_: next   _S-<down>_: local next
+  _s_: set  _c_: clear  _l_: list  _q_: quit
+  "
+  ("<down>" bc-next nil :exit nil)
+  ("<up>" bc-previous nil :exit nil)
+  ("S-<down>" bc-local-next nil :exit nil)
+  ("S-<up>" bc-local-previous nil :exit nil)
+  ("l" bc-list nil)
+  ("s" bc-set nil)
+  ("c" bc-clear nil)
+  ("q" nil nil))
+#+end_src
+** Github Gists
+#+begin_src emacs-lisp
+(defhydra hydra/gist (:hint nil)
+  "Gist"
+  ("b" gist-buffer "buffer")
+  ("p" gist-buffer-private "private buffer")
+  ("r" gist-region "region")
+  ("f" gist-fetch "fetch")
+  ("l" gist-list "list")
+  ("q" nil nil))
+#+end_src
+** Org-mode
+#+begin_src emacs-lisp
+(defhydra hydra/org (:hint nil :exit t)
+  "Org-Mode"
+  ("o" cd/org-open-link-same "open link")
+  ("C-o" org-mark-ring-goto "return from link")
+  ("r" org-refile "refile")
+  ("t" refile-to-this-file "refile here")
+  ("a" cd/org-archive-all-done-tasks "archive all done")
+  ("j" org-refile-goto-last-stored "goto last refile")
+  ("c" org-capture-goto-last-stored "goto last capture")
+  ("n" cd/move-to-next-narrow "next narrow" :exit nil)
+  ("p" cd/move-to-previous-narrow "prev narrow" :exit nil)
+  ("w" (my/refile "~/Dropbox/notes/todo.org" "work") "refile work")
+  ("C-r" helm-org-rifle "rifle")
+  ("q" nil nil))
+(define-key org-mode-map (kbd "C-c C-w") 'hydra/org/body)
+#+end_src
+
 
 * Appearance
 ** Fonts
@@ -1238,8 +1330,8 @@ List some pretty fonts, and grab the first one that's available.
   (next-font))
 (global-set-key (kbd "C-c f") 'next-font)
 
-(setq line-spacing 0.2)
-(set-face-attribute 'default nil :height (if is-windows? 150 150))
+(setq line-spacing nil)
+(set-face-attribute 'default nil :height (if is-windows? 145 150))
 (setq auto-window-vscroll nil)
 #+END_SRC
 
@@ -1271,7 +1363,7 @@ Disable themes before loading a new theme.  This can cause some issues when usin
 
 ;; (load-theme 'doom-gruvbox t)
 (doom-modeline-mode)
-(load-theme 'doom-dracula t)
+(load-theme 'doom-gruvbox t)
 #+END_SRC
 
 Utility function to loop through themes
@@ -1386,6 +1478,11 @@ Don't scroll jump multiple lines
 (global-prettify-symbols-mode +1)
 (diminish 'visual-line-mode)
 #+END_SRC
+* 'surrounds'
+#+begin_src emacs-lisp
+(use-package corral :ensure t)
+(global-set-key (kbd "C-c c") #'hydra-corral/body)
+#+end_src
 * TODO EVIL - Vim emulation
 EVIL mode?
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1394,24 +1491,29 @@ EVIL mode?
 (use-package evil-iedit-state :ensure t)
 (use-package evil-org :ensure t)
 #+END_SRC
-* TESTING GROUND
-#+BEGIN_SRC emacs-lisp
-(defun mydired-sort ()
-  "Sort dired listings with directories first."
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2) ;; beyond dir. header
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
-
-(defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-  "Sort dired listings with directories first before adding marks."
-  (mydired-sort))
-
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+* TODO DEFT - easily handle my notes dir
+Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in a query, and it'll narrow the files that match)
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package deft :ensure t
+  :bind (("<f8>" . deft)
+         ("<f7>" . deft-find-file))
+  :config
+  (setq deft-extension "org"
+        deft-text-mode 'org-mode
+        deft-directory "~/Dropbox/notes"
+        deft-use-filename-as-title t
+        deft-auto-save-interval 0
+        deft-recursive t))
 #+END_SRC
 
+
+* helm rifle
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle :ensure t
+  :config
+  (setq helm-org-rifle-show-path t))
+#+END_SRC
+* TESTING GROUND
 Better 'help' buffers
 #+BEGIN_SRC emacs-lisp
 (use-package helpful :ensure t
@@ -1495,8 +1597,6 @@ Keybind to delete =CUSTOM_ID= property caused by pandoc conversion
      (deadgrep-visit-result)))
 #+END_SRC
 
-
-
 #+BEGIN_SRC emacs-lisp
 (use-package gist :ensure t
   :config
@@ -1516,47 +1616,51 @@ Cludge to make S-SPC not delete everything in ivy buffer (it's originally 'restr
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(set-register ?t (cons 'file "~/Dropbox/notes/projects/todo.org"))
+(set-register ?t (cons 'file "~/Dropbox/notes/todo.org"))
 (set-register ?i (cons 'file "~/Dropbox/notes/inbox.org"))
 (set-register ?c (cons 'file "~/.emacs.d/chris-davison.org"))
 #+END_SRC
-
-#+begin_src emacs-lisp
-(use-package which-key :ensure t
-  :config
-  (setq which-key-idle-delay 0.3)
-  (which-key-mode))
-#+end_src
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (use-package projectile :ensure t
   :config (projectile-mode 1))
 #+END_SRC
 
-* DEFT - easily handle my notes dir
-Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in a query, and it'll narrow the files that match)
+Sidebar for org mode
 #+BEGIN_SRC emacs-lisp
-(use-package deft :ensure t
-  :bind (("<f8>" . deft)
-         ("<f7>" . deft-find-file))
-  :config
-  (setq deft-extension "org"
-        deft-text-mode 'org-mode
-        deft-directory "~/Dropbox/notes"
-        deft-use-filename-as-title t
-        deft-auto-save-interval 0
-        deft-recursive t))
+(use-package org-sidebar :ensure t)
 #+END_SRC
 
+
+Filter sparse trees with a priority
 #+BEGIN_SRC emacs-lisp :tangle no
-(defun notes ()
+(defun org-prioritised ()
   (interactive)
-  (counsel-file-jump "" "~/Dropbox/notes"))
-(global-set-key (kbd "C-c n") 'notes)
+  (org-occur "\\[#" ))
 #+END_SRC
 
+** Improve dired
 #+BEGIN_SRC emacs-lisp
-(use-package helm-org-rifle :ensure t
-  :config
-  (setq helm-org-rifle-show-path t))
+(defun mydired-sort ()
+  "Sort dired listings with directories first."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2) ;; beyond dir. header
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+  "Sort dired listings with directories first before adding marks."
+  (mydired-sort))
+
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 #+END_SRC
+** Popup keybind helper after delay
+#+begin_src emacs-lisp
+(use-package which-key :ensure t
+  :config
+  (setq which-key-idle-delay 1
+        which-key-side-window-location 'bottom)
+  (which-key-mode))
+#+end_src
