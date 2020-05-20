@@ -252,8 +252,8 @@ This is a bit of a cludge to handle both windows and WSL.
         (emacs-lisp-docstring-fill-column t))
     (fill-paragraph nil region)))
 
-(use-package aggressive-indent :ensure t
-  :config (global-aggressive-indent-mode))
+(use-package aggressive-indent :ensure t)
+(global-aggressive-indent-mode)
 #+END_SRC
 
 ** Create parent dirs on file write
@@ -651,10 +651,12 @@ Navigation of pretty much any /menu-type/ thing.
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t
 		ivy-count-format ""
-		;; ivy-initial-inputs-alist nil
+		ivy-initial-inputs-alist nil
 		ivy-re-builders-alist '((counsel-file-jump . ivy--regex-fuzzy)
                                 (find-file . ivy--regex-fuzzy)
-                                (t . ivy--regex-plus))))
+                                (t . ivy--regex-fuzzy)
+                                ;; (t . ivy--regex-plus)
+                                )))
 
 (use-package swiper :ensure t)
 (use-package imenu-anywhere :ensure t)
@@ -683,8 +685,9 @@ Give HUD prompt when changing window, and keybind to cycle through windows.
 #+END_SRC
 
 ** ibuffer - view all open buffers
+Interactively modify buffer list
 #+BEGIN_SRC emacs-lisp
-;; Interactively modify buffer list
+(setq ibuffer-show-empty-filter-groups nil)
 (use-package fullframe :ensure t)
 (with-eval-after-load 'buffer (fullframe ibuffer ibuffer-quit))
 
@@ -861,7 +864,9 @@ Split the org-capture-template into multiple source blocks and functions so that
 (defun cd/capture-template-todos ()
   `(("t" "Todos" entry (file+headline "todo.org" "REFILE") "** TODO %?")
     ("r" "Research" entry (file+headline "todo.org" "REFILE") "** TODO Research %?")
-    ("$" "Shopping" entry (file+headline "want.org" "General") "** %?")))
+    ("$" "Shopping")
+    ("$g" "Groceries" item (file+headline "shopping.org" "Groceries") "%?")
+    ("$$" "Wishlist / backburner" entry (file+headline "shopping.org" "General") "** %?")))
 #+END_SRC
 
 *** 'notes'
@@ -944,7 +949,7 @@ These are helpers to make entering a literature entry easier.
 
 (defun cd/capture-template-literature ()
   `(("L" "Literature" entry (file+headline "literature.org" "REFILE")
-     "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n%(doi-insert-bibtex)\n#+END_SRC" :immediate-finish t)
+     "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC" :immediate-finish t)
 
     ("b" "book" entry (file+olp "books.org" "Book List" "Refile")
      "** TO-READ %^{Book}\n%^{AUTHOR}p")))
@@ -1205,6 +1210,7 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
 _h_ ←  _j_ ↓  _k_ ↑  _l_ →
 split _r_ight _d_own _c_hoose
 _z_oom (focus one window)
+_n_arrow   _w_iden
 _D_elete
 "
   ("h" windmove-left )
@@ -1298,13 +1304,23 @@ List some pretty fonts, and grab the first one that's available.
   (let ((next-font-name (nth current-font-idx cd-fonts)))
     (set-frame-font next-font-name 1)
     (message next-font-name)))
-(if is-windows?
-    (set-frame-font "CamingoCode" 1)
-  (next-font))
+
+(defvar cd/preferred-windows-font "Rec Mono Casual")
+(defvar cd/preferred-linux-font "Rec Mono Casual")
+(cond
+ ((and is-windows? (member cd/preferred-windows-font (font-family-list)))
+  (set-frame-font cd/preferred-windows-font 1)
+  (set-face-attribute 'default nil :height 140))
+ ((member cd/preferred-linux-font (font-family-list))
+  (set-frame-font cd/preferred-linux-font 1)
+  (set-face-attribute 'default nil :height 150))
+ (t
+  (set-frame-font (car cd-fonts) 1)
+  (set-face-attribute 'default nil :height 150)))
+
 (global-set-key (kbd "C-c f") 'next-font)
 
-(setq line-spacing nil)
-(set-face-attribute 'default nil :height (if is-windows? 145 150))
+(setq line-spacing 2)
 (setq auto-window-vscroll nil)
 #+END_SRC
 
@@ -1464,22 +1480,6 @@ EVIL mode?
 (use-package evil-iedit-state :ensure t)
 (use-package evil-org :ensure t)
 #+END_SRC
-* TODO DEFT - easily handle my notes dir
-Deft - interactive filter on note contents (e.g. run =M-x deft= and then type in a query, and it'll narrow the files that match)
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package deft :ensure t
-  :bind (("<f8>" . deft)
-         ("<f7>" . deft-find-file))
-  :config
-  (setq deft-extension "org"
-        deft-text-mode 'org-mode
-        deft-directory "~/Dropbox/notes"
-        deft-use-filename-as-title t
-        deft-auto-save-interval 0
-        deft-recursive t))
-#+END_SRC
-
-
 * helm rifle
 #+BEGIN_SRC emacs-lisp
 (use-package helm-org-rifle :ensure t
