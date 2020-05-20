@@ -704,12 +704,25 @@ Interactively modify buffer list
 
 (setq ibuffer-saved-filter-groups
       '(("home"
-         ("Code" (filename . "code/"))
-         ("Notes" (and
-                   (mode . org-mode)
-                   (filename . "Dropbox/notes/")))
+         ("notes" (and (filename . "knowledge/")
+                       (or (mode . org-mode) (mode . dired-mode))))
+         ("dotfiles" (filename . "dotfiles/"))
+         ("code" (filename . "code/"))
+         ("work" (or (filename . "cybele-sat/")
+                     (filename . "ee273/")
+                     (filename . "precisionbeef/")
+                     (filename . "cowhealth/")
+                     (filename . "cattleprod/")
+                     (filename . "cidcom-howtos/")
+                     (filename . "collar-outlier-removal/")
+                     (filename . "heatstress/")))
+         ("code" (filename . "code/"))
          )))
-(add-hook 'ibuffer-mode-hook '(lambda () (ibuffer-switch-to-saved-filter-groups "home")))
+
+(add-hook 'ibuffer-mode-hook
+          '(lambda ()
+             (ibuffer-auto-mode 1)
+             (ibuffer-switch-to-saved-filter-groups "home")))
 #+END_SRC
 
 * Org-mode
