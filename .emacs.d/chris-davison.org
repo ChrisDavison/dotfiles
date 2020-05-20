@@ -40,7 +40,6 @@ This sets up the load path so that we can override it.  We also install /use-pac
 * Minor tweaks
 Generally useful common-lisp library (functions)
 #+BEGIN_SRC emacs-lisp
-(use-package cl-lib :ensure t :config (require 'cl-lib))
 (use-package s :ensure t)  ; Useful string functions
 (use-package f :ensure t)  ; Useful file and dir functions
 (use-package diminish :ensure t)
@@ -127,30 +126,6 @@ Try to make everything UTF8. From [[http://www.wisdomandwonder.com/wordpress/wp-
 (use-package forge
   :after magit)
 #+END_SRC
-
-A better magit status. Only show magit, and if the currently active file had changes, go to it's unstaged changes section.
-#+begin_src emacs-lisp
-(defun unpackaged/magit-status ()
-  "Open a `magit-status' buffer and close the other window so only Magit is visible.
-If a file was visited in the buffer that was active when this
-command was called, go to its unstaged changes section."
-  (interactive)
-  (let* ((buffer-file-path (when buffer-file-name
-                             (file-relative-name buffer-file-name
-                                                 (locate-dominating-file buffer-file-name ".git"))))
-         (section-ident `((file . ,buffer-file-path) (unstaged) (status))))
-    (magit-status)
-    (delete-other-windows)
-    (when buffer-file-path
-      (goto-char (point-min))
-      (cl-loop until (when (equal section-ident (magit-section-ident (magit-current-section)))
-                       (magit-section-show (magit-current-section))
-                       (recenter)
-                       t)
-               do (condition-case nil
-                      (magit-section-forward)
-                    (error (cl-return (magit-status-goto-initial-section-1))))))))
-#+end_src
 * Utility functions
 ** Files - rename or delete, and update buffer
 #+begin_src emacs-lisp
@@ -220,7 +195,7 @@ This is a bit of a cludge to handle both windows and WSL.
 #+BEGIN_SRC emacs-lisp
 (defun notes ()
   (interactive)
-  (counsel-file-jump "" "~/Dropbox/notes"))
+  (counsel-file-jump "" "~/code/knowledge"))
 (global-set-key (kbd "C-c n") 'notes)
 #+END_SRC
 * Editing
@@ -758,10 +733,10 @@ You can easily /capture/ information using various different templates (includin
          (org-mode . abbrev-mode)
          (org-mode . (lambda () (set-face-italic 'italic t))))
   :config
-  (setq org-directory "~/Dropbox/notes"
-        org-default-notes-file "~/Dropbox/notes/inbox.org"
+  (setq org-directory "~/code/knowledge"
+        org-default-notes-file "~/code/knowledge/inbox.org"
         org-src-window-setup 'current-window
-        org-agenda-window-setup 'only-window
+        org-agenda-window-setup 'current-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil
@@ -780,14 +755,13 @@ You can easily /capture/ information using various different templates (includin
         org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
                            (sequence "|" "DEAD"))
         org-agenda-skip-scheduled-if-done nil
-        org-agenda-start-with-log-mode t
         org-agenda-skip-deadline-prewarning-if-scheduled t
         org-startup-indented t
         org-hide-leading-stars t
         org-cycle-separator-lines 0
         org-list-indent-offset 2
         org-modules '(org-bibtex org-habit org-tempo)
-        org-agenda-files '("~/Dropbox/notes/")
+        org-agenda-files '("~/code/knowledge/")
         org-agenda-use-time-grid nil
         org-agenda-time-grid '((daily today require-timed) (900 1300 1700 2100) "  --- " "")
         org-agenda-confirm-kill nil
@@ -797,7 +771,7 @@ You can easily /capture/ information using various different templates (includin
         org-log-done-with-time nil
         org-hierarchical-todo-statistics t
         org-ellipsis "…"
-        org-archive-location "~/Dropbox/notes/archive.org::"
+        org-archive-location "~/code/knowledge/archive.org::"
         org-confirm-babel-evaluate nil
         ;; Settings for refiling
         org-reverse-note-order t
@@ -1017,13 +991,13 @@ On saving org files, update checkbox counts in all headers. This will only work 
 
         ;; ("w" . "Work Schedules")
         ;; ("ww" "Work and Thesis"
-        ;;  ((todo "TODO|WIP" ((org-agenda-files '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))))
+        ;;  ((todo "TODO|WIP" ((org-agenda-files '("~/code/knowledge/work.org" "~/code/knowledge/thesis.org"))))))
         ;; ("wu" "Unscheduled Work and Thesis"
         ;;  ((todo ""
         ;;         ((org-agenda-overriding-header "\nUnscheduled Work and Thesis")
         ;;          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
         ;;          (org-agenda-files
-        ;;           '("~/Dropbox/notes/work.org" "~/Dropbox/notes/thesis.org"))))
+        ;;           '("~/code/knowledge/work.org" "~/code/knowledge/thesis.org"))))
         ;;   nil
         ;;   nil))
 
@@ -1032,13 +1006,13 @@ On saving org files, update checkbox counts in all headers. This will only work 
         ;;                     (org-agenda-files
         ;;                      (seq-filter
         ;;                       (lambda (x) (not (string-match "gaming" x)))
-        ;;                       (file-expand-wildcards "~/Dropbox/notes/*.org"))
+        ;;                       (file-expand-wildcards "~/code/knowledge/*.org"))
         ;;                      )))))
         ))
 
 (global-set-key
  (kbd "<f3>")
- '(lambda () (interactive) (org-agenda nil "7")))
+ '(lambda () (interactive) (org-agenda nil "1")))
 #+END_SRC
 ** drag-and-drop of files into org-files
 This package lets you drag and drop stuff into org-mode files, copying (or downloading, if a web resource) into the relevant directory.
@@ -1054,7 +1028,7 @@ In this case, I've set it up to copy to a local 'assets' folder.  If ~org-downlo
 ** Refile
 *** ..to a specific file
 
-This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
+This is a general helper function that will refile the subtree at point to a specific file.  I use this along with hydra to let me refile to a few default locations. If called from a script (e.g. ~(refile-to-file "~/Dropbox/notes/work.org")~, it'll set work to be the /only/ refile target. Otherwise, it'll prompt for a file (using a proper file dialog), and then only refile within that file.
 
 #+BEGIN_SRC emacs-lisp
 (defun my/refile (file headline &optional arg)
@@ -1218,10 +1192,10 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
 (defhydra hydra/bookmarks (:hint nil :exit t)
   "Bookmarks"
   ("e" (find-file "~/.emacs.d/chris-davison.org") "emacs config")
-  ("c" (find-file "~/Dropbox/notes/calendar.org") "calendar")
-  ("t" (find-file "~/Dropbox/notes/todo.org") "todos")
-  ("l" (find-file "~/Dropbox/notes/logbook.org") "logbook")
-  ("i" (find-file "~/Dropbox/notes/inbox.org") "inbox")
+  ("c" (find-file "~/code/knowledge/calendar.org") "calendar")
+  ("t" (find-file "~/code/knowledge/todo.org") "todos")
+  ("l" (find-file "~/code/knowledge/logbook.org") "logbook")
+  ("i" (find-file "~/code/knowledge/inbox.org") "inbox")
   ("q" nil nil))
 #+end_src
 ** Windows / splits
@@ -1246,6 +1220,8 @@ _D_elete
   ("d" (lambda () (interactive) (split-window-below) (windmove-down)))
   ("D" delete-window)
   ("z" modi/toggle-one-window)
+  ("n" org-narrow-to-subtree)
+  ("w" widen)
   ("q" nil))
 (global-set-key (kbd "C-S-w") 'hydra-window/body)
 #+end_src
@@ -1292,31 +1268,28 @@ _D_elete
   ("c" org-capture-goto-last-stored "goto last capture")
   ("n" cd/move-to-next-narrow "next narrow" :exit nil)
   ("p" cd/move-to-previous-narrow "prev narrow" :exit nil)
-  ("w" (my/refile "~/Dropbox/notes/todo.org" "work") "refile work")
+  ("P" one-placeholder "placeholder")
+  ("s" org-sidebar-tree-toggle "sidebar")
+  ("w" (my/refile "~/code/knowledge/todo.org" "work") "refile work")
   ("C-r" helm-org-rifle "rifle")
   ("q" nil nil))
 (define-key org-mode-map (kbd "C-c C-w") 'hydra/org/body)
 #+end_src
-
-
 * Appearance
 ** Fonts
 List some pretty fonts, and grab the first one that's available.
 #+BEGIN_SRC emacs-lisp
 (setq cd-fonts
-      (cl-remove-if (lambda (font) (not (member font (font-family-list))))
-                    '("Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
-(when cd-fonts
-  (let ((first (car cd-fonts)))
-    (set-frame-font first 1)
-    first))
+      (--filter (member it (font-family-list))
+                '("Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual" "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Liberation Mono" "Fira Code")))
+
+(defvar current-font-idx 0)
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
   (interactive)
   (set-frame-font (ivy-read "Pick font:" cd-fonts) 1))
 
-(defvar current-font-idx 0)
 (defun next-font ()
   (interactive)
   (setq current-font-idx
@@ -1616,8 +1589,8 @@ Cludge to make S-SPC not delete everything in ivy buffer (it's originally 'restr
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(set-register ?t (cons 'file "~/Dropbox/notes/todo.org"))
-(set-register ?i (cons 'file "~/Dropbox/notes/inbox.org"))
+(set-register ?t (cons 'file "~/code/knowledge/todo.org"))
+(set-register ?i (cons 'file "~/code/knowledge/inbox.org"))
 (set-register ?c (cons 'file "~/.emacs.d/chris-davison.org"))
 #+END_SRC
 
