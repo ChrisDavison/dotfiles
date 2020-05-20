@@ -247,3 +247,4 @@ export LIBGL_ALWAYS_INDIRECT=1
 setsid emacs
 exit'
 fi
+source ~/.envs/ml/bin/activate
