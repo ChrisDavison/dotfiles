@@ -27,3 +27,5 @@ tags
 .emacs.d/projectile-bookmarks.eld
 /.emacs.d/anaconda-mode/
 /.emacs.d/url/
+/.emacs.d.org-id-locations
+/.emacs.d/*Warnings*
