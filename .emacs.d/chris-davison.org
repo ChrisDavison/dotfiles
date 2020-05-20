@@ -1214,6 +1214,7 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
   ("t" (find-file "~/code/knowledge/todo.org") "todos")
   ("l" (find-file "~/code/knowledge/logbook.org") "logbook")
   ("i" (find-file "~/code/knowledge/inbox.org") "inbox")
+  ("s" (find-file "~/Dropbox/shopping.txt") "shopping")
   ("q" nil nil))
 #+end_src
 ** Windows / splits
