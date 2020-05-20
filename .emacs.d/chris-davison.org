@@ -1639,6 +1639,12 @@ Filter sparse trees with a priority
   (org-occur "\\[#" ))
 #+END_SRC
 
+Literate calc - realtime math evaluation. Use ~literate-calc-minor-mode~ in org-mode to get real-time math updates.
+#+BEGIN_SRC emacs-lisp
+(use-package literate-calc-mode :ensure t)
+(use-package lively :ensure t)  ; remember this old package...
+#+END_SRC
+
 ** Improve dired
 #+BEGIN_SRC emacs-lisp
 (defun mydired-sort ()
@@ -1663,4 +1669,25 @@ Filter sparse trees with a priority
   (setq which-key-idle-delay 1
         which-key-side-window-location 'bottom)
   (which-key-mode))
+#+end_src
+** Placeholders within buffers
+#+begin_src emacs-lisp
+(defun cd/placeholder (&optional text)
+  (interactive)
+  (cd/remove-placeholder)
+  (insert (or text "<<placeholder>>")))
+
+(defun cd/replace-placeholder (text)
+  (interactive)
+  (insert "<<placeholderplaceholder>>")
+  (goto-line 1)
+  (while (re-search-forward "<<placeholder>>" nil t)
+    (replace-match ""))
+  (goto-line 1)
+  (re-search-forward "<<placeholderplaceholder>>" nil t)
+  (replace-match text))
+
+(defun cd/remove-placeholder ()
+  (interactive)
+  (cd/replace-placeholder ""))
 #+end_src
