@@ -82,3 +82,6 @@
 [submodule ".vim/pack/plugins/start/nerdtree"]
 	path = .vim/pack/plugins/start/nerdtree
 	url = https://github.com/preservim/nerdtree
+[submodule ".vim/pack/plugins/start/undotree"]
+	path = .vim/pack/plugins/start/undotree
+	url = https://github.com/mbbill/undotree

@@ -581,9 +581,10 @@ Auto-completion for rust, using racer
   :config
   (add-hook 'julia-mode-hook 'julia-repl-mode))
 
-(add-to-list 'load-path "C:/Julia-1.1.0/bin")
-(if is-windows?
-    (setq julia-repl-executable-records '((default "julia.exe" :basedir "C:/Julia-1.1.0/bin" ))))
+;; (add-to-list 'load-path "C:/Julia-1.1.0/bin")
+;; (add-to-list 'load-path "bin")
+;; (if is-windows?
+;;     (setq julia-repl-executable-records '((default "julia.exe" :basedir "C:/Julia-1.1.0/bin" ))))
 
 ;; (setq julia-repl-executable-records '((default "julia")))
 #+END_SRC
@@ -652,11 +653,7 @@ Navigation of pretty much any /menu-type/ thing.
   (setq ivy-use-virtual-buffers t
 		ivy-count-format ""
 		ivy-initial-inputs-alist nil
-		ivy-re-builders-alist '((counsel-file-jump . ivy--regex-fuzzy)
-                                (find-file . ivy--regex-fuzzy)
-                                (t . ivy--regex-fuzzy)
-                                ;; (t . ivy--regex-plus)
-                                )))
+		ivy-re-builders-alist '((t . ivy--regex-plus)))
 
 (use-package swiper :ensure t)
 (use-package imenu-anywhere :ensure t)
@@ -742,6 +739,7 @@ You can easily /capture/ information using various different templates (includin
     (setq org-link-frame-setup old-setup)))
 
 (load-library "find-lisp")
+
 (use-package org
   :ensure t
   :hook ((org-mode . visual-line-mode)
@@ -802,8 +800,20 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
+                               (julia . t)
                                (emacs-lisp . t)))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal))
+(use-package org-roam
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory "~/code/knowledge")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-show-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))))
 
 ;; Need ~htmlize~ so that I can export org buffers to HTML.
 (use-package htmlize :ensure t)
@@ -875,11 +885,8 @@ Split the org-capture-template into multiple source blocks and functions so that
 *** Simple 'todo' captures
 #+BEGIN_SRC emacs-lisp
 (defun cd/capture-template-todos ()
-  `(("t" "Todos" entry (file+headline "todo.org" "REFILE") "** TODO %?")
-    ("r" "Research" entry (file+headline "todo.org" "REFILE") "** TODO Research %?")
-    ("$" "Shopping")
-    ("$g" "Groceries" item (file+headline "shopping.org" "Groceries") "%?")
-    ("$$" "Wishlist / backburner" entry (file+headline "shopping.org" "General") "** %?")))
+  `(("t" "Todo" entry (file "inbox.org") "* TODO %?")
+    ("r" "Research" entry (file "inbox.org") "** TODO Research %?")))
 #+END_SRC
 
 *** 'notes'
@@ -1211,7 +1218,7 @@ Reset all checkboxes in a repeating todo when the state change is toggled throug
   "Bookmarks"
   ("e" (find-file "~/.emacs.d/chris-davison.org") "emacs config")
   ("c" (find-file "~/code/knowledge/calendar.org") "calendar")
-  ("t" (find-file "~/code/knowledge/todo.org") "todos")
+  ("p" (find-file "~/code/knowledge/projects.org") "projects")
   ("l" (find-file "~/code/knowledge/logbook.org") "logbook")
   ("i" (find-file "~/code/knowledge/inbox.org") "inbox")
   ("s" (find-file "~/Dropbox/shopping.txt") "shopping")
@@ -1290,7 +1297,6 @@ _D_elete
   ("p" cd/move-to-previous-narrow "prev narrow" :exit nil)
   ("P" one-placeholder "placeholder")
   ("s" org-sidebar-tree-toggle "sidebar")
-  ("w" (my/refile "~/code/knowledge/todo.org" "work") "refile work")
   ("C-r" helm-org-rifle "rifle")
   ("q" nil nil))
 (define-key org-mode-map (kbd "C-c C-w") 'hydra/org/body)
@@ -1500,6 +1506,16 @@ EVIL mode?
   :config
   (setq helm-org-rifle-show-path t))
 #+END_SRC
+* Functions
+** math
+#+begin_src emacs-lisp
+(defun rad2deg (rad)
+  "Convert a number from radians to degrees."
+  (/ (* rad 180.0) pi))
+(defun deg2rad (deg)
+  "Convert a number from degrees to radians."
+  (/ (* deg pi) 180.0))
+#+end_src
 * TESTING GROUND
 Better 'help' buffers
 #+BEGIN_SRC emacs-lisp
@@ -1603,7 +1619,7 @@ Cludge to make S-SPC not delete everything in ivy buffer (it's originally 'restr
 #+end_src
 
 #+BEGIN_SRC emacs-lisp
-(set-register ?t (cons 'file "~/code/knowledge/todo.org"))
+(set-register ?p (cons 'file "~/code/knowledge/projects.org"))
 (set-register ?i (cons 'file "~/code/knowledge/inbox.org"))
 (set-register ?c (cons 'file "~/.emacs.d/chris-davison.org"))
 #+END_SRC
@@ -1664,15 +1680,24 @@ Literate calc - realtime math evaluation. Use ~literate-calc-minor-mode~ in org-
   (cd/remove-placeholder)
   (insert (or text "<<placeholder>>")))
 
+(defun cd/placeholder-jump ()
+  (interactive)
+  (goto-line 1)
+  (re-search-forward "<<placeholder>>" nil t))
+
 (defun cd/replace-placeholder (text)
   (interactive)
-  (insert "<<placeholderplaceholder>>")
-  (goto-line 1)
-  (while (re-search-forward "<<placeholder>>" nil t)
-    (replace-match ""))
-  (goto-line 1)
-  (re-search-forward "<<placeholderplaceholder>>" nil t)
-  (replace-match text))
+  (let ((narrowed (buffer-narrowed-p)))
+    (insert "<<placeholderplaceholder>>")
+    (widen)
+    (goto-line 1)
+    (while (re-search-forward "<<placeholder>>" nil t)
+      (replace-match ""))
+    (goto-line 1)
+    (re-search-forward "<<placeholderplaceholder>>" nil t)
+    (replace-match text)
+    (when narrowed
+      (org-narrow-to-subtree))))
 
 (defun cd/remove-placeholder ()
   (interactive)

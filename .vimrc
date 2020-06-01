@@ -24,6 +24,11 @@ set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
 set noautochdir
 set cursorline
+set guioptions-=m
+set guioptions-=T
+if has('gui')
+    set gfn=Rec\ Mono\ Casual\ 12
+endif
 
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 set cmdheight=2
@@ -115,18 +120,19 @@ let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 " markdown {{{1
-let md_wrap=' --columns=79 --wrap=auto'
+let md_wrap=' --columns=72 --wrap=auto'
 let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links --reference-location=section'
 
 let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
-let md_equalprg .= md_nowrap
+let md_equalprg .= md_wrap
 
-let g:pandoc#formatting#mode='s'
+let g:pandoc#formatting#mode='hA'
 let g:pandoc#keyboard#use_default_mappings=0
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
+let g:pandoc#formatting#textwidth=72
 let g:pandoc#folding#fdc=0
 let g:pandoc#folding#fold_fenced_codeblocks=1
 let g:pandoc#syntax#conceal#use=0
@@ -139,7 +145,7 @@ augroup markdown
     au Filetype markdown,markdown.pandoc setlocal foldenable 
                 \ foldmethod=expr foldlevelstart=1 
                 \ nospell conceallevel=1
-                \ formatoptions-=a textwidth=0
+                \ formatoptions+=a textwidth=72
                 \ norelativenumber
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
     au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
@@ -207,8 +213,11 @@ nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : "
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
+
+imap jk <ESC>
+imap kj <ESC>
 " Keybinds for common commands
-nnoremap <leader>en :Files ~/Dropbox/notes/<CR>
+nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :Files %:p:h<cr>
@@ -241,8 +250,6 @@ command! MakeTags !ctags -R .
 " autocommands {{{1
 augroup vimrc
     autocmd!
-    au InsertEnter * set norelativenumber
-    au InsertLeave * set relativenumber
     au TextChanged,InsertLeave,FocusLost * silent! wall
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
