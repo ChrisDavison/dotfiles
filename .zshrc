@@ -228,6 +228,34 @@ duplicate_words(){
     grep -Eo '(\b.+) \1\b' $1 || true
 }
 
+ni(){
+    notename="$HOME/code/knowledge/inbox.md"
+    echo "- $@" >> $notename
+    mdformatwrap $notename
+}
+
+niv(){
+    bat "$HOME/code/knowledge/inbox.md"
+}
+
+note(){
+    notename="$HOME/code/knowledge/inbox.md"
+    nvim $notename
+    mdformatwrap $notename
+    clear
+    ls
+}
+
+notes(){
+    pushd $HOME/code/knowledge/
+    clear
+    ls
+}
+
+mdformatwrap(){
+    pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
+}
+
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
