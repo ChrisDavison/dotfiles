@@ -100,7 +100,11 @@ endif
 let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-colorscheme yin
+if strftime("%H") > 21 || strftime("%H") < 8
+    colorscheme yin
+else
+    colorscheme yang
+end
 " plugins & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -119,84 +123,7 @@ let g:rustfmt_autosave=1
 let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
-" markdown {{{1
-let md_wrap=' --columns=72 --wrap=auto'
-let md_nowrap=' --wrap=none'
-let md_reflinks=' --reference-links --reference-location=section'
-
-let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
-let md_equalprg .= md_wrap
-
-let g:pandoc#formatting#mode='hA'
-let g:pandoc#keyboard#use_default_mappings=0
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
-let g:pandoc#formatting#equalprg=md_equalprg
-let g:pandoc#formatting#extra_equalprg=''
-let g:pandoc#formatting#textwidth=72
-let g:pandoc#folding#fdc=0
-let g:pandoc#folding#fold_fenced_codeblocks=1
-let g:pandoc#syntax#conceal#use=0
-let g:pandoc#spell#enabled=0
-
-augroup markdown
-    au!
-    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
-    au Filetype markdown,markdown.pandoc let &l:equalprg=md_equalprg
-    au Filetype markdown,markdown.pandoc setlocal foldenable 
-                \ foldmethod=expr foldlevelstart=1 
-                \ nospell conceallevel=1
-                \ formatoptions+=a textwidth=72
-                \ norelativenumber
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> <leader>i :g/^#/:p<CR>:
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> ]] :call pandoc#keyboard#sections#NextHeader()<CR>
-    au Filetype markdown,markdown.pandoc nnoremap <buffer> [[ :call pandoc#keyboard#sections#PrevHeader()<CR>
-    au Filetype markdown,markdown.pandoc vmap <buffer> aS <Plug>(pandoc-keyboard-select-section-inclusive)
-    au Filetype markdown,markdown.pandoc omap <buffer> aS :normal VaS<CR>
-    au Filetype markdown,markdown.pandoc vmap <buffer> iS <Plug>(pandoc-keyboard-select-section-exclusive)
-    au Filetype markdown,markdown.pandoc omap <buffer> iS :normal ViS<CR>
-    au Filetype markdown,markdown.pandoc command! -bang Backlinks call Markdown_backlinks(<bang>1)
-    au Filetype markdown,markdown.pandoc command! H1 g/^#\{1,1\} /
-    au Filetype markdown,markdown.pandoc command! H2 g/^#\{1,2\} /
-    au Filetype markdown,markdown.pandoc command! H3 g/^#\{1,3\} /
-augroup end
-
-"    markdown functions {{{2
-function! Markdown_goto_file(split)
-    let fname=expand("<cfile>")
-    let command = "edit "
-    if a:split > 0
-        if winwidth(0) > 160
-            let command = "vsplit "
-        else
-            let command = "split "
-        endif
-    endif
-    if filereadable(l:fname)
-        execute "silent!" . l:command . l:fname
-    else
-        if getline(".")[col(".")] != "]"
-            normal f]
-        end
-        normal vi("by
-        if filereadable(getreg("b"))
-            execute "silent!" . l:command . getreg("b")
-        else
-            echom "Couldn't find valid link."
-        end
-    end
-endfunction " 
-
-function! Markdown_backlinks(use_grep)
-    if a:use_grep
-        exec "silent grep! '\\((\./)*" . expand("%") . "'"
-    else
-        call fzf#vim#grep(
-        \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
-        \ fzf#vim#with_preview('right:50%:hidden', '?'), 0)
-    end
-endfunction " 
+let g:slime_target='tmux'
 " keybinds {{{1 
 nnoremap <silent> Q =ip
 vnoremap <      <gv
@@ -224,12 +151,7 @@ nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
-" keybinds - window split navigation {{{1
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-" keybinds - fzf {{{1
+
 let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
         \ 'ctrl-x': 'split',
@@ -254,6 +176,7 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
     au Filetype make set noexpandtab
     au Filetype text set formatoptions-=a
     au Filetype vim set foldmethod=marker
@@ -271,4 +194,3 @@ augroup vimrc
     " Don't use autochdir when using 'Root'
     au BufEnter * Root
 augroup END
-
