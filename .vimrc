@@ -166,7 +166,7 @@ cnoreabbrev Q! q!
 cnoreabbrev BD bp<bar>bd #
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev <expr> jhead strftime("# %Y-%m-%d %A")
+iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 " commands {{{1
 command! MakeTags !ctags -R .
 " autocommands {{{1

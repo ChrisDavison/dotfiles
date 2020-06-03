@@ -11,21 +11,20 @@ export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # add paths to dir, if they exists {{{1
-export_to_path_if_exists() {
+maybe_append_to_path() {
     [[ -d "$1" ]] && export PATH="$1":$PATH
 }
 
-export_to_path_if_exists $GOBIN
-export_to_path_if_exists $HOME/bin
-export_to_path_if_exists $HOME/.bin
-export_to_path_if_exists $HOME/.vim/pack/plugins/start/fzf/bin/
-export_to_path_if_exists $HOME/code/scripts/
-export_to_path_if_exists $HOME/code/scripts/covid/
-export_to_path_if_exists $HOME/.cargo/bin
-export_to_path_if_exists $HOME/.local/bin
-export_to_path_if_exists $HOME/.nimble/bin
-export_to_path_if_exists /usr/local/go/bin
-export_to_path_if_exists /snap/bin
+maybe_append_to_path $GOBIN
+maybe_append_to_path $HOME/bin
+maybe_append_to_path $HOME/.bin
+maybe_append_to_path $HOME/.vim/pack/plugins/start/fzf/bin/
+maybe_append_to_path $HOME/code/scripts/
+maybe_append_to_path $HOME/code/scripts/covid/
+maybe_append_to_path $HOME/.cargo/bin
+maybe_append_to_path $HOME/.local/bin
+maybe_append_to_path $HOME/.nimble/bin
+maybe_append_to_path /usr/local/go/bin
 
 [[ -x rvm ]] && rvm default
 
