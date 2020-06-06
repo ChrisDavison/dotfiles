@@ -76,9 +76,6 @@
 [submodule ".vim/pack/plugins/start/vim-cdroot"]
 	path = .vim/pack/plugins/start/vim-cdroot
 	url = https://github.com/chrisdavison/vim-cdroot
-[submodule ".vim/pack/plugins/start/vim-buftabline"]
-	path = .vim/pack/plugins/start/vim-buftabline
-	url = https://github.com/ap/vim-buftabline
 [submodule ".vim/pack/plugins/start/nerdtree"]
 	path = .vim/pack/plugins/start/nerdtree
 	url = https://github.com/preservim/nerdtree
@@ -88,3 +85,6 @@
 [submodule ".vim/pack/plugins/start/vim-slime"]
 	path = .vim/pack/plugins/start/vim-slime
 	url = https://github.com/jpalardy/vim-slime.git
+[submodule ".vim/pack/plugins/start/vim-corvine"]
+	path = .vim/pack/plugins/start/vim-corvine
+	url = https://github.com/arzg/vim-corvine

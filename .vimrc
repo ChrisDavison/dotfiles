@@ -101,9 +101,9 @@ let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
 if strftime("%H") > 21 || strftime("%H") < 8
-    colorscheme yin
+    colorscheme corvine
 else
-    colorscheme yang
+    colorscheme corvine_light
 end
 " plugins & programming language config {{{1
 let g:is_bash=1
@@ -165,6 +165,7 @@ cnoreabbrev E e
 cnoreabbrev Q! q!
 cnoreabbrev BD bp<bar>bd #
 iabbrev <expr> DATE strftime("%Y-%m-%d")
+iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 " commands {{{1
