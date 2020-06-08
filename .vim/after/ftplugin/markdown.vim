@@ -5,8 +5,8 @@ let md_reflinks=' --reference-links --reference-location=section'
 let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
 let md_equalprg .= md_wrap
 
-let g:pandoc#formatting#mode='hA'
 let g:pandoc#keyboard#use_default_mappings=0
+let g:pandoc#formatting#mode='hA'
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
@@ -15,6 +15,8 @@ let g:pandoc#folding#fdc=0
 let g:pandoc#folding#fold_fenced_codeblocks=1
 let g:pandoc#syntax#conceal#use=1
 let g:pandoc#spell#enabled=0
+let g:pandoc#toc#position="left"
+let g:pandoc#toc#close_after_navigating=0
 
 let &l:equalprg=md_equalprg
 setlocal foldenable foldmethod=expr foldlevelstart=1 
