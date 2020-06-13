@@ -1,7 +1,6 @@
 set -Ux fish_greeting ""
 
 set -Ux EDITOR "nvim"
-set -Ux EDITOR "nvim"
 set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/bin"
 set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
@@ -9,11 +8,13 @@ set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
 set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code/"
-set -Ux NOTESDIR "$HOME/Dropbox/notes"
-set -Ux FINANCES "$HOME/Dropbox/budget"
-set -Ux VIRTUAL_ENV_DISABLE_PROMPT 1
-set -Ux TODOFILE ~/Dropbox/notes/todo.txt
-set -Ux DONEFILE ~/Dropbox/notes/done.txt
+set -Ux VIRTUAL_ENV_DISABLE_PROMPT 0
+
+set -Ux RANGER_LOAD_DEFAULT_RC 0
+
+if not uname -a | grep -q "Microsoft" 
+    set -Ux BROWSER "firefox"
+end
 
 test -d $GOBIN; and set PATH $GOBIN $PATH
 test -d $HOME/bin; and set PATH $HOME/.bin $PATH
@@ -38,16 +39,12 @@ alias today="date +%F"
 alias tmux="tmux -2"
 alias ts="tagsearch"
 alias bm="bookmarks"
-alias b="bat --map-syntax txt:markdown --style=grid,header"
-alias n="echo '-  $argv' >> ~/Dropbox/notes/inbox.txt"
-alias nt="echo '-  [ ]$argv' >> ~/Dropbox/notes/inbox.txt"
-alias inbox="nvim ~/Dropbox/notes/inbox.txt"
-alias t="todo.sh -a -f"
-alias mit="todo.sh lsp a"
-alias thesis="todo.sh lsp +thesis"
-alias tp="todo.sh projectview -+work"
-alias tm="todo.sh projectview +media"
+alias b="bat --tabs 2 --color=always --style=numbers,changes "
+alias n="echo '-  $argv' >> ~/code/knowledge/inbox.txt"
+alias nt="echo '-  [ ] $argv' >> ~/code/knowledge/inbox.txt"
+alias inbox="nvim ~/code/knowledge/inbox.txt"
 alias n="note.py"
+alias clip="xclip -sel clipboard"
 
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
@@ -65,6 +62,11 @@ alias ltg="lt --git-ignore"
 
 alias clip="xclip -sel clipboard"
 
+alias zc="zipchoose"
+alias zv="zipview"
+
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
 test -f ~/code/todo.txt/todo_completion; and bash ~/code/todo.txt/todo_completion
+
+source ~/.envs/ml/bin/activate.fish
