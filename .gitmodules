@@ -88,3 +88,6 @@
 [submodule ".vim/pack/plugins/start/vim-corvine"]
 	path = .vim/pack/plugins/start/vim-corvine
 	url = https://github.com/arzg/vim-corvine
+[submodule ".vim/pack/plugins/start/vim-fish"]
+	path = .vim/pack/plugins/start/vim-fish
+	url = https://github.com/dag/vim-fish
