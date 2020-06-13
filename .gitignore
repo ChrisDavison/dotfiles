@@ -29,3 +29,4 @@ tags
 /.emacs.d/url/
 /.emacs.d.org-id-locations
 /.emacs.d/*Warnings*
+.config/hub
