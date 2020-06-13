@@ -30,3 +30,4 @@ tags
 /.emacs.d.org-id-locations
 /.emacs.d/*Warnings*
 .config/hub
+.config/omf/
