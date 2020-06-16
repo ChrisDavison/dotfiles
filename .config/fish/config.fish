@@ -62,8 +62,8 @@ alias ltg="lt --git-ignore"
 
 alias clip="xclip -sel clipboard"
 
-alias zc="zipchoose"
-alias zv="zipview"
+alias zc="ziputil choose"
+alias zv="ziputil view"
 
 test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
