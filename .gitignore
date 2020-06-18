@@ -31,3 +31,5 @@ tags
 /.emacs.d/*Warnings*
 .config/hub
 .config/omf/
+.config/dask
+history.sqlite
