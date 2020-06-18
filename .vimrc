@@ -119,6 +119,7 @@ let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
+let g:slime_python_ipython = 1
 let g:rustfmt_autosave=1
 let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
