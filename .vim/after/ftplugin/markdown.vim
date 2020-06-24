@@ -1,9 +1,10 @@
 let md_wrap=' --columns=72 --wrap=auto'
 let md_nowrap=' --wrap=none'
-let md_reflinks=' --reference-links --reference-location=section'
+let md_reflinks=' --reference-links'
+" let md_reflinks=' --reference-links --reference-location=section'
 
 let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
-let md_equalprg .= md_wrap
+let md_equalprg .= md_wrap . md_reflinks
 
 let g:pandoc#keyboard#use_default_mappings=0
 let g:pandoc#formatting#mode='hA'
