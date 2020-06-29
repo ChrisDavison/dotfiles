@@ -100,11 +100,15 @@ endif
 let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-if strftime("%H") > 21 || strftime("%H") < 8
-    colorscheme corvine
-else
-    colorscheme corvine_light
-end
+function s:timecolour()
+    if strftime("%H") > 21 || strftime("%H") < 8
+        colorscheme corvine
+    else
+        colorscheme corvine_light
+    end
+endfunction
+call s:timecolour()
+command TimeColour call s:timecolour()
 " plugins & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
