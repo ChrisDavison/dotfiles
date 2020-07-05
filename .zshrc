@@ -25,8 +25,7 @@ maybe_append_to_path $HOME/.cargo/bin
 maybe_append_to_path $HOME/.local/bin
 maybe_append_to_path $HOME/.nimble/bin
 maybe_append_to_path /usr/local/go/bin
-
-[[ -x rvm ]] && rvm default
+maybe_append_to_path $HOME/.local/go/bin
 
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
@@ -54,7 +53,7 @@ zstyle ':completion:::::' completer _expand _complete _ignored _approximate #ena
 autoload -Uz compinit;compinit -i
 
 # aliases {{{1
-alias tmux="set TERM xterm-256color; tmux -2"
+alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
 alias mv="mv -v"     # Always explain move actions
@@ -64,27 +63,24 @@ alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
-if [[ -x $HOME/bin/hub ]] || [[ -x $HOME/.bin/hub ]]; then
-    alias g="hub"
-fi
+[[ -e $(which hub) ]] && alias g="hub"
 alias today="date +%F"
+alias tmux="tmux -2"
 alias ts="tagsearch"
-alias clip="xclip -sel clipboard"
+alias bm="bookmarks"
+alias b="bat --tabs 2 --color=always --style=numbers,changes "
+alias n="echo '-  $argv' >> ~/code/knowledge/inbox.txt"
+alias nt="echo '-  [ ] $argv' >> ~/code/knowledge/inbox.txt"
+alias inbox="nvim ~/code/knowledge/inbox.txt"
 alias n="note.py"
-# keybinds
-autoload -U history-search-end
-bindkey -e
-bindkey "^[[A" history-beginning-search-backward-end
-bindkey "^[[B" history-beginning-search-forward-end
-# don't let '^d' exit the shell if there's nothing on the line
-stty eof undef
-#     Repoutil {{{1
+alias clip="xclip -sel clipboard"
+
 alias ru="repoutil unclean"
 alias rs="repoutil stat"
 alias rl="repoutil list"
 alias rf="repoutil fetch"
 alias rb="repoutil branchstat"
-# ls (exa)
+
 alias ls="exa --group-directories-first --git-ignore"
 alias lsa="exa --group-directories-first"
 alias ll="ls --long --group-directories-first"
@@ -93,20 +89,10 @@ alias lt="exa --tree -L 2 --group-directories-first"
 alias lg="ll --git-ignore"
 alias ltg="lt --git-ignore"
 
-alias b="bat --tabs 2 --color=always --style=numbers,changes "
+alias clip="xclip -sel clipboard"
 
-
-#     Jump to recent directories {{{1
-alias d='dirs -v | head -10'
-alias 1='cd -'
-alias 2='cd -2'
-alias 3='cd -3'
-alias 4='cd -4'
-alias 5='cd -5'
-alias 6='cd -6'
-alias 7='cd -7'
-alias 8='cd -8'
-alias 9='cd -9'
+alias zc="ziputil choose"
+alias zv="ziputil view"
 
 # source other scripts {{{1
 function source_if_exists {
@@ -268,10 +254,4 @@ fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
-    alias eme='export DISPLAY=:0.0
-export LIBGL_ALWAYS_INDIRECT=1
-setsid emacs
-exit'
-fi
 source ~/.envs/ml/bin/activate
