@@ -249,7 +249,7 @@ export RANGER_LOAD_DEFAULT_RC=0
 
 # Windows / WSL-specific config
 if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
-    export BROWSER=/mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe
+    export BROWSER=$(which firefox)
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

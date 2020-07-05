@@ -1,7 +1,7 @@
 let md_wrap=' --columns=72 --wrap=auto'
 let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links'
-" let md_reflinks=' --reference-links --reference-location=section'
+let md_reflinks=' --reference-links --reference-location=section'
 
 let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
 let md_equalprg .= md_wrap . md_reflinks
@@ -62,6 +62,9 @@ function! Markdown_backlinks(use_grep)
     end
 endfunction " 
 command! -bang Backlinks call Markdown_backlinks(<bang>1)
+" }}}
+" Move visual selection to another file {{{
+vnoremap <buffer> <leader>w :w <BAR>normal gvD<left><left><left><left><left><left><left><left><left><left><left>
 " }}}
 " Don't highlight code blocks
 " This is a hack to prevent indented lists from displaying as code blocks
