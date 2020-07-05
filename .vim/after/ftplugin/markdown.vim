@@ -6,20 +6,9 @@ let md_reflinks=' --reference-links'
 let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
 let md_equalprg .= md_wrap . md_reflinks
 
-let g:pandoc#keyboard#use_default_mappings=0
-let g:pandoc#formatting#mode='hA'
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
-let g:pandoc#formatting#equalprg=md_equalprg
-let g:pandoc#formatting#extra_equalprg=''
-let g:pandoc#formatting#textwidth=72
-let g:pandoc#folding#fdc=0
-let g:pandoc#folding#fold_fenced_codeblocks=1
-let g:pandoc#syntax#conceal#use=1
-let g:pandoc#spell#enabled=0
-let g:pandoc#toc#position="left"
-let g:pandoc#toc#close_after_navigating=0
 let g:voom_default_mode="pandoc"
 let g:voom_tree_width=50
+let g:markdown_folding=1
 
 let &l:equalprg=md_equalprg
 setlocal noautoindent
@@ -28,16 +17,11 @@ setlocal nospell
 setlocal conceallevel=2
 setlocal formatoptions+=a textwidth=72
 nnoremap <buffer> <leader>i :g/^#/:p<CR>:
-nnoremap <buffer> ]] :call pandoc#keyboard#sections#NextHeader()<CR>
-nnoremap <buffer> [[ :call pandoc#keyboard#sections#PrevHeader()<CR>
-vmap <buffer> aS <Plug>(pandoc-keyboard-select-section-inclusive)
-omap <buffer> aS :normal VaS<CR>
-vmap <buffer> iS <Plug>(pandoc-keyboard-select-section-exclusive)
-omap <buffer> iS :normal ViS<CR>
 
 command! H1 g/^#\{1,1\} /
 command! H2 g/^#\{1,2\} /
 command! H3 g/^#\{1,3\} /
+command! FMT normal mzggvG=`z
 
 " fn: Goto file {{{
 function! Markdown_goto_file(split)
@@ -79,3 +63,7 @@ function! Markdown_backlinks(use_grep)
 endfunction " 
 command! -bang Backlinks call Markdown_backlinks(<bang>1)
 " }}}
+" Don't highlight code blocks
+" This is a hack to prevent indented lists from displaying as code blocks
+highlight clear markdownCode
+highlight clear markdownCodeBlock
