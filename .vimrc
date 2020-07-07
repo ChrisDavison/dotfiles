@@ -101,7 +101,7 @@ let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
 function s:timecolour()
-    if strftime("%H") > 21 || strftime("%H") < 8
+    if strftime("%H") >= 21 || strftime("%H") < 8
         colorscheme corvine
     else
         colorscheme corvine_light
