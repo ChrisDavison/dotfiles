@@ -26,6 +26,7 @@ maybe_append_to_path $HOME/.local/bin
 maybe_append_to_path $HOME/.nimble/bin
 maybe_append_to_path /usr/local/go/bin
 maybe_append_to_path $HOME/.local/go/bin
+maybe_append_to_path $HOME/code/seadas-7.5.3/bin
 
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
@@ -39,6 +40,7 @@ setopt hist_reduce_blanks # remove superfluous blanks from history items
 setopt inc_append_history # save history entries as soon as they are entered
 setopt share_history # share history between different instances of the shell
 setopt auto_cd # cd by typing directory name if it's not a command
+setopt auto_pushd # cd pushes directories onto the stack
 setopt auto_list # automatically list choices on ambiguous completion
 setopt auto_menu # automatically use menu completion
 setopt always_to_end # move cursor to end if word had one match
@@ -93,6 +95,17 @@ alias clip="xclip -sel clipboard"
 
 alias zc="ziputil choose"
 alias zv="ziputil view"
+
+alias open="xdg-open"
+
+alias a='fasd -a'        # any
+alias s='fasd -si'       # show / search / select
+alias d='fasd -d'        # directory
+alias f='fasd -f'        # file
+alias sd='fasd -sid'     # interactive directory selection
+alias sf='fasd -sif'     # interactive file selection
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
 
 # source other scripts {{{1
 function source_if_exists {
@@ -241,6 +254,16 @@ mdformatwrap(){
     pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
 }
 
+tmc(){
+    tmux attach -t $(tmux list-sessions | cut -d: -f1 | fzf)
+}
+
+duplicates(){
+    [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
+    grep -Eo '(\b.+) \1\b' $1 || true 
+}
+
+
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
@@ -255,3 +278,4 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/.envs/ml/bin/activate
+eval "$(fasd --init auto)"
