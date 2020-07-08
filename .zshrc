@@ -277,7 +277,7 @@ bindkey "^[[B" history-search-forward
 export RANGER_LOAD_DEFAULT_RC=0
 
 # Windows / WSL-specific config
-if [[ $(uname -a | grep -q 'Microsoft') -eq 0 ]]; then
+if [[ $(uname -a | grep -q 'Microsoft') -eq 1 ]]; then
     export BROWSER=$(which firefox)
 fi
 
