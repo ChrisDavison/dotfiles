@@ -258,6 +258,12 @@ tmc(){
     tmux attach -t $(tmux list-sessions | cut -d: -f1 | fzf)
 }
 
+
+vs(){
+    chosen=$(ls -1 ~/.vimsessions | fzf)
+    [[ -n "$chosen" ]] && nvim -S "~/.vimsessions/$chosen"
+}
+
 duplicates(){
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true 
@@ -279,3 +285,6 @@ fi
 
 source ~/.envs/ml/bin/activate
 eval "$(fasd --init auto)"
+eval "$(starship init zsh)"
+
+source /home/cdavison/.config/broot/launcher/bash/br
