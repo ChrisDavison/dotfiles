@@ -9,6 +9,7 @@ export FZF_ALT_C_COMMAND='fd -t d . $HOME'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+export MAIL=~/.mbox
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
@@ -255,18 +256,28 @@ mdformatwrap(){
 }
 
 tmc(){
-    tmux attach -t $(tmux list-sessions | cut -d: -f1 | fzf)
+    chosen=$(tmux list-sessions 2> /dev/null | cut -d: -f1 | fzf -0)
+    [[ -n "$chosen" ]] && tmux attach -t "$chosen"
 }
 
 
 vs(){
-    chosen=$(ls -1 ~/.vimsessions | fzf)
+    chosen=$(ls -1 ~/.vimsessions | fzf -0)
     [[ -n "$chosen" ]] && nvim -S "~/.vimsessions/$chosen"
 }
 
 duplicates(){
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true 
+}
+
+asmrmpv(){
+    nohup mpv $(randomasmr) &> /dev/null &
+}
+
+wallpaper(){
+    chosen=$(fd . -t f ~/Dropbox/wallpapers | rg -v mobile | fzf)
+    [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
 }
 
 
@@ -284,7 +295,4 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/.envs/ml/bin/activate
-eval "$(fasd --init auto)"
-eval "$(starship init zsh)"
-
-source /home/cdavison/.config/broot/launcher/bash/br
+# eval "$(starship init zsh)"
