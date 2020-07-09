@@ -280,6 +280,11 @@ wallpaper(){
     [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
 }
 
+skyemull() {
+    echo "Mull:8811 routed to localhost:9999, via Skye"
+    ssh -L 9999:localhost:9999 cdavison@skye ssh -L 9999:localhost:8811 cdavison@mull
+}
+
 
 # up and down do history search
 bindkey "^[[A" history-search-backward
