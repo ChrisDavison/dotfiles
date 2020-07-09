@@ -143,7 +143,7 @@ exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
 exec_always --no-startup-id autorandr home-lr
-exec --no-startup-id sh ~/.fehbg
+exec_always --no-startup-id sh ~/.fehbg
 
 bar {
     position bottom
@@ -177,9 +177,9 @@ bindsym $mod+Mod1+a floating enable; resize set width 300 px height 169 px; move
 bindsym $mod+Mod1+c exec $HOME/.bin/dmenu_cheatsheets.sh
 
 #bindsym $mod+Mod1+t exec firefox --new-window "https://to-do.live.com/tasks/myday"
-bindsym $mod+Mod1+n exec terminator -e 'nvim $HOME/Dropbox/notes/inbox.md'
-bindsym $mod+Mod1+t exec terminator -e 'nvim $HOME/Dropbox/notes/todo.md'
-bindsym $mod+Mod1+f exec terminator -e 'nvim $HOME/Dropbox/notes/flowtime-tracker.md'
+bindsym $mod+Mod1+i exec terminator -e 'nvim $HOME/code/knowledge/inbox.md'
+# bindsym $mod+Mod1+t exec terminator -e 'nvim $HOME/Dropbox/notes/todo.md'
+# bindsym $mod+Mod1+f exec terminator -e 'nvim $HOME/Dropbox/notes/flowtime-tracker.md'
 
 
 #  _          _       _     _
@@ -226,10 +226,10 @@ bindsym XF86AudioPrev exec playerctl prev --player=spotify
 # for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position center
 
 #start in opposite orientation from your monitor
-# default_orientation vertical
+default_orientation vertical
 #toggles split at each new window
-# for_window [class=".*"] split toggle
+for_window [class=".*"] split toggle
 #kill command resets the split
-# bindsym $mod+shift+q split toggle kill
+bindsym $mod+shift+q split toggle kill
 # should already exist but use if split orientation  messes up
 # bindsym $mod+e layout toggle split
