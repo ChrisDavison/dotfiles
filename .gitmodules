@@ -88,3 +88,6 @@
 [submodule ".vim/pack/plugins/start/VOoM"]
 	path = .vim/pack/plugins/start/VOoM
 	url = https://github.com/vim-voom/VOoM
+[submodule ".vim/pack/plugins/start/vimwiki"]
+	path = .vim/pack/plugins/start/vimwiki
+	url = https://github.com/vimwiki/vimwiki

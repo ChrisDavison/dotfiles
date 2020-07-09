@@ -2,7 +2,6 @@ filetype plugin indent on
 syntax enable
 let mapleader=" "
 
-packloadall
 " settings {{{1
 set nocompatible
 let &showbreak = '   ┆'
@@ -108,7 +107,7 @@ function s:timecolour()
     end
 endfunction
 call s:timecolour()
-command TimeColour call s:timecolour()
+command! TimeColour call s:timecolour()
 " plugins & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -129,6 +128,10 @@ let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:slime_target='tmux'
+
+let g:vimwiki_list = [{'path': '~/code/knowledge/',
+                      \ 'syntax': 'markdown', 'ext': '.md'}]
+
 " keybinds {{{1 
 nnoremap <silent> Q =ip
 vnoremap <      <gv
@@ -200,3 +203,7 @@ augroup vimrc
     " Don't use autochdir when using 'Root'
     au BufEnter * Root
 augroup END
+
+""" }}}1
+
+packloadall
