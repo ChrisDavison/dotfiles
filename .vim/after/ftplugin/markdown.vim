@@ -15,7 +15,7 @@ setlocal noautoindent
 setlocal foldenable foldmethod=expr foldlevelstart=1 
 setlocal nospell 
 setlocal conceallevel=2
-setlocal formatoptions+=a textwidth=72
+setlocal formatoptions-=a textwidth=72 formatoptions+=n
 nnoremap <buffer> <leader>i :g/^#/:p<CR>:
 
 command! H1 g/^#\{1,1\} /
