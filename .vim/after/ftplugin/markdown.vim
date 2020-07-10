@@ -55,6 +55,9 @@ nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
 function! Markdown_backlinks(use_grep)
     if a:use_grep
         exec "silent grep! '\\((\./)*" . expand("%") . "'"
+        if len(getqflist()) == 0
+            exec "cclose"
+        endif
     else
         call fzf#vim#grep(
         \ "rg --column --line-number --no-heading --color=always --smart-case -g '!tags' ".expand('%'), 1,
@@ -70,3 +73,4 @@ vnoremap <buffer> <leader>w :w <BAR>normal gvD<left><left><left><left><left><lef
 " This is a hack to prevent indented lists from displaying as code blocks
 highlight clear markdownCode
 highlight clear markdownCodeBlock
+

@@ -100,11 +100,12 @@ let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
 function s:timecolour()
-    if strftime("%H") >= 21 || strftime("%H") < 8
-        colorscheme corvine
-    else
-        colorscheme corvine_light
-    end
+    colorscheme seoul256
+    " if strftime("%H") >= 21 || strftime("%H") < 8
+    "     colorscheme corvine
+    " else
+    "     colorscheme corvine_light
+    " end
 endfunction
 call s:timecolour()
 command! TimeColour call s:timecolour()
@@ -202,6 +203,8 @@ augroup vimrc
     au BufEnter .scratch setlocal filetype=markdown.pandoc
     " Don't use autochdir when using 'Root'
     au BufEnter * Root
+    au BufEnter *.md Backlinks
+    au QuickFixCmdPost * botright copen 8 | wincmd p
 augroup END
 
 """ }}}1
