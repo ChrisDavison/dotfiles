@@ -33,3 +33,4 @@ tags
 .config/omf/
 .config/dask
 history.sqlite
+.vim/plugins

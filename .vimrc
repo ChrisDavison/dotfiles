@@ -2,6 +2,41 @@ filetype plugin indent on
 syntax enable
 let mapleader=" "
 
+call plug#begin('~/.vim/plugins')
+Plug 'Konfekt/FastFold'
+Plug 'vim-voom/VOoM'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'SidOfc/mkdx'
+Plug 'preservim/nerdtree'
+Plug 'vim-python/python-syntax'
+Plug 'junegunn/seoul256.vim'
+Plug 'wellle/targets.vim'
+Plug 'mbbill/undotree'
+Plug 'chrisdavison/vim-cdroot'
+Plug 'tpope/vim-commentary'
+Plug 'arzg/vim-corvine'
+Plug 'junegunn/vim-easy-align'
+Plug 'dahu/vim-fanfingtastic'
+Plug 'dag/vim-fish'
+Plug 'airblade/vim-gitgutter'
+Plug 'fatih/vim-go'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'plasticboy/vim-markdown/'
+Plug 'romainl/vim-qf'
+Plug 'romainl/vim-qlist'
+Plug 'tpope/vim-repeat'
+Plug 'jpalardy/vim-slime'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-surround'
+Plug 'kana/vim-textobj-user'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-vinegar'
+Plug 'pgdouyon/vim-yin-yang'
+Plug 'lervag/vimtex'
+call plug#end()
+
 " settings {{{1
 set nocompatible
 let &showbreak = '   ┆'

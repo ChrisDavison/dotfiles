@@ -1,93 +1,96 @@
 [submodule ".vim/bundle/vim-fanfingtastic"]
-	path = .vim/pack/plugins/start/vim-fanfingtastic
+	path = .vim/plugins/vim-fanfingtastic
 	url = git@github.com:dahu/vim-fanfingtastic
 [submodule ".vim/bundle/vim-go"]
-	path = .vim/pack/plugins/start/vim-go
+	path = .vim/plugins/vim-go
 	url = git@github.com:fatih/vim-go
 [submodule ".vim/bundle/fzf"]
-	path = .vim/pack/plugins/start/fzf
+	path = .vim/plugins/fzf
 	url = git@github.com:junegunn/fzf
 [submodule ".vim/bundle/fzf.vim"]
-	path = .vim/pack/plugins/start/fzf.vim
+	path = .vim/plugins/fzf.vim
 	url = git@github.com:junegunn/fzf.vim
 [submodule ".vim/bundle/seoul256.vim"]
-	path = .vim/pack/plugins/start/seoul256.vim
+	path = .vim/plugins/seoul256.vim
 	url = git@github.com:junegunn/seoul256.vim
 [submodule ".vim/bundle/vim-textobj-user"]
-	path = .vim/pack/plugins/start/vim-textobj-user
+	path = .vim/plugins/vim-textobj-user
 	url = git@github.com:kana/vim-textobj-user
 [submodule ".vim/bundle/FastFold"]
-	path = .vim/pack/plugins/start/FastFold
+	path = .vim/plugins/FastFold
 	url = git@github.com:Konfekt/FastFold
 [submodule ".vim/bundle/vimtex"]
-	path = .vim/pack/plugins/start/vimtex
+	path = .vim/plugins/vimtex
 	url = git@github.com:lervag/vimtex
 [submodule ".vim/bundle/vim-gutentags"]
-	path = .vim/pack/plugins/start/vim-gutentags
+	path = .vim/plugins/vim-gutentags
 	url = git@github.com:ludovicchabant/vim-gutentags
 [submodule ".vim/bundle/vim-qf"]
-	path = .vim/pack/plugins/start/vim-qf
+	path = .vim/plugins/vim-qf
 	url = git@github.com:romainl/vim-qf
 [submodule ".vim/bundle/vim-qlist"]
-	path = .vim/pack/plugins/start/vim-qlist
+	path = .vim/plugins/vim-qlist
 	url = git@github.com:romainl/vim-qlist
 [submodule ".vim/bundle/vim-commentary"]
-	path = .vim/pack/plugins/start/vim-commentary
+	path = .vim/plugins/vim-commentary
 	url = git@github.com:tpope/vim-commentary
 [submodule ".vim/bundle/vim-surround"]
-	path = .vim/pack/plugins/start/vim-surround
+	path = .vim/plugins/vim-surround
 	url = git@github.com:tpope/vim-surround
 [submodule ".vim/bundle/vim-speeddating"]
-	path = .vim/pack/plugins/start/vim-speeddating
+	path = .vim/plugins/vim-speeddating
 	url = git@github.com:tpope/vim-speeddating
 [submodule ".vim/bundle/vim-unimpaired"]
-	path = .vim/pack/plugins/start/vim-unimpaired
+	path = .vim/plugins/vim-unimpaired
 	url = git@github.com:tpope/vim-unimpaired
 [submodule ".vim/bundle/vim-vinegar"]
-	path = .vim/pack/plugins/start/vim-vinegar
+	path = .vim/plugins/vim-vinegar
 	url = git@github.com:tpope/vim-vinegar
 [submodule ".vim/bundle/python-syntax"]
-	path = .vim/pack/plugins/start/python-syntax
+	path = .vim/plugins/python-syntax
 	url = git@github.com:vim-python/python-syntax
 [submodule ".vim/bundle/targets.vim"]
-	path = .vim/pack/plugins/start/targets.vim
+	path = .vim/plugins/targets.vim
 	url = git@github.com:wellle/targets.vim
 [submodule ".vim/bundle/vim-yin-yang"]
-	path = .vim/pack/plugins/start/vim-yin-yang
+	path = .vim/plugins/vim-yin-yang
 	url = git@github.com:pgdouyon/vim-yin-yang
 [submodule ".vim/bundle/vim-repeat"]
-	path = .vim/pack/plugins/start/vim-repeat
+	path = .vim/plugins/vim-repeat
 	url = git@github.com:tpope/vim-repeat
 [submodule ".vim/bundle/vim-easy-align"]
-	path = .vim/pack/plugins/start/vim-easy-align
+	path = .vim/plugins/vim-easy-align
 	url = git@github.com:junegunn/vim-easy-align
 [submodule ".vim/bundle/vim-tmux-navigator"]
-	path = .vim/pack/plugins/start/vim-tmux-navigator
+	path = .vim/plugins/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator
 [submodule ".vim/bundle/vim-gitgutter"]
-	path = .vim/pack/plugins/start/vim-gitgutter
+	path = .vim/plugins/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
 [submodule ".vim/pack/plugins/start/vim-cdroot"]
-	path = .vim/pack/plugins/start/vim-cdroot
+	path = .vim/plugins/vim-cdroot
 	url = https://github.com/chrisdavison/vim-cdroot
 [submodule ".vim/pack/plugins/start/nerdtree"]
-	path = .vim/pack/plugins/start/nerdtree
+	path = .vim/plugins/nerdtree
 	url = https://github.com/preservim/nerdtree
 [submodule ".vim/pack/plugins/start/undotree"]
-	path = .vim/pack/plugins/start/undotree
+	path = .vim/plugins/undotree
 	url = https://github.com/mbbill/undotree
 [submodule ".vim/pack/plugins/start/vim-slime"]
-	path = .vim/pack/plugins/start/vim-slime
+	path = .vim/plugins/vim-slime
 	url = https://github.com/jpalardy/vim-slime.git
 [submodule ".vim/pack/plugins/start/vim-corvine"]
-	path = .vim/pack/plugins/start/vim-corvine
+	path = .vim/plugins/vim-corvine
 	url = https://github.com/arzg/vim-corvine
 [submodule ".vim/pack/plugins/start/vim-fish"]
-	path = .vim/pack/plugins/start/vim-fish
+	path = .vim/plugins/vim-fish
 	url = https://github.com/dag/vim-fish
 [submodule ".vim/pack/plugins/start/VOoM"]
-	path = .vim/pack/plugins/start/VOoM
+	path = .vim/plugins/VOoM
 	url = https://github.com/vim-voom/VOoM
-[submodule ".vim/pack/plugins/start/vimwiki"]
-	path = .vim/pack/plugins/start/vimwiki
-	url = https://github.com/vimwiki/vimwiki
+[submodule ".vim/pack/plugins/start/vim-markdown"]
+	path = .vim/plugins/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown
+[submodule ".vim/pack/plugins/start/mkdx"]
+	path = .vim/plugins/mkdx
+	url = https://github.com/SidOfc/mkdx
