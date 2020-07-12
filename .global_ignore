@@ -39,3 +39,4 @@ Thumbs.db
 Tags
 .ipynb_checkpoints/
 .ipynb_checkpoints/*
+.ipython
