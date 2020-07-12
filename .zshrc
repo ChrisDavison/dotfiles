@@ -78,19 +78,27 @@ alias inbox="nvim ~/code/knowledge/inbox.txt"
 alias n="note.py"
 alias clip="xclip -sel clipboard"
 
-alias ru="repoutil unclean"
-alias rs="repoutil stat"
-alias rl="repoutil list"
-alias rf="repoutil fetch"
-alias rb="repoutil branchstat"
+if [ -n $(which repoutil) ]; then
+    alias ru="repoutil unclean"
+    alias rs="repoutil stat"
+    alias rl="repoutil list"
+    alias rf="repoutil fetch"
+    alias rb="repoutil branchstat"
+else
+    echo "repoutil not installed"
+fi
 
-alias ls="exa --group-directories-first --git-ignore"
-alias lsa="exa --group-directories-first"
-alias ll="ls --long --group-directories-first"
-alias la="ll -a --group-directories-first"
-alias lt="exa --tree -L 2 --group-directories-first"
-alias lg="ll --git-ignore"
-alias ltg="lt --git-ignore"
+if [ -n $(which exa) ]; then
+    alias ls="exa --group-directories-first --git-ignore"
+    alias lsa="exa --group-directories-first"
+    alias ll="ls --long --group-directories-first"
+    alias la="ll -a --group-directories-first"
+    alias lt="exa --tree -L 2 --group-directories-first"
+    alias lg="ll --git-ignore"
+    alias ltg="lt --git-ignore"
+else
+    echo "exa not installed"
+fi
 
 alias clip="xclip -sel clipboard"
 
@@ -99,14 +107,7 @@ alias zv="ziputil view"
 
 alias open="xdg-open"
 
-alias a='fasd -a'        # any
-alias s='fasd -si'       # show / search / select
-alias d='fasd -d'        # directory
-alias f='fasd -f'        # file
-alias sd='fasd -sid'     # interactive directory selection
-alias sf='fasd -sif'     # interactive file selection
-alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-alias zz='fasd_cd -d -i' # cd with interactive selection
+alias j="nvim ~/Dropbox/notes/journal.md"
 
 # source other scripts {{{1
 function source_if_exists {
@@ -286,6 +287,16 @@ skyemull() {
 }
 
 
+# Make a string 'fuzzy' for searching
+fzs(){
+    echo "$@" | sed -e 's/\s/.*/g'
+}
+
+# FZF with preview
+fzfp(){
+    fzf --preview="bat {}" --preview-window=right:70%:wrap
+}
+
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
@@ -300,4 +311,4 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/.envs/ml/bin/activate
-# eval "$(starship init zsh)"
+[[ -x $(which starship) ]] && eval "$(starship init zsh)"
