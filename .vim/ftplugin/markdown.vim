@@ -2,17 +2,23 @@ let md_wrap=' --columns=72 --wrap=auto'
 let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
+let md_standalone=" --standalone"
 
-let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links --atx-headers"
-let md_equalprg .= md_wrap . md_reflinks
+let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links+pandoc_title_block --atx-headers"
+let md_equalprg .= md_wrap . md_reflinks . md_standalone
 
 let g:voom_default_mode="pandoc"
 let g:voom_tree_width=50
-let g:markdown_folding=1
+" let g:markdown_folding=1
+let g:vim_markdown_folding_style_pythonic = 1
+let g:vim_markdown_toc_autofit=1
 
 let &l:equalprg=md_equalprg
 setlocal noautoindent
-setlocal foldenable foldmethod=expr foldlevelstart=1 
+setlocal foldenable foldlevelstart=0
+
+setlocal foldexpr=mkdx#fold(v:lnum)
+" setlocal foldenable foldmethod=expr foldlevelstart=1 
 setlocal nospell 
 setlocal conceallevel=2
 setlocal formatoptions-=a textwidth=72 formatoptions+=n
