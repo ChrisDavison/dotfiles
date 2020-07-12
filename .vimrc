@@ -195,6 +195,7 @@ nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <F3> :VoomToggle<CR>
 nnoremap <leader>j :e ~/Dropbox/notes/journal.md<BAR>normal G<CR>
 nnoremap <leader>l :e ~/Dropbox/notes/logbook.md<CR>
 
