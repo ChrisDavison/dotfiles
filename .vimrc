@@ -3,26 +3,19 @@ syntax enable
 let mapleader=" "
 
 call plug#begin('~/.vim/plugins')
-Plug 'Konfekt/FastFold'
-Plug 'vim-voom/VOoM'
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'SidOfc/mkdx'
-Plug 'preservim/nerdtree'
-Plug 'vim-python/python-syntax'
-Plug 'junegunn/seoul256.vim'
+
+Plug 'Konfekt/FastFold'
+Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'wellle/targets.vim'
 Plug 'mbbill/undotree'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'tpope/vim-commentary'
-Plug 'arzg/vim-corvine'
 Plug 'junegunn/vim-easy-align'
 Plug 'dahu/vim-fanfingtastic'
-Plug 'dag/vim-fish'
 Plug 'airblade/vim-gitgutter'
-Plug 'fatih/vim-go'
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'plasticboy/vim-markdown/'
 Plug 'romainl/vim-qf'
 Plug 'romainl/vim-qlist'
 Plug 'tpope/vim-repeat'
@@ -33,8 +26,16 @@ Plug 'kana/vim-textobj-user'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
-Plug 'pgdouyon/vim-yin-yang'
+" Language support
 Plug 'lervag/vimtex'
+Plug 'vim-python/python-syntax'
+Plug 'plasticboy/vim-markdown/'
+Plug 'fatih/vim-go'
+Plug 'vim-voom/VOoM'
+" Themes
+Plug 'arzg/vim-corvine'
+Plug 'junegunn/seoul256.vim'
+Plug 'pgdouyon/vim-yin-yang'
 call plug#end()
 
 " settings {{{1
@@ -165,9 +166,6 @@ let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:slime_target='tmux'
 
-let g:vimwiki_list = [{'path': '~/code/knowledge/',
-                      \ 'syntax': 'markdown', 'ext': '.md'}]
-
 " keybinds {{{1 
 nnoremap <silent> Q =ip
 vnoremap <      <gv
@@ -184,17 +182,21 @@ nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : "
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
+nnoremap <leader>s :e ~/.scratch<CR>
+nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
 
 imap jk <ESC>
 imap kj <ESC>
 " Keybinds for common commands
-nnoremap <leader>en :Files ~/code/knowledge/<CR>
+nnoremap <leader>en :Files ~/Dropbox/notes<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <leader>j :e ~/Dropbox/notes/journal.md<BAR>normal G<CR>
+nnoremap <leader>l :e ~/Dropbox/notes/logbook.md<CR>
 
 let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
@@ -221,7 +223,6 @@ augroup vimrc
     au CursorHold * silent! checktime " Check for external changes to files
     au VimResized * wincmd= " equally resize splits on window resize
     au BufWritePost .vimrc,init.vim source $MYVIMRC
-    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
     au Filetype make set noexpandtab
     au Filetype text set formatoptions-=a
     au Filetype vim set foldmethod=marker
@@ -235,13 +236,8 @@ augroup vimrc
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
-    au BufEnter .scratch setlocal filetype=markdown.pandoc
+    au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
     au BufEnter * Root
-    au BufEnter *.md Backlinks
-    au QuickFixCmdPost * botright copen 8 | wincmd p
 augroup END
 
-""" }}}1
-
-packloadall
