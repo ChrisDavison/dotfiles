@@ -1,0 +1,10 @@
+# !/.config/starship.toml
+
+[python]
+disabled=true
+
+[rust]
+disabled=true
+
+[git_branch]
+symbol="⑂ "
