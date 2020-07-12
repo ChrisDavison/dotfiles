@@ -22,9 +22,6 @@
 [submodule ".vim/bundle/vimtex"]
 	path = .vim/plugins/vimtex
 	url = git@github.com:lervag/vimtex
-[submodule ".vim/bundle/vim-gutentags"]
-	path = .vim/plugins/vim-gutentags
-	url = git@github.com:ludovicchabant/vim-gutentags
 [submodule ".vim/bundle/vim-qf"]
 	path = .vim/plugins/vim-qf
 	url = git@github.com:romainl/vim-qf
