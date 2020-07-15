@@ -16,7 +16,6 @@ ResizeMove(Width, Height, locx, locy)
 FullscreenOnMonitor(monitor)
 {
     activeWindow := WinActive("A")
-    activeWindow := WinActive("A")
     SysGet, Mon, Monitor, 0
     SysGet, Mon2, Monitor, 1
     

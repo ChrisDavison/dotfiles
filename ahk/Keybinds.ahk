@@ -11,6 +11,7 @@ SetCapsLockState, alwaysoff
 SendMode Input
 
 CapsLock::F13
+^+F12::CapsLock
 
 ; Ctrl+F12 to reload this hotkey script
 ^F12::reload
@@ -18,7 +19,7 @@ CapsLock::F13
 ;  Text Insertion
 ^#!XButton1::Send c.jr.davison@gmail.com
 ^#!XButton2::Send christopher.davison@strath.ac.uk
-^+!::Send **({!})**
+^!+1::Send **({!})**
 
 ; Media functionality
 CapsLock & s::Send {Volume_Down 5}
@@ -27,7 +28,23 @@ CapsLock & a::Send {Media_Prev}
 CapsLock & d::Send {Media_Next}
 CapsLock & Space::Send  {Media_Play_Pause}
 
+CapsLock & v::
+Send ^a
+sleep, 50
+Send ^c
+sleep, 50
+Send ^!v
+return
+
 CapsLock & t::Run https://www.todoist.com
+
+CapsLock & n::Send ^!n
+
+CapsLock & XButton2::
+WinGet, beforeSpotify, , A
+WinActivate, ahk_exe spotify.exe
+return
+CapsLock & XButton1::WinActivate, ahk_id %beforeSpotify%
 
 ; F9::
 ; WinGet, beforeSpotify, , A
@@ -60,12 +77,14 @@ CapsLock & 2::MoveTo("left", "right")
 CapsLock & 3::MoveTo("right", "left")
 CapsLock & 4::MoveTo("right", "right")
 
+
+
 CapsLock & F1::FullscreenOnMonitor("left")
 CapsLock & F2::FullscreenOnMonitor("right")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Text substitution.  Dates, and personal pinboard
-; #Include, TextSub.ahk
+#Include, TextSub.ahk
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SwitchDesktop is

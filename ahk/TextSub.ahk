@@ -1,18 +1,14 @@
 ; TEXT SUBSTITUTION
-::;dtlong::   ; Insert 2019-01-01 16:40 (e.g. current date/time)
-    FormatTime, Now,, yyyy-MM-dd HH:mm
+::;datetime::   ; Insert 2019-01-01 - Mon (e.g. logbook head)
+    FormatTime, Now,, dd-MM-yyyy HH:MM
     SendInput %Now%
 return
-::;dthead::   ; Insert 2019-01-01 - Mon (e.g. logbook head)
-    FormatTime, Now,, yyyy-MM-dd - ddd
-    SendInput %Now%
-return
-::;dttime::   ; Insert 16:40 (e.g. current time)
+::;time::   ; Insert 16:40 (e.g. current time)
     FormatTime, Now,, HH:mm
     SendInput %Now%
 return
-::;dtdate::   ; Insert 2019-01 (e.g. current date)
-    FormatTime, Now,, yyyy-mm
+::;date::   ; Insert 2019-01 (e.g. current date)
+    FormatTime, Now,, yyyy-MM-dd
     SendInput %Now%
 return
 ::@@h::c.jr.davison@gmail.com
