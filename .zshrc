@@ -312,3 +312,4 @@ fi
 
 source ~/.envs/ml/bin/activate
 source ~/code/dotfiles/zsh-prompt.sh
+[[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
