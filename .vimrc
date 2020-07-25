@@ -26,6 +26,7 @@ Plug 'kana/vim-textobj-user'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'kshenoy/vim-signature'
 " Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
