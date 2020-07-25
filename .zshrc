@@ -311,4 +311,4 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/.envs/ml/bin/activate
-[[ -x $(which starship) ]] && eval "$(starship init zsh)"
+source ~/code/dotfiles/zsh-prompt.sh
