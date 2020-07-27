@@ -34,3 +34,5 @@ tags
 .config/dask
 history.sqlite
 .vim/plugins
+.config/wslu
+.config/configstore
