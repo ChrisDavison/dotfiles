@@ -33,6 +33,7 @@ Plug 'vim-python/python-syntax'
 Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
 Plug 'vim-voom/VOoM'
+Plug 'elixir-editors/vim-elixir'
 " Themes
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'

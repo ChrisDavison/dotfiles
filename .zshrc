@@ -10,6 +10,8 @@ export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export MAIL=~/.mbox
+export TODOFILE=~/Dropbox/todo.txt
+export DONEFILE=~/Dropbox/done.txt
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
@@ -283,7 +285,12 @@ wallpaper(){
 
 skyemull() {
     echo "Mull:8811 routed to localhost:9999, via Skye"
-    ssh -L 9999:localhost:9999 cdavison@skye ssh -L 9999:localhost:8811 cdavison@mull
+    ssh -L -T 9999:localhost:9999 cdavison@skye ssh -T -L 9999:localhost:8811 cdavison@mull
+}
+
+mull() {
+    echo "Mull:8811 routed to localhost:9999, via Skye"
+    ssh mull -L 9999:localhost:8811
 }
 
 
