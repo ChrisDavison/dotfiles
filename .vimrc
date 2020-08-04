@@ -37,6 +37,7 @@ Plug 'vim-voom/VOoM'
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
 Plug 'pgdouyon/vim-yin-yang'
+Plug 'owickstrom/vim-colors-paramount'
 call plug#end()
 
 " settings {{{1
@@ -49,7 +50,7 @@ set autoindent
 set breakindent
 set breakindentopt=shift:4,sbr
 set backspace=indent,eol,start
-set iskeyword=a-z,A-Z,_  " Used e.g. when searching for tags
+set iskeyword=a-z,A-Z,_,48-57  " Used e.g. when searching for tags
 setglobal tags-=./tags tags-=./tags; tags^=./tags;
 set incsearch
 set updatetime=300 " Write a swap file after 1 second
@@ -133,19 +134,56 @@ set t_Co=16
 if !has('gui_running')
     set t_Co=256
 endif
-let g:molokai_original=1
 let g:rehash256 = 1
 set bg=dark
-function s:timecolour()
+let g:dark_scheme='yin'
+let g:light_scheme='yang'
+function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
-        colorscheme yin
+        call s:colour_dark()
     else
-        colorscheme yang
+        call s:colour_light()
     end
 endfunction
-" call s:timecolour()
-colorscheme yin
-command! TimeColour call s:timecolour()
+
+function s:colour_toggle()
+    if &bg == "dark"
+        call s:colour_light()
+    else
+        call s:colour_dark()
+    endif
+endfunction
+
+function s:colour_dark()
+    " colorscheme corvine
+    exec "colorscheme " . g:dark_scheme
+    set bg=dark
+endfunction
+
+function s:colour_light()
+    " colorscheme corvine_light
+    exec "colorscheme " . g:light_scheme
+    set bg=light
+endfunction
+
+call s:colour_time()
+
+command! ColourDark call s:colour_dark()
+command! ColourToggle call s:colour_toggle()
+command! ColourLight call s:colour_light()
+command! ColourTime call s:colour_time()
+
+" Rather than modifying 'paramount' directly,
+" Just link html (markdown) headers to 'Question' to get
+" a pinkish header
+if g:colors_name == 'paramount'
+    hi! link htmlH1      Question
+    hi! link htmlH2      Question
+    hi! link htmlH3      Question
+    hi! link htmlH4      Question
+    hi! link htmlH5      Question
+    hi! link htmlH6      Question
+endif
 " plugins & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -185,6 +223,8 @@ nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 inoremap <C-c> <ESC>
 nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
+
+nnoremap S :%s///g<LEFT><LEFT>
 
 imap jk <ESC>
 imap kj <ESC>
