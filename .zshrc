@@ -50,6 +50,8 @@ setopt always_to_end # move cursor to end if word had one match
 setopt no_beep #turn off terminal bell
 setopt extended_glob
 
+set -o emacs
+
 # completion
 zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
