@@ -260,6 +260,11 @@ iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 " commands {{{1
 command! MakeTags !ctags -R .
 " autocommands {{{1
+function! s:save_last_session()
+    exec "!rm ~/.lastsession.vim"
+    mks ~/.lastsession.vim
+endfunction
+
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
@@ -282,5 +287,6 @@ augroup vimrc
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
     au BufEnter * Root
+    au VimLeave * call s:save_last_session()
 augroup END
 

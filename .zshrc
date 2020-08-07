@@ -304,11 +304,15 @@ fzfp(){
     fzf --preview="bat {}" --preview-window=right:70%:wrap
 }
 
+export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
+
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
 export RANGER_LOAD_DEFAULT_RC=0
+
+alias viml="vim -S ~/.lastsession.vim"
 
 # Windows / WSL-specific config
 if [[ $(uname -a | grep -q 'Microsoft') -eq 1 ]]; then
