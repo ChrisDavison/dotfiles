@@ -1,5 +1,5 @@
 PROMPT="%~ » "
-# exports {{{1
+# exports / environment variables {{{1
 export EDITOR="nvim"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
@@ -12,6 +12,8 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export MAIL=~/.mbox
 export TODOFILE=~/Dropbox/todo.txt
 export DONEFILE=~/Dropbox/done.txt
+export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
+export RANGER_LOAD_DEFAULT_RC=0
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
@@ -21,7 +23,7 @@ maybe_append_to_path() {
 maybe_append_to_path $GOBIN
 maybe_append_to_path $HOME/bin
 maybe_append_to_path $HOME/.bin
-maybe_append_to_path $HOME/.vim/pack/plugins/start/fzf/bin/
+maybe_append_to_path $HOME/.fzf/bin/
 maybe_append_to_path $HOME/code/scripts/
 maybe_append_to_path $HOME/code/scripts/covid/
 maybe_append_to_path $HOME/.cargo/bin
@@ -30,7 +32,7 @@ maybe_append_to_path $HOME/.nimble/bin
 maybe_append_to_path /usr/local/go/bin
 maybe_append_to_path $HOME/.local/go/bin
 maybe_append_to_path $HOME/code/seadas-7.5.3/bin
-
+# }}}1
 # settings {{{1
 setopt  autocd autopushd pushdignoredups
 
@@ -81,8 +83,17 @@ alias nt="echo '-  [ ] $argv' >> ~/code/knowledge/inbox.txt"
 alias inbox="nvim ~/code/knowledge/inbox.txt"
 alias n="note.py"
 alias clip="xclip -sel clipboard"
+alias df="df -x squashfs"
+alias clip="xclip -sel clipboard"
+alias zc="ziputil choose"
+alias zv="ziputil view"
+alias open="xdg-open"
+alias j="nvim ~/Dropbox/notes/journal.md"
+alias viml="vim -S ~/.lastsession.vim"
+# }}}1
 
-if [ -n $(which repoutil) ]; then
+# aliases (conditional) {{{1
+if type repoutil > /dev/null; then
     alias ru="repoutil unclean"
     alias rs="repoutil stat"
     alias rl="repoutil list"
@@ -92,7 +103,7 @@ else
     echo "repoutil not installed"
 fi
 
-if [ -n $(which exa) ]; then
+if type exa > /dev/null; then
     alias ls="exa --group-directories-first --git-ignore"
     alias lsa="exa --group-directories-first"
     alias ll="ls --long --group-directories-first"
@@ -103,226 +114,143 @@ if [ -n $(which exa) ]; then
 else
     echo "exa not installed"
 fi
+# }}}1
 
-alias clip="xclip -sel clipboard"
+# keybinds {{{1
+# up and down do history search
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
+# }}}1
 
-alias zc="ziputil choose"
-alias zv="ziputil view"
-
-alias open="xdg-open"
-
-alias j="nvim ~/Dropbox/notes/journal.md"
-
-# source other scripts {{{1
-function source_if_exists {
-    [[ -f "$1" ]] && source "$1"
-    [[ $VERBOSE_ZSHRC -eq 1 ]] && echo "Sourced" "$1"
-}
-source_if_exists $HOME/.cargo/env
-source_if_exists $HOME/.vim/pack/plugins/start/fzf/shell/key-bindings.zsh
-
-# fzf functions {{{1
-# Use fd (https://github.com/sharkdp/fd) instead of the default find
-# command for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-_fzf_compgen_path() {
-  fd --hidden --follow --exclude ".git" . "$1"
-}
-
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude ".git" . "$1"
-}
-
-fshow(){
-    local commit commits
-    commits=$(git log --oneline) &&
-        commit=$(echo "$commits" | fzf --preview 'git show --abbrev-commit --stat --color=always $(echo {} | cut -d" " -f1)') &&
-    git checkout $(echo "$branch" | cut -d' ' -f1)
-}
-zle -N fshow
-bindkey '^gc' fshow
-
-fco() {
-  local tags branches target
-  branches=$(
-    git --no-pager branch --all \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
-  tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi) || return
-  git checkout $(awk '{print $2}' <<<"$target" )
-}
-zle -N fco
-bindkey '^gb' fco
-
-# fgst - pick files from `git status -s`
-is_in_git_repo() {
+#===========================================================
+# FUNCTIONS
+#===========================================================
+is_in_git_repo() { # {{{1
   git rev-parse HEAD > /dev/null 2>&1
-}
+} # }}}1
 
-fgst() {
-  # "Nothing to see here, move along"
-  is_in_git_repo || return 1
-
-  local cmd="${FZF_CTRL_T_COMMAND:-"command git status -s"}"
-
-  eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS" fzf -m "$@" | while read -r item; do
-    echo "$item" | awk '{print $2}'
-  done
-  echo
-}
-alias vfg='nvim $(fgst)'
-
-# functions {{{1
-sanitise(){
+sanitise(){ # {{{1
     [[ $# -eq 0 ]] && echo "usage: sanitise <filename>" && return
     direc=$(dirname $1)
     base=$(basename $1)
     echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
-}
+} # }}}1
 
-ppath(){
+ppath(){ # {{{1
     echo "$PATH" | tr ":" "\n"
-}
+} # }}}1
 
-monospace-fonts(){
+monospace-fonts(){ # {{{1
 	fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
-}
+} # }}}1
 
-aliases(){
+aliases(){ # {{{1
     grep "^\s*alias.*=" ~/.zshrc | sed -e 's/^[ ]\+//g' | column -s '=' -t | cut -d' ' -f2-
-}
+} # }}}1
 
-nonascii(){
+nonascii(){ # {{{1
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
-}
+} # }}}1
 
-is_tmux_alive(){
+is_tmux_alive(){ # {{{1
     if [ $(tmux list-sessions | wc -l) -gt 0 ];
     then
         echo "TMUX"
     else
         echo "noMUX"
         fi
-}
+} # }}}1
 
-datezipdir(){
+datezipdir(){ # {{{1
     [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
     dirname=$(basename $1)
     zipname=$(date +"$dirname--%Y-%m-%d.zip")
     echo $zipname
     zip -r $zipname $1
-}
+} # }}}1
 
-aesenc(){
+aesenc(){ # {{{1
     [[ $# = 0 ]] && echo "usage: aesenc <file>" && return
     gpg --symmetric -a --cipher-algo aes256 --output "$1".asc "$1"
     echo "$1.asc created"
-}
+} # }}}1
 
-# find duplicate words
-duplicate_words(){
-    [[ $# -eq 0 ]] && echo "usage: duplicate_words <file>..." && return
-    grep -Eo '(\b.+) \1\b' $1 || true
-}
-
-ni(){
-    notename="$HOME/code/knowledge/inbox.md"
-    echo "- $@" >> $notename
-    mdformatwrap $notename
-}
-
-niv(){
-    bat "$HOME/code/knowledge/inbox.md"
-}
-
-note(){
-    notename="$HOME/code/knowledge/inbox.md"
-    nvim $notename
-    mdformatwrap $notename
-    clear
-    ls
-}
-
-notes(){
-    pushd $HOME/code/knowledge/
-    clear
-    ls
-}
-
-mdformatwrap(){
+mdformatwrap(){ # format markdown using pandoc {{{1
     pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
-}
+} # }}}1
 
-tmc(){
+tmc(){ # fuzzy choose a tmux session {{{1
     chosen=$(tmux list-sessions 2> /dev/null | cut -d: -f1 | fzf -0)
     [[ -n "$chosen" ]] && tmux attach -t "$chosen"
-}
+} # }}}1
 
-
-vs(){
+vs(){ # fuzzy select a vim session {{{1
     chosen=$(ls -1 ~/.vimsessions | fzf -0)
     [[ -n "$chosen" ]] && nvim -S "~/.vimsessions/$chosen"
-}
+} # }}}1
 
-duplicates(){
+duplicates(){ # find duplicate words in a file {{{1
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true 
-}
+} # }}}1
 
-asmrmpv(){
+asmrmpv(){ # launch a random asmr video using mpv {{{1
     nohup mpv $(randomasmr) &> /dev/null &
-}
+} # }}}1
 
-wallpaper(){
+wallpaper(){ # set linux wallpaper using feh {{{1
     chosen=$(fd . -t f ~/Dropbox/wallpapers | rg -v mobile | fzf)
     [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
-}
+} # }}}1
 
-skyemull() {
+skyemull() { # alias to ssh to mull, via skye, with tunneling {{{1
     echo "Mull:8811 routed to localhost:9999, via Skye"
     ssh -L -T 9999:localhost:9999 cdavison@skye ssh -T -L 9999:localhost:8811 cdavison@mull
-}
+} # }}}1
 
-mull() {
+mull() { # alias to ssh to mull with tunneling {{{1
     echo "Mull:8811 routed to localhost:9999, via Skye"
     ssh mull -L 9999:localhost:8811
-}
+} # }}}1
 
-
-# Make a string 'fuzzy' for searching
-fzs(){
+fzs(){ # make a string 'fuzzy', for searching {{{1
     echo "$@" | sed -e 's/\s/.*/g'
-}
+} # }}}1
 
-# FZF with preview
-fzfp(){
+fzfp(){ # fzf with preview {{{1
     fzf --preview="bat {}" --preview-window=right:70%:wrap
-}
+} # }}}1
 
-export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 
-# up and down do history search
-bindkey "^[[A" history-search-backward
-bindkey "^[[B" history-search-forward
-
-export RANGER_LOAD_DEFAULT_RC=0
-
-alias viml="vim -S ~/.lastsession.vim"
-
-# Windows / WSL-specific config
+# Windows / WSL-specific config {{{1
 if [[ $(uname -a | grep -q 'Microsoft') -eq 1 ]]; then
     export BROWSER=$(which firefox)
 fi
+# }}}1
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# SOURCE scripts and plugins {{{1
+source_if_exists(){
+    [[ -f "$1" ]] && source "$1"
+    [[ $VERBOSE_ZSHRC -eq 1 ]] && echo "Sourced" "$1"
+}
 
-source ~/.envs/ml/bin/activate
-source ~/code/dotfiles/zsh-prompt.sh
+# fco - fuzzy checkout [C-g b]
+# fshow - fuzzy show [C-g c] 
+# fgst - fuzzy select from git status (vfg - vim, fuzzy from status)
+source $HOME/code/dotfiles/functions-git-fzf.sh
+
+# ni - append $@ to inbox
+# niv - edit inbox in vim
+# note - edit inbox in vim
+# notes - go to notes dir and ls
+source $HOME/code/dotfiles/functions-notes.sh
+
+source_if_exists ~/.envs/ml/bin/activate
+source_if_exists ~/code/dotfiles/zsh-prompt.sh
+source_if_exists $HOME/.cargo/env
+source_if_exists $HOME/.fzf/shell/key-bindings.zsh
+source_if_exists ~/.fzf.zsh
+
+# }}}1
+
 [[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
