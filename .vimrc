@@ -137,8 +137,8 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='yin'
-let g:light_scheme='yang'
+let g:dark_scheme='paramount'
+let g:light_scheme='paramount'
 function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
         call s:colour_dark()
@@ -238,6 +238,7 @@ nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
 nnoremap <F3> :VoomToggle<CR>
+nnoremap <F6> :set paste!<BAR>set paste?<CR>
 nnoremap <leader>j :e ~/Dropbox/notes/journal.md<BAR>normal G<CR>
 nnoremap <leader>l :e ~/Dropbox/notes/logbook.md<CR>
 
