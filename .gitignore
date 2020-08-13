@@ -36,3 +36,4 @@ history.sqlite
 .vim/plugins
 .config/wslu
 .config/configstore
+.config/epr/
