@@ -34,6 +34,7 @@ Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
 Plug 'vim-voom/VOoM'
 Plug 'elixir-editors/vim-elixir'
+Plug 'udalov/kotlin-vim'
 " Themes
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
@@ -137,8 +138,8 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='paramount'
-let g:light_scheme='paramount'
+let g:dark_scheme='seoul256'
+let g:light_scheme='seoul256-light'
 function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
         call s:colour_dark()
