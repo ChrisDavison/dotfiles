@@ -482,7 +482,9 @@ Auto-completion for rust, using racer
 (use-package rust-mode :ensure t
   :hook (rust-mode . company-mode))
 (use-package flymake-rust :ensure t)
-(use-package flycheck-rust :ensure t)
+(use-package flycheck-rust :ensure t
+  :hook ((rust-mode . flycheck-rust-setup)))
+
 (use-package cargo :ensure t
   :hook (rust-mode . cargo-minor-mode))
 (use-package racer :ensure t
@@ -625,6 +627,19 @@ Auto-completion for rust, using racer
 #+END_SRC
 
 * NAVIGATION (windows, menus, buffers)
+#+BEGIN_SRC emacs-lisp
+(define-key global-map (kbd "C-,") 'find-file)
+(define-key global-map (kbd "C-.") 'ivy-switch-buffer)
+
+(defun obar/kill-region-or-backward-word ()
+  (interactive)
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end))
+    (backward-kill-word 1)))
+
+(global-set-key (kbd "C-w") 'obar/kill-region-or-backward-word)
+#+END_SRC
+
 ** Ivy (counsel, swiper, ivy) for navigation most menu-type things
 Navigation of pretty much any /menu-type/ thing.
 
@@ -653,7 +668,7 @@ Navigation of pretty much any /menu-type/ thing.
   (setq ivy-use-virtual-buffers t
 		ivy-count-format ""
 		ivy-initial-inputs-alist nil
-		ivy-re-builders-alist '((t . ivy--regex-plus)))
+		ivy-re-builders-alist '((t . ivy--regex-plus))))
 
 (use-package swiper :ensure t)
 (use-package imenu-anywhere :ensure t)
@@ -750,6 +765,8 @@ You can easily /capture/ information using various different templates (includin
   (setq org-directory "~/code/knowledge"
         org-default-notes-file "~/code/knowledge/inbox.org"
         org-src-window-setup 'current-window
+        org-indent-indentation-per-level 1
+        org-adapt-indentation nil
         org-agenda-window-setup 'current-window
         org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -800,15 +817,14 @@ You can easily /capture/ information using various different templates (includin
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)
                                (sqlite . t)
-                               (julia . t)
                                (emacs-lisp . t)))
   (set-face-attribute 'org-block-begin-line nil :height 0.7 :slant 'normal))
 (use-package org-roam
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory "~/code/knowledge")
-      :bind (:map org-roam-mode-map
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/code/knowledge")
+  :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
                ("C-c n g" . org-roam-show-graph))
@@ -821,6 +837,7 @@ You can easily /capture/ information using various different templates (includin
 (diminish 'org-indent-mode)
 
 (define-key org-mode-map (kbd "C-c ,") 'org-time-stamp-inactive)
+(define-key org-mode-map (kbd "C-,") nil)
 (global-set-key (kbd "<f1>")
                 (lambda () (interactive)
                   (refresh-capture-templates)
@@ -1325,8 +1342,8 @@ List some pretty fonts, and grab the first one that's available.
     (set-frame-font next-font-name 1)
     (message next-font-name)))
 
-(defvar cd/preferred-windows-font "Rec Mono Casual")
-(defvar cd/preferred-linux-font "Rec Mono Casual")
+(defvar cd/preferred-windows-font "JetBrains Mono")
+(defvar cd/preferred-linux-font "JetBrains Mono")
 (cond
  ((and is-windows? (member cd/preferred-windows-font (font-family-list)))
   (set-frame-font cd/preferred-windows-font 1)

@@ -14,6 +14,7 @@ export TODOFILE=~/Dropbox/todo.txt
 export DONEFILE=~/Dropbox/done.txt
 export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 export RANGER_LOAD_DEFAULT_RC=0
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
@@ -191,7 +192,7 @@ vs(){ # fuzzy select a vim session {{{1
 
 duplicates(){ # find duplicate words in a file {{{1
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
-    grep -Eo '(\b.+) \1\b' $1 || true 
+    grep -Eo '(\b.+) \1\b' $1 || true
 } # }}}1
 
 asmrmpv(){ # launch a random asmr video using mpv {{{1
@@ -221,10 +222,21 @@ fzfp(){ # fzf with preview {{{1
     fzf --preview="bat {}" --preview-window=right:70%:wrap
 } # }}}1
 
+alias eme='
+export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
+export LIBGL_ALWAYS_INDIRECT=1
+setsid emacs'
+
+alias emee='
+export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
+export LIBGL_ALWAYS_INDIRECT=1
+setsid emacs
+exit'
 
 # Windows / WSL-specific config {{{1
-if [[ $(uname -a | grep -q 'Microsoft') -eq 1 ]]; then
+if [[ $(uname -a | grep -i -q 'Microsoft') -eq 1 ]]; then
     export BROWSER=$(which firefox)
+    export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
 fi
 # }}}1
 
@@ -235,7 +247,7 @@ source_if_exists(){
 }
 
 # fco - fuzzy checkout [C-g b]
-# fshow - fuzzy show [C-g c] 
+# fshow - fuzzy show [C-g c]
 # fgst - fuzzy select from git status (vfg - vim, fuzzy from status)
 source $HOME/code/dotfiles/functions-git-fzf.sh
 
