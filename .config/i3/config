@@ -179,7 +179,9 @@ bindsym $mod+Mod1+c exec $HOME/.bin/dmenu_cheatsheets.sh
 #bindsym $mod+Mod1+t exec firefox --new-window "https://to-do.live.com/tasks/myday"
 bindsym $mod+Mod1+i exec terminator -e 'nvim $HOME/code/knowledge/inbox.md'
 # bindsym $mod+Mod1+t exec terminator -e 'nvim $HOME/Dropbox/notes/todo.md'
-# bindsym $mod+Mod1+f exec terminator -e 'nvim $HOME/Dropbox/notes/flowtime-tracker.md'
+# bindsym $mod+Mod1+f exec terminator -e 'nvim $HOME/Dropbox/notes/flowtime-tracker.md
+bindsym $mod+Mod1+d exec $HOME/.bin/randomasmr-mpv.sh
+
 
 
 #  _          _       _     _
@@ -237,6 +239,8 @@ for_window [class="spotify"] move container to workspace $ws5
 for_window [class="Blueman-manager"] floating enable; move position center
 for_window [class="Anki"] floating enable; move position center
 for_window [class="Pavucontrol"] floating enable; move position center
+for_window [class="mpv"] floating enable; resize set width 300 px height 169 px; move position center; sticky enable
+
 # for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position center
 
 #start in opposite orientation from your monitor

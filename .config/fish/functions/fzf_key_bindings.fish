@@ -1,1 +1,1 @@
-/home/cdavison/.vim/pack/plugins/start/fzf/shell/key-bindings.fish
+/home/davison/.fzf/shell/key-bindings.fish
