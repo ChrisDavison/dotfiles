@@ -9,6 +9,7 @@ set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code/"
 set -Ux VIRTUAL_ENV_DISABLE_PROMPT 0
+set -Ux RUST_SRC_PATH "$HOME/.rust_src"
 
 set -Ux RANGER_LOAD_DEFAULT_RC 0
 

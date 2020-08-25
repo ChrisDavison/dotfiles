@@ -14,7 +14,7 @@ export TODOFILE=~/Dropbox/todo.txt
 export DONEFILE=~/Dropbox/done.txt
 export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 export RANGER_LOAD_DEFAULT_RC=0
-export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+export RUST_SRC_PATH="$HOME/.rust_src"
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
