@@ -33,7 +33,29 @@
     (special-mode)
     (evil-insert 1)))
 
+;;;###autoload
 (defun cd/repo/branchstat () (interactive) (repoutil "branchstat"))
+
+;;;###autoload
 (defun cd/repo/list () (interactive) (repoutil "list"))
+
+;;;###autoload
 (defun cd/repo/fetch () (interactive) (repoutil "fetch"))
+
+;;;###autoload
 (defun cd/repo/unclean () (interactive) (repoutil "unclean"))
+
+;;;###autoload
+(defun wsl-copy (start end)
+  (interactive "r")
+  (shell-command-on-region start end "win32yank.exe -i")
+  (deactivate-mark))
+
+;;;###autoload
+(defun wsl-paste ()
+  (interactive)
+  (let ((clipboard
+         (shell-command-to-string "win32yank.exe -o")))
+    (setq clipboard (replace-regexp-in-string "\r" "" clipboard))
+    (setq clipboard (substring clipboard 0 -1))
+    (insert clipboard)))
