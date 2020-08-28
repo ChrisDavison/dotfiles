@@ -277,8 +277,21 @@
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
 
-;; temporary fix for WSL1 - clock_nanosleep not available, so fd errors
-(setq doom-projectile-fd-binary "fd -j 1")
+(map! :leader
+      :prefix "w"
+      :desc "evil-window-split (follow)"
+      "s"
+      (lambda () (interactive)
+        (evil-window-split)
+        (evil-window-down 1)))
+(map! :leader
+      :prefix "w"
+      :desc "evil-window-vsplit (follow)"
+      "v"
+      (lambda () (interactive)
+        (evil-window-vsplit)
+        (evil-window-right 1)))
+
 (map! :leader
       (:prefix-map ("a" . "applications")
        (:prefix ("r" . "repoutil")
