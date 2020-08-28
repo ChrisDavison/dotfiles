@@ -37,3 +37,5 @@ history.sqlite
 .config/wslu
 .config/configstore
 .config/epr/
+/.doom.d/custom.el
+/.config/dconf/
