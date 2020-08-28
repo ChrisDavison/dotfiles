@@ -73,10 +73,6 @@
 (delete-selection-mode 1)
 (global-undo-tree-mode 1)
 
-(unless (equal "Battery status not available"
-               (battery))
-  (display-battery-mode 1))
-
 (setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
