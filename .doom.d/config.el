@@ -79,12 +79,7 @@
 
 (add-to-list 'auth-sources "~/.authinfo")
 
-(map! :leader
-      (:prefix-map ("a" . "applications")
-       (:prefix ("r" . "repoutil")
-        :desc "Status of all branches" "b" #'cd/repo/branchstat
-        :desc "Fetch all branches" "f" #'cd/repo/fetch
-        :desc "List all managed repos" "l" #'cd/repo/list)))
+
 
 (map! :n "C-;" #'iedit-mode)
 (map! :n "C-:" #'iedit-mode-toggle-on-function)
@@ -284,6 +279,17 @@
 
 ;; temporary fix for WSL1 - clock_nanosleep not available, so fd errors
 (setq doom-projectile-fd-binary "fd -j 1")
+(map! :leader
+      (:prefix-map ("a" . "applications")
+       (:prefix ("r" . "repoutil")
+        :desc "Status of all branches" "b" #'cd/repo/branchstat
+        :desc "Fetch all branches" "f" #'cd/repo/fetch
+        :desc "List all managed repos" "l" #'cd/repo/list)
+       (:prefix ("o" . "org (custom)")
+        :desc "roam" "r" #'org-roam
+        :desc "roam insert" "i" #'org-roam-insert
+        :desc "roam find file" "f" #'org-roam-find-file)))
+
 ;; workaround to get the right WSL interop variable for clipboard usage
 ;; used in combination with a shell alias to export $WSL_INTEROP to a file
 ;; before calling emacs
