@@ -70,4 +70,19 @@ test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
 test -f ~/code/todo.txt/todo_completion; and bash ~/code/todo.txt/todo_completion
 
+uname -r | rg -i -q 'microsoft-standard' > /dev/null
+if test $status -eq 0
+    set -Ux DISPLAY (grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
+    set -Ux LIBGL_ALWAYS_INDIRECT 1
+
+    set -Ux NO_AT_BRIDGE 1
+    for i in (pstree -np -s %self | grep -o -E '[1-9]+')
+        set fname /run/WSL/"$i"_interop
+        if test -e $fname
+            set -x WSL_INTEROP $fname
+            echo $fname > ~/.wsl_interop
+        end
+    end
+end
+
 source ~/.envs/ml/bin/activate.fish

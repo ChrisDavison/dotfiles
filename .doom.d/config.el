@@ -288,3 +288,7 @@
 
 ;; temporary fix for WSL1 - clock_nanosleep not available, so fd errors
 (setq doom-projectile-fd-binary "fd -j 1")
+;; workaround to get the right WSL interop variable for clipboard usage
+;; used in combination with a shell alias to export $WSL_INTEROP to a file
+;; before calling emacs
+(set-wsl-interop)
