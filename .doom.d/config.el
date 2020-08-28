@@ -97,6 +97,7 @@
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
+           'org-roam-mode
            '(lambda () (set-face-italic 'italic t)))
 
 (setq org-directory "~/Dropbox/org"
@@ -129,6 +130,7 @@
 ;;       org-refile-allow-creating-parent-nodes 'confirm
 ;;       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
      )
+(setq org-roam-directory org-directory)
 
 (defun cd/move-to-previous-narrow ()
   (interactive)
