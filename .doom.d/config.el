@@ -22,7 +22,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font "JetBrains Mono-12")
+(setq doom-font "CamingoCode-12")
 
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
@@ -307,3 +307,28 @@
 ;; used in combination with a shell alias to export $WSL_INTEROP to a file
 ;; before calling emacs
 (set-wsl-interop)
+
+(setq font-preferences
+      '("Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
+        "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code"
+        "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
+        "Liberation Mono" "Fira Code" "Iosevka Term"))
+(setq cd-fonts (--filter (member it (font-family-list)) font-preferences))
+
+(defvar current-font-idx 0)
+
+(defun set-pretty-font ()
+  "Set a font from one of the available fonts that I like"
+  (interactive)
+  (set-frame-font (ivy-read "Pick font:" cd-fonts) 1))
+
+(defun next-font ()
+  (interactive)
+  (setq current-font-idx
+        (% (+ 1 current-font-idx)
+           (length cd-fonts)))
+  (let ((next-font-name (nth current-font-idx cd-fonts)))
+    (set-frame-font next-font-name 1)
+    (message next-font-name)))
+
+(global-set-key (kbd "C-c f") 'next-font)
