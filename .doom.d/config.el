@@ -22,7 +22,7 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font "CamingoCode-12")
+(setq doom-font "Dank Mono-14")
 
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
@@ -35,8 +35,9 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type "relative")
 
+(global-visual-line-mode 1)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -65,8 +66,7 @@
 (add-to-list 'auto-mode-alist '("\\.rs" . rust-mode))
 
 ;;; General settings
-(setq-default
- auto-save-default t)
+(setq-default auto-save-default t)
 (setq avy-all-windows t)
 
 (display-time-mode 1)
@@ -78,11 +78,6 @@
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 (add-to-list 'auth-sources "~/.authinfo")
-
-
-
-(map! :n "C-;" #'iedit-mode)
-(map! :n "C-:" #'iedit-mode-toggle-on-function)
 
 
 ;;; Org-mode
@@ -131,22 +126,6 @@
 ;;       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
      )
 (setq org-roam-directory org-directory)
-
-(defun cd/move-to-previous-narrow ()
-  (interactive)
-  (progn
-    (beginning-of-buffer)
-    (widen)
-    (outline-previous-heading)
-    (org-narrow-to-subtree)))
-
-(defun cd/move-to-next-narrow ()
-  (interactive)
-  (progn
-    (beginning-of-buffer)
-    (widen)
-    (outline-next-heading)
-    (org-narrow-to-subtree)))
 
 (defun read-capitalized-title ()
   (s-titleize (read-string "Title: ")))
@@ -276,6 +255,39 @@
 
 (setq vterm-shell "/usr/bin/fish")
 
+;; workaround to get the right WSL interop variable for clipboard usage
+;; used in combination with a shell alias to export $WSL_INTEROP to a file
+;; before calling emacs
+(set-wsl-interop)
+
+(global-anzu-mode 1)
+
+
+(defvar remote-machines
+  `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
+    ("iona" . ,(list :username "cdavison" :ip "130.159.94.187"))))
+
+(defun connect-remote ()
+  "Open dired buffer in selected remote machine"
+  (interactive)
+  (let* ((remote-source `((name . "")
+                          (candidates . ,(mapcar 'car remote-machines))
+                          (action . (lambda (candidate)
+                                      candidate))))
+         (selected-machine (completing-read "Machine" (mapcar 'car remote-machines) nil t))
+         (machine-data (cdr (assoc selected-machine remote-machines)))
+         (username (plist-get machine-data :username))
+         (ip-address (plist-get machine-data :ip)))
+    (if (string= username "root")
+        (dired (concat "/ssh:" username "@" ip-address ":/"))
+      (dired (concat "/ssh:" username "@" ip-address ":/home/" username "/")))
+    (message "Connected")))
+
+;;; Keybinds
+(map! "C-c f" 'next-font)
+(map! "M-%" #'anzu-query-replace)
+(map! "C-M-%" #'anzu-query-replace-regexp)
+
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
 
@@ -305,32 +317,6 @@
         :desc "roam insert" "i" #'org-roam-insert
         :desc "roam find file" "f" #'org-roam-find-file)))
 
-;; workaround to get the right WSL interop variable for clipboard usage
-;; used in combination with a shell alias to export $WSL_INTEROP to a file
-;; before calling emacs
-(set-wsl-interop)
+(map! :n "C-;" #'iedit-mode)
+(map! :n "C-:" #'iedit-mode-toggle-on-function)
 
-(setq font-preferences
-      '("Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
-        "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code"
-        "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
-        "Liberation Mono" "Fira Code" "Iosevka Term"))
-(setq cd-fonts (--filter (member it (font-family-list)) font-preferences))
-
-(defvar current-font-idx 0)
-
-(defun set-pretty-font ()
-  "Set a font from one of the available fonts that I like"
-  (interactive)
-  (set-frame-font (ivy-read "Pick font:" cd-fonts) 1))
-
-(defun next-font ()
-  (interactive)
-  (setq current-font-idx
-        (% (+ 1 current-font-idx)
-           (length cd-fonts)))
-  (let ((next-font-name (nth current-font-idx cd-fonts)))
-    (set-frame-font next-font-name 1)
-    (message next-font-name)))
-
-(global-set-key (kbd "C-c f") 'next-font)
