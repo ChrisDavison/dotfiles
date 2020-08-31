@@ -320,5 +320,7 @@
 (map! :n "C-;" #'iedit-mode)
 (map! :n "C-:" #'iedit-mode-toggle-on-function)
 
+(map! "<f1>" 'org-capture)
+
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (setq nov-text-width 80)
