@@ -26,8 +26,6 @@
 (package! s)
 (package! f)
 
-(package! org-roam)
-
 (package! rg)
 
 (package! gnuplot)
