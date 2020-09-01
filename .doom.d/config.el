@@ -1,44 +1,16 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-;;; Personal details
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com")
 
-
-;;; Utility
-
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
+;;; Doom appearance Utility
 (setq doom-font "Dank Mono-14")
-
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one)
-
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type "relative")
 
 (global-visual-line-mode 1)
 
+;;; Doom util functions - quick documentation
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
@@ -56,6 +28,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; (require! 'org-roam-protocol)
 ;;; Programming - rust
 (add-hook! rust-mode
            '(company-mode flycheck-rust-setup
@@ -76,10 +49,10 @@
 (setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
-
 (add-to-list 'auth-sources "~/.authinfo")
 
-
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "~/bin/firefox")
 ;;; Org-mode
 (defun cd/org-open-link-same ()
   (interactive)
@@ -108,26 +81,27 @@
 ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
 ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
-;;       org-todo-keywords'((sequence "TODO" "WIP" "|" "DONE")
-;;                          (sequence "|" "DEAD"))
+      org-todo-keywords'((sequence "TODO(t)" "WIP" "WAIT" "|" "DONE")
+                         (sequence "|" "DEAD"))
       org-agenda-skip-deadline-prewarning-if-scheduled t
       org-cycle-separator-lines 0
       org-list-indent-offset 2
 ;;       org-modules '(org-bibtex org-habit org-tempo)
-      org-agenda-files '("~/Dropbox/org")
+      org-agenda-files '("~/Dropbox/org/projects")
 ;;       org-agenda-time-grid '((daily today require-timed) (900 1300 1700 2100) "  --- " "")
 ;;       org-agenda-confirm-kill nil
-;;       org-log-repeat nil
-;;       org-log-done-with-time nil
+      org-log-repeat nil
+      org-log-done-with-time nil
 ;;       org-ellipsis "…"
       org-archive-location "~/Dropbox/org/archive.org::"
 ;;       ;; Settings for refiling
 ;;       org-reverse-note-order t
-;;       org-refile-use-outline-path t
-;;       org-refile-allow-creating-parent-nodes 'confirm
-;;       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+      org-refile-use-outline-path t
+      org-refile-allow-creating-parent-nodes 'confirm
+      org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+      org-agenda-skip-scheduled-if-deadline-is-shown t
      )
-(setq org-roam-directory org-directory)
+;; (setq org-roam-directory org-directory)
 
 (defun read-capitalized-title ()
   (s-titleize (read-string "Title: ")))
@@ -165,24 +139,26 @@
 
 (setq org-capture-templates
       '(
-        ("t" "Todo" entry (file "inbox.org") "* TODO %?")
-        ("r" "Research" entry (file "inbox.org") "** TODO Research %?")
+        ("t" "Todo" entry (file "~/Dropbox/org/inbox.org") "* TODO %?")
+        ("r" "Research" entry (file "~/Dropbox/org/inbox.org") "** TODO Research %?")
 
         ("n" "Note")
-        ("nn" "List item" item (file+headline "inbox.org" "Notes")
+        ("nn" "List item" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
          "- %?")
-        ("nl" "List link" item (file+headline "inbox.org" "Notes")
+        ("nl" "List link" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
          "- [[%^{URL}][%^{Description}]] %?")
-        ("nN" "Entry" entry (file "inbox.org") "* %?")
+        ("nN" "Entry" entry (file "~/Dropbox/org/inbox.org") "* %?")
 
         ("l" "Logbook")
-        ("ll" "Logbook item" item (file+datetree "logbook.org")
+        ("ll" "Logbook item" item (file+datetree "~/Dropbox/org/logbook.org")
          "- %?")
-        ("lL" "Logbook entry" entry (file+datetree "logbook.org")
+        ("lL" "Logbook entry" entry (file+datetree "~/Dropbox/org/logbook.org")
          "* %?")
+        ("ld" "Logbook entry (dated)" entry (file+datetree "~/Dropbox/org/logbook.org")
+         "* %?" :time-prompt t)
 
         ("g" "Games")
-        ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
+       ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
          "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
         ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
          "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
@@ -314,19 +290,21 @@
        (:prefix ("r" . "repoutil")
         :desc "Status of all branches" "b" #'cd/repo/branchstat
         :desc "Fetch all branches" "f" #'cd/repo/fetch
-        :desc "List all managed repos" "l" #'cd/repo/list)
-       (:prefix ("o" . "org (custom)")
-        :desc "roam" "r" #'org-roam
-        :desc "roam insert" "i" #'org-roam-insert
-        :desc "roam find file" "f" #'org-roam-find-file)))
+        :desc "List all managed repos" "l" #'cd/repo/list))
+      (:prefix-map ("j" . "jump to register")
+       :desc "config" "c" #'(lambda () (interactive) (jump-to-register ?c))
+       :desc "packages" "p" #'(lambda () (interactive) (jump-to-register ?p))
+       :desc "inbox" "i" #'(lambda () (interactive) (jump-to-register ?i))
+       :desc "journal" "j" #'(lambda () (interactive) (jump-to-register ?j))
+       :desc "logbook" "l" #'(lambda () (interactive) (jump-to-register ?l))))
 
 (map! :n "C-;" #'iedit-mode)
 (map! :n "C-:" #'iedit-mode-toggle-on-function)
 
 (map! "<f1>" 'org-capture)
+(map! "<f2>" 'org-agenda)
 
-(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-(setq nov-text-width 80)
+
 
 (after! org-roam
         (map! :leader
@@ -357,5 +335,36 @@
 ;;       (org-journal-date-format "%A, %d %B %Y"))
 ;; (setq org-journal-enable-agenda-integration t)
 
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "~/bin/firefox")
+;;; Nov.el - read epubs in emacs
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(setq nov-text-width 80)
+
+;;; org-roam / deft / zetteldeft
+(setq deft-directory org-directory
+      deft-recursive t)
+;; (after! org-roam
+;;         (map! :leader
+;;             :prefix "n"
+;;             :desc "org-roam" "l" #'org-roam
+;;             :desc "org-roam-insert" "i" #'org-roam-insert
+;;             :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+;;             :desc "org-roam-find-file" "f" #'org-roam-find-file
+;;             :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+;;             :desc "org-roam-insert" "i" #'org-roam-insert
+;;             :desc "org-journal" "j" #'org-journal-new-entry
+;;             :desc "org-roam-capture" "c" #'org-roam-capture))
+;; (add-hook! 'after-init-hook 'org-roam-mode)
+
+;; (require 'company-org-roam)
+;; (use-package company-org-roam
+;;   :when (featurep! :completion company)
+;;   :after org-roam
+;;   :config
+;;   (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
+
+;;; registers - easily navigate to files, or specific places
+(set-register ?c '(file . "~/.doom.d/config.el"))
+(set-register ?p '(file . "~/.doom.d/packages.el"))
+(set-register ?i '(file . "~/Dropbox/org/inbox.org"))
+(set-register ?j '(file . "~/Dropbox/org/journal.org"))
+(set-register ?l '(file . "~/Dropbox/org/logbook.org"))
