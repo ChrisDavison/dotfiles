@@ -266,3 +266,13 @@ source_if_exists ~/.fzf.zsh
 # }}}1
 
 [[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
+
+if [[ "$TERM" == "dumb" ]]
+then
+  unsetopt zle
+  unsetopt prompt_cr
+  unsetopt prompt_subst
+  unfunction precmd
+  unfunction preexec
+  PS1='$ '
+fi
