@@ -28,7 +28,6 @@
 
 (package! rg)
 
-(package! gnuplot)
 (package! fish-mode)
 (package! anzu)
 (package! nov)

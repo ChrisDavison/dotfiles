@@ -232,7 +232,7 @@ bindsym mod3+c exec clipmd.sh && xclip -o
 # for_window [class="Code"] move container to workspace $ws1
 # for_window [class="libreoffice-writer"] move container to workspace $ws2
 # for_window [class="keepassxc"] move container to workspace $ws5
-for_window [class="nixnote2"] move container to workspace $ws2
+# for_window [class="nixnote1"] move container to workspace $ws2
 for_window [class="spotify"] move container to workspace $ws5
 
 # Other window modifications

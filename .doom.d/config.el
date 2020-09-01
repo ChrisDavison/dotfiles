@@ -92,7 +92,7 @@
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
-           'org-roam-mode
+           ;; 'org-roam-mode
            '(lambda () (set-face-italic 'italic t)))
 
 ;; Much of the commented stuff is either stuff that I'm not sure about
@@ -264,7 +264,8 @@
 ;; workaround to get the right WSL interop variable for clipboard usage
 ;; used in combination with a shell alias to export $WSL_INTEROP to a file
 ;; before calling emacs
-(set-wsl-interop)
+(when (s-contains? (shell-command-to-string "uname -a") "microsoft")
+  (set-wsl-interop))
 
 (global-anzu-mode 1)
 
@@ -327,8 +328,6 @@
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (setq nov-text-width 80)
 
-(map! "M-#" '(lambda () (interactive )(insert "\\")))
-
 (after! org-roam
         (map! :leader
             :prefix "n"
@@ -343,21 +342,20 @@
 
 (add-hook! 'after-init-hook 'org-roam-mode)
 
+;; (require 'company-org-roam)
+;; (use-package company-org-roam
+;;   :when (featurep! :completion company)
+;;   :after org-roam
+;;   :config
+;;   (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
 
-(require 'company-org-roam)
-(use-package company-org-roam
-  :when (featurep! :completion company)
-  :after org-roam
-  :config
-  (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
-
-(use-package! org-journal
-      :custom
-      (org-journal-dir "~/Dropbox/org/journal")
-      (org-journal-date-prefix "#+TITLE: ")
-      (org-journal-file-format "%Y-%m.org")
-      (org-journal-date-format "%A, %d %B %Y"))
-(setq org-journal-enable-agenda-integration t)
+;; (use-package! org-journal
+;;       :custom
+;;       (org-journal-dir "~/Dropbox/org/journal")
+;;       (org-journal-date-prefix "#+TITLE: ")
+;;       (org-journal-file-format "%Y-%m.org")
+;;       (org-journal-date-format "%A, %d %B %Y"))
+;; (setq org-journal-enable-agenda-integration t)
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "~/bin/firefox")
