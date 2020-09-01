@@ -188,7 +188,6 @@
          "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
         ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
          "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
-
         ("w" "Watch")
         ("wt" "TV" item
          (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
@@ -205,6 +204,10 @@
 
         ("c" "Calendar" entry (file+olp+datetree "calendar.org")
          "* TODO %?\nDEADLINE: %t" :time-prompt t)
+
+        ("j" "journal")
+        ("jj" "Journal Item" item (file+datetree "journal.org") "%?")
+        ("jJ" "Journal Entry" entry (file+datetree "journal.org") "* %?")
 
         ("Q" "Quote" entry (file "quotes.org")
          "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
@@ -352,7 +355,7 @@
       :custom
       (org-journal-dir "~/Dropbox/org/journal")
       (org-journal-date-prefix "#+TITLE: ")
-      (org-journal-file-format "%Y-%m-%d.org")
+      (org-journal-file-format "%Y-%m.org")
       (org-journal-date-format "%A, %d %B %Y"))
 (setq org-journal-enable-agenda-integration t)
 
