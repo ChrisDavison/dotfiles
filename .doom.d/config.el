@@ -95,6 +95,8 @@
            'org-roam-mode
            '(lambda () (set-face-italic 'italic t)))
 
+;; Much of the commented stuff is either stuff that I'm not sure about
+;; or isn't actually different from the org-mode (or doom org) defaults.
 (setq org-directory "~/Dropbox/org"
 ;;       org-default-notes-file "~/code/knowledge/inbox.org"
       org-src-window-setup 'current-window
@@ -145,6 +147,7 @@
            (s-split " " author))))
 
 (defun maybe-get-bibtex ()
+  "Maybe get a DOI number for a reference"
   (let ((doi (read-string "DOI: " "" nil nil)))
     (if (s-equals? doi "")
         nil
@@ -262,7 +265,6 @@
 
 (global-anzu-mode 1)
 
-
 (defvar remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
     ("iona" . ,(list :username "cdavison" :ip "130.159.94.187"))))
@@ -270,11 +272,8 @@
 (defun connect-remote ()
   "Open dired buffer in selected remote machine"
   (interactive)
-  (let* ((remote-source `((name . "")
-                          (candidates . ,(mapcar 'car remote-machines))
-                          (action . (lambda (candidate)
-                                      candidate))))
-         (selected-machine (completing-read "Machine" (mapcar 'car remote-machines) nil t))
+  (let* ((machines (mapcar 'car remote-machines))
+         (selected-machine (completing-read "Machine" machines nil t))
          (machine-data (cdr (assoc selected-machine remote-machines)))
          (username (plist-get machine-data :username))
          (ip-address (plist-get machine-data :ip)))
@@ -324,3 +323,38 @@
 
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (setq nov-text-width 80)
+
+(map! "M-#" '(lambda () (interactive )(insert "\\")))
+
+(after! org-roam
+        (map! :leader
+            :prefix "n"
+            :desc "org-roam" "l" #'org-roam
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
+            :desc "org-roam-find-file" "f" #'org-roam-find-file
+            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
+            :desc "org-roam-insert" "i" #'org-roam-insert
+            :desc "org-journal" "j" #'org-journal-new-entry
+            :desc "org-roam-capture" "c" #'org-roam-capture))
+
+(add-hook! 'after-init-hook 'org-roam-mode)
+
+
+(require 'company-org-roam)
+(use-package company-org-roam
+  :when (featurep! :completion company)
+  :after org-roam
+  :config
+  (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
+
+(use-package! org-journal
+      :custom
+      (org-journal-dir "~/Dropbox/org/journal")
+      (org-journal-date-prefix "#+TITLE: ")
+      (org-journal-file-format "%Y-%m-%d.org")
+      (org-journal-date-format "%A, %d %B %Y"))
+(setq org-journal-enable-agenda-integration t)
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "~/bin/firefox")
