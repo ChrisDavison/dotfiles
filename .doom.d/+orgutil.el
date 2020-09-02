@@ -90,8 +90,8 @@
         ("nn" "List item" item (file+headline "inbox.org" "Notes")
          "- %?")
         ("nl" "List link" item (file+headline "inbox.org" "Notes")
-         "- [[%^{URL}][%^{Description}]] %?")
-        ("nN" "Entry" entry (file "inbox.org")
+         "- [[%c][%^{Description}]] %?")
+        ("nN" "Entry" entry (file+headline "inbox.org" "Notes")
          "* %?")
 
         ("l" "Logbook")
