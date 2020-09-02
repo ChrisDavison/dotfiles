@@ -70,37 +70,35 @@
 
 ;; Much of the commented stuff is either stuff that I'm not sure about
 ;; or isn't actually different from the org-mode (or doom org) defaults.
-(setq org-directory "~/Dropbox/org"
-;;       org-default-notes-file "~/code/knowledge/inbox.org"
-      org-src-window-setup 'current-window
-      org-indent-indentation-per-level 1
-      org-adapt-indentation nil
-      org-pretty-entities t
-      org-catch-invisible-edits 'show-and-error
-      org-imenu-depth 4
-;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
-;;       org-replace-disputed-keys t
-      org-hide-emphasis-markers t
-      org-todo-keywords'((sequence "TODO(t)" "WIP" "WAIT" "|" "DONE")
-                         (sequence "|" "DEAD"))
-      org-agenda-skip-deadline-prewarning-if-scheduled t
-      org-cycle-separator-lines 0
-      org-list-indent-offset 2
-;;       org-modules '(org-bibtex org-habit org-tempo)
-      org-agenda-files '("~/Dropbox/org/projects")
-;;       org-agenda-time-grid '((daily today require-timed) (900 1300 1700 2100) "  --- " "")
-;;       org-agenda-confirm-kill nil
-      org-log-repeat nil
-      org-log-done-with-time nil
-;;       org-ellipsis "…"
-      org-archive-location "~/Dropbox/org/archive.org::"
-;;       ;; Settings for refiling
-;;       org-reverse-note-order t
-      org-refile-use-outline-path t
-      org-refile-allow-creating-parent-nodes 'confirm
-      org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
-      org-agenda-skip-scheduled-if-deadline-is-shown t
-     )
+(add-hook! 'after-init-hook
+  (setq org-directory "~/Dropbox/org"
+        org-default-notes-file "~/Dropbox/org/inbox.org"
+        org-src-window-setup 'current-window
+        org-indent-indentation-per-level 1
+        org-adapt-indentation nil
+        org-pretty-entities t
+        org-catch-invisible-edits 'show-and-error
+        org-imenu-depth 4
+        ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
+        ;;       org-replace-disputed-keys t
+        org-hide-emphasis-markers t
+        org-todo-keywords '((sequence "TODO(t)" "WIP" "WAIT" "|" "DONE")
+                           (sequence "|" "DEAD"))
+        org-agenda-skip-deadline-prewarning-if-scheduled t
+        org-cycle-separator-lines 0
+        org-list-indent-offset 2
+        ;;       org-modules '(org-bibtex org-habit org-tempo)
+        org-agenda-files '("~/Dropbox/org/projects" "~/Dropbox/org/inbox.org")
+        org-log-repeat nil
+        org-log-done t
+        org-log-done-with-time t
+        org-archive-location "~/Dropbox/org/archive.org::"
+        org-refile-use-outline-path t
+        org-refile-allow-creating-parent-nodes 'confirm
+        org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+        org-agenda-skip-scheduled-if-deadline-is-shown t
+        )
+  )
 ;; (setq org-roam-directory org-directory)
 
 (defun read-capitalized-title ()
@@ -137,67 +135,72 @@
       (setq authors (concat authors " and " input))))
   authors)
 
-(setq org-capture-templates
-      '(
-        ("t" "Todo" entry (file "~/Dropbox/org/inbox.org") "* TODO %?")
-        ("r" "Research" entry (file "~/Dropbox/org/inbox.org") "** TODO Research %?")
+(add-hook! 'after-init-hook
+           (setq org-agenda-todo-ignore-scheduled 'future)
+  (setq org-capture-templates
+        '(
+          ("t" "Todo" entry (file+headline "~/Dropbox/org/inbox.org" "UNFILED Tasks")
+           "* TODO %?")
+          ("r" "Research" entry (file "~/Dropbox/org/inbox.org")
+           "** TODO Research %?")
 
-        ("n" "Note")
-        ("nn" "List item" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
-         "- %?")
-        ("nl" "List link" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
-         "- [[%^{URL}][%^{Description}]] %?")
-        ("nN" "Entry" entry (file "~/Dropbox/org/inbox.org") "* %?")
+          ("n" "Note")
+          ("nn" "List item" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
+           "- %?")
+          ("nl" "List link" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
+           "- [[%^{URL}][%^{Description}]] %?")
+          ("nN" "Entry" entry (file "~/Dropbox/org/inbox.org")
+           "* %?")
 
-        ("l" "Logbook")
-        ("ll" "Logbook item" item (file+datetree "~/Dropbox/org/logbook.org")
-         "- %?")
-        ("lL" "Logbook entry" entry (file+datetree "~/Dropbox/org/logbook.org")
-         "* %?")
-        ("ld" "Logbook entry (dated)" entry (file+datetree "~/Dropbox/org/logbook.org")
-         "* %?" :time-prompt t)
+          ("l" "Logbook")
+          ("ll" "Logbook item" item (file+datetree "~/Dropbox/org/logbook.org")
+           "- %?")
+          ("lL" "Logbook entry" entry (file+datetree "~/Dropbox/org/logbook.org")
+           "* %?")
+          ("ld" "Logbook entry (dated)" entry (file+datetree "~/Dropbox/org/logbook.org")
+           "* %?" :time-prompt t)
 
-        ("g" "Games")
-       ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
-         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
-        ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
-         "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
-        ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
-         "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
-        ("w" "Watch")
-        ("wt" "TV" item
-         (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
-         "%^{TV}" :immediate-finish t)
-        ("wf" "film" item
-         (file+olp "tv-shows-and-films.org" "Films" "To Watch")
-         "%^{Film}" :immediate-finish t)
+          ("g" "Games")
+          ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
+           "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
+          ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
+           "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
+          ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
+           "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
+          ("w" "Watch")
+          ("wt" "TV" item
+           (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
+           "%^{TV}" :immediate-finish t)
+          ("wf" "film" item
+           (file+olp "tv-shows-and-films.org" "Films" "To Watch")
+           "%^{Film}" :immediate-finish t)
 
-        ("L" "Literature" entry (file+headline "literature.org" "REFILE")
-         "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC" :immediate-finish t)
+          ("L" "Literature" entry (file+headline "literature.org" "REFILE")
+           "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC" :immediate-finish t)
 
-        ("b" "book" entry (file+olp "books.org" "Book List" "Refile")
-         "** TO-READ %^{Book}\n%^{AUTHOR}p")
+          ("b" "book" entry (file+olp "~/Dropbox/org/projects/reading-list.org" "REFILE")
+           "* %^{Book}\n%^{AUTHOR}p")
 
-        ("c" "Calendar" entry (file+olp+datetree "calendar.org")
-         "* TODO %?\nDEADLINE: %t" :time-prompt t)
+          ("c" "Calendar" entry (file+olp+datetree "calendar.org")
+           "* TODO %?\nDEADLINE: %t" :time-prompt t)
 
-        ("j" "journal")
-        ("jj" "Journal Item" item (file+datetree "journal.org") "%?")
-        ("jJ" "Journal Entry" entry (file+datetree "journal.org") "* %?")
+          ("j" "journal")
+          ("jj" "Journal Item" item (file+datetree "journal.org") "%?")
+          ("jJ" "Journal Entry" entry (file+datetree "journal.org") "* %?")
 
-        ("Q" "Quote" entry (file "quotes.org")
-         "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
-        ))
-
-(setq org-agenda-custom-commands
-      '(
-        ("1" "Today, no upcoming deadlines"
-         ((agenda "" ((org-agenda-span 1)
-                      (org-agenda-use-time-grid t)
-                      (org-deadline-warning-days 0)))))
-        ("7" "Week, no upcoming deadlines"
-         ((agenda "" ((org-agenda-span 7)
-                      (org-deadline-warning-days 0)))))))
+          ("Q" "Quote" entry (file "quotes.org")
+           "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
+          ))
+  ;; (setq org-agenda-custom-commands
+  ;;       '(
+  ;;         ("1" "Today, no upcoming deadlines"
+  ;;          ((agenda "" ((org-agenda-span 1)
+  ;;                       (org-agenda-use-time-grid t)
+  ;;                       (org-deadline-warning-days 0)))))
+  ;;         ("7" "Week, no upcoming deadlines"
+  ;;          ((agenda "" ((org-agenda-span 7)
+  ;;                       (org-deadline-warning-days 0)))))))
+)
 
 (defun cd/refile (file headline &optional arg)
   (let ((pos (save-excursion
@@ -368,3 +371,45 @@
 (set-register ?i '(file . "~/Dropbox/org/inbox.org"))
 (set-register ?j '(file . "~/Dropbox/org/journal.org"))
 (set-register ?l '(file . "~/Dropbox/org/logbook.org"))
+
+ (defun my/org-skip-function (part)
+    "Partitions things to decide if they should go into the agenda '(agenda future-scheduled done)"
+    (let* ((skip (save-excursion (org-entry-end-position)))
+           (dont-skip nil)
+           (scheduled-time (org-get-scheduled-time (point)))
+           (result
+            (or (and scheduled-time
+                     (time-less-p (time-add (current-time) (* 24 60 60)) scheduled-time)
+                     'future-scheduled)  ; This is scheduled for a future date
+                (and (org-entry-is-done-p) ; This entry is done and should probably be ignored
+                     'done)
+                'agenda)))                 ; Everything else should go in the agenda
+      (if (eq result part) dont-skip skip)))
+(setq org-agenda-skip-function '(my/org-skip-function 'agenda))
+
+(setq org-super-agenda-groups
+ '(;; Each group has an implicit boolean OR operator between its selectors.
+        (:name "Today"  ; Optionally specify section name
+        :time-grid t  ; Items that appear on the time grid
+        :todo "TODAY")  ; Items that have this TODO keyword
+         (:name "Important"
+                ;; Single arguments given alone
+                :priority "A")
+         ;; Groups supply their own section names when none are given
+         (:todo "WAIT" :order 8)  ; Set order of this section
+         (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+                ;; Show this group at the end of the agenda (since it has the
+                ;; highest number). If you specified this group last, items
+                ;; with these todo keywords that e.g. have priority A would be
+                ;; displayed in that group instead, because items are grouped
+                ;; out in the order the groups are listed.
+                :order 9)
+         (:priority<= "B"
+                      ;; Show this section after "Today" and "Important", because
+                      ;; their order is unspecified, defaulting to 0. Sections
+                      ;; are displayed lowest-number-first.
+                      :order 1)
+         ;; After the last group, the agenda will display items that didn't
+         ;; match any of these groups, with the default order position of 99
+         )
+      )
