@@ -35,6 +35,8 @@
 ;; (package! zetteldeft)
 (package! deadgrep)
 (package! org-roam-server)
+(package! modus-operandi-theme)
+(package! modus-vivendi-theme)
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format

@@ -6,7 +6,8 @@
         "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
         "Liberation Mono" "Fira Code" "Iosevka Term"))
 
-(setq cd-fonts (--filter (member it (font-family-list)) font-preferences))
+(after! dash
+        (setq cd-fonts (--filter (member it (font-family-list)) font-preferences)))
 
 (defvar current-font-idx 0)
 

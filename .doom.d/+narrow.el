@@ -1,6 +1,5 @@
 ;;; ../code/dotfiles/.doom.d/autoload/narrow.el -*- lexical-binding: t; -*-
 
-;;;###autoload
 (defun cd/move-to-previous-narrow ()
   (interactive)
   (progn
@@ -9,7 +8,6 @@
     (outline-previous-heading)
     (org-narrow-to-subtree)))
 
-;;;###autoload
 (defun cd/move-to-next-narrow ()
   (interactive)
   (progn

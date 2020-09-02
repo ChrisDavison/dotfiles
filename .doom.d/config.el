@@ -28,7 +28,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; (require! 'org-roam-protocol)
 ;;; Programming - rust
 (add-hook! rust-mode
            '(company-mode flycheck-rust-setup
@@ -68,183 +67,17 @@
            ;; 'org-roam-mode
            '(lambda () (set-face-italic 'italic t)))
 
-;; Much of the commented stuff is either stuff that I'm not sure about
-;; or isn't actually different from the org-mode (or doom org) defaults.
-(add-hook! 'after-init-hook
-  (setq org-directory "~/Dropbox/org"
-        org-default-notes-file "~/Dropbox/org/inbox.org"
-        org-src-window-setup 'current-window
-        org-indent-indentation-per-level 1
-        org-adapt-indentation nil
-        org-pretty-entities t
-        org-catch-invisible-edits 'show-and-error
-        org-imenu-depth 4
-        ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
-        ;;       org-replace-disputed-keys t
-        org-hide-emphasis-markers t
-        org-todo-keywords '((sequence "TODO(t)" "WIP" "WAIT" "|" "DONE")
-                           (sequence "|" "DEAD"))
-        org-agenda-skip-deadline-prewarning-if-scheduled t
-        org-cycle-separator-lines 0
-        org-list-indent-offset 2
-        ;;       org-modules '(org-bibtex org-habit org-tempo)
-        org-agenda-files '("~/Dropbox/org/projects" "~/Dropbox/org/inbox.org")
-        org-log-repeat nil
-        org-log-done t
-        org-log-done-with-time t
-        org-archive-location "~/Dropbox/org/archive.org::"
-        org-refile-use-outline-path t
-        org-refile-allow-creating-parent-nodes 'confirm
-        org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
-        org-agenda-skip-scheduled-if-deadline-is-shown t
-        )
-  )
-;; (setq org-roam-directory org-directory)
 
-(defun read-capitalized-title ()
-  (s-titleize (read-string "Title: ")))
-
-(defun read-author ()
-  (let ((name (read-string "Author: " "" nil nil)))
-    (if (s-equals? name "")
-        nil
-      (format-author-name name))))
-
-(defun format-author-name (author)
-  (concat (seq-mapcat
-           (lambda (author-part)
-             (if (> (length author-part) 1)
-                 (s-concat " " (s-capitalize author-part))
-               (s-concat (s-capitalize author-part) ".")))
-           (s-split " " author))))
-
-(defun maybe-get-bibtex ()
-  "Maybe get a DOI number for a reference"
-  (let ((doi (read-string "DOI: " "" nil nil)))
-    (if (s-equals? doi "")
-        nil
-      (s-concat ("\n")))))
-
-(defun read-authors ()
-  (setq authors (read-author)
-        running t)
-  (while running
-    (setq input (read-author))
-    (if (s-equals? input nil)
-        (setq running nil)
-      (setq authors (concat authors " and " input))))
-  authors)
-
-(add-hook! 'after-init-hook
-           (setq org-agenda-todo-ignore-scheduled 'future)
-  (setq org-capture-templates
-        '(
-          ("t" "Todo" entry (file+headline "~/Dropbox/org/inbox.org" "UNFILED Tasks")
-           "* TODO %?")
-          ("r" "Research" entry (file "~/Dropbox/org/inbox.org")
-           "** TODO Research %?")
-
-          ("n" "Note")
-          ("nn" "List item" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
-           "- %?")
-          ("nl" "List link" item (file+headline "~/Dropbox/org/inbox.org" "Notes")
-           "- [[%^{URL}][%^{Description}]] %?")
-          ("nN" "Entry" entry (file "~/Dropbox/org/inbox.org")
-           "* %?")
-
-          ("l" "Logbook")
-          ("ll" "Logbook item" item (file+datetree "~/Dropbox/org/logbook.org")
-           "- %?")
-          ("lL" "Logbook entry" entry (file+datetree "~/Dropbox/org/logbook.org")
-           "* %?")
-          ("ld" "Logbook entry (dated)" entry (file+datetree "~/Dropbox/org/logbook.org")
-           "* %?" :time-prompt t)
-
-          ("g" "Games")
-          ("gp" "PC" entry (file+olp "pc-games.org" "Future / Unreleased" "gaming.org" "PC")
-           "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{PC game}\n:%?")
-          ("gn" "Nintendo Switch" entry (file+olp "nintendo-switch-games.org" "Future / Unreleased")
-           "* %^{Todo|TODO|WAIT|BUY|NEXT|PLAYING|DONE} %^{Nintendo Switch game}\n:%?\n")
-          ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "Potential Purchases")
-           "* %^{Todo|TODO|BUY} %^{Tabletop game}\n%?\n")
-          ("w" "Watch")
-          ("wt" "TV" item
-           (file+olp "tv-shows-and-films.org" "TV Shows / Series" "To Watch")
-           "%^{TV}" :immediate-finish t)
-          ("wf" "film" item
-           (file+olp "tv-shows-and-films.org" "Films" "To Watch")
-           "%^{Film}" :immediate-finish t)
-
-          ("L" "Literature" entry (file+headline "literature.org" "REFILE")
-           "** TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC" :immediate-finish t)
-
-          ("b" "book" entry (file+olp "~/Dropbox/org/projects/reading-list.org" "REFILE")
-           "* %^{Book}\n%^{AUTHOR}p")
-
-          ("c" "Calendar" entry (file+olp+datetree "calendar.org")
-           "* TODO %?\nDEADLINE: %t" :time-prompt t)
-
-          ("j" "journal")
-          ("jj" "Journal Item" item (file+datetree "journal.org") "%?")
-          ("jJ" "Journal Entry" entry (file+datetree "journal.org") "* %?")
-
-          ("Q" "Quote" entry (file "quotes.org")
-           "* %^{Quote Topic}\n#+BEGIN_QUOTE\n%^{Quote} (%^{Author})\n#+END_QUOTE")
-          ))
-  ;; (setq org-agenda-custom-commands
-  ;;       '(
-  ;;         ("1" "Today, no upcoming deadlines"
-  ;;          ((agenda "" ((org-agenda-span 1)
-  ;;                       (org-agenda-use-time-grid t)
-  ;;                       (org-deadline-warning-days 0)))))
-  ;;         ("7" "Week, no upcoming deadlines"
-  ;;          ((agenda "" ((org-agenda-span 7)
-  ;;                       (org-deadline-warning-days 0)))))))
-)
-
-(defun cd/refile (file headline &optional arg)
-  (let ((pos (save-excursion
-               (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
-    (org-refile arg nil (list headline file nil pos)))
-  (switch-to-buffer (current-buffer)))
-
-(defun cd/refile-to-file (&optional target)
-  (interactive)
-  (let ((filename (or target (read-file-name "Refile to: ")))
-        (old-refile-targets org-refile-targets))
-    (progn (setq org-refile-targets `((filename . (:maxlevel . 6))))
-           (org-refile)
-           (setq org-refile-targets old-refile-targets))))
-
-(defun cd/refile-to-this-file ()
-  (interactive)
-  (refile-to-file (buffer-name)))
-
-(require 'org-element)
-
-(defun org-file-from-subtree ()
-  "Cut the subtree currently being edited and create a new file from it.
-
-  If called with the universal argument, prompt for new filename,
-  otherwise use the subtree title"
-  (interactive "P")
-  (let ((filename (expand-file-name (read-file-name "New file name:"))))
-    (org-cut-subtree)
-    (find-file-noselect filename)
-    (with-temp-file filename
-      (org-mode)
-      (yank))
-    (find-file filename)))
-(define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
 
 (setq vterm-shell "/usr/bin/fish")
 
 ;; workaround to get the right WSL interop variable for clipboard usage
 ;; used in combination with a shell alias to export $WSL_INTEROP to a file
 ;; before calling emacs
-(when (s-contains? (shell-command-to-string "uname -a") "microsoft")
-  (set-wsl-interop))
+(after! s
+  (when (s-contains? (shell-command-to-string "uname -a") "microsoft")
+  (set-wsl-interop)))
+
 
 (global-anzu-mode 1)
 
@@ -307,63 +140,9 @@
 (map! "<f1>" 'org-capture)
 (map! "<f2>" 'org-agenda)
 
-
-
-(after! org-roam
-        (map! :leader
-            :prefix "n"
-            :desc "org-roam" "l" #'org-roam
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-            :desc "org-roam-find-file" "f" #'org-roam-find-file
-            :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-            :desc "org-roam-insert" "i" #'org-roam-insert
-            :desc "org-journal" "j" #'org-journal-new-entry
-            :desc "org-roam-capture" "c" #'org-roam-capture))
-
-(add-hook! 'after-init-hook 'org-roam-mode)
-
-;; (require 'company-org-roam)
-;; (use-package company-org-roam
-;;   :when (featurep! :completion company)
-;;   :after org-roam
-;;   :config
-;;   (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
-
-;; (use-package! org-journal
-;;       :custom
-;;       (org-journal-dir "~/Dropbox/org/journal")
-;;       (org-journal-date-prefix "#+TITLE: ")
-;;       (org-journal-file-format "%Y-%m.org")
-;;       (org-journal-date-format "%A, %d %B %Y"))
-;; (setq org-journal-enable-agenda-integration t)
-
 ;;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (setq nov-text-width 80)
-
-;;; org-roam / deft / zetteldeft
-(setq deft-directory org-directory
-      deft-recursive t)
-;; (after! org-roam
-;;         (map! :leader
-;;             :prefix "n"
-;;             :desc "org-roam" "l" #'org-roam
-;;             :desc "org-roam-insert" "i" #'org-roam-insert
-;;             :desc "org-roam-switch-to-buffer" "b" #'org-roam-switch-to-buffer
-;;             :desc "org-roam-find-file" "f" #'org-roam-find-file
-;;             :desc "org-roam-show-graph" "g" #'org-roam-show-graph
-;;             :desc "org-roam-insert" "i" #'org-roam-insert
-;;             :desc "org-journal" "j" #'org-journal-new-entry
-;;             :desc "org-roam-capture" "c" #'org-roam-capture))
-;; (add-hook! 'after-init-hook 'org-roam-mode)
-
-;; (require 'company-org-roam)
-;; (use-package company-org-roam
-;;   :when (featurep! :completion company)
-;;   :after org-roam
-;;   :config
-;;   (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
 
 ;;; registers - easily navigate to files, or specific places
 (set-register ?c '(file . "~/.doom.d/config.el"))
@@ -372,44 +151,9 @@
 (set-register ?j '(file . "~/Dropbox/org/journal.org"))
 (set-register ?l '(file . "~/Dropbox/org/logbook.org"))
 
- (defun my/org-skip-function (part)
-    "Partitions things to decide if they should go into the agenda '(agenda future-scheduled done)"
-    (let* ((skip (save-excursion (org-entry-end-position)))
-           (dont-skip nil)
-           (scheduled-time (org-get-scheduled-time (point)))
-           (result
-            (or (and scheduled-time
-                     (time-less-p (time-add (current-time) (* 24 60 60)) scheduled-time)
-                     'future-scheduled)  ; This is scheduled for a future date
-                (and (org-entry-is-done-p) ; This entry is done and should probably be ignored
-                     'done)
-                'agenda)))                 ; Everything else should go in the agenda
-      (if (eq result part) dont-skip skip)))
-(setq org-agenda-skip-function '(my/org-skip-function 'agenda))
-
-(setq org-super-agenda-groups
- '(;; Each group has an implicit boolean OR operator between its selectors.
-        (:name "Today"  ; Optionally specify section name
-        :time-grid t  ; Items that appear on the time grid
-        :todo "TODAY")  ; Items that have this TODO keyword
-         (:name "Important"
-                ;; Single arguments given alone
-                :priority "A")
-         ;; Groups supply their own section names when none are given
-         (:todo "WAIT" :order 8)  ; Set order of this section
-         (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
-                ;; Show this group at the end of the agenda (since it has the
-                ;; highest number). If you specified this group last, items
-                ;; with these todo keywords that e.g. have priority A would be
-                ;; displayed in that group instead, because items are grouped
-                ;; out in the order the groups are listed.
-                :order 9)
-         (:priority<= "B"
-                      ;; Show this section after "Today" and "Important", because
-                      ;; their order is unspecified, defaulting to 0. Sections
-                      ;; are displayed lowest-number-first.
-                      :order 1)
-         ;; After the last group, the agenda will display items that didn't
-         ;; match any of these groups, with the default order position of 99
-         )
-      )
+(load! "+bibcapture")
+(load! "+fonts")
+(load! "+misc")
+(load! "+narrow")
+(load! "+orgutil")
+(load! "+vterm")

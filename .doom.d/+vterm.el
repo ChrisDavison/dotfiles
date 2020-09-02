@@ -1,13 +1,11 @@
 ;;; ../code/dotfiles/.doom.d/autoload/vterm.el -*- lexical-binding: t; -*-
 
-;;;###autoload
 (defun run-in-vterm-kill (process event)
   "A process sentinel. Kills PROCESS's buffer if it is live."
   (let ((b (process-buffer process)))
     (and (buffer-live-p b)
          (kill-buffer b))))
 
-;;;###autoload
 (defun run-in-vterm (command)
   "Execute string COMMAND in a new vterm.
 
