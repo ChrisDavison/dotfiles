@@ -69,7 +69,7 @@
       ;;       org-modules '(org-bibtex org-habit org-tempo)
       org-agenda-files '("~/Dropbox/org/projects" "~/Dropbox/org/inbox.org")
       org-log-repeat nil
-      org-log-done t
+      org-log-done 'time
       org-log-done-with-time t
       org-archive-location "~/Dropbox/org/archive.org::"
       org-refile-use-outline-path t
