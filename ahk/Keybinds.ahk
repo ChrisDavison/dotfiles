@@ -53,6 +53,33 @@ CapsLock & XButton1::WinActivate, ahk_id %beforeSpotify%
 
 ; F10::WinActivate ahk_id %beforeSpotify%
 
+F9::
+Send +{TAB}
+sleep 100
+Send {Down}
+sleep 100
+Send {Tab}
+sleep 100
+Send ^c
+sleep 100
+Send !{TAB}
+sleep 100
+Send ^c
+sleep 50
+Send ^l
+sleep 100
+Send {Enter}
+sleep 100
+Send ^y
+sleep 100
+Send {Enter}
+sleep 100
+Send j
+sleep 100
+Send !{TAB}
+sleep 100
+return
+
 ;###########################################################
 ;               EXTERNAL SCRIPTS BELOW HERE
 ;###########################################################

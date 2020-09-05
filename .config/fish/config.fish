@@ -24,6 +24,7 @@ test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
 test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
 test -d /snap/bin; and set PATH /snap/bin $PATH
 test -d $HOME/.local/bin; and set PATH $HOME/.local/bin $PATH
+test -d $HOME/.emacs.d/bin; and set PATH $HOME/.emacs.d/bin $PATH
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"

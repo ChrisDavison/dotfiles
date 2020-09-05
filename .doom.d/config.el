@@ -5,7 +5,7 @@
 
 ;;; Doom appearance Utility
 (setq doom-font "Dank Mono-14")
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-snazzy)
 (setq display-line-numbers-type "relative")
 
 (global-visual-line-mode 1)
@@ -76,10 +76,13 @@
 ;; before calling emacs
 (after! s
   (when (s-contains? (shell-command-to-string "uname -a") "microsoft")
-  (set-wsl-interop)))
+    (set-wsl-interop)
+    (setq x-selection-timeout 10)))
 
 
 (global-anzu-mode 1)
+
+(setq global-auto-revert-mode t)
 
 (defvar remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
@@ -97,6 +100,9 @@
         (dired (concat "/ssh:" username "@" ip-address ":/"))
       (dired (concat "/ssh:" username "@" ip-address ":/home/" username "/")))
     (message "Connected")))
+
+(after! projectile
+        (add-to-list 'projectile-project-root-files ".projectile-root"))
 
 ;;; Keybinds
 (map! "C-c f" 'next-font)
@@ -126,12 +132,22 @@
        (:prefix ("r" . "repoutil")
         :desc "Status of all branches" "b" #'cd/repo/branchstat
         :desc "Fetch all branches" "f" #'cd/repo/fetch
-        :desc "List all managed repos" "l" #'cd/repo/list))
+        :desc "List all managed repos" "l" #'cd/repo/list)
+       (:prefix ("a" . "agenda (custom)")
+        :desc "Agenda" "a" '(lambda ()
+                              (interactive)
+                              (org-agenda "" "a")
+                              (org-agenda-week-view))
+        :desc "One day" "1" '(lambda () (interactive) (org-agenda "" "c1"))
+        :desc "Media" "m" '(lambda () (interactive) (org-agenda "" "cm"))
+        :desc "Work" "w" '(lambda () (interactive) (org-agenda "" "cw"))
+        ))
       (:prefix-map ("j" . "jump to register")
        :desc "config" "c" #'(lambda () (interactive) (jump-to-register ?c))
        :desc "packages" "p" #'(lambda () (interactive) (jump-to-register ?p))
-       :desc "inbox" "i" #'(lambda () (interactive) (jump-to-register ?i))
+       :desc "todo" "t" #'(lambda () (interactive) (jump-to-register ?t))
        :desc "journal" "j" #'(lambda () (interactive) (jump-to-register ?j))
+       :desc "quotes" "q" #'(lambda () (interactive) (jump-to-register ?q))
        :desc "logbook" "l" #'(lambda () (interactive) (jump-to-register ?l))))
 
 (map! :n "C-;" #'iedit-mode)
@@ -147,70 +163,25 @@
 ;;; registers - easily navigate to files, or specific places
 (set-register ?c '(file . "~/.doom.d/config.el"))
 (set-register ?p '(file . "~/.doom.d/packages.el"))
-(set-register ?i '(file . "~/Dropbox/org/inbox.org"))
 (set-register ?j '(file . "~/Dropbox/org/journal.org"))
-(set-register ?l '(file . "~/Dropbox/org/logbook.org"))
+(set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
+(set-register ?l '(file . "~/Dropbox/org/projects/work.org"))
+(set-register ?q '(file . "~/Dropbox/org/quotes.org"))
 
-(load! "+bibcapture")
-(load! "+fonts")
-(load! "+misc")
-(load! "+narrow")
-(load! "+orgutil")
-(load! "+vterm")
+(setq cd-config-files
+      '("+bibcapture"
+        "+fonts"
+        "+misc"
+        "+narrow"
+        "+org-config"
+        "+org-capture"
+        "+org-agenda"
+        "+vterm"))
 
-(setq org-agenda-custom-commands
-      '(("o" "Overview"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                                :time-grid t
-                                :date today
-                                :todo "TODAY"
-                                :scheduled today
-                                :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                                 :todo "NEXT"
-                                 :order 1)
-                          (:name "Important"
-                                 :tag "Important"
-                                 :priority "A"
-                                 :order 6)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 2)
-                          (:name "Due Soon"
-                                 :deadline future
-                                 :order 8)
-                          (:name "Overdue"
-                                 :deadline past
-                                 :face error
-                                 :order 7)
-                          (:name "Assignments"
-                                 :tag "Assignment"
-                                 :order 10)
-                          (:name "Issues"
-                                 :tag "Issue"
-                                 :order 12)
-                          (:name "Projects"
-                                 :tag "Project"
-                                 :order 14)
-                          (:name "Emacs"
-                                 :tag "Emacs"
-                                 :order 13)
-                          (:name "Research"
-                                 :tag "Research"
-                                 :order 15)
-                          (:name "To read"
-                                 :tag "Read"
-                                 :order 30)
-                          (:name "Waiting"
-                                 :todo "WAITING"
-                                 :order 20)
-                          (:name "Trivial"
-                                 :priority<= "E"
-                                 :tag ("Trivial" "Unimportant")
-                                 :todo ("SOMEDAY" )
-                                 :order 90)
-                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
+(defun cd/load-personal-config ()
+  (interactive)
+  (dolist (a cd-config-files)
+    (message "Loading %s" a)
+    (load! a)))
+
+(cd/load-personal-config)
