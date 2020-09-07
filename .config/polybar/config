@@ -1,7 +1,7 @@
 ; https://github.com/polybar/polybar
 
 [colors]
-background = #00222222
+background = #44222222
 background-alt = #444
 grey50=#777
 primary = #ffb52a
@@ -41,13 +41,13 @@ padding-right = 0
 module-margin-left = 1
 module-margin-right = 1
 
-font-0 = Inconsolata:style=Regular:size=12;3
+font-0 = Dank Mono:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
 modules-left = date 
 modules-center = bspwm i3
-; modules-center = cpu memory backlight-acpi pulseaudio filesystem battery
+; modules-center = cpu memory backlight-acpi pulseaudio filesystem 
 modules-right = battery backlight-acpi pulseaudio
 
 ; NOT USING
@@ -133,7 +133,7 @@ label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-background = ${colors.foreground}
+label-focused-background = ${colors.bright_purple}
 label-focused-padding = ${settings.bspwm-padding}
 
 ; unfocused = Inactive workspace on any monitor
