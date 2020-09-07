@@ -9,6 +9,9 @@
 (setq display-line-numbers-type "relative")
 
 (global-visual-line-mode 1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 ;;; Doom util functions - quick documentation
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -185,3 +188,6 @@
     (load! a)))
 
 (cd/load-personal-config)
+
+(message "Org-roam isn't loaded at startup as it seems very slow....debug it?")
+;; (org-roam-mode)
