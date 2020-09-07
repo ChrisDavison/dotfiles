@@ -10,18 +10,17 @@ command=$SCRIPT_DIR/$BLOCK_NAME
 separator_block_width=20
 markup=none
 
-
 [mediaplayer]
-command=~/bin/spotify_playing
+command=~/.bin/spotify_playing
 interval=5
 signal=10
 
 [tmux]
-command=is_tmux_alive.sh
+command=~/.bin/is_tmux_alive.sh
 interval=60
 
 [gitunclean]
-command=repoutil_unclean_count.sh
+command=~/.bin/repoutil_unclean_count.sh
 interval=60
 
 [volume]
@@ -30,7 +29,7 @@ interval=30
 signal=10
 
 [backlight]
-command=bright.sh current
+command=~/.bin/bright.sh current
 interval=60
 signal=10
 
@@ -45,21 +44,21 @@ command=/home/davison/.bin/repoutil_unclean_count.sh
 label=GIT
 interval=60
 
-# [memory]
-# label=M
-# interval=30
+[memory]
+label=M
+interval=30
 
-# [cpu_usage]
-# label=C
-# interval=10
+[cpu_usage]
+label=C
+interval=10
 
 # [temperature]
 # label=
 # interval=10
 
-[battery]
-label=B
-interval=30
+# [battery]
+# label=B
+# interval=30
 
 # [battery]
 # command=batrem
