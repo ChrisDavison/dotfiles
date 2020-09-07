@@ -76,7 +76,7 @@
 
       org-cycle-separator-lines 0
       org-list-indent-offset 2
-      org-modules '(org-bibtex org-habit)
+      org-modules '(org-habit)
       ;;       org-modules '(org-bibtex org-habit org-tempo)
       org-log-repeat nil
       org-log-done 'time
@@ -99,4 +99,3 @@
       deft-directory org-directory
       deft-recursive t
       )
-(org-roam-mode)
