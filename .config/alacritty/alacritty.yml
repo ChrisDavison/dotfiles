@@ -8,9 +8,9 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        Fira Code
+        Dank Mono
     myfontsize: &fontsize
-        9
+        14
 
 window:
     dimensions:
@@ -23,6 +23,7 @@ window:
         x: 1
         y: 1
     dynamic_padding: true # spread padding evenly around the terminal
+    dynamic_title: true  # Terminal applications can change Alacritty's title
 
     # Window decorations
     #
@@ -289,7 +290,7 @@ schemes:
 # seoul256_light, pencil_light
 colors: *seoul256
 
-visual_bell:
+bell:
     animation: EaseOutExpo
     duration: 0 # i.e. DISABLED
     color: '0xffffff'
@@ -330,7 +331,6 @@ selection:
     semantic_escape_chars: ",│`|:\"' ()[]{}<>"
     save_to_clipboard: true # Save selection to PRIMARY clipboard
 
-dynamic_title: true  # Terminal applications can change Alacritty's title
 
 cursor:
     style: Block # Block/Underline/Beam
