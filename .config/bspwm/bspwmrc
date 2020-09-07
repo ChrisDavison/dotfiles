@@ -25,12 +25,12 @@ else
     MONITOR=$EXTERNAL polybar -r example &
 fi
 
-feh --bg-scale ~/Dropbox/wallpapers/space.jpg
+sh ~/.fehbg
 
 #8620e6 is a nice purple
 bspc config border_width         3
 bspc config focused_border_color "#8620e6"
-bspc config window_gap           0
+bspc config window_gap           12
 
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
