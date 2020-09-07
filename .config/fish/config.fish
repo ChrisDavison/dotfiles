@@ -18,7 +18,7 @@ if not uname -a | grep -q "Microsoft"
 end
 
 test -d $GOBIN; and set PATH $GOBIN $PATH
-test -d $HOME/bin; and set PATH $HOME/.bin $PATH
+test -d $HOME/.bin; and set PATH $HOME/.bin $PATH
 test -d $HOME/code/scripts/; and set PATH $HOME/code/scripts/ $PATH
 test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
 test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
@@ -86,4 +86,4 @@ if test $status -eq 0
     end
 end
 
-source ~/.envs/ml/bin/activate.fish
+test -f ~/.envs/ml/bin/activate.fish; and source ~/.envs/ml/bin/activate.fish
