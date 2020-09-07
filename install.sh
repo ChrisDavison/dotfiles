@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/.bin/bash
 CODEDIR=$HOME/code
 
 function remove_and_symlink() {
@@ -37,10 +37,10 @@ done
 echo "----- symlinking bin/ binaries"
 for bin in bin/* ; do
     base=$(basename $bin)
-    if [ -f $HOME/bin/$base ] || [ -h $HOME/bin/$base ] ; then
-        rm $HOME/bin/$base
+    if [ -f $HOME/.bin/$base ] || [ -h $HOME/.bin/$base ] ; then
+        rm $HOME/.bin/$base
     fi
-    ln -s $ln_verbose $CODEDIR/dotfiles/bin/$base $HOME/bin/$base
+    ln -s $ln_verbose $CODEDIR/dotfiles/bin/$base $HOME/.bin/$base
     chmod +x $CODEDIR/dotfiles/bin/$base
 done
 
