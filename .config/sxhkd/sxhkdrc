@@ -7,16 +7,11 @@ super + space
 
 # Launch terminal
 super + Return
-    mate-terminal
+    alacritty
+#    mate-terminal
 
-
+super + o; {t,f,e,p,a,w}
      {mate-terminal, firefox, emacs, bitwarden, bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki,rofi -show bookmarks -modi bookmarks:~/.bin/rofi_bookmark_groups.sh}
-
-# super + d
-#     j4-dmenu-desktop --dmenu="dmenu -i -fn 'Iosevka Term-18' -p 'Program:'"
-
-# super + shift + d
-#     dmenu_win_switcher.sh
 
 super + shift + s
     dmenu_screenshot.sh
@@ -148,18 +143,20 @@ XF86MonBrightnessUp
 #       MUSIC & VOLUME
 # ==========================
 XF86AudioLowerVolume
-    amixer -q -D pulse sset Master 5%-
+    amixer -q -D pulse set Master 6dB-
 XF86AudioRaiseVolume
-    amixer -q -D pulse sset Master 5%+
+    amixer -q -D pulse set Master 6dB+
 XF86AudioMute
-    amixer -q -D pulse sset Master toggle
+    amixer -q -D pulse set Master toggle
 
 {XF86AudioPlay, XF86AudioPause, XF86AudioNext, XF86AudioPrev}
     playerctl --player=spotify {play-pause,play-pause,next,prev}
 
 # super + shift + m; {w,s}
-super + {Prior,Next}
-    amixer set Master {5%+,5%-}
+super + Prior
+    amixer set Master 6dB+
+super + Next
+    amixer set Master 6dB-
 super + shift + m; {a,d}
     playerctl --player=spotify {prev,next}
 super + shift + m; space

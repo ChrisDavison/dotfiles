@@ -19,9 +19,9 @@ foreground-alt = ${colors.cyan}
 [bar/example]
 monitor = ${env:MONITOR:}
 width = 100%
-height = 25
-offset-x = 0%
-offset-y = 0%
+height = 20
+offset-x = 0px
+offset-y = -1px
 radius = 0
 fixed-center = true
 bottom=false
@@ -33,7 +33,7 @@ line-size = 0
 line-color = #f00
 
 border-size = 0
-border-color = #00000000
+border-color = #fff
 
 padding-left = 0
 padding-right = 0
@@ -45,16 +45,16 @@ font-0 = Dank Mono:style=Regular:size=12;3
 font-1 = FontAwesome:style=Regular:size=12;3
 font-2 = FontAwesome:style=Regular:size=12;3
 
-modules-left = date 
-modules-center = bspwm i3
+modules-left = date bspwm i3
+modules-center =
 ; modules-center = cpu memory backlight-acpi pulseaudio filesystem 
-modules-right = battery backlight-acpi pulseaudio
+modules-right = cpu memory filesystem pulseaudio battery backlight-acpi
 
 ; NOT USING
 ; filesystem (mount pointand memory used, e.g. '/:32%')
 ; xkeyboard (layout, e.g. 'gb')
 
-tray-position = right
+tray-position = center
 tray-padding = 5
 tray-background = ${colors.background}
 
@@ -103,7 +103,7 @@ label-focused-background = ${colors.background}
 label-focused-padding = ${settings.bspwm-padding}
 
 label-occupied = %name%
-label-occupied-foreground = ${colors.foreground-alt}
+label-occupied-foreground = ${colors.bright_purple}
 label-occupied-padding = ${settings.bspwm-padding}
 
 label-urgent = %name%!
@@ -183,13 +183,13 @@ card = intel_backlight
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = " "
+format-prefix = "CPU "
 label = %percentage%%
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = " "
+format-prefix = "MEM "
 label = %percentage_used%%
 
 [module/w.black-network]
@@ -217,7 +217,7 @@ date = %Y-%m-%d
 time = %H:%M
 label = " %date% %time% "
 label-foreground=${colors.foreground}
-/* label-background=${colors.foreground} */
+label-background=${colors.bright_purple}
 
 [module/pulseaudio]
 type = internal/pulseaudio

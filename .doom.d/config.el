@@ -44,17 +44,15 @@
 (setq-default auto-save-default t)
 (setq avy-all-windows t)
 
-(display-time-mode 1)
 (delete-selection-mode 1)
 (global-undo-tree-mode 1)
 
-(setq fullscreen-at-startup t)
+(setq fullscreen-at-startup nil)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 (add-to-list 'auth-sources "~/.authinfo")
 
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "~/bin/firefox")
+
 ;;; Org-mode
 (defun cd/org-open-link-same ()
   (interactive)
@@ -80,6 +78,8 @@
 (after! s
   (when (s-contains? (shell-command-to-string "uname -a") "microsoft")
     (set-wsl-interop)
+        (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program "~/bin/firefox")
     (setq x-selection-timeout 10)))
 
 

@@ -62,6 +62,7 @@
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
       org-todo-keywords '((sequence "TODO(t)" ; just a task
+                                    "NEXT(n)" ; prioritised task
                                     "ACTIVE(a)"  ; in progress
                                     "WAITING(w)"     ; my choice to put on hold
                                     "BLOCKED(b)"  ; waiting for someone
