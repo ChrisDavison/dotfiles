@@ -49,3 +49,4 @@ bspc config automatic_scheme longest_side
 bspc rule -a Anki state=floating follow=on
 bspc rule -a Bitwarden state=floating follow=on
 bspc rule -a feh state=floating follow=on
+bspc rule -a Emacs state=tiled follow=on
