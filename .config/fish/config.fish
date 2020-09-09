@@ -1,6 +1,6 @@
 set -Ux fish_greeting ""
 
-set -Ux EDITOR "nvim"
+set -Ux EDITOR "emacsclient -t"
 set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/bin"
 set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
@@ -13,27 +13,23 @@ set -Ux RUST_SRC_PATH "$HOME/.rust_src"
 
 set -Ux RANGER_LOAD_DEFAULT_RC 0
 
-if not uname -a | grep -q "Microsoft" 
+if not uname -a | grep -q "Microsoft"
     set -Ux BROWSER "firefox"
 end
 
-test -d $GOBIN; and set PATH $GOBIN $PATH
-test -d $HOME/.bin; and set PATH $HOME/.bin $PATH
-test -d $HOME/code/scripts/; and set PATH $HOME/code/scripts/ $PATH
-test -d $HOME/.cargo/bin; and set PATH $HOME/.cargo/bin $PATH
-test -d /usr/local/go/bin; and set PATH /usr/local/go/bin $PATH
-test -d /usr/local/julia/bin; and set PATH /usr/local/julia/bin $PATH
-test -d /snap/bin; and set PATH /snap/bin $PATH
-test -d $HOME/.local/bin; and set PATH $HOME/.local/bin $PATH
-test -d $HOME/.emacs.d/bin; and set PATH $HOME/.emacs.d/bin $PATH
+for direc in $GOBIN $HOME/.bin $HOME/code/scripts $HOME/.cargo/bin /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin
+    if not contains $direc $PATH
+        set PATH $direc $PATH
+    end
+end
 
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
-alias cp="cp -rv"    # Always recursively and verbosely copy
-alias mv="mv -v"     # Always explain move actions
-alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
-alias less='less -R'    # Use color codes in 'less'
-alias rg='rg -S'   # Make ripgrep use smart-case by default
+alias cp="cp -rv" # Always recursively and verbosely copy
+alias mv="mv -v" # Always explain move actions
+alias mkdir="mkdir -pv" # Always make parent directories, and explain what was done
+alias less='less -R' # Use color codes in 'less'
+alias rg='rg -S' # Make ripgrep use smart-case by default
 alias v="$EDITOR"
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
@@ -68,11 +64,9 @@ alias clip="xclip -sel clipboard"
 alias zc="ziputil choose"
 alias zv="ziputil view"
 
-test -f $HOME/.cargo/env; and source $HOME/.cargo/env
 test -x rvm; and rvm default
-test -f ~/code/todo.txt/todo_completion; and bash ~/code/todo.txt/todo_completion
 
-uname -r | rg -i -q 'microsoft-standard' > /dev/null
+uname -r | rg -i -q 'microsoft-standard' >/dev/null
 if test $status -eq 0
     set -Ux DISPLAY (grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
     set -Ux LIBGL_ALWAYS_INDIRECT 1
@@ -82,7 +76,7 @@ if test $status -eq 0
         set fname /run/WSL/"$i"_interop
         if test -e $fname
             set -x WSL_INTEROP $fname
-            echo $fname > ~/.wsl_interop
+            echo $fname >~/.wsl_interop
         end
     end
 end
