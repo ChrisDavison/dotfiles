@@ -48,6 +48,11 @@
         :desc "org-journal" "j" #'org-journal-new-entry
         :desc "org-roam-capture" "c" #'org-roam-capture))
 
+(setq cd/my-agenda-files '("~/Dropbox/org/projects" "~/Dropbox/org/journal.org"))
+(defvar cd/archive-in-agenda t)
+(when cd/archive-in-agenda
+  (add-to-list 'cd/my-agenda-files "~/Dropbox/org/archive.org")
+  (setq org-agenda-files cd/my-agenda-files))
 ;; Much of the commented stuff is either stuff that I'm not sure about
 ;; or isn't actually different from the org-mode (or doom org) defaults.
 (setq org-directory "~/Dropbox/org"
@@ -62,26 +67,23 @@
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
       org-todo-keywords '((sequence "TODO(t)" ; just a task
-                                    "NEXT(n)" ; prioritised task
-                                    "ACTIVE(a)"  ; in progress
-                                    "WAITING(w)"     ; my choice to put on hold
-                                    "BLOCKED(b)"  ; waiting for someone
+                                    "WIP(w)" ; prioritised task
                                     "|"
                                     "DONE(d)"
                                     "CANCELED(c)"
                                     )
-                          (sequence "PROJECT(p)" ; general project marker
-                                    "FUTURE(f)"  ; on-hold project
-                                    "|"
-                                    "CANCELED(C)"))
+                          ; these are only for local usage. don't bother with them in orgzly.
+                          (sequence "BACKBURNER(b)" "|" "FINISHED(f)"))
 
       org-cycle-separator-lines 0
       org-list-indent-offset 2
       org-modules '(org-habit)
       ;;       org-modules '(org-bibtex org-habit org-tempo)
-      org-log-repeat nil
+      org-log-repeat t
       org-log-done 'time
       org-log-done-with-time t
+      org-treat-insert-todo-heading-as-state-change t
+      org-log-into-drawer t
       org-archive-location "~/Dropbox/org/archive.org::"
       org-refile-use-outline-path t
       org-refile-allow-creating-parent-nodes 'confirm
@@ -93,10 +95,20 @@
       org-agenda-compact-blocks t
       org-agenda-todo-ignore-scheduled 'future
       org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
       org-agenda-skip-deadline-prewarning-if-scheduled t
-      org-agenda-files `("~/Dropbox/org/projects" "~/Dropbox/org/journal.org")
+      org-agenda-files cd/my-agenda-files
+      org-agenda-time-grid '((daily today require-timed)
+                             (900 1200 1300 1700)
+                             "......"
+                             "")
       org-id-track-globally nil
         ;;; org-roam / deft / zetteldeft
       deft-directory org-directory
       deft-recursive t
+      org-fancy-priorities-list '((?A . "H") (?B . "M") (?C . "L"))
       )
+(after! org
+  (add-to-list 'org-modules 'org-habit))
+(map! :map org-mode-map
+      :leader "N" 'org-toggle-narrow-to-subtree)
