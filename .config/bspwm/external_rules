@@ -1,0 +1,19 @@
+#!/bin/sh
+
+wid=$1
+class=$2
+instance=$3
+consequences=$4
+
+if [ "$class" = "Firefox" ]; then
+    sleep 1
+    title=$(xprop -id "$wid" WM_NAME)
+    first_word=$(echo "$title" | sed -e 's/.* = "//' -e 's/ *"$//' | cut -d' ' -f1)
+    case "$first_word" in
+        Pinboard)
+            eval "$consequences"
+            [ "$state" ] || echo "state=floating"
+            [ "$center" ] || echo "center=on"
+            ;;
+    esac
+fi

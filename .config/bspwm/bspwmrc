@@ -50,3 +50,4 @@ bspc rule -a Anki state=floating follow=on
 bspc rule -a Bitwarden state=floating follow=on
 bspc rule -a feh state=floating follow=on
 bspc rule -a Emacs state=tiled follow=on
+bspc config external_rules_command "$HOME/.config/bspwm/external_rules"
