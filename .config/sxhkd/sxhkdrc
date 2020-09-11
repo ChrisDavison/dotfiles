@@ -99,9 +99,9 @@ super + {_,shift + }{1-9,0}
 super + ctrl + {h,j,k,l}
     bspc node -p {west,south,north,east}
 
-# # ...ratio
-# super + ctrl + {1-9}
-#     bspc node -o 0.{1-9}
+# ...ratio
+super + ctrl + {1-9}
+    bspc node -o 0.{1-9}
 
 # you CAN do multiple preselects
 # but I've disabled this as I don't use it, in order to simplify my usage
