@@ -26,7 +26,7 @@
                           ("Cybele" :keys "c" :type item :template "- %?"
                            :file "projects/cybele.org")
                           ("GlasData" :keys "g" :type item :template "- %?"
-                           :file "projects/glasdata-collaboration.org")))
+                           :file "projects/glasdata.org")))
 
               (,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming")
                :keys "g"
@@ -44,9 +44,9 @@
 
               (,(emoji-heading 'all-the-icons-octicon "book" "Book")
                :keys "b"
-               :file "projects/reading-list.org"
+               :file "projects/reading.org"
                :headline "REFILE"
-               :template "* %^{Book}\n%^{AUTHOR}p")
+               :template "* TODO %^{Book}\n%^{AUTHOR}p")
 
               (,(emoji-heading 'all-the-icons-octicon "comment" "Quote")
                :keys "Q"
