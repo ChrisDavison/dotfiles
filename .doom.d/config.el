@@ -144,28 +144,23 @@
         :desc "One day" "1" '(lambda () (interactive) (org-agenda "" "c1"))
         :desc "Media" "m" '(lambda () (interactive) (org-agenda "" "cm"))
         :desc "Work" "w" '(lambda () (interactive) (org-agenda "" "cw"))
-        ))
-      (:prefix-map ("j" . "jump to register")
-       :desc "config" "c" #'(lambda () (interactive) (jump-to-register ?c))
-       :desc "packages" "p" #'(lambda () (interactive) (jump-to-register ?p))
-       :desc "todo" "t" #'(lambda () (interactive) (jump-to-register ?t))
-       :desc "journal" "j" #'(lambda () (interactive) (jump-to-register ?j))
-       :desc "quotes" "q" #'(lambda () (interactive) (jump-to-register ?q))
-       :desc "logbook" "l" #'(lambda () (interactive) (jump-to-register ?l))))
+        )))
 
 (map! :n "C-;" #'iedit-mode)
 (map! :n "C-:" #'iedit-mode-toggle-on-function)
 
 (map! "<f1>" 'org-capture)
 (map! "<f2>" 'org-agenda)
+(map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
+(map! "<f4>" '(lambda () (interactive) (org-agenda nil "cW")))
 
 ;;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (setq nov-text-width 80)
 
 ;;; registers - easily navigate to files, or specific places
-(set-register ?c '(file . "~/.doom.d/config.el"))
-(set-register ?p '(file . "~/.doom.d/packages.el"))
+(set-register ?c '(file . "~/Dropbox/org/projects/cybele.org"))
+(set-register ?g '(file . "~/Dropbox/org/projects/glasdata.org"))
 (set-register ?j '(file . "~/Dropbox/org/journal.org"))
 (set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
 (set-register ?l '(file . "~/Dropbox/org/projects/work.org"))
@@ -191,3 +186,5 @@
 
 (message "Org-roam isn't loaded at startup as it seems very slow....debug it?")
 ;; (org-roam-mode)
+
+(map! :leader "j" 'jump-to-register)
