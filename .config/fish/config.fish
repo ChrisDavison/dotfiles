@@ -51,7 +51,7 @@ alias rl="repoutil list"
 alias rf="repoutil fetch"
 alias rb="repoutil branchstat"
 
-alias ls="exa --group-directories-first --git-ignore"
+alias ls="exa --group-directories-first"
 alias lsa="exa --group-directories-first"
 alias ll="ls --long --group-directories-first"
 alias la="ll -a --group-directories-first"
