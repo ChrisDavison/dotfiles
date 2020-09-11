@@ -60,3 +60,8 @@ exist after each headings's drawers."
                    t (if prefix
                          nil
                        'tree)))
+
+;;;###autoload
+(defun fish-term ()
+  (interactive)
+  (term "/usr/bin/fish"))
