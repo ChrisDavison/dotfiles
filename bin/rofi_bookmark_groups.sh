@@ -2,8 +2,10 @@
 
 menu="EVERYDAY
 Weather
-Email & Calendar
+Email
+Calendar
 Youtube
+9gag
 ASMR"
 
 if [ -z "$@" ]; then
@@ -12,11 +14,13 @@ else
     option=$1
     if [ ! -z "$option" ]; then
         case $(echo "$option" | cut -d' ' -f1) in
-            EVERYDAY) firefox "https://news.ycombinator.com" "https://lobste.rs" "https://reddit.com/r/programming"  "https://reddit.com/r/rust" "https://reddit.com/r/videos" "https://www.bbc.co.uk/news" ;;
-            Weather) firefox "https://darksky.net/forecast/55.8259,-4.2265/uk212/en" "https://www.bbc.co.uk/weather/2648579";;
-            Email) firefox "https://outlook.office365.com/mail/inbox" "https://outlook.office365.com/calendar/item/AAMkAGQ3ODUwN2Y5LTg5YzEtNDBkYi1iYjVkLTQyZDgxNWZlZDkyOQFRAAgI2FLA9sGAAEYAAAAA6FsmJnOPfkKEN5850J0uWAcA%2BMUrbkCZYUKeIrMyzWO8EAAAAJ%2B%2B%2BwAAA1s64XCi4ku4KVTw9pXnrwAAtjxYwgAAEA%3D%3D" "https://mail.google.com" "https://calendar.google.com" ;;
-            Youtube) firefox "https://www.youtube.com/playlist?list=WL" "https://www.youtube.com/feed/subscriptions" "https://www.youtube.com/";;
-            ASMR) firefox "$(randomasmr)" ;;
+            EVERYDAY) firefox --new-tab "https://news.ycombinator.com" --new-tab "https://lobste.rs" --new-tab "https://reddit.com/r/programming"  --new-tab "https://reddit.com/r/rust" --new-tab "https://reddit.com/r/videos" --new-tab "https://www.bbc.co.uk/news" ;;
+            Weather) firefox --new-tab "https://darksky.net/forecast/55.8259,-4.2265/uk212/en" ;;
+            Email) firefox --new-tab "https://outlook.office365.com/mail/inbox" --new-tab "https://mail.google.com" ;;
+            Calendar) firefox --new-tab "https://outlook.office365.com/calendar/view/workweek" --new-tab "https://calendar.google.com" ;;
+            Youtube) firefox --new-tab "https://www.youtube.com/playlist?list=WL" --new-tab "https://www.youtube.com/feed/subscriptions" --new-tab "https://www.youtube.com/";;
+            9gag) firefox --new-tab "https://www.9gag.com" --new-tab "https://www.9gag.com/girl" --new-tab "https://www.9gag.com/nsfw";;
+            ASMR) firefox --new-tab "$(randomasmr)" ;;
             *) exit 1 ;;
         esac
     fi
