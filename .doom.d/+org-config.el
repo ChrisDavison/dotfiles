@@ -1,40 +1,7 @@
 ;;; ../code/dotfiles/.doom.d/autoload/orgutil.el -*- lexical-binding: t; -*-
-
-(defun cd/refile (file headline &optional arg)
-  (let ((pos (save-excursion
-               (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
-    (org-refile arg nil (list headline file nil pos)))
-  (switch-to-buffer (current-buffer)))
-
-(defun cd/refile-to-file (&optional target)
-  (interactive)
-  (let ((filename (or target (read-file-name "Refile to: ")))
-        (old-refile-targets org-refile-targets))
-    (progn (setq org-refile-targets `((filename . (:maxlevel . 6))))
-           (org-refile)
-           (setq org-refile-targets old-refile-targets))))
-
-(defun cd/refile-to-this-file ()
-  (interactive)
-  (refile-to-file (buffer-name)))
-
-(require 'org-element)
-
-(defun org-file-from-subtree ()
-  "Cut the subtree currently being edited and create a new file from it.
-
-  If called with the universal argument, prompt for new filename,
-  otherwise use the subtree title"
-  (interactive "P")
-  (let ((filename (expand-file-name (read-file-name "New file name:"))))
-    (org-cut-subtree)
-    (find-file-noselect filename)
-    (with-temp-file filename
-      (org-mode)
-      (yank))
-    (find-file filename)))
-(define-key org-mode-map (kbd "C-x C-n") 'org-file-from-subtree)
+(map! :map org-mode-map
+      :n "C-x C-n" 'cd/org-file-from-subtree
+      :v "C-x C-n" 'cd/org-file-from-selection)
 
 (after! org-roam
   (map! :leader
@@ -48,10 +15,11 @@
         :desc "org-journal" "j" #'org-journal-new-entry
         :desc "org-roam-capture" "c" #'org-roam-capture))
 
-(setq cd/my-agenda-files '("~/Dropbox/org/projects" "~/Dropbox/org/journal.org"))
+(setq cd/my-agenda-files
+      '("~/Dropbox/org/projects" "~/Dropbox/org/journal"))
 (defvar cd/archive-in-agenda t)
 (when cd/archive-in-agenda
-  (add-to-list 'cd/my-agenda-files "~/Dropbox/org/archive.org")
+  (add-to-list 'cd/my-agenda-files "~/Dropbox/org/archive/archive.org")
   (setq org-agenda-files cd/my-agenda-files))
 ;; Much of the commented stuff is either stuff that I'm not sure about
 ;; or isn't actually different from the org-mode (or doom org) defaults.
@@ -70,7 +38,7 @@
                                     "WIP(w)" ; prioritised task
                                     "|"
                                     "DONE(d)"
-                                    "CANCELED(c)"
+                                    "CANCELLED(c)"
                                     )
                           ; these are only for local usage. don't bother with them in orgzly.
                           (sequence "BACKBURNER(b)" "|" "FINISHED(f)"))
@@ -84,7 +52,7 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/archive.org::"
+      org-archive-location "~/Dropbox/org/archive/archive.org::"
       org-refile-use-outline-path t
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
@@ -102,7 +70,7 @@
                              (900 1200 1300 1700)
                              "......"
                              "")
-      org-id-track-globally nil
+      org-id-track-globally t
         ;;; org-roam / deft / zetteldeft
       deft-directory org-directory
       deft-recursive t
@@ -112,3 +80,30 @@
   (add-to-list 'org-modules 'org-habit))
 (map! :map org-mode-map
       :leader "N" 'org-toggle-narrow-to-subtree)
+
+(defun tagify (str)
+  (interactive "M")
+  (s-join " " (--map (format "@%s" it) (s-split " " str))))
+
+(defun roam-tagify (str)
+  (interactive "Mtags: ")
+  (evil-open-below 1)
+  (insert (format "#+ROAM_TAGS: %s\n\n" str))
+  (insert (tagify str))
+  (evil-force-normal-state)
+  (save-buffer))
+
+(require 'org-id)
+(defun cd/org-id-every-heading ()
+  (interactive)
+  (goto-char (point-max))
+  (while (outline-previous-heading)
+    (org-id-get-create)))
+
+(setq org-roam-tag-separator " ")
+
+(add-hook! 'org-mode
+           'visual-line-mode
+           'org-indent-mode
+           'abbrev-mode
+           '(lambda () (set-face-italic 'italic t)))

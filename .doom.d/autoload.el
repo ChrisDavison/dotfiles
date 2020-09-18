@@ -125,6 +125,37 @@ otherwise use the subtree title."
         (org-mode)
         (insert (concat "#+TITLE: " title "\n\n"))
         (evil-paste-after 1)))))
+
+;;;###autoload
+(defun cd/org-open-link-same ()
+  (interactive)
+  (let ((old-setup org-link-frame-setup))
+    (setq org-link-frame-setup '((file . find-file)))
+    (org-open-at-point)
+    (setq org-link-frame-setup old-setup)))
+
+;;;###autoload
+(defun cd/refile (file headline &optional arg)
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile arg nil (list headline file nil pos)))
+  (switch-to-buffer (current-buffer)))
+
+;;;###autoload
+(defun cd/refile-to-file (&optional target)
+  (interactive)
+  (let ((filename (or target (read-file-name "Refile to: ")))
+        (old-refile-targets org-refile-targets))
+    (progn (setq org-refile-targets `((filename . (:maxlevel . 6))))
+           (org-refile)
+           (setq org-refile-targets old-refile-targets))))
+
+;;;###autoload
+(defun cd/refile-to-this-file ()
+  (interactive)
+  (refile-to-file (buffer-name)))
+
 ;;;###autoload
 (defun cd/rg-journal (search)
   (interactive "Msearch string: ")

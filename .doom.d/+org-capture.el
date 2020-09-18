@@ -6,14 +6,17 @@
                :file "~/Dropbox/org/projects/todo.org"
                :template "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-faicon "sticky-note-o" "Note")
-               :keys "n"
-               :file "journal.org"
-               :datetree t
-               :children (("List item" :keys "n" :type item :template "- %?")
-                          ("List link" :keys "l" :type item
-                           :template "- [[%c][%^{Description}]] %?")
-                          ("Entry" :keys "N" :type entry :template "* %?")))
+              ;; 'journal' / 'note' disabled, now I'm trying org-journal
+              ;; as keybind =SPC n j= jumps to journal file and creates a new
+              ;; header with a timestamp
+              ;; (,(emoji-heading 'all-the-icons-faicon "sticky-note-o" "Note")
+              ;;  :keys "n"
+              ;;  :file "journal.org"
+              ;;  :datetree t
+              ;;  :children (("List item" :keys "n" :type item :template "- %?")
+              ;;             ("List link" :keys "l" :type item
+              ;;              :template "- [[%c][%^{Description}]] %?")
+              ;;             ("Entry" :keys "N" :type entry :template "* %?")))
 
               (,(emoji-heading 'all-the-icons-octicon "repo" "Logbook")
                :keys "l"
@@ -61,3 +64,9 @@
                :headline "REFILE"
                :template "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
                :immediate-finish t))))
+(setq cd/my-capture-templates org-capture-templates)
+
+;; org journal seems to be introducing its own capture templates so try this
+;; hack to see if I can force my own capture templates back into existence
+(after! org-journal
+  (setq org-capture-templates cd/my-capture-templates))
