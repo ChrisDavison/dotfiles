@@ -66,6 +66,16 @@ exist after each headings's drawers."
   (interactive)
   (term "/usr/bin/fish"))
 ;;;###autoload
+(defun cd/rg-journal (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-journal-dir))
+
+;;;###autoload
+(defun cd/rg-org (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-directory))
+
+;;;###autoload
 (defun change-state-and-archive ()
   (interactive)
   (org-todo)
