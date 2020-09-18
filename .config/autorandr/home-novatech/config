@@ -16,8 +16,8 @@ output HDMI-0
 mode 1920x1080
 pos 1920x0
 rate 60.00
-rotate left
 output DVI-I-1
 mode 1920x1080
-pos 0x689
+pos 0x48
 rate 60.00
+primary
