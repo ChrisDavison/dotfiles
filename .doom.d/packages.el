@@ -10,6 +10,7 @@
 (package! string-inflection)
 (package! iedit)
 (package! yasnippet)
+(package! dired-narrow)
 
 ;;; Languages
 (package! rust-mode)
