@@ -2,8 +2,6 @@
 
 sxhkd &
 nm-applet &
-compton -b &
-udiskie &
 dropbox start &
 # MONITOR_DIRECTION="--left-of"
 # MONITOR_DIRECTION="--above"
@@ -17,25 +15,24 @@ INTERNAL=DVI-I-1
 EXTERNAL=HDMI-0
 
 if [ -z "$EXTERNAL" ]; then
-    # xrandr --output $EXTERNAL --off
     bspc monitor $INTERNAL -d 1 2 3 4 5 6 7 8 9 0
-    MONITOR=$INTERNAL polybar -r example &
 else
-    # xrandr --output $EXTERNAL $MONITOR_DIRECTION $INTERNAL -s 1920x1080 --noprimary
     bspc monitor $EXTERNAL -d 6 7 8 9 0
-    # xrandr --output $INTERNAL --primary
     bspc monitor $INTERNAL -d 1 2 3 4 5
-
-    MONITOR=$INTERNAL polybar -r example &
-    MONITOR=$EXTERNAL polybar -r example &
 fi
+
+launch-polybar.sh &
+# MONITOR=$INTERNAL polybar -r example &
+# if [ ! -z "$EXTERNAL" ]; then
+#     MONITOR=$EXTERNAL polybar -r example &
+# fi
 
 sh ~/.fehbg
 
 #8620e6 is a nice purple
 bspc config border_width         3
 bspc config focused_border_color "#8620e6"
-bspc config window_gap           12
+bspc config window_gap           10
 
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
@@ -46,8 +43,11 @@ bspc config gapless_monocle      true
 
 bspc config automatic_scheme longest_side
 
-bspc rule -a Anki state=floating follow=on
+# bspc rule -a Anki state=floating follow=on
 bspc rule -a Bitwarden state=floating follow=on
 bspc rule -a feh state=floating follow=on
 bspc rule -a Emacs state=tiled follow=on
-bspc config external_rules_command "$HOME/.config/bspwm/external_rules"
+bspc rule -a Thunderbird desktop=3
+bspc rule -a Spotify desktop=0
+bspc rule -a Anki state=floating
+# bspc config external_rules_command "$HOME/.config/bspwm/external_rules"
