@@ -65,6 +65,66 @@ exist after each headings's drawers."
 (defun fish-term ()
   (interactive)
   (term "/usr/bin/fish"))
+
+;;;###autoload
+(defun cd/org-file-from-subtree (filename)
+  "Take the current subtree and create a new file from
+  it. Replace the current subtree with its main heading (i.e.,
+  delete all of its childen), and make the heading into a link
+  to the newly created file,
+
+In the new file, promote all direct children of the original
+  subtree to be level 1-headings, and transform the original
+  heading into the '#+TITLE' parameter.
+
+If called with the universal argument, prompt for new filename,
+otherwise use the subtree title."
+  (interactive "F")
+  (let ((filename (concat "~/" (file-relative-name filename "~"))))
+    ;; (org-back-to-heading)
+
+    ;; Copy current subtree into clipboard
+    (org-cut-subtree)
+
+    ;; ;; Delete everything but the headline
+    ;; (org-mark-subtree)
+    ;; (org-next-visible-heading 1)
+    ;; (call-interactively 'delete-region)
+    ;; (org-previous-visible-heading 1)
+
+    ;; ;; Mark the current headline text
+    ;; (org-end-of-line)
+    ;; (call-interactively 'set-mark-command)
+    ;; (org-beginning-of-line)
+
+    ;; Convert headline to a link of the to-be-created file
+    (org-insert-link nil filename)
+
+    (with-temp-file filename
+      (org-mode)
+      (org-paste-subtree)
+      (insert "#+TITLE: "))))
+
+;;;###autoload
+(defun cd/org-file-from-selection ()
+  "Create a new file from current selection, inserting a link.
+
+  Prompt for a filename, and create. Prompt for an org-mode
+  TITLE, and insert. Insert the cut region. Then, insert the link
+  into the source document, using TITLE as description"
+  (interactive)
+  (when (region-active-p)
+    (let* ((filename (read-file-name "New filename: " org-directory))
+           (file-relative (file-relative-name
+                           filename
+                           (file-name-directory (expand-file-name filename))))
+           (title (read-from-minibuffer "Title: ")))
+      (call-interactively' kill-region)
+      (insert (format "[[file:%s][%s]]" file-relative title))
+      (with-temp-file filename
+        (org-mode)
+        (insert (concat "#+TITLE: " title "\n\n"))
+        (evil-paste-after 1)))))
 ;;;###autoload
 (defun cd/rg-journal (search)
   (interactive "Msearch string: ")
