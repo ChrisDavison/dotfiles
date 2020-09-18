@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: quickquote
+# uuid: quickquote
+# key: qq:
+# condition: t
+# --
+/"$0"/

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: annotate
+# uuid: annotate
+# key: cd:
+# condition: t
+# --
+/cd: $1/$0
