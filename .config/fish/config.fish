@@ -49,7 +49,7 @@ alias ru="repoutil unclean"
 alias rs="repoutil stat"
 alias rl="repoutil list"
 alias rf="repoutil fetch"
-alias rb="repoutil branchstat"
+alias rb="repoutil branchstat | sed -e 's/.*code\///' | sort | column -s'|' -t"
 
 alias ls="exa --group-directories-first"
 alias lsa="exa --group-directories-first"
