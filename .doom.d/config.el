@@ -53,41 +53,13 @@
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 (add-to-list 'auth-sources "~/.authinfo")
 
-
-;;; Org-mode
-(defun cd/org-open-link-same ()
-  (interactive)
-  (let ((old-setup org-link-frame-setup))
-    (setq org-link-frame-setup '((file . find-file)))
-    (org-open-at-point)
-    (setq org-link-frame-setup old-setup)))
-
-(add-hook! 'org-mode
-           'visual-line-mode
-           'org-indent-mode
-           'abbrev-mode
-           ;; 'org-roam-mode
-           '(lambda () (set-face-italic 'italic t)))
-
-
-
 (setq vterm-shell "/usr/bin/fish")
 
-;; workaround to get the right WSL interop variable for clipboard usage
-;; used in combination with a shell alias to export $WSL_INTEROP to a file
-;; before calling emacs
-(after! s
-  (when (s-contains? (shell-command-to-string "uname -a") "microsoft")
-    (set-wsl-interop)
-        (setq browse-url-browser-function 'browse-url-generic
-        browse-url-generic-program "~/bin/firefox")
-    (setq x-selection-timeout 10)))
-
-
-(global-anzu-mode 1)
+(global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
 (setq global-auto-revert-mode t)
 
+;;; Easier connection to machines over ssh
 (defvar remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
     ("iona" . ,(list :username "cdavison" :ip "130.159.94.187"))))
@@ -109,27 +81,63 @@
         (add-to-list 'projectile-project-root-files ".projectile-root"))
 
 ;;; Keybinds
-(map! "C-c f" 'next-font)
-(map! "M-%" #'anzu-query-replace)
-(map! "C-M-%" #'anzu-query-replace-regexp)
+
+
+;;; Nov.el - read epubs in emacs
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(setq nov-text-width 80)
+
+;;; registers - easily navigate to files, or specific places
+(set-register ?c '(file . "~/Dropbox/org/projects/cybele.org"))
+(set-register ?g '(file . "~/Dropbox/org/projects/glasdata.org"))
+(set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
+(set-register ?l '(file . "~/Dropbox/org/projects/work.org"))
+(set-register ?q '(file . "~/Dropbox/org/quotes.org"))
+
+(defun load!-with-message (filename)
+  (load! filename)
+  (message "Loading %s" filename))
+
+(load!-with-message "+bibcapture")
+(load!-with-message "+fonts")
+(load!-with-message "+misc")
+(load!-with-message "+narrow")
+(load!-with-message "+org-config")
+(load!-with-message "+org-capture")
+(load!-with-message "+org-agenda")
+(load!-with-message "+org-journal")
+(load!-with-message "+wsl-setup")
+(load!-with-message "+vterm")
+
+(message "Org-roam startup can be slow...monitor it? Might be fine now I'm running emacs as daemon.")
+(org-roam-mode)
+
+
+(add-to-list 'exec-path (concat (file-name-as-directory (getenv "GOPATH")) "bin") t)
+(add-to-list 'load-path (concat (file-name-as-directory (getenv "GOPATH")) "src/github.com/dougm/goflymake"))
+(require 'go-flymake)
+; Use goimports instead of go-fmt for formatting with intelligent package addition/removal
+(setq gofmt-command "goimports")
+(add-hook 'go-mode-hook (lambda ()
+                          (set (make-local-variable 'company-backends) '(company-go))
+                          (local-set-key (kbd "M-.") 'godef-jump)
+                          (go-eldoc-setup)
+                          ; call Gofmt before saving
+                          (add-hook 'before-save-hook 'gofmt-before-save)))
+
+(add-hook! dired-mode 'dired-hide-details-mode)
+
+;;; Mappings
+(map! "C-<" 'avy-goto-word-1) ;; C-S-,
+(map! :leader "j" 'jump-to-register)
 
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
 
-(map! :leader
-      :prefix "w"
-      :desc "evil-window-split (follow)"
-      "s"
-      (lambda () (interactive)
-        (evil-window-split)
-        (evil-window-down 1)))
-(map! :leader
-      :prefix "w"
-      :desc "evil-window-vsplit (follow)"
-      "v"
-      (lambda () (interactive)
-        (evil-window-vsplit)
-        (evil-window-right 1)))
+(map! :leader :prefix "w" :desc "evil-window-split (follow)"
+      "s" (lambda () (interactive) (+evil-window-split-a) (evil-window-down 1)))
+(map! :leader :prefix "w" :desc "evil-window-vsplit (follow)"
+      "v" (lambda () (interactive) (+evil-window-vsplit-a) (evil-window-right 1)))
 
 (map! :leader
       (:prefix-map ("a" . "applications")
@@ -145,61 +153,23 @@
         :desc "One day" "1" '(lambda () (interactive) (org-agenda "" "c1"))
         :desc "Media" "m" '(lambda () (interactive) (org-agenda "" "cm"))
         :desc "Work" "w" '(lambda () (interactive) (org-agenda "" "cw"))
-        )))
+        )
+       (:prefix ("o" . "org (custom)")
+        :desc "subtree to file" "s" 'cd/org-file-from-subtree
+        )
+       ))
 
+;; Test editing
 (map! :n "C-;" #'iedit-mode)
 (map! :n "C-:" #'iedit-mode-toggle-on-function)
+(map! "M-%" #'anzu-query-replace)
+(map! "C-M-%" #'anzu-query-replace-regexp)
 
+;; Emacs capture and org-mode
 (map! "<f1>" 'org-capture)
 (map! "<f2>" 'org-agenda)
 (map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
 (map! "<f4>" '(lambda () (interactive) (org-agenda nil "cW")))
-
-;;; Nov.el - read epubs in emacs
-(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-(setq nov-text-width 80)
-
-;;; registers - easily navigate to files, or specific places
-(set-register ?c '(file . "~/Dropbox/org/projects/cybele.org"))
-(set-register ?g '(file . "~/Dropbox/org/projects/glasdata.org"))
-(set-register ?j '(file . "~/Dropbox/org/journal.org"))
-(set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
-(set-register ?l '(file . "~/Dropbox/org/projects/work.org"))
-(set-register ?q '(file . "~/Dropbox/org/quotes.org"))
-
-(setq cd-config-files
-      '("+bibcapture"
-        "+fonts"
-        "+misc"
-        "+narrow"
-        "+org-config"
-        "+org-capture"
-        "+org-agenda"
-        "+vterm"))
-
-(defun cd/load-personal-config ()
-  (interactive)
-  (dolist (a cd-config-files)
-    (message "Loading %s" a)
-    (load! a)))
-
-(cd/load-personal-config)
-
-(message "Org-roam isn't loaded at startup as it seems very slow....debug it?")
-;; (org-roam-mode)
-
-(map! :leader "j" 'jump-to-register)
-
-(add-to-list 'exec-path (concat (file-name-as-directory (getenv "GOPATH")) "bin") t)
-(add-to-list 'load-path (concat (file-name-as-directory (getenv "GOPATH")) "src/github.com/dougm/goflymake"))
-(require 'go-flymake)
-; Use goimports instead of go-fmt for formatting with intelligent package addition/removal
-(setq gofmt-command "goimports")
-(add-hook 'go-mode-hook (lambda ()
-                          (set (make-local-variable 'company-backends) '(company-go))
-                          (local-set-key (kbd "M-.") 'godef-jump)
-                          (go-eldoc-setup)
-                          ; call Gofmt before saving
-                          (add-hook 'before-save-hook 'gofmt-before-save)))
-
-(map! "C-," 'avy-goto-char-2)
+(map! :map org-mode-map :n "<SPC> m r a" 'change-state-and-archive)
+(map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)
+(map! :map dired-mode-map :n "/" 'dired-narrow)
