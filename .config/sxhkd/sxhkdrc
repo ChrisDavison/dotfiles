@@ -13,6 +13,9 @@ super + Return
 super + o; {t,f,e,p,a,w}
      {mate-terminal, firefox, emacs, bitwarden, bspc rule -a \* -o state=floating center rectangle=700x800+100+100 && anki,rofi -show bookmarks -modi bookmarks:~/.bin/rofi_bookmark_groups.sh}
 
+super + a
+    rofi -modi window -show window
+
 super + shift + s
     dmenu_screenshot.sh
 
