@@ -65,3 +65,8 @@ exist after each headings's drawers."
 (defun fish-term ()
   (interactive)
   (term "/usr/bin/fish"))
+;;;###autoload
+(defun change-state-and-archive ()
+  (interactive)
+  (org-todo)
+  (org-archive-subtree-default))
