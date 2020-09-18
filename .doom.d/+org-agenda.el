@@ -20,4 +20,16 @@
                       (org-agenda-start-day "-7d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
+        ("cf" "Weekly Review (last 7 days' DONE, from Friday)"
+         ((agenda "" ((org-agenda-span 7)
+                      (org-agenda-start-day "-6d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-show-log t)))))))
+
+(setq org-agenda-sorting-strategy
+      '(
+        (agenda habit-down time-up todo-state-up priority-down)
+        (todo todo-state-down priority-down category-keep)
+        (tags priority-down category-keep)
+        (search category-keep)
         ))
