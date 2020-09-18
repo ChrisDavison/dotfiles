@@ -1,73 +1,100 @@
 ; https://github.com/polybar/polybar
 
 [colors]
-background = #44222222
-background-alt = #444
-grey50=#777
-primary = #ffb52a
-secondary = #e60053
-alert = #bd2c40
-white = #ffffff
 black = #000000
+dark = #333
+white = #ffffff
+white50 = #99ffffff
+white25 = #33ffffff
+transparent = #0fff
 red = #cc241d
-purple = #8620e6
 bright_purple = #af59ff
-cyan = #21a4ad
-foreground = ${colors.white}
-foreground-alt = ${colors.cyan}
+bright_purple50 = #66af59ff
+bright_pink = #ff59fc
+darker_pink = #ef4aec
+purple_blue = #5c59ff
 
-[bar/example]
+[settings]
+screenchange-reload = true
+pseudo-transparency = true
+bspwm-padding=1
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[bar/internal]
 monitor = ${env:MONITOR:}
 width = 100%
-height = 20
-offset-x = 0px
-offset-y = -1px
+height = 18px
+offset-x = 0
+offset-y = 0
 radius = 0
 fixed-center = true
 bottom=false
 
-background = ${colors.background}
-foreground = ${colors.foreground}
+background = ${colors.dark}
+foreground = ${colors.white}
 
-line-size = 0
-line-color = #f00
+line-size = 1
 
 border-size = 0
-border-color = #fff
+border-color = ${colors.dark}
 
-padding-left = 0
+padding-left = 2
 padding-right = 0
 
-module-margin-left = 1
-module-margin-right = 1
+module-margin-left = 0
+module-margin-right = 2
 
-font-0 = Dank Mono:style=Regular:size=12;3
-font-1 = FontAwesome:style=Regular:size=12;3
-font-2 = FontAwesome:style=Regular:size=12;3
+font-0 = Hack:size=10;3
 
-modules-left = date bspwm i3
-modules-center =
-; modules-center = cpu memory backlight-acpi pulseaudio filesystem 
-modules-right = cpu memory filesystem pulseaudio battery backlight-acpi
+modules-left = date
+modules-center = bspwm battery backlight-acpi
+modules-right =
+; pulseaudio cpu memory
+; cpu memory filesystem pulseaudio battery backlight-acpi
 
-; NOT USING
-; filesystem (mount pointand memory used, e.g. '/:32%')
-; xkeyboard (layout, e.g. 'gb')
-
-tray-position = center
+tray-position = right
 tray-padding = 5
-tray-background = ${colors.background}
+tray-background = ${colors.dark}
 
 wm-restack = bspwm
-; wm-restack = i3
+; or 'i3'
 
-; override.redirect = true
+cursor-click = pointer
+cursor-scroll = ns-resize
 
-;scroll-up = bspwm-desknext
-;scroll-down = bspwm-deskprev
+[bar/external]
+monitor = ${env:MONITOR:}
+width = 100%
+height = 18px
+offset-x = 0
+offset-y = 0
+radius = 0
+fixed-center = true
+bottom=false
 
-;scroll-up = i3wm-wsnext
-;scroll-down = i3wm-wsprev
+background = ${colors.dark}
+foreground = ${colors.white}
+
+line-size = 1
+
+border-size = 0
+border-color = ${colors.dark}
+
+padding-left = 2
+padding-right = 0
+
+module-margin-left = 0
+module-margin-right = 2
+
+font-0 = Hack:size=10;3
+
+modules-left = date
+modules-center = bspwm
+wm-restack = bspwm
+; or 'i3'
 
 cursor-click = pointer
 cursor-scroll = ns-resize
@@ -83,7 +110,7 @@ blacklist-0 = num lock
 label-layout = %layout%
 label-indicator-padding = 2
 label-indicator-margin = 1
-label-indicator-background = ${colors.secondary}
+label-indicator-background = ${colors.red}
 
 [module/filesystem]
 type = internal/fs
@@ -91,31 +118,36 @@ interval = 25
 mount-0 = /
 label-mounted = %mountpoint%: %percentage_used%%
 label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
+label-unmounted-foreground = ${colors.white}
 
 [module/bspwm]
 type = internal/bspwm
-padding=20
+padding=0
 
-label-focused = %name% 
-label-focused-foreground = ${colors.foreground}
-label-focused-background = ${colors.background}
-label-focused-padding = ${settings.bspwm-padding}
+label-focused = %name%
+label-focused-underline = ${colors.bright_pink}
+label-focused-foreground = ${colors.bright_pink}
+label-focused-background = ${colors.transparent}
+label-focused-padding = 1
 
 label-occupied = %name%
-label-occupied-foreground = ${colors.bright_purple}
-label-occupied-padding = ${settings.bspwm-padding}
+label-occupied-foreground = ${colors.white}
+label-occupied-background = ${colors.transparent}
+label-occupied-padding = 1
 
-label-urgent = %name%!
-label-urgent-background = ${colors.alert}
-label-urgent-padding = ${settings.bspwm-padding}
+label-urgent = %name%
+label-urgent-background = ${colors.red}
+label-urgent-padding = 1
 
-label-empty = . 
-label-empty-foreground = ${colors.grey50}
-label-empty-padding = ${settings.bspwm-padding}
+label-empty = %name%
+label-empty-foreground = ${colors.white25}
+label-empty-background = ${colors.transparent}
+label-empty-padding = 1
 
 ; Separator in between workspaces
 ; label-separator = |
+; label-separator-foreground = ${colors.white25}
+; label-separator-background = ${colors.bright_pink}
 
 [module/i3]
 type = internal/i3
@@ -129,44 +161,26 @@ pin-workspaces = true
 
 label-mode-padding = 2
 label-mode-foreground = #000
-label-mode-background = ${colors.primary}
+label-mode-background = ${colors.bright_purple}
 
-; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-background = ${colors.bright_purple}
+label-focused-background = ${colors.transparent}
 label-focused-padding = ${settings.bspwm-padding}
 
-; unfocused = Inactive workspace on any monitor
 label-unfocused = %name%
 label-unfocused-padding = ${settings.bspwm-padding}
-label-unfocused-foreground = ${colors.foreground}
+label-unfocused-foreground = ${colors.white}
 
-; visible = Active workspace on unfocused monitor
 label-visible = %name%
-label-visible-background = ${self.label-focused-background}
+label-visible-background = ${colors.transparent}
 label-visible-padding = ${settings.bspwm-padding}
 
-; urgent = Workspace with urgency hint set
 label-urgent = %name%
-label-urgent-background = ${colors.alert}
+label-urgent-background = ${colors.transparent}
 label-urgent-padding =  ${settings.bspwm-padding}
 
 ; Separator in between workspaces
 ; label-separator = |
-
-
-[module/mpd]
-type = internal/mpd
-format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
-
-icon-prev = 
-icon-stop = 
-icon-play = 
-icon-pause = 
-icon-next = 
-
-label-song-maxlen = 25
-label-song-ellipsis = true
 
 [module/xbacklight]
 type = internal/xbacklight
@@ -183,148 +197,71 @@ card = intel_backlight
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = "CPU "
+format-prefix = "c"
 label = %percentage%%
+format-background = ${colors.transparent}
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = "MEM "
-label = %percentage_used%%
-
-[module/w.black-network]
-type=internal/network
-interface=enp3s0
-interval = 3.0
-format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
-format-disconnected =
-
-
-[module/wireless-network]
-type=internal/network
-interface=wlp2s0
-interval = 3.0
-format-connected = <label-connected>
-label-connected = %essid%
-format-disconnected =
+format-prefix = "m"
+label = "%percentage_used%% "
+format-background = ${colors.transparent}
 
 [module/date]
 type = internal/date
 interval = 5
-date = %Y-%m-%d
+date = %a %d
 time = %H:%M
-label = " %date% %time% "
-label-foreground=${colors.foreground}
-label-background=${colors.bright_purple}
+label = "%date%, %time% "
+label-foreground=${colors.white}
+label-background=${colors.transparent}
 
 [module/pulseaudio]
 type = internal/pulseaudio
-
-format-volume = <label-volume> 
-format-volume-prefix=" "
+format-volume = Volume <ramp-volume> <label-volume>
+format-volume-prefix=
 format-volume-prefix-font=1
-label-volume = "%percentage%% "
-label-volume-foreground = ${colors.foreground}
-
+format-volume-foreground=${colors.white}
+format-volume-background=${colors.transparent}
 format-muted = <label-muted>
 format-muted-prefix=
 format-muted-prefix-font=1
+label-volume = %percentage%%
+label-volume-foreground = ${colors.white}
+label-volume-background = ${colors.transparent}
 label-muted = mute
 label-muted-foreground = #666
-
-[module/alsa]
-type = internal/alsa
-
-format-volume = <label-volume>
-label-volume = VOL
-label-volume-foreground = ${colors.foreground}
-
-format-muted-prefix = " "
-format-muted-foreground = ${colors.foreground-alt}
-label-muted = sound muted
+ramp-volume-0 = .......
+ramp-volume-1 = :......
+ramp-volume-2 = -:.....
+ramp-volume-3 = --:....
+ramp-volume-4 = ---:...
+ramp-volume-5 = ----:..
+ramp-volume-6 = -----:.
+ramp-volume-7 = ------:
 
 [module/battery]
 type = internal/battery
 battery = BAT0
 adapter = AC0
 full-at = 98
-
 label-charging = %percentage%%
-format-charging = <ramp-capacity> <label-charging> 
-
 label-discharging = %percentage%%
+format-charging = <ramp-capacity> <label-charging> 
 format-discharging = <ramp-capacity> <label-discharging>
-
 format-full = FULL
-
 ramp-capacity-0=
 ramp-capacity-1=
 ramp-capacity-2=
 ramp-capacity-3=
 ramp-capacity-4= 
 
-[module/temperature]
-type = internal/temperature
-thermal-zone = 0
-warn-temperature = 60
-
-format = <label>
-format-warn = <label-warn>
-format-warn-underline = ${self.format-underline}
-
-label = %temperature-c%
-label-warn = %temperature-c%
-label-warn-foreground = ${colors.secondary}
-
-[module/powermenu]
-type = custom/menu
-
-expand-right = true
-
-format-spacing = 1
-
-menu-0-0 = Restart
-menu-0-0-exec = gnome-session-quit --reboot
-menu-0-1 = Sleep
-menu-0-1-exec = i3locksusp
-menu-0-2 = Lock
-menu-0-2-exec = i3scrlock
-menu-0-3 = Shutdown
-menu-0-3-exec = gnome-session-quit --power-off
-menu-0-4 = Logout
-menu-0-4-exec = gnome-session-quit --logout
-
-format-prefix-foreground = ${colors.foreground}
-label-open = " "
-label-open-foreground = ${colors.foreground}
-label-close = " "
-label-close-foreground = ${colors.foreground}
-label-separator = |
-label-separator-foreground = ${colors.foreground}
-
-[settings]
-screenchange-reload = true
-pseudo-transparency = true
-bspwm-padding=1
-
-[global/wm]
-margin-top = 5
-margin-bottom = 5
-
 [module/batrem]
 type = custom/script
 exec = $HOME/.bin/batrem
 label = %output%
 format-prefix = bat
-format-prefix-foreground = ${colors.foreground-alt}
+format-prefix-foreground = ${colors.white}
 tail = true
 interval = 20
-
-[module/spotifyplaying]
-type = custom/script
-exec = /home/davison/.bin/spotify_playing
-label = %output%
-interval = 10
-
