@@ -4,9 +4,9 @@
       user-mail-address "c.jr.davison@gmail.com")
 
 ;;; Doom appearance Utility
-(setq doom-font "CamingoCode-12")
-(setq doom-theme 'apropospriate-light)
-(setq display-line-numbers-type "relative")
+(setq doom-font "Hack-14")
+(setq doom-theme 'doom-nord)
+(setq display-line-numbers-type 'relative)
 
 (global-visual-line-mode 1)
 (menu-bar-mode -1)
