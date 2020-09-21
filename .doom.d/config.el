@@ -6,7 +6,7 @@
 ;;; Doom appearance Utility
 (setq doom-font "Hack-14")
 (setq doom-theme 'doom-nord)
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type t)
 
 (global-visual-line-mode 1)
 (menu-bar-mode -1)
@@ -59,6 +59,8 @@
 
 (setq global-auto-revert-mode t)
 
+(setq projectile-project-search-path '("~/code"))
+
 ;;; Easier connection to machines over ssh
 (defvar remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
@@ -89,10 +91,9 @@
 
 ;;; registers - easily navigate to files, or specific places
 (set-register ?c '(file . "~/Dropbox/org/projects/cybele.org"))
-(set-register ?g '(file . "~/Dropbox/org/projects/glasdata.org"))
+(set-register ?i '(file . "~/Dropbox/org/projects/iof2020.org"))
 (set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
-(set-register ?l '(file . "~/Dropbox/org/projects/work.org"))
-(set-register ?q '(file . "~/Dropbox/org/quotes.org"))
+(set-register ?w '(file . "~/Dropbox/org/projects/work.org"))
 
 (defun load!-with-message (filename)
   (load! filename)
