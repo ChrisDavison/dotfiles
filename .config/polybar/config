@@ -211,7 +211,7 @@ format-background = ${colors.transparent}
 [module/date]
 type = internal/date
 interval = 5
-date = %a %d
+date = %A %d
 time = %H:%M
 label = "%date%, %time% "
 label-foreground=${colors.white}
