@@ -173,3 +173,9 @@
 (map! :map org-mode-map :n "<SPC> m r a" 'change-state-and-archive)
 (map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)
 (map! :map dired-mode-map :n "/" 'dired-narrow)
+
+(after! evil
+  (map! :nv "j" 'evil-next-visual-line
+        :nv "k" 'evil-previous-visual-line))
+
+(setq recentf-auto-cleanup 60)
