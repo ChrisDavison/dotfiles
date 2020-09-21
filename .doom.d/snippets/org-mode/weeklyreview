@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: weeklyreview
+# uuid: weeklyreview
+# key: weeklyreview
+# condition: t                        
+# --
+- I spent my time (tasks done and tasks that fell by wayside) ::
+- I want to spend my time (next week, and pivoting long-term) ::
+- I haven't worked well towards my goals because ::
+- I've read and thought about (journal) ::
+- I've enjoyed ::
+- I've had things stuck in my mind ::
