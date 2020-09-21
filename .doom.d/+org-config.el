@@ -17,6 +17,7 @@
 
 (setq cd/my-agenda-files
       '("~/Dropbox/org/projects" "~/Dropbox/org/journal"))
+(setq cd/all-org-files '("~/Dropbox/org"))
 (defvar cd/archive-in-agenda t)
 (when cd/archive-in-agenda
   (add-to-list 'cd/my-agenda-files "~/Dropbox/org/archive/archive.org")
@@ -31,6 +32,7 @@
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
+      org-link-frame-setup '((file . find-file-other-window))
       ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
