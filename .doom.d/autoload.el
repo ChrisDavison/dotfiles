@@ -80,7 +80,8 @@ In the new file, promote all direct children of the original
 If called with the universal argument, prompt for new filename,
 otherwise use the subtree title."
   (interactive "F")
-  (let ((filename (concat "~/" (file-relative-name filename "~"))))
+  (let ((filename (concat "~/" (file-relative-name filename "~")))
+        (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename))))))
     ;; (org-back-to-heading)
 
     ;; Copy current subtree into clipboard
@@ -98,12 +99,13 @@ otherwise use the subtree title."
     ;; (org-beginning-of-line)
 
     ;; Convert headline to a link of the to-be-created file
-    (org-insert-link nil filename)
+    (org-insert-link nil filename title)
 
     (with-temp-file filename
       (org-mode)
+      (insert "#+TITLE: " title "\n\n")
       (org-paste-subtree)
-      (insert "#+TITLE: "))))
+      )))
 
 ;;;###autoload
 (defun cd/org-file-from-selection ()
@@ -154,7 +156,7 @@ otherwise use the subtree title."
 ;;;###autoload
 (defun cd/refile-to-this-file ()
   (interactive)
-  (refile-to-file (buffer-name)))
+  (cd/refile-to-file (buffer-name)))
 
 ;;;###autoload
 (defun cd/rg-journal (search)
