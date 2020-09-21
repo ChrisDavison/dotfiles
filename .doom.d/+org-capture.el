@@ -44,6 +44,16 @@
                :file "projects/media.org"
                :headline "UNFILED"
                :template "* TODO %?")
+              (,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
+               :keys "m"
+               :file "projects/media.org"
+               :headline "Music"
+               :template "* TODO %?")
+              (,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
+               :keys "G"
+               :file "projects/Guitar.org"
+               :headline "Songs to Learn"
+               :template "* TODO %?")
 
               (,(emoji-heading 'all-the-icons-octicon "book" "Book")
                :keys "b"
