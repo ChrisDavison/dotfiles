@@ -49,8 +49,8 @@ module-margin-right = 2
 
 font-0 = Hack:size=10;3
 
-modules-left = date
-modules-center = bspwm battery backlight-acpi
+modules-left = date 
+modules-center = bspwm i3 battery backlight-acpi
 modules-right =
 ; pulseaudio cpu memory
 ; cpu memory filesystem pulseaudio battery backlight-acpi
@@ -59,7 +59,8 @@ tray-position = right
 tray-padding = 5
 tray-background = ${colors.dark}
 
-wm-restack = bspwm
+wm-restack = i3
+; bspwm
 ; or 'i3'
 
 cursor-click = pointer
@@ -92,8 +93,9 @@ module-margin-right = 2
 font-0 = Hack:size=10;3
 
 modules-left = date
-modules-center = bspwm
-wm-restack = bspwm
+modules-center = bspwm i3
+wm-restack = i3
+; bspwm
 ; or 'i3'
 
 cursor-click = pointer
@@ -159,25 +161,26 @@ padding=20
 ; Only show workspaces on the same output as the bar
 pin-workspaces = true
 
-label-mode-padding = 2
-label-mode-foreground = #000
-label-mode-background = ${colors.bright_purple}
-
-label-focused = %name%
-label-focused-background = ${colors.transparent}
-label-focused-padding = ${settings.bspwm-padding}
-
+label-focused ="%name%"
 label-unfocused = %name%
-label-unfocused-padding = ${settings.bspwm-padding}
-label-unfocused-foreground = ${colors.white}
-
 label-visible = %name%
-label-visible-background = ${colors.transparent}
-label-visible-padding = ${settings.bspwm-padding}
-
 label-urgent = %name%
+
+; label-mode-padding = 2
+; label-mode-foreground = #000
+; label-mode-background = ${colors.bright_purple}
+
+label-focused-foreground = ${colors.bright_pink}
+label-focused-background = ${colors.transparent}
+label-unfocused-foreground = ${colors.white}
+label-visible-background = ${colors.transparent}
 label-urgent-background = ${colors.transparent}
+
+label-focused-padding = ${settings.bspwm-padding}
+label-unfocused-padding = ${settings.bspwm-padding}
+label-visible-padding = ${settings.bspwm-padding}
 label-urgent-padding =  ${settings.bspwm-padding}
+
 
 ; Separator in between workspaces
 ; label-separator = |
