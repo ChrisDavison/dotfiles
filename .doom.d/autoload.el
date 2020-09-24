@@ -104,8 +104,7 @@ otherwise use the subtree title."
     (with-temp-file filename
       (org-mode)
       (insert "#+TITLE: " title "\n\n")
-      (org-paste-subtree)
-      )))
+      (org-paste-subtree))))
 
 ;;;###autoload
 (defun cd/org-file-from-selection ()
@@ -173,3 +172,20 @@ otherwise use the subtree title."
   (interactive)
   (org-todo)
   (org-archive-subtree-default))
+
+;;;###autoload
+(defun cd/set-theme-dark ()
+  (interactive)
+  (setq doom-theme cd/dark-theme)
+  (doom/reload-theme))
+
+;;;###autoload
+(defun cd/set-theme-light ()
+  (interactive)
+  (setq doom-theme cd/light-theme)
+  (doom/reload-theme))
+
+;;;###autoload
+(defun cd/reload-config ()
+  (interactive)
+  (load (expand-file-name "~/.doom.d/config.el")))

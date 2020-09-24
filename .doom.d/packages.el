@@ -29,6 +29,7 @@
 ;; (package! zetteldeft)
 (package! org-roam-server)
 (package! doct)  ; org-capture, decleratively
+(package! anki-editor)
 
 ;;; Themes
 (package! minimal-theme)
@@ -36,3 +37,8 @@
 (package! apropospriate-theme)
 (package! dracula-theme)
 (package! flatland-theme)
+(package! spacemacs-theme)
+(package! color-theme-sanityinc-tomorrow)
+(package! afternoon-theme)
+(package! kaolin-themes)
+(package! cyberpunk-theme)
