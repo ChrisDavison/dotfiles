@@ -58,8 +58,8 @@ super + s; {t,T,F,f}
 # set the node flags
 # can also have 'private' (will try to keep same tiling size/position)
 # and 'hidden' (not displayed at all...need to script to bring it back up)
-super + f; {m,l,s}
-    bspc node -g {marked,locked,sticky}
+super + f; {m,l,s,h}
+    bspc node -g {marked,locked,sticky,hidden}
 
 
 # ==========================

@@ -50,5 +50,5 @@ bspc rule -a feh state=floating follow=on
 bspc rule -a Emacs state=tiled follow=on
 bspc rule -a Thunderbird desktop=3
 bspc rule -a Spotify desktop=0
-bspc rule -a Anki state=floating
+bspc rule -a Anki state=tiled desktop=5
 # bspc config external_rules_command "$HOME/.config/bspwm/external_rules"
