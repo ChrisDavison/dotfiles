@@ -27,7 +27,7 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/archive/archive.org::"
+      org-archive-location "~/Dropbox/org/archive.org::"
       org-refile-use-outline-path 'full-file-path
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
@@ -46,8 +46,12 @@
       (doct `(
               (,(emoji-heading 'all-the-icons-octicon "checklist" "Todo")
                :keys "t"
-               :file "~/Dropbox/org/projects/todo.org"
-               :template "* TODO %?")
+               :template "* TODO %?"
+               :children (("Todo" :keys "t" :file "~/Dropbox/org/projects/todo.org")
+                          ("Work" :keys "w" :file "~/Dropbox/org/projects/work.org" :header "Tasks")
+                          ("IoF" :keys "i" :file "~/Dropbox/org/projects/iof2020.org" :header "Tasks")
+                          ("Cybele" :keys "c" :file "~/Dropbox/org/projects/cybele.org" :header "Tasks")
+                          ))
 
               (,(emoji-heading 'all-the-icons-octicon "repo" "Logbook")
                :keys "l"
@@ -128,7 +132,7 @@
       org-agenda-skip-deadline-prewarning-if-scheduled t
       org-agenda-files '("~/Dropbox/org/projects"
                          "~/Dropbox/org/journal"
-                         "~/Dropbox/org/archive/archive.org")
+                         "~/Dropbox/org/archive.org")
       org-agenda-time-grid '((daily today require-timed)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
