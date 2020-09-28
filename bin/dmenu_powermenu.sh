@@ -5,11 +5,10 @@ logout
 suspend
 hibernate
 reboot
-shutdown
-"
+shutdown"
 
 args="--quality 100"
-opt=$(dmenu -l 10 -fn "Ubuntu Mono-18" -p "Power: " <<< $menu | cut -d' ' -f1)
+opt=$(dmenu -l 10 -p "Power: " <<< $menu | cut -d' ' -f1)
 
 case "$opt" in
     lock) i3scrlock ;;

@@ -5,7 +5,8 @@ all displays
 select rectangle"
 
 args="--quality 100"
-opt=$(dmenu -l 10 -fn "Ubuntu Mono-18" -p "Screenshot: " <<< $menu | cut -d' ' -f1)
+dmenu_config="-i -fn 'Hack-14' -sb #8620e6"
+opt=$(dmenu $dmenu_config -p "Screenshot:" <<< $menu | cut -d' ' -f1)
 
 output_fn="$HOME/Dropbox/Camera Uploads/screenshot--%Y%m%d-%H%M%S.png"
 case "$opt" in
