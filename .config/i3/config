@@ -3,9 +3,10 @@
 set $mod Mod3
 default_border pixel 2
 gaps outer 5
-gaps inner 10
+gaps inner 15
 smart_gaps on
 smart_borders no_gaps
+
 
 client.unfocused      #8620e6 #8620e6 #ffffff #ffffff #8620e6
 client.focused        #ed38d8 #ed38d8 #ffffff #ffffff #ed38d8
@@ -23,6 +24,11 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
+
+bindsym $mod+Left exec --no-startup-id i3_fullscreen_nav.sh focus left
+bindsym $mod+Down exec --no-startup-id i3_fullscreen_nav.sh focus down
+bindsym $mod+Up exec --no-startup-id i3_fullscreen_nav.sh focus up
+bindsym $mod+Right exec --no-startup-id i3_fullscreen_nav.sh focus right
 
 # move focused window
 bindsym $mod+Shift+h move left
@@ -126,6 +132,7 @@ bindsym $mod+Ctrl+l resize grow width 2 px or 2 ppt
 # STARTUP
 exec --no-startup-id nm-applet
 exec --no-startup-id udiskie
+exec_always --no-startup-id "/usr/bin/compton -b --config /home/davison/.config/compton.conf &"
 exec_always --no-startup-id autorandr home-novatech
 exec_always --no-startup-id sh ~/.fehbg
 exec_always --no-startup-id $HOME/.bin/launch-polybar.sh
@@ -146,11 +153,25 @@ exec_always --no-startup-id $HOME/.bin/launch-polybar.sh
 # bindsym $mod+Return exec "gnome-terminal"
 # bindsym $mod+Return exec "mate-terminal"
 bindsym $mod+Return exec "alacritty"
-bindsym $mod+space exec "rofi -combi-modi window,drun -show combi"
-bindsym $mod+Shift+s exec "rofi -show screenshot -modi screenshot:~/.bin/rofi_screenshot.sh"
-bindsym $mod+b exec "rofi -show bookmarks -modi bookmarks:~/.bin/rofi_bookmark_groups.sh"
-# bindsym $mod+Shift+s exec "dmenu_screenshot.sh"
-bindsym $mod+c exec "alacritty -e calc"
+
+# ROFI versions
+# bindsym $mod+space exec "rofi -modi drun -show drun"
+# bindsym $mod+Shift+space exec "rofi -modi window -show window"
+# bindsym $mod+Shift+s exec "rofi -show screenshot -modi screenshot:~/.bin/rofi_screenshot.sh"
+# bindsym $mod+b exec "rofi -show bookmarks -modi bookmarks:~/.bin/rofi_bookmark_groups.sh"
+# bindsym $mod+Shift+b exec "rofi -show bookmarks -modi bookmarks:~/.bin/rofi_bookmarks.sh "
+
+# DMENU versions
+
+bindsym $mod+space exec j4-dmenu-desktop --dmenu="dmenu -fn 'Hack-14' -i -p Application -sb '#8620e6'"
+bindsym $mod+Shift+space exec dmenu_win_switcher.sh
+bindsym $mod+Shift+s exec dmenu_screenshot.sh
+bindsym $mod+b exec dmenu_bookmark_groups.sh
+
+# Applications
+bindsym $mod+c exec "alacritty -t term_calc -e calc"
+bindsym $mod+r exec "alacritty -t term_ranger -e ranger"
+bindsym $mod+v exec "caja /media/davison/gorilla/video"
 
 bindsym --whole-window $mod+o workspace next_on_output
 bindsym --whole-window $mod+i workspace prev_on_output
@@ -186,6 +207,8 @@ bindsym $mod+Delete exec "~/.bin/spotify.sh prev"
 for_window [class="spotify"] move container to workspace $ws10
 for_window [class="Spotify"] move container to workspace $ws10
 for_window [class="Blueman-manager"] floating enable; move position center
+for_window [title="term_ranger"] fullscreen enable
+for_window [title="term_calc"] floating enable; move position center
 # for_window [class="Anki"] floating enable; move position center
 for_window [class="Bitwarden"] floating enable; move position center
 for_window [class="Pavucontrol"] floating enable; move position center
@@ -193,3 +216,4 @@ for_window [title=".*cheatsheet.*" class="feh"] floating enable; move position c
 
 # toggle split direction for every new app
 for_window [class=".*"] split toggle
+
