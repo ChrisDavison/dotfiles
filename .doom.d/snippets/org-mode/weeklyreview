@@ -2,11 +2,20 @@
 # name: weeklyreview
 # uuid: weeklyreview
 # key: weeklyreview
-# condition: t                        
+# condition: t                                      
 # --
-- I spent my time (tasks done and tasks that fell by wayside) ::
-- I want to spend my time (next week, and pivoting long-term) ::
-- I haven't worked well towards my goals because ::
-- I've read and thought about (journal) ::
-- I've enjoyed ::
-- I've had things stuck in my mind ::
+Weekly Review
+
+*Get Clear*
+
+- [ ] Summarise BuJo thoughts
+- [ ] Add BuJo tasks
+- [ ] Brain dump
+
+*What I've thought about / read*
+
+*What Worked* (work done, things enjoyed etc.)
+
+*What didn't work* (what I may need to tweak)
+
+*What to improve* (how I want to spend my time)
