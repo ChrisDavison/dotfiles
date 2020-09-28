@@ -24,6 +24,8 @@
 (package! graphviz-dot-mode)
 (package! csharp-mode)
 (package! fsharp-mode)
+(package! haskell-mode)
+(package! yaml-mode)
 
 ;;; Notetaking
 ;; (package! zetteldeft)
