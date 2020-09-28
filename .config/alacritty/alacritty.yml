@@ -8,9 +8,9 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        Dank Mono
+        Hack
     myfontsize: &fontsize
-        14
+        12
 
 window:
     dimensions:
@@ -34,7 +34,7 @@ window:
     # Values for `decorations` (macOS only):
     #         - transparent: Title bar, transparent background and title bar buttons
     #         - buttonless: Title bar, transparent background, but no title bar buttons
-    decorations: none
+    decorations: full
 
     # Startup Mode (changes require restart)
     # May be Windowed/Maximized/Fullscreen OR SimpleFullscreen (macOS only)
@@ -286,16 +286,61 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
+# Default colors
+    synthwave: &synthwave
+        primary:
+            background: '0x3a2263'
+            foreground: '0xFF6AD5'
+
+        # Cursor colors
+        #
+        # Colors which should be used to draw the terminal cursor. If these are unset,
+        # the cursor color will be the inverse of the cell color.
+        cursor:
+            text: '0x000000'
+            cursor: '0xFF6AD5'
+
+        # Selection colors
+        #
+        # Colors which should be used to draw the selection area. If selection 
+        # background is unset, selection color will be the inverse of the cell colors. 
+        # If only text is unset the cell text color will remain the same.
+        #selection:
+        #  text: '0xeaeaea'
+        #  background: '0x404040'
+
+        # Normal colors
+        normal:
+            black:   '0x000000'
+            red:     '0xd54e53'
+            green:   '0xb9ca4a'
+            yellow:  '0xe6c547'
+            blue:    '0x7aa6da'
+            magenta: '0xc397d8'
+            cyan:    '0x70c0ba'
+            white:   '0xeaeaea'
+
+        # Bright colors
+        bright:
+            black:   '0x666666'
+            red:     '0xff3334'
+            green:   '0x9ec400'
+            yellow:  '0xe7c547'
+            blue:    '0x7aa6da'
+            magenta: '0xb77ee0'
+            cyan:    '0x54ced6'
+            white:   '0xffffff'
+
 # molokai, ayudark, dracula, gruvbox, molokai, monokai, onedark, seoul256,
-# seoul256_light, pencil_light
-colors: *seoul256
+# seoul256_light, pencil_light, synthwave
+colors: *dracula
 
 bell:
     animation: EaseOutExpo
     duration: 0 # i.e. DISABLED
     color: '0xffffff'
 
-background_opacity: 1.0  # REQUIRES RESTART
+background_opacity: 0.8  # REQUIRES RESTART
 
 # fields: mouse, action, mods (optional)
 # values for 'mouse': Middle/Left/Right/<numeric>
