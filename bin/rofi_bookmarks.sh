@@ -10,7 +10,7 @@ else
     if [ ! -z "$site" ]; then
         url=$(grep "$site" ~/.bookmarks | cut -d';' -f2)
         if [ ! -z "$url" ]; then
-            xdg-open "$url" > /dev/null
+            i3-msg exec firefox "$url" > /dev/null
         fi
     fi
 
