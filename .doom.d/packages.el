@@ -32,6 +32,7 @@
 (package! org-roam-server)
 (package! doct)  ; org-capture, decleratively
 (package! anki-editor)
+(package! org-super-agenda)
 
 ;;; Themes
 (package! minimal-theme)

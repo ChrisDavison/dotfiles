@@ -199,5 +199,16 @@
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
+           'org-super-agenda-mode
            '(lambda () (set-face-italic 'italic t))
            '(lambda () (interactive) (org-superstar-mode -1)))
+
+;; Each group has an implicit boolean OR operator between its selectors.
+;;
+;; After the last group, the agenda will display items that didn't
+;; match any of these groups, with the default order position of 99
+(setq org-super-agenda-groups
+      '((:name "Today" :time-grid t :todo "TODAY")
+        (:name "Important" :priority "A")
+        (:name "Habit" :habit t)
+        (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")))
