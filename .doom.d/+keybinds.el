@@ -12,6 +12,11 @@
         :desc "Status of all branches" "b" #'cd/repo/branchstat
         :desc "Fetch all branches" "f" #'cd/repo/fetch
         :desc "List all managed repos" "l" #'cd/repo/list)
+       (:prefix ("a" . "agenda (custom)")
+        :desc "Reading in progress" "b" #'cd/agenda-books-in-progress
+        :desc "Today" "t" #'(lambda () (interactive) (org-agenda nil "c1"))
+        :desc "Weekly review" "w" #'(lambda () (interactive)
+                                      (let ((org-super-agenda-groups nil)) (org-agenda nil "cW"))))
        (:prefix ("j" . "journal")
         :desc "Search all entries" "s" #'org-journal-search-forever
         :desc "Open today" "o" #'org-journal-open-current-journal-file)))
