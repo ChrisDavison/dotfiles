@@ -39,3 +39,7 @@ history.sqlite
 .config/epr/
 /.doom.d/custom.el
 /.config/dconf/
+*.errors
+/.xmonad/xmonad-x86_64-linux
+*.hi
+*.o
