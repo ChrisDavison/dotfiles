@@ -163,10 +163,12 @@ bindsym $mod+Return exec "alacritty"
 
 # DMENU versions
 
-bindsym $mod+space exec j4-dmenu-desktop --dmenu="dmenu -fn 'Hack-14' -i -p Application -sb '#8620e6'"
+bindsym $mod+space exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Hack-14' -sb '#8620e6' -nhb '#8620e6' -nhf '#f438ee' -shb '#8620e6' -shf '#ffffff' -p 'App:'"
 bindsym $mod+Shift+space exec dmenu_win_switcher.sh
 bindsym $mod+Shift+s exec dmenu_screenshot.sh
 bindsym $mod+b exec dmenu_bookmark_groups.sh
+bindsym $mod+Shift+e exec dmenu_ebooks.sh
+bindsym $mod+Shift+a exec dmenu_articles.sh
 
 # Applications
 bindsym $mod+c exec "alacritty -t term_calc -e calc"
