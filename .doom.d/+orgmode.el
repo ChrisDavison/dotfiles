@@ -6,6 +6,7 @@
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
+      org-tags-column -80
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -151,8 +152,14 @@
                              (org-agenda-overriding-header "Books in Progress")))))
 
         ("cW" "Weekly Review (last 7 days' DONE)"
-         ((agenda "" ((org-agenda-span 7)
+         ((agenda "" ((org-super-agenda-groups nil)
+                      (org-agenda-span 7)
                       (org-agenda-start-day "-7d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-show-log t)))))
+        ("cD" "DONE today"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-start-day "-0d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
         )
@@ -199,16 +206,33 @@
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
-           'org-super-agenda-mode
            '(lambda () (set-face-italic 'italic t))
            '(lambda () (interactive) (org-superstar-mode -1)))
+
+
 
 ;; Each group has an implicit boolean OR operator between its selectors.
 ;;
 ;; After the last group, the agenda will display items that didn't
 ;; match any of these groups, with the default order position of 99
 (setq org-super-agenda-groups
-      '((:name "Today" :time-grid t :todo "TODAY")
-        (:name "Important" :priority "A")
+      `((:name "Done today" :and (:regexp "State \"DONE\"" :log t))
         (:name "Habit" :habit t)
+        (:name "Today" :time-grid t :todo "TODAY")
+        (:name "Important" :priority "A")
+        (:name "Work"
+         :file-path ,(expand-file-name "~/Dropbox/org/projects/work.org")
+         :file-path ,(expand-file-name "~/Dropbox/org/projects/iof2020.org")
+         :file-path ,(expand-file-name "~/Dropbox/org/projects/cybele.org"))
         (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")))
+
+(defun cd/agenda-books-in-progress ()
+  (interactive)
+  (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
+         (org-super-agenda-groups
+          `((:name "Books to Read" :file-path ,bookpath)
+            (:discard (:anything t)))))
+    (org-todo-list "WIP")))
+
+
+(org-super-agenda-mode 1)
