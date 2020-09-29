@@ -10,10 +10,14 @@ Screenshots
 Window Switcher
 ")
 
+dmenu_config="-i"
+if [ -f "$HOME/.config/dmenu.conf" ]; then
+    dmenu_config=`cat $HOME/.config/dmenu.conf`
+fi
 if [ $# -gt 0 ]; then
     choice=$1
 else
-    choice=$(echo -e "${options[@]}" | dmenu -p "Config:" -i -l 10 -fn "Ubuntu Mono-18")
+    choice=$(echo -e "${options[@]}" | dmenu -p "Config:" -l 10 $dmenu_config)
 
  fi
    case $choice in

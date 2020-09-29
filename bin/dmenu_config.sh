@@ -7,7 +7,11 @@ git
 polybar
 sxhkd")
 
-choice=$(echo -e "${options[@]}" | dmenu -p "Config:" -i -l 10 -fn "Ubuntu Mono-18")
+dmenu_config="-i"
+if [ -f "$HOME/.config/dmenu.conf" ]; then
+    dmenu_config=`cat $HOME/.config/dmenu.conf`
+fi
+choice=$(echo -e "${options[@]}" | dmenu -p "Config:" -l 10 $dmenu_config)
 
 case $choice in
     alacritty) alacritty -e nvim ~/.config/alacritty/alacritty.yml ;;

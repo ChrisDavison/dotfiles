@@ -12,7 +12,11 @@ c++
 browser="firefox"
 # browser="xdg-open"
 
-opt=$(dmenu -fn "Ubuntu Mono-18" -p "Reference: " <<< $menu | cut -d' ' -f1)
+dmenu_config="-i"
+if [ -f "$HOME/.config/dmenu.conf" ]; then
+    dmenu_config=`cat $HOME/.config/dmenu.conf`
+fi
+opt=$(dmenu -p "Reference: " $dmenu_config <<< $menu | cut -d' ' -f1)
 
 case "$opt" in
     latex) $browser "https://en.wikibooks.org/wiki/LaTeX" ;;

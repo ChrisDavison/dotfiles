@@ -6,11 +6,18 @@ menu="EVERYDAY
 Weather
 Email
 Calendar
+9gag
+Firefox Guest
 Youtube"
 # Myplace Qute"
 # 9gag
 
-dmenu_config="-i -fn 'Hack-14' -sb #8620e6"
+
+dmenu_config="-i"
+if [ -f "$HOME/.config/dmenu.conf" ]; then
+    dmenu_config=`cat $HOME/.config/dmenu.conf`
+fi
+
 
 option=$(dmenu $dmenu_config -p "Bookmarks:" <<< $menu)
 if [ ! -z "$option" ]; then
@@ -20,6 +27,7 @@ if [ ! -z "$option" ]; then
         Email) $browser --new-tab "https://outlook.office365.com/mail/inbox" --new-tab "https://mail.google.com" ;;
         Calendar) $browser --new-tab "https://outlook.office365.com/calendar/view/workweek" --new-tab "https://calendar.google.com" ;;
         Youtube) $browser --new-tab "https://www.youtube.com/playlist?list=WL" --new-tab "https://www.youtube.com/feed/subscriptions" --new-tab "https://www.youtube.com/";;
+        "Firefox Guest") $browser -P GUEST --new-tab "https://duckduckgo.com" ;;
         9gag) $browser --new-tab "https://www.9gag.com" --new-tab "https://www.9gag.com/girl" --new-tab "https://www.9gag.com/nsfw";;
         "Myplace Qute") i3-msg exec qutebrowser "https://classes.myplace.strath.ac.uk" > /dev/null ;;
         *) exit 1 ;;
