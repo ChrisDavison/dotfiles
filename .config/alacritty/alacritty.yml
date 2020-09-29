@@ -333,7 +333,7 @@ schemes:
 
 # molokai, ayudark, dracula, gruvbox, molokai, monokai, onedark, seoul256,
 # seoul256_light, pencil_light, synthwave
-colors: *dracula
+colors: *pencil_light
 
 bell:
     animation: EaseOutExpo
