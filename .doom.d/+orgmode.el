@@ -6,7 +6,7 @@
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column -80
+      org-tags-column 0
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
