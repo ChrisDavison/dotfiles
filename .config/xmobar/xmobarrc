@@ -16,9 +16,9 @@ Config { font = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
                                "--normal","green","--high","red"] 30
                     , Run Memory ["-t","Mem: <usedratio>%"] 30
                     , Run Date "%F %a %R" "date" 60
-                    , Run StdinReader
-                    ]
+                    , Run Alsa "default" "Master" []
+                    , Run StdinReader]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " %StdinReader% }{ %cpu% %memory% | <fc=#af59ff>%date%</fc> "
+       , template = " %StdinReader% }{ %alsa:default:Master% | %cpu% %memory% | <fc=#f438ee>%date%</fc> "
        }
