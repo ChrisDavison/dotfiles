@@ -216,14 +216,9 @@
 ;; After the last group, the agenda will display items that didn't
 ;; match any of these groups, with the default order position of 99
 (setq org-super-agenda-groups
-      `((:name "Done today" :and (:regexp "State \"DONE\"" :log t))
-        (:name "Habit" :habit t)
+      `((:name "Habit" :habit t)
         (:name "Today" :time-grid t :todo "TODAY")
         (:name "Important" :priority "A")
-        (:name "Work"
-         :file-path ,(expand-file-name "~/Dropbox/org/projects/work.org")
-         :file-path ,(expand-file-name "~/Dropbox/org/projects/iof2020.org")
-         :file-path ,(expand-file-name "~/Dropbox/org/projects/cybele.org"))
         (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")))
 
 (defun cd/agenda-books-in-progress ()
