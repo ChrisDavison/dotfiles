@@ -17,6 +17,8 @@ import XMonad.Hooks.ManageDocks
 
 import XMonad.Layout.CenteredMaster (centerMaster)
 import XMonad.Layout.Spacing (spacing)
+import XMonad.Layout.Tabbed
+import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.NoBorders (noBorders)
 
 import XMonad.Util.WorkspaceCompare(getSortByIndex)
@@ -24,15 +26,22 @@ import XMonad.Util.WorkspaceCompare(getSortByIndex)
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
+myColorPurple = "#8620e6"
+myColorPink = "#f438ee"
+myColorGrey = "#333333"
+myColorLightGrey = "#dddddd"
 
 myDmenuConfig = "dmenu -i -fn 'Hack-14' -sb '#8620e6' -nhb '#8620e6' -nhf '#f438ee' -shb '#8620e6' -shf '#ffffff' -p 'App:' -m 0"
 
 myJ4Command = "j4-dmenu-desktop --dmenu=\"" ++ myDmenuConfig ++ "\""
 
+myFont = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
+myFontSmall = "xft:Hack:pixelsize=12:antialias=true:hinting=true"
+
 myGridSelect = def {
   gs_cellheight = 60
   , gs_cellwidth = 200
-  , gs_font = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
+  , gs_font = myFont
   }
 
 -- Function to move to next non-empty WS skipping NSP.
@@ -41,7 +50,10 @@ nextNonEmptyWS = findWorkspace getSortByIndex Next HiddenNonEmptyWS 1
 
 -- Function to move to previous non-empty WS skipping NSP.
 prevNonEmptyWS = findWorkspace getSortByIndex Prev HiddenNonEmptyWS 1
-        >>= \t -> (windows . W.view $ t)                 
+        >>= \t -> (windows . W.view $ t)
+
+raiseAndRunInEmacs cmd = sequence_ [raise (className =? "Emacs"), runEmacs cmd]
+runEmacs cmd = spawn $ "emacsclient -e '" ++ cmd ++ "'"
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
@@ -49,12 +61,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn myJ4Command)
+    , ((modm,               xK_p), spawn myJ4Command)
     , ((modm .|. shiftMask, xK_p), spawn "dmenu_win_switcher.sh")
     , ((modm , xK_b), spawn "dmenu_bookmark_groups.sh")
     , ((modm , xK_d), submap . M.fromList $
         [ ((0, xK_e), spawn "dmenu_ebooks.sh"),
           ((0, xK_a), spawn "dmenu_articles.sh")])
+
+    , ((modm , xK_F1), raiseAndRunInEmacs "(org-capture)")
+    , ((modm , xK_F2), raiseAndRunInEmacs "(org-agenda)")
+    , ((modm , xK_F3), raiseAndRunInEmacs "(org-agenda nil \"c1\")")
+    , ((modm , xK_F4), raiseAndRunInEmacs "(org-agenda nil \"cW\")")
 
     -- grid application selector
    , ((modm, xK_g), goToSelected myGridSelect)
@@ -65,11 +82,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- close focused window 
     , ((modm .|. shiftMask, xK_c     ), kill)
 
-     -- Rotate through the available layout algorithms
+    -- LAYOUTS
     , ((modm,               xK_space ), sendMessage NextLayout)
-
-    --  Reset the layouts on the current workspace to default
+    -- Refresh layouts & goto default
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
+    -- Toggle fullscreen
+    , ((modm .|. controlMask, xK_space), sendMessage (Toggle "Full"))
 
     -- Resize viewed windows to the correct size
     , ((modm,               xK_n     ), refresh)
@@ -112,8 +130,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_q     ), restart "xmonad" True)
 
     -- Media keys
-    , ((modm ,  xK_Home ), spawn "amixer set Master 3dB+")
-    , ((modm ,  xK_End ), spawn "amixer set Master 3dB-")
+    , ((modm ,  xK_Home ), spawn "amixer set Master 6dB+")
+    , ((modm ,  xK_End ), spawn "amixer set Master 6dB-")
     , ((modm ,  xK_Prior ), spawn "~/.bin/spotify.sh play-pause")
     , ((modm ,  xK_Next ), spawn "~/.bin/spotify.sh next")
     , ((modm ,  xK_Delete ), spawn "~/.bin/spotify.sh previous")
@@ -161,30 +179,28 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Layouts:
-
--- You can specify and transform your layouts by modifying these values.
--- If you change layout bindings be sure to use 'mod-shift-space' after
--- restarting (with 'mod-q') to reset your layout state to the new
--- defaults, as xmonad preserves your old layout settings by default.
---
--- The available layouts.  Note that each layout is separated by |||,
--- which denotes layout choice.
---
-myLayout = twoThirdsMasterTiled ||| noBorders Full ||| centerMaster tiled ||| tiled
+myLayout = toggleLayouts cleanFull twoThirdsMasterTiled ||| myTabbed ||| tiled ||| centerOverTile
   where
-     -- default tiling algorithm partitions the screen into two panes
+     -- Layouts
+     myTabbed = tabbed shrinkText def {
+       fontName = myFontSmall
+       , activeColor = myColorPurple
+       , activeTextColor = myColorLightGrey
+       , activeBorderColor = myColorPurple
+       , inactiveColor = myColorGrey
+       , inactiveTextColor = myColorLightGrey
+       , inactiveBorderColor = myColorGrey
+       , decoHeight = 16
+       }
+     cleanFull = noBorders Full
+     centerOverTile = centerMaster tiled
      twoThirdsMasterTiled = spacing 10 $ Tall nmaster delta ratio2
      tiled   = spacing 10 $ Tall nmaster delta ratio
-
-     -- The default number of windows in the master pane
-     nmaster = 1
-
-     -- Default proportion of screen occupied by master pane
-     ratio2 = 2/3
-     ratio   = 1/2
-
-     -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+     -- Config
+     nmaster = 1 -- Number of windows in master pane
+     ratio2 = 2/3 -- Use 2/3 of screen for master
+     ratio   = 1/2 -- Use 1/2 of screen for master
+     delta   = 3/100 -- Expand/shrink window by X%
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -223,8 +239,9 @@ myConfig pipe = defaultConfig {
         focusFollowsMouse  = True,
         borderWidth        = 2,
         modMask            = mod3Mask,
-        -- workspaces = map show [1..9]
-        workspaces         = ["1:emacs", "2:web"] ++ map show [3..7] ++ ["8:music", "9:video"],
+        workspaces = map show [1..9],
+        -- workspaces = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"],
+        -- workspaces         = ["1:emacs", "2:web"] ++ map show [3..7] ++ ["8:music", "9:video"],
         normalBorderColor  = "#dddddd",
         focusedBorderColor = "#8620e6",
 
