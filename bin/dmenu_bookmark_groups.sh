@@ -1,36 +1,31 @@
 #!/bin/bash
 # browser=google-chrome
 browser=firefox
-
-menu="EVERYDAY
-Weather
-Email
-Calendar
-9gag
-Firefox Guest
-Youtube"
-# Myplace Qute"
-# 9gag
-
+bmFile=$HOME/code/dotfiles/.bookmark-groups
 
 dmenu_config="-i"
 if [ -f "$HOME/.config/dmenu.conf" ]; then
     dmenu_config=`cat $HOME/.config/dmenu.conf`
 fi
 
+awkMenuCmd="
+/^-- /{ # lines starting '-- ' are section headers
+gsub(/-- /, \"\"); # strip the leading '-- '
+print  # print the remainder
+}
+"
 
-option=$(dmenu $dmenu_config -p "Bookmarks:" <<< $menu)
+option=$(awk "$awkMenuCmd" $bmFile | sort | dmenu $dmenu_config -p "Bookmarks:")
 if [ ! -z "$option" ]; then
-    case "$option" in
-        EVERYDAY) $browser --new-tab "https://news.ycombinator.com" --new-tab "https://lobste.rs" --new-tab "https://reddit.com/r/programming"  --new-tab "https://reddit.com/r/rust" --new-tab "https://reddit.com/r/videos" --new-tab "https://www.bbc.com/news/uk" ;;
-        Weather) $browser --new-tab "https://darksky.net/forecast/55.8259,-4.2265/uk212/en" ;;
-        Email) $browser --new-tab "https://outlook.office365.com/mail/inbox" --new-tab "https://mail.google.com" ;;
-        Calendar) $browser --new-tab "https://outlook.office365.com/calendar/view/workweek" --new-tab "https://calendar.google.com" ;;
-        Youtube) $browser --new-tab "https://www.youtube.com/playlist?list=WL" --new-tab "https://www.youtube.com/feed/subscriptions" --new-tab "https://www.youtube.com/";;
-        "Firefox Guest") $browser -P GUEST --new-tab "https://duckduckgo.com" ;;
-        9gag) $browser --new-tab "https://www.9gag.com" --new-tab "https://www.9gag.com/girl" --new-tab "https://www.9gag.com/nsfw";;
-        "Myplace Qute") i3-msg exec qutebrowser "https://classes.myplace.strath.ac.uk" > /dev/null ;;
-        *) exit 1 ;;
-    esac
+    echo $option
+    awkBmCmd="
+    /^-- $option/{start=1; next} # find the matching header
+    /^-- / && start==1{exit}     # if we're printing, stop at next header
+    /^#/{next}                  # skip commented bookmarks
+    start == 1{gsub(/.*;/, \"\"); print} # strip bookmark name
+    "
+    awk "$awkBmCmd" $bmFile | while read -r bookmark; do
+        [ ! -z "$bookmark" ] && $browser --new-tab "$bookmark"
+    done
 fi
 
