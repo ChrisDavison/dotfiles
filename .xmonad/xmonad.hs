@@ -54,13 +54,7 @@ keyHyper = mod3Mask
 keyWindows = mod4Mask
 myModMask = keyHyper
 
--- AVAILABLE - F5 F6 F7 F8 F9 F10 F11 F12 
---             `~ 0 S-0 -_ =+ Insert
---             tabTAB W eE R T yY uU iI oO \
---             D F gG H ;: '"
---             zZ xX c vV B nN mM <> /?
---             [_,S-][left, right, up, down]
---
+
 makeSimpleKeymap keyMask simpleKeymapList = map (first $ (,) mask) simpleKeymapList
   where
     mask = case keyMask of
@@ -78,6 +72,14 @@ myMouseBindings conf = M.fromList . makeSimpleKeymap (Just myModMask) $
     , (button4, (\w -> spawn "amixer set Master 6dB+")) -- Scroll up = vol up
     , (button5, (\w -> spawn "amixer set Master 6dB-"))] -- Scroll down = vol down
 
+-- AVAILABLE - F5..F12  (and shift-F1..F12)
+--             `~ 0 S-0 -_ =+ Insert
+--             tabTAB W eE R T yY uU iI oO \
+--             D F gG H ;: '"
+--             zZ xX c vV B nN mM <> /?
+--             [_,S-][left, right, up, down]
+--
+-- Using Maybe KeyMask, as it felt more intuitive to read than '0'
 myKeys conf = M.fromList $
     makeSimpleKeymap (Just (myModMask .|. shiftMask)) [
       (xK_q     , io (exitWith ExitSuccess)) -- QUIT
