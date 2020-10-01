@@ -83,12 +83,12 @@ myMouseBindings conf = M.fromList . makeSimpleKeymap (Just myModMask) $
 -- Using Maybe KeyMask, as it felt more intuitive to read than '0'
 myKeys conf = M.fromList $
     makeSimpleKeymap (Just (myModMask .|. shiftMask)) [
-      (xK_q     , io (exitWith ExitSuccess)) -- QUIT
-    , (xK_Return, spawn myTerminal)
-    , (xK_c     , kill) -- close the focused window
-    , (xK_space , setLayout $ XMonad.layoutHook conf) -- reset to default layout
-    , (xK_j     , windows W.swapDown) -- move window up
-    , (xK_k     , windows W.swapUp  ) -- move window down
+      (xK_q             , io (exitWith ExitSuccess)) -- QUIT
+    , (xK_Return        , spawn myTerminal)
+    , (xK_c             , kill) -- close the focused window
+    , (xK_space         , setLayout $ XMonad.layoutHook conf) -- reset to default layout
+    , (xK_j             , windows W.swapDown) -- move window up
+    , (xK_k             , windows W.swapUp  ) -- move window down
     ]
     ++
     makeSimpleKeymap (Just myModMask) [
