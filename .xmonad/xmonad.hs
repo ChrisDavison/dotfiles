@@ -69,8 +69,9 @@ myMouseBindings conf = M.fromList . makeSimpleKeymap (Just myModMask) $
     [ (button1, (\w -> focus w >> mouseMoveWindow w)) -- Left = move
     , (button2, (\w -> focus w >> windows W.swapMaster)) -- Middle = make master
     , (button3, (\w -> focus w >> mouseResizeWindow w)) -- Right = resize
-    , (button4, (\w -> spawn "amixer set Master 6dB+")) -- Scroll up = vol up
-    , (button5, (\w -> spawn "amixer set Master 6dB-"))] -- Scroll down = vol down
+    -- Mouse wheel is sensitive, so use  smaller volume increments
+    , (button4, (\w -> spawn "amixer set Master 3dB+")) -- Scroll up = vol up
+    , (button5, (\w -> spawn "amixer set Master 3dB-"))] -- Scroll down = vol down
 
 -- AVAILABLE - F5..F12  (and shift-F1..F12)
 --             `~ 0 S-0 -_ =+ Insert
