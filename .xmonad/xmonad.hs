@@ -121,35 +121,46 @@ myKeys conf = M.fromList $
     , (xK_F5            , runOrRaise "spotify" (className =? "Spotify"))
     , (xK_F6            , raiseNextMaybe (spawn "firefox") (className =? "Firefox"))
     -- Media keys
-    , (xK_Home      , spawn "amixer set Master 6dB+")
-    , (xK_End       , spawn "amixer set Master 6dB-")
-    , (xK_Delete    , spawn "$HOME/.bin/spotify.sh prev")
-    , (xK_Next      , spawn "$HOME/.bin/spotify.sh next")
-    , (xK_Prior     , spawn "$HOME/.bin/spotify.sh play-pause")
+    , (xK_Home          , spawn "amixer set Master 6dB+")
+    , (xK_End           , spawn "amixer set Master 6dB-")
+    , (xK_Delete        , spawn "$HOME/.bin/spotify.sh prev")
+    , (xK_Next          , spawn "$HOME/.bin/spotify.sh next")
+    , (xK_Prior         , spawn "$HOME/.bin/spotify.sh play-pause")
     ]
     ++ makeKeyChords (Just myModMask) xK_d [
                                      (xK_e, spawn "dmenu_ebooks.sh"),
                                      (xK_a, spawn "dmenu_articles.sh")]
-    -- mod3-[1..9] to view workspace N
-    ++ makeSimpleKeymap (Just myModMask) [ 
-        (key, windows $ W.greedyView ws)
+
+    -- mod-[1..9] view workspace
+    -- mod-win-[1..9] view workspace on main monitor 
+    -- mod-alt-[1..9] view workspace on second monitor
+    -- (win is left of alt, so left monitor)
+    ++ makeSimpleKeymap (Just myModMask) [
+        (key, windows $ W.greedyView ws)                    
         | (key, ws) <- zip [xK_1..xK_9] myWorkspaces]
-    -- mod3-shift-[1..9] to move window to workspace N
-    ++ makeSimpleKeymap (Just (myModMask .|. shiftMask)) [ 
-        (key, windows $ W.shift ws)
+    ++ makeSimpleKeymap (Just (myModMask .|. keyWindows)) [            
+        (key, sequence_ [flip whenJust (windows . W.view) =<< screenWorkspace 0,
+                         windows $ W.greedyView ws])                
+        | (key, ws) <- zip [xK_1..xK_9] myWorkspaces]
+    ++ makeSimpleKeymap (Just (myModMask .|. keyAlt)) [
+        (key, sequence_ [flip whenJust (windows . W.view) =<< screenWorkspace 1,
+                         windows $ W.greedyView ws])       
         | (key, ws) <- zip [xK_1..xK_9] myWorkspaces]
 
-    -- mod3-{a,s} to focus physical screen 1,2..
+    -- mod-shift-[1..9] move window to workspace
+    ++ makeSimpleKeymap (Just (myModMask .|. shiftMask)) [
+        (key, windows $ W.shift ws)                      
+        | (key, ws) <- zip [xK_1..xK_9] myWorkspaces]
+
+    -- mod-{a,s} focus physical screen
+    -- mod-shift-{a,s} move window physical screen
     ++ makeSimpleKeymap (Just myModMask) [
-        -- (key, screenWorkspace sc >>= flip whenJust (windows . W.view))
         (key, flip whenJust (windows . W.view) =<< screenWorkspace sc)
-        | (key, sc) <- zip [xK_a, xK_s] [0..]
-    ]
-    -- mod3-shift-{a,s} to move focused window to  physical screen 1,2..
+        | (key, sc) <- zip [xK_a, xK_s] [0..]]
+    
     ++ makeSimpleKeymap (Just (myModMask .|. shiftMask)) [
         (key, flip whenJust (windows . W.shift) =<< screenWorkspace sc)
-        | (key, sc) <- zip [xK_a, xK_s] [0..]
-    ]
+        | (key, sc) <- zip [xK_a, xK_s] [0..]]
 
 ------------------------------------------------------------------------
 -- Layouts:
