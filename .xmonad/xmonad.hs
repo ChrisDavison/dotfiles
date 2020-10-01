@@ -166,6 +166,12 @@ myLayout = twoThirdsMasterTiled ||| tiled ||| twoPane
 myManageHook = composeAll
     [ className =? "Bitwarden"      --> doFloat
     , className =? "Pavucontrol"    --> doFloat
+    , className =? "Droidcam"       --> doShift "7"
+    , className =? "TeamViewer"     --> doShift "5"
+    , className =? "zoom"           --> doShift "4"
+    , title =? "scratchpad"         --> doFloat
+    , className =? "Anki"           --> doShift "3"
+    , className =? "Spotify"        --> doShift "8"
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore ]
 
