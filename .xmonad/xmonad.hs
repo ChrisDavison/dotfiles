@@ -41,8 +41,8 @@ gotoNonEmptyWS dir = windows . W.view =<< ws
   where
     ws = findWorkspace getSortByIndex dir HiddenNonEmptyWS 1
 
-raiseAndRunInEmacs :: String -> X()
-raiseAndRunInEmacs cmd = sequence_ [raise (className =? "Emacs"), runEmacs cmd]
+raiseEmacsAndRun :: String -> X()
+raiseEmacsAndRun cmd = sequence_ [raise (className =? "Emacs"), runEmacs cmd]
 
 runEmacs :: String -> X()
 runEmacs cmd = spawn $ "emacsclient -e '" ++ cmd ++ "'"
@@ -110,10 +110,13 @@ myKeys conf = M.fromList $
     , (xK_b             , spawn "dmenu_bookmark_groups.sh")
     , (xK_r             , spawn $ myTerminal ++ " -e ranger")
     -- Emacs / org mode
-    , (xK_F1    , raiseAndRunInEmacs "(org-capture)")
-    , (xK_F2    , raiseAndRunInEmacs "(org-agenda)")
-    , (xK_F3    , raiseAndRunInEmacs "(org-agenda nil \"c1\")")
-    , (xK_F4    , raiseAndRunInEmacs "(org-agenda nil \"cW\")")
+    , (xK_F1            , raiseEmacsAndRun "(org-capture)")
+    , (xK_F2            , raiseEmacsAndRun "(org-agenda)")
+    , (xK_F3            , raiseEmacsAndRun "(org-agenda nil \"c1\")")
+    , (xK_F4            , raiseEmacsAndRun "(org-agenda nil \"cW\")")
+    -- Other apps
+    , (xK_F5            , runOrRaise "spotify" (className =? "Spotify"))
+    , (xK_F6            , raiseNextMaybe (spawn "firefox") (className =? "Firefox"))
     -- Media keys
     , (xK_Home      , spawn "amixer set Master 6dB+")
     , (xK_End       , spawn "amixer set Master 6dB-")
