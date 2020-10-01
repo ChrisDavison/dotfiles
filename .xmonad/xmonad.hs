@@ -112,6 +112,7 @@ myKeys conf = M.fromList $
     , (xK_w             , spawn "dmenu_win_switcher.sh")
     , (xK_b             , spawn "dmenu_bookmark_groups.sh")
     , (xK_r             , spawn $ myTerminal ++ " -e ranger")
+    , (xK_x             , spawn $ myTerminal ++ " -t scratchpad -e $HOME/.bin/get_xprop.sh")
     -- Emacs / org mode
     , (xK_F1            , raiseEmacsAndRun "(org-capture)")
     , (xK_F2            , raiseEmacsAndRun "(org-agenda)")
