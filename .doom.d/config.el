@@ -6,7 +6,7 @@
 ;;; Doom appearance Utility
 (setq doom-font "Hack-14")
 (setq cd/light-theme 'kaolin-breeze)
-(setq cd/dark-theme 'kaolin-eclipse)
+(setq cd/dark-theme 'kaolin-bubblegum)
 (setq doom-theme cd/dark-theme)
 
 ;;; Programming - rust

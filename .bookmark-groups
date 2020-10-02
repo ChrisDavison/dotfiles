@@ -24,7 +24,6 @@ YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
 -- Twitch
 Twitch.tv;https://twitch.tv/mcdm/videos
 Twitch - MCDM;https://twitch.tv/mcdm/videos
-#Twitch - itmeJP;https://twitch.tv/itmejp/videos
 Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
 
 -- Weather
@@ -43,10 +42,11 @@ Strath FMS;https://fms.strath.ac.uk/
 -- Strathclyde MyPlace
 Strath Myplace;https://classes.myplace.strath.ac.uk
 
-#-- 9gag
-#9gag;https://www.9gag.com
-#9gag girl;https://www.9gag.com/girl
-#9gag nsfw;https://www.9gag.com/nsfw
-
 -- Wikipedia
 Wikipedia;https://www.wikipedia.com
+
+-- ignore
+-- 9gag
+9gag;https://www.9gag.com
+9gag girl;https://www.9gag.com/girl
+9gag nsfw;https://www.9gag.com/nsfw

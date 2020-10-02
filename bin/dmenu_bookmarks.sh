@@ -1,15 +1,31 @@
 #!/bin/bash
+browser=firefox
+bmFile=$HOME/code/dotfiles/.bookmark-groups
 
 dmenu_config="-i"
 if [ -f "$HOME/.config/dmenu.conf" ]; then
     dmenu_config=`cat $HOME/.config/dmenu.conf`
 fi
-site=$(cat ~/.bookmarks | cut -d';' -f1 | dmenu -l 10 -p "Site: " $dmenu_config)
 
-if [ ! -z "$site" ]; then
-    url=$(grep "$site" ~/.bookmarks | cut -d';' -f2)
-    xdg-open "$url"
+awkMenuCmd="
+/;/{
+    gsub(/;.*/, \"\"); # strip the leading '-- '
+    print  # print the remainder
+}
+"
+
+option=$(awk "$awkMenuCmd" $bmFile | sort | uniq | dmenu $dmenu_config -p "Bookmarks:")
+if [ ! -z "$option" ]; then
+    echo $option
+    awkBmCmd="
+    /$option/{
+        gsub(/.*;/, \"\"); # strip the leading '-- '
+        print;  # print the remainder
+        exit
+    } # find the matching header
+    "
+    awk "$awkBmCmd" $bmFile | while read -r bookmark; do
+        [ ! -z "$bookmark" ] && $browser --new-tab "$bookmark"
+    done
 fi
-
-
 

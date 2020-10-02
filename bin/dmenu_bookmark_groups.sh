@@ -9,6 +9,7 @@ if [ -f "$HOME/.config/dmenu.conf" ]; then
 fi
 
 awkMenuCmd="
+/^-- ignore/{exit}
 /^-- /{ # lines starting '-- ' are section headers
 gsub(/-- /, \"\"); # strip the leading '-- '
 print  # print the remainder
