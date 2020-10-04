@@ -40,6 +40,7 @@
       global-auto-revert-mode t
       projectile-project-search-path '("~/code")
       display-line-numbers-type t
+      +format-with-lsp nil
       )
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -85,3 +86,5 @@
 (global-undo-tree-mode 1)
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 (org-roam-mode)
+
+(add-hook! 'prog-mode-hook 'undo-tree-mode)

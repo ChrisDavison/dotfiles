@@ -202,12 +202,12 @@
   (while (outline-previous-heading)
     (org-id-get-create)))
 
-(add-hook! 'org-mode
+(add-hook! org-mode
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
-           '(lambda () (set-face-italic 'italic t))
-           '(lambda () (interactive) (org-superstar-mode -1)))
+           'undo-tree-mode
+           '(lambda () (set-face-italic 'italic t)))
 
 
 
