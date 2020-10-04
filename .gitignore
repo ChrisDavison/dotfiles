@@ -43,3 +43,4 @@ history.sqlite
 /.xmonad/xmonad-x86_64-linux
 *.hi
 *.o
+/.xmonad/prompt-history
