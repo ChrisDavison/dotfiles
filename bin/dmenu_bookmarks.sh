@@ -1,6 +1,6 @@
 #!/bin/bash
 browser=firefox
-bmFile=$HOME/code/dotfiles/.bookmark-groups
+bmFile=$HOME/code/dotfiles/.bookmarks
 
 dmenu_config="-i"
 if [ -f "$HOME/.config/dmenu.conf" ]; then
@@ -10,6 +10,7 @@ fi
 awkMenuCmd="
 /;/{
     gsub(/;.*/, \"\"); # strip the leading '-- '
+    gsub(/^    /, \"\");
     print  # print the remainder
 }
 "
@@ -18,7 +19,7 @@ option=$(awk "$awkMenuCmd" $bmFile | sort | uniq | dmenu $dmenu_config -p "Bookm
 if [ ! -z "$option" ]; then
     echo $option
     awkBmCmd="
-    /$option/{
+    /    $option/{
         gsub(/.*;/, \"\"); # strip the leading '-- '
         print;  # print the remainder
         exit

@@ -1,19 +1,60 @@
-Hacker News;https:///news.ycombinator.com
-Lobsters;https://lobste.rs
-BBC News;https://bbc.co.uk/news
-Youtube;https://www.youtube.com
-Wikipedia;https://www.wikipedia.com
-YT Subscriptions;https://www.youtube.com/feed/subscriptions
-YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc&disable_polymer=True
-YT Watch Later;https://www.youtube.com/playlist?list=WL&disable_polymer=True
-Twitch.tv;https://twitch.tv/mcdm/videos
-Twitch - MCDM;https://twitch.tv/mcdm/videos
-Twitch - itmeJP;https://twitch.tv/itmejp/videos
-Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
-Weather - DarkSky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
-Weather - BBC;https://www.bbc.co.uk/weather/2648579
-Train Home;http://ojp.nationalrail.co.uk/service/timesandfares/GLC/RUT/today/1630/dep
-Strath Email;https://outlook.office365.com/mail/inbox
-Strath Pegasus;https://pegasus.strath.ac.uk
-Strath FMS;https://fms.strath.ac.uk/
-Strath Calendar;https://outlook.office365.com/calendar/view/month
+1. Everyday
+    Hacker News;https://news.ycombinator.com
+    Lobsters;https://lobste.rs
+    BBC News;https://bbc.co.uk/news/uk
+
+2. Youtube
+    YT Subscriptions;https://www.youtube.com/feed/subscriptions
+    YT Watch Later;https://www.youtube.com/playlist?list=WL
+    YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
+    Youtube;https://www.youtube.com
+
+3. Work .Strath.
+    Strath Email;https://outlook.office365.com/mail/inbox
+    Strath Calendar;https://outlook.office365.com/calendar/view/workweek
+    Slack;https://cidcom.slack.com
+
+Reddit programming
+    Reddit Rust;https://www.reddit.com/r/rust
+    Reddit Haskell;https://www.reddit.com/r/haskell
+    Reddit Python;https://www.reddit.com/r/python
+    Reddit Programming;https://www.reddit.com/r/programming
+
+Reddit video
+    video;https://www.reddit.com/r/videos
+
+Reddit machine learning
+    Reddit ML;https://www.reddit.com/r/machinelearning
+    Reddit AI;https://www.reddit.com/r/artificial
+
+Twitch
+    Twitch.tv;https://twitch.tv/mcdm/videos
+    Twitch - MCDM;https://twitch.tv/mcdm/videos
+    Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
+
+Weather
+    Weather - DarkSky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
+    Weather - BBC;https://www.bbc.co.uk/weather/2648579
+
+Google Mail and Calendar
+    GMail - google email;https://mail.google.com
+    GCalendar;https://calendar.google.com
+
+FMS .Strath.
+    Strath FMS;https://fms.strath.ac.uk/
+
+MyPlace .Strath.
+    Strath Myplace;https://classes.myplace.strath.ac.uk
+
+Wikipedia
+    Wikipedia;https://www.wikipedia.com
+
+LoL
+    LoL Worlds;https://lol.gamepedia.com/2020_Season_World_Championship/Main_Event
+
+z 9gag
+    z 9gag;https://www.9gag.com
+    z 9gag girl;https://www.9gag.com/girl
+    z 9gag nsfw;https://www.9gag.com/nsfw
+
+ignore
