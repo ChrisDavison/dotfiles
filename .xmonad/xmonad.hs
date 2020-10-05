@@ -7,6 +7,7 @@ import System.Posix.Unistd
 
 import XMonad
 import XMonad.Actions.CycleWS ( toggleWS' , moveTo , findWorkspace , shiftTo , WSType ( HiddenNonEmptyWS , EmptyWS))
+import XMonad.Actions.FindEmptyWorkspace
 import XMonad.Actions.Submap ( submap )
 import XMonad.Actions.WindowGo
 import XMonad.Hooks.DynamicLog
@@ -74,8 +75,8 @@ myMouseBindings _conf = keysFromSimpleMousebinds
   , M Hyper      button2 (\w -> focus w >> windows W.swapMaster) -- Middle = make master
   , M Hyper      button3 (\w -> focus w >> mouseResizeWindow w) -- Right = resize
     -- Mouse wheel is sensitive, so use  smaller volume increments
-  , M Hyper      button4 (\w -> (spawn "amixer sset Master 3dB+")) -- Scroll up = vol up
-  , M Hyper      button5 (\w -> (spawn "amixer sset Master 3dB-")) -- Scroll down = vol down
+  , M Hyper      button4 (\w -> (spawn "volume.sh --up")) -- Scroll up = vol up
+  , M Hyper      button5 (\w -> (spawn "volume.sh --down")) -- Scroll down = vol down
   , M HyperShift button4 (\w -> gotoNonEmptyWS Prev) -- Scroll up = vol up
   , M HyperShift button5 (\w -> gotoNonEmptyWS Next) -- Scroll down = vol down
   ]
@@ -88,8 +89,8 @@ myKeys conf = keysFromSimpleKeybinds $
   --- WINDOW FOCUS 
   , K Hyper      xK_bracketleft  (gotoNonEmptyWS Prev)            -- find prev empty workspace
   , K Hyper      xK_bracketright (gotoNonEmptyWS Next)            -- find next empty workspace
-  , K HyperShift xK_bracketleft  (shiftToNonEmptyWS Prev)         -- move win to prev empty workspace
-  , K HyperShift xK_bracketright (shiftToNonEmptyWS Next)         -- move win to next empty workspace
+  , K HyperShift xK_bracketleft  (tagToEmptyWorkspace)         -- move win to prev empty workspace
+  , K HyperShift xK_bracketright (shiftToEmptyWS Next)         -- move win to next empty workspace
   , K Hyper      xK_j            (windows W.focusDown)            -- focus window up stack
   , K Hyper      xK_k            (windows W.focusUp)              -- focus window down stack
   , K Hyper      xK_m            (windows W.focusMaster)          -- focus master window
@@ -113,15 +114,17 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
   , K Hyper      xK_r            (spawn $ myTerminal ++ " -e ranger")
   , K Hyper      xK_Return       (spawn myTerminal)
+  , K Alt        xK_Return       (spawn myTerminal)
+  , K Win        xK_Return       (spawn myTerminal)
   , K Hyper      xK_p            (spawn $ myJ4Command)
-  , K Hyper      xK_w            (spawn "dmenu_win_switcher.sh")
-  , K Hyper      xK_b            (spawn "dmenu_bookmark_groups.sh")
-  , K HyperShift xK_b            (spawn "dmenu_bookmarks.sh")
+  , K Hyper      xK_w            (spawn "$HOME/.bin/dmenu_win_switcher.sh")
+  , K Hyper      xK_b            (spawn "$HOME/.bin/dmenu_bookmark_groups.sh")
+  , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
   , K Hyper      xK_F5           (runOrRaise "spotify" (className =? "Spotify"))
   , K Hyper      xK_F6           (cycleFirefox)
   --- firefox / youtube doesn't work well with instant xdotool, so add 100ms delay after switching window
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
-  , K Hyper      xK_F11          (spawn "dmenu_asmr.py")
+  , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
   , K Hyper      xK_F12          (S.promptSearch myXPConfig S.duckduckgo)
   --- LAUNCHERS EMACS
   , K Hyper      xK_F1           (raiseEmacsAndRun "(org-capture)")
@@ -129,24 +132,25 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_F3           (raiseEmacsAndRun "(org-agenda nil \"c1\")")
   , K Hyper      xK_F4           (raiseEmacsAndRun "(org-agenda nil \"cW\")")
   --- AUDIO / MUSIC
-  , K Hyper      xK_Home                  (spawn "amixer sset Master 6dB+")
-  , K Hyper      xK_End                   (spawn "amixer sset Master 6dB-")
+  , K Hyper      xK_Home                  (doVolume "up")
+  , K Hyper      xK_End                   (doVolume "down")
   , K Hyper      xK_Delete                (doSpotify "prev")
   , K Hyper      xK_Next                  (doSpotify "next")
   , K Hyper      xK_Prior                 (doSpotify "play-pause")
-  , K None       xF86XK_AudioRaiseVolume  (spawn "amixer set Master 6dB+")
-  , K None       xF86XK_AudioLowerVolume  (spawn "amixer set Master 6dB-")
+  , K None       xF86XK_AudioRaiseVolume  (doVolume "up")
+  , K None       xF86XK_AudioLowerVolume  (doVolume "down")
+  , K None       xF86XK_AudioMute         (doVolume "mute")
   , K None       xF86XK_AudioPrev         (doSpotify "prev")
   , K None       xF86XK_AudioNext         (doSpotify "next")
   , K None       xF86XK_AudioPlay         (doSpotify "play-pause")
                                                                            -- Brightness
-  , K None       xF86XK_KbdBrightnessUp   (spawn "bright.sh up")
-  , K None       xF86XK_MonBrightnessUp   (spawn "bright.sh up")
-  , K None       xF86XK_KbdBrightnessDown (spawn "bright.sh down")
-  , K None       xF86XK_MonBrightnessDown (spawn "bright.sh down")
+  , K None       xF86XK_KbdBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
+  , K None       xF86XK_MonBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
+  , K None       xF86XK_KbdBrightnessDown (spawn "$HOME/.bin/bright.sh down")
+  , K None       xF86XK_MonBrightnessDown (spawn "$HOME/.bin/bright.sh down")
                                                                            -- KEYCHORD - H-d {e,a} -- open ebooks or literature
-  , K Hyper      xK_d (submapFromKeybind [ K None xK_e (spawn "dmenu_ebooks.sh")
-                                         , K None xK_a (spawn "dmenu_articles.sh")])
+  , K Hyper      xK_d (submapFromKeybind [ K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
+                                         , K None xK_a (spawn "$HOME/.bin/dmenu_articles.sh")])
   ]
                                                                            
   ++ [ K Hyper      key (pullWs ws)           | (key, ws) <- keyWsPairs ]     -- mod-[1..9]       :: view workspace on current monitor
@@ -159,14 +163,12 @@ myKeys conf = keysFromSimpleKeybinds $
  where
   keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
   keyScreenPairs = zip [xK_a, xK_s] [0 ..]
-  focusMonitor n = flip whenJust viewWs =<< screenWorkspace n
-  moveWinToMonitor n = flip whenJust moveWinToWs =<< screenWorkspace n
-  pullWs      = windows . W.greedyView
-  viewWs      = windows . W.view
-  moveWinToWs = windows . W.shift
-  viewWsOnMon ws mon = focusMonitor mon <> pullWs ws
+  
   doSpotify cmd = spawn $ "$HOME/.bin/spotify.sh " ++ cmd
+  doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
   cycleFirefox = raiseNextMaybe (return ()) (className =? "Firefox")
+
+data Volume = VolUp | VolDown | VolToggleMute
 
 ------------------------------------------------------------------------
 -- Layouts:
@@ -195,22 +197,24 @@ myLayout = onWorkspace "8:spotify" lFull
 --    fuzzy =?!   (e.g. 'n something EEDLE' =?! 'needle')   ! case insensitive
 myManageHook = manageDocks <> composeAll
   [
-    className =? "zoom"           --> doShift "3"
-  , className =? "Anki"           --> doShift "4"
-  , className =? "TeamViewer"     --> doShift "5"
-  , className =? "Droidcam"       --> doShift "7"
-  , className =? "Spotify"        --> doShift "8"
-  , className =? "Bitwarden"      --> doFloat
-  , className =? "Pavucontrol"    --> doFloat
-  , resource  =? "desktop_window" --> doIgnore
-  , resource  =? "kdesktop"       --> doIgnore
-  , title     =? "scratchpad"     --> doFloat
+    className =? "zoom"            --> doShift "3"
+  , className =? "Anki"            --> doShift "4"
+  , className =? "TeamViewer"      --> doShift "5"
+  , className =? "Droidcam"        --> doShift "7"
+  , className =? "Spotify"         --> doShift "8"
+  , className =? "Bitwarden"       --> doFloat
+  , className =? "Pavucontrol"     --> doFloat
+  , className =? "Blueman-manager" --> doFloat
+  , resource  =? "desktop_window"  --> doIgnore
+  , resource  =? "kdesktop"        --> doIgnore
+  , title     =? "scratchpad"      --> doFloat
   ]
 
 ------------------------------------------------------------------------
 -- Startup hook
 myStartupHook = do
   spawnOnce "redshift"
+  spawnOnce "autorandr"
   spawnOnce "~/.fehbg"
   spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
@@ -226,7 +230,7 @@ logWorkspacesOnXmobar pipe = dynamicLogWithPP xmobarPP
   , ppCurrent = \w -> xmobarColor cPink "" w
   , ppWsSep   = "  "
   , ppSep     = " ::: "
-  , ppLayout  = \c -> ""
+  , ppLayout  = \_ -> ""
   }
 
 myConfig pipe = def { terminal           = myTerminal
@@ -261,8 +265,7 @@ myFontXL    = "xft:Hack:pixelsize=18:antialias=true:hinting=true"
 myFontSmall = "xft:Hack:pixelsize=12:antialias=true:hinting=true"
 
 myTerminal = "alacritty"
-myWorkspaces =
-  ["1:emacs", "2:web", "3", "4:anki", "5", "6", "7", "8:spotify", "9:video"]
+myWorkspaces = ["1:emacs", "2:web", "3", "4:anki", "5", "6", "7", "8:spotify", "9:video"]
 
 myXPConfig :: XPConfig
 myXPConfig = def { font                = myFont
@@ -281,6 +284,7 @@ myXPConfigLG = myXPConfig { font = myFontXL
                           }
 
 -- Execution of programs
+myJ4Command :: String
 myJ4Command = "j4-dmenu-desktop --dmenu=\"" ++ dmenu ++ "\""
  where
   dmenu   = "dmenu -i -fn 'Hack-14' -p 'App:' " ++ intercalate " " pairs 
@@ -290,16 +294,39 @@ myJ4Command = "j4-dmenu-desktop --dmenu=\"" ++ dmenu ++ "\""
   pairs = [arg ++ " '" ++ colour ++ "'" | (arg, colour) <- args]
                  
 
+fullscreenNoBar :: X()
 fullscreenNoBar = sendMessage (Toggle "Full") <> sendMessage ToggleStruts
+
+getNonEmptyWs :: Direction1D -> X WorkspaceId
+getNonEmptyWs dir = findWorkspace getSortByIndex dir HiddenNonEmptyWS 1
+
+getEmptyWs :: Direction1D -> X WorkspaceId
+getEmptyWs dir = findWorkspace getSortByIndex dir EmptyWS 1
+
+focusMonitor :: ScreenId -> X()
+focusMonitor n = flip whenJust viewWs =<< screenWorkspace n
+
+moveWinToMonitor :: ScreenId -> X()
+moveWinToMonitor n = flip whenJust moveWinToWs =<< screenWorkspace n
+
+pullWs :: WorkspaceId -> X()
+pullWs      = windows . W.greedyView
+
+viewWsOnMon :: WorkspaceId -> ScreenId -> X()
+viewWsOnMon ws mon = focusMonitor mon <> pullWs ws
+
+moveWinToWs :: WorkspaceId -> X()
+moveWinToWs = windows . W.shift
+
+viewWs :: WorkspaceId -> X()
+viewWs = windows . W.view
 
 -- Move to Next or Prev non empty workspace
 gotoNonEmptyWS :: Direction1D -> X ()
-gotoNonEmptyWS dir = windows . W.view =<< ws
-  where ws = findWorkspace getSortByIndex dir HiddenNonEmptyWS 1
+gotoNonEmptyWS dir = (getNonEmptyWs dir) >>= viewWs
 
-shiftToNonEmptyWS :: Direction1D -> X ()
-shiftToNonEmptyWS dir = windows . W.shift =<< ws
-  where ws = findWorkspace getSortByIndex dir EmptyWS 1
+shiftToEmptyWS :: Direction1D -> X ()
+shiftToEmptyWS dir = moveWinToWs =<< getEmptyWs dir
 
 raiseEmacsAndRun :: String -> X ()
 raiseEmacsAndRun cmd = sequence_ [raise (className =? "Emacs"), runEmacs cmd]
