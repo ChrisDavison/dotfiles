@@ -44,80 +44,121 @@
       )
 
 (setq org-capture-templates
-      (doct `(
-              (,(emoji-heading 'all-the-icons-octicon "checklist" "Todo")
-               :keys "t"
-               :template "* TODO %?"
-               :children (("Todo" :keys "t" :file "~/Dropbox/org/projects/todo.org")
-                          ("Work" :keys "w" :file "~/Dropbox/org/projects/work.org" :header "Tasks")
-                          ("IoF" :keys "i" :file "~/Dropbox/org/projects/iof2020.org" :header "Tasks")
-                          ("Cybele" :keys "c" :file "~/Dropbox/org/projects/cybele.org" :header "Tasks")
-                          ))
+      `(
+        ("t" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo"))
+        ("tt" "Todo" entry (file "todo.org") "* TODO %?")
+        ("tw" "Work" entry (file+headline "projects/work.org" "Tasks") "* TODO %?")
+        ("ti" "IoF" entry (file+headline "projects/iof2020.org" "Tasks") "* TODO %?")
+        ("tc" "Cybele" entry (file+headline "projects/cybele.org" "Tasks") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-octicon "repo" "Logbook")
-               :keys "l"
-               :file "projects/work.org"
-               :datetree t
-               :children (("Item" :keys "l" :type item :template "- %?")
-                          ("Entry" :keys "L" :type entry :template "* %?")
-                          ("Dated entry" :keys "d" :type entry :template "* %?"
-                           :time-prompt t)
-                          ("Cybele" :keys "c" :type item :template "- %?"
-                           :file "projects/cybele.org")
-                          ("GlasData" :keys "g" :type item :template "- %?"
-                           :file "projects/glasdata.org")))
+        ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook"))
+        ("ll" "Item" item (file "projects/work.org") "- %?")
+        ("lL" "Entry" entry (file "projects/work.org") "* %?")
+        ("ld" "Dated Entry" entry (file "projects/work.org") "* %?" :time-prompt t)
+        ("lc" "Cybele" item (file "projects/cybele.org") "- %?")
+        ("li" "IoF / Glasdata" item (file "projects/iof2020.org") "- %?")
 
-              (,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming")
-               :keys "g"
-               :template "* TODO %?"
-               :headline "UNFILED"
-               :children (("PC" :keys "p" :file "pc-gaming.org")
-                          ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-                          ("Tabletop" :keys "t" :file "tabletop-games.org")))
+        ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
+        ("gp" "PC" entry (file "pc-gaming.org") "* TODO %?")
+        ("gn" "Nintendo Switch" entry (file "nintendo-switch.org") "* TODO %?")
+        ("gt" "Tabletop" entry (file "tabletop-games.org") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-faicon "television" "Watch")
-               :keys "w"
-               :file "projects/media.org"
-               :headline "UNFILED"
-               :template "* TODO %?")
+        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
+         entry (file+headline "projects/media.org" "UNFILED") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
-               :keys "m"
-               :file "projects/media.org"
-               :headline "Music"
-               :template "* TODO %?")
+        ("m" ,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
+         entry (file+headline "projects/media.org" "Music") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
-               :keys "G"
-               :file "projects/Guitar.org"
-               :headline "Songs to Learn"
-               :template "* TODO %?")
+        ("G" ,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
+         entry (file+headline "projects/Guitar.org" "Songs to Learn") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-octicon "book" "Book")
-               :keys "b"
-               :file "projects/reading.org"
-               :headline "REFILE"
-               :template "* TODO %?")
+        ("b" ,(emoji-heading 'all-the-icons-octicon "book" "Book")
+         entry (file+headline "projects/reading.org"  "REFILE") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-octicon "comment" "Quote")
-               :keys "Q"
-               :file "journal.org"
-               :type item
-               :datetree t
-               :template "- /\"%?\"/")
+        ("a" ,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
+         entry (file+headline "projects/todo.org" "anki") "* TODO %?")
 
-              (,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
-               :keys "a"
-               :file "projects/todo.org"
-               :headline "anki"
-               :template "* TODO %?")
+        ("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
+         entry (file+headline "literature.org" "REFILE")
+         "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
+         :immediate-finish t)
+        ))
 
-              (,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
-               :keys "L"
-               :file "literature.org"
-               :headline "REFILE"
-               :template "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
-               :immediate-finish t))))
+;; (setq org-capture-templates
+;;       (doct `(
+;;               (
+;;                :keys "t"
+;;                :template "* TODO %?"
+;;                :children (("Todo" :keys "t" :file "~/Dropbox/org/projects/todo.org")
+;;                           ("Work" :keys "w" :file "~/Dropbox/org/projects/work.org" :header "Tasks")
+;;                           ("IoF" :keys "i" :file "~/Dropbox/org/projects/iof2020.org" :header "Tasks")
+;;                           ("Cybele" :keys "c" :file "~/Dropbox/org/projects/cybele.org" :header "Tasks")
+;;                           ))
+
+;;               (,(emoji-heading 'all-the-icons-octicon "repo" "Logbook")
+;;                :keys "l"
+;;                :file "projects/work.org"
+;;                :datetree t
+;;                :children (("Item" :keys "l" :type item :template "- %?")
+;;                           ("Entry" :keys "L" :type entry :template "* %?")
+;;                           ("Dated entry" :keys "d" :type entry :template "* %?"
+;;                            :time-prompt t)
+;;                           ("Cybele" :keys "c" :type item :template "- %?"
+;;                            :file "projects/cybele.org")
+;;                           ("GlasData" :keys "g" :type item :template "- %?"
+;;                            :file "projects/glasdata.org")))
+
+;;               (,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming")
+;;                :keys "g"
+;;                :template "* TODO %?"
+;;                :headline "UNFILED"
+;;                :children (("PC" :keys "p" :file "pc-gaming.org")
+;;                           ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
+;;                           ("Tabletop" :keys "t" :file "tabletop-games.org")))
+
+;;               (,(emoji-heading 'all-the-icons-faicon "television" "Watch")
+;;                :keys "w"
+;;                :file "projects/media.org"
+;;                :headline "UNFILED"
+;;                :template "* TODO %?")
+
+;;               (,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
+;;                :keys "m"
+;;                :file "projects/media.org"
+;;                :headline "Music"
+;;                :template "* TODO %?")
+
+;;               (,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
+;;                :keys "G"
+;;                :file "projects/Guitar.org"
+;;                :headline "Songs to Learn"
+;;                :template "* TODO %?")
+
+;;               (,(emoji-heading 'all-the-icons-octicon "book" "Book")
+;;                :keys "b"
+;;                :file "projects/reading.org"
+;;                :headline "REFILE"
+;;                :template "* TODO %?")
+
+;;               (,(emoji-heading 'all-the-icons-octicon "comment" "Quote")
+;;                :keys "Q"
+;;                :file "journal.org"
+;;                :type item
+;;                :datetree t
+;;                :template "- /\"%?\"/")
+
+;;               (,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
+;;                :keys "a"
+;;                :file "projects/todo.org"
+;;                :headline "anki"
+;;                :template "* TODO %?")
+
+;;               (,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
+;;                :keys "L"
+;;                :file "literature.org"
+;;                :headline "REFILE"
+;;                :template "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
+;;                :immediate-finish t))))
 
 (setq cd/my-capture-templates org-capture-templates)
 
