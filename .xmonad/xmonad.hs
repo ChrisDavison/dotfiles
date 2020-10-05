@@ -1,6 +1,8 @@
+{- LANGUAGE OverloadedStrings -}
 import Control.Arrow ( first )
 import Control.Concurrent (threadDelay)
 import Data.List ( isInfixOf , intercalate)
+import Data.Text (splitOn, unpack, pack)
 import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 import System.Posix.Unistd
@@ -9,6 +11,7 @@ import XMonad
 import XMonad.Actions.CycleWS ( toggleWS' , moveTo , findWorkspace , shiftTo , WSType ( HiddenNonEmptyWS , EmptyWS))
 import XMonad.Actions.FindEmptyWorkspace
 import XMonad.Actions.Submap ( submap )
+import XMonad.Actions.WindowBringer
 import XMonad.Actions.WindowGo
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops ( ewmh )
@@ -19,12 +22,14 @@ import XMonad.Layout.PerWorkspace (onWorkspace)
 import XMonad.Layout.Spacing ( spacing )
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.TwoPanePersistent
 import XMonad.Prompt
 import XMonad.Prompt.FuzzyMatch
+import XMonad.Prompt.Input
 import XMonad.Prompt.Window
-import XMonad.Prompt.Workspace      -- (27) prompt for a workspace
+import XMonad.Prompt.Workspace
 import XMonad.Util.Paste
-import XMonad.Util.Run ( spawnPipe , hPutStrLn)
+import XMonad.Util.Run ( spawnPipe , hPutStrLn, safeSpawn )
 import XMonad.Util.SpawnOnce ( spawnOnce )
 import XMonad.Util.WorkspaceCompare ( getSortByIndex )
                  
@@ -112,6 +117,7 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
+--   , K HyperShift xK_g            (bringMenu)--Config myBringConfig)
   , K Hyper      xK_r            (spawn $ myTerminal ++ " -e ranger")
   , K Hyper      xK_Return       (spawn myTerminal)
   , K Alt        xK_Return       (spawn myTerminal)
@@ -122,6 +128,7 @@ myKeys conf = keysFromSimpleKeybinds $
   , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
   , K Hyper      xK_F5           (runOrRaise "spotify" (className =? "Spotify"))
   , K Hyper      xK_F6           (cycleFirefox)
+  , K HyperShift xK_d            (spawn $ "notify-send -- " ++ myDmenuConfig)
   --- firefox / youtube doesn't work well with instant xdotool, so add 100ms delay after switching window
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
@@ -175,14 +182,15 @@ data Volume = VolUp | VolDown | VolToggleMute
 lFull      = noBorders Full
 lTall      = ResizableTall 1 (3/100) (2/3) []
 lTallEven  = ResizableTall 1 (3/100) (1/2) []
-lTiled     = toggleLayouts lFull (spacing 10 $ lTall)
-lTiledEven = toggleLayouts lFull (spacing 10 $ lTallEven)
+lTiled     = toggleLayouts lFull (gaps $ lTall)
+lTiledEven = toggleLayouts lFull (gaps $ lTallEven)
+lTwoPane   = toggleLayouts lFull $ gaps $ TwoPanePersistent Nothing (3/100) (1/2)
+gaps       = spacing 10
 
 defaultLayouts = avoidStruts $
   lTiled
   ||| Mirror lTiled
-  ||| lTiledEven
-  ||| Mirror lTiledEven
+  ||| lTwoPane
 
 myLayout = onWorkspace "8:spotify" lFull
   $ defaultLayouts 
@@ -265,7 +273,7 @@ myFontXL    = "xft:Hack:pixelsize=18:antialias=true:hinting=true"
 myFontSmall = "xft:Hack:pixelsize=12:antialias=true:hinting=true"
 
 myTerminal = "alacritty"
-myWorkspaces = ["1:emacs", "2:web", "3", "4:anki", "5", "6", "7", "8:spotify", "9:video"]
+myWorkspaces = ["1:emc", "2:web", "3:zUm", "4:anK", "5", "6", "7", "8:mzk", "9:vid"]
 
 myXPConfig :: XPConfig
 myXPConfig = def { font                = myFont
@@ -283,15 +291,22 @@ myXPConfigLG = myXPConfig { font = myFontXL
                           , height = 21
                           }
 
+myBringConfig :: WindowBringerConfig
+myBringConfig = def {
+  menuArgs = map unpack $ splitOn (pack " ") (pack myDmenuConfig)
+  }
+
 -- Execution of programs
 myJ4Command :: String
-myJ4Command = "j4-dmenu-desktop --dmenu=\"" ++ dmenu ++ "\""
- where
-  dmenu   = "dmenu -i -fn 'Hack-14' -p 'App:' " ++ intercalate " " pairs 
-  args = [("-sb", cPurple),                         -- background colour
-          ("-nhb", cLightPurple), ("-nhf", cWhite), -- colour for non-highlighted lines
-          ("-shb", cLightPurple), ("-shf", cWhite)] -- colour for highlighted lines
-  pairs = [arg ++ " '" ++ colour ++ "'" | (arg, colour) <- args]
+myJ4Command = "j4-dmenu-desktop --dmenu=\"dmenu " ++ myDmenuConfig ++ "\""
+
+myDmenuConfig :: String
+myDmenuConfig = "-l 10 -i -fn 'Hack-14' -p 'App:' " ++ intercalate " " pairs
+  where
+    args = [("-sb", cPurple),                         -- background colour
+            ("-nhb", cLightPurple), ("-nhf", cWhite), -- colour for non-highlighted lines
+            ("-shb", cLightPurple), ("-shf", cWhite)] -- colour for highlighted lines
+    pairs = [arg ++ " '" ++ colour ++ "'" | (arg, colour) <- args]
                  
 
 fullscreenNoBar :: X()
