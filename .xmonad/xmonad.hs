@@ -192,7 +192,7 @@ defaultLayouts = avoidStruts $
   ||| Mirror lTiled
   ||| lTwoPane
 
-myLayout = onWorkspace "8:spotify" lFull
+myLayout = onWorkspace "8" lFull
   $ defaultLayouts 
 
 -- Manage Hook is for applying rules to specific windows
@@ -234,12 +234,14 @@ myStartupHook = do
 -- Configure workspace names in xmobar
 logWorkspacesOnXmobar pipe = dynamicLogWithPP xmobarPP
   { ppOutput  = hPutStrLn pipe
-  , ppTitle   = \w -> xmobarColor cPink "" . shorten 70 $ w
-  , ppCurrent = \w -> xmobarColor cPink "" w
-  , ppWsSep   = "  "
+  , ppTitle   = \w -> xmobarColor cPink "" $ shorten 50 w
+  , ppCurrent = \w -> xmobarColor cPink "" $ "[" ++ w ++ "]"
+  , ppVisible = \w -> "(" ++ w ++ ")"
+  , ppWsSep   = " "
   , ppSep     = " ::: "
   , ppLayout  = \_ -> ""
   }
+  where surround s c = c ++ s ++ c
 
 myConfig pipe = def { terminal           = myTerminal
                     , focusFollowsMouse  = True
@@ -273,7 +275,7 @@ myFontXL    = "xft:Hack:pixelsize=18:antialias=true:hinting=true"
 myFontSmall = "xft:Hack:pixelsize=12:antialias=true:hinting=true"
 
 myTerminal = "alacritty"
-myWorkspaces = ["1:emc", "2:web", "3:zUm", "4:anK", "5", "6", "7", "8:mzk", "9:vid"]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 myXPConfig :: XPConfig
 myXPConfig = def { font                = myFont
