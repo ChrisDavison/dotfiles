@@ -15,7 +15,7 @@ print  # print the remainder
 }
 "
 
-option=$(awk "$awkMenuCmd" $bmFile | sort | dmenu $dmenu_config -p "Bookmarks:")
+option=$(awk "$awkMenuCmd" $bmFile | dmenu $dmenu_config -p "Bookmarks:")
 if [ ! -z "$option" ]; then
     echo $option
     awkBmCmd="
