@@ -43,20 +43,24 @@
       org-fancy-priorities-list '((?A . "H") (?B . "M") (?C . "L"))
       )
 
-(setq org-capture-templates
+(setq cd/org-capture-templates
       `(
+        ("n" ,(emoji-heading 'all-the-icons-octicon "comment" "Note"))
+        ("nn" "Item" item (file+olp+datetree "journal.org"))
+        ("nN" "Entry" entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
+
         ("t" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo"))
-        ("tt" "Todo" entry (file "todo.org") "* TODO %?")
+        ("tt" "Todo" entry (file "projects/todo.org") "* TODO %?")
         ("tw" "Work" entry (file+headline "projects/work.org" "Tasks") "* TODO %?")
         ("ti" "IoF" entry (file+headline "projects/iof2020.org" "Tasks") "* TODO %?")
         ("tc" "Cybele" entry (file+headline "projects/cybele.org" "Tasks") "* TODO %?")
 
         ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook"))
-        ("ll" "Item" item (file "projects/work.org") "- %?")
-        ("lL" "Entry" entry (file "projects/work.org") "* %?")
-        ("ld" "Dated Entry" entry (file "projects/work.org") "* %?" :time-prompt t)
-        ("lc" "Cybele" item (file "projects/cybele.org") "- %?")
-        ("li" "IoF / Glasdata" item (file "projects/iof2020.org") "- %?")
+        ("ll" "Item" item (file+olp+datetree "projects/work.org"))
+        ("lL" "Entry" entry (file+olp+datetree "projects/work.org"))
+        ("ld" "Dated Entry" entry (file+olp+datetree "projects/work.org") "* %?" :time-prompt t)
+        ("lc" "Cybele" item (file+olp+datetree "projects/cybele.org"))
+        ("li" "IoF / Glasdata" item (file+olp+datetree "projects/iof2020.org"))
 
         ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
         ("gp" "PC" entry (file "pc-gaming.org") "* TODO %?")
@@ -84,83 +88,7 @@
          :immediate-finish t)
         ))
 
-;; (setq org-capture-templates
-;;       (doct `(
-;;               (
-;;                :keys "t"
-;;                :template "* TODO %?"
-;;                :children (("Todo" :keys "t" :file "~/Dropbox/org/projects/todo.org")
-;;                           ("Work" :keys "w" :file "~/Dropbox/org/projects/work.org" :header "Tasks")
-;;                           ("IoF" :keys "i" :file "~/Dropbox/org/projects/iof2020.org" :header "Tasks")
-;;                           ("Cybele" :keys "c" :file "~/Dropbox/org/projects/cybele.org" :header "Tasks")
-;;                           ))
-
-;;               (,(emoji-heading 'all-the-icons-octicon "repo" "Logbook")
-;;                :keys "l"
-;;                :file "projects/work.org"
-;;                :datetree t
-;;                :children (("Item" :keys "l" :type item :template "- %?")
-;;                           ("Entry" :keys "L" :type entry :template "* %?")
-;;                           ("Dated entry" :keys "d" :type entry :template "* %?"
-;;                            :time-prompt t)
-;;                           ("Cybele" :keys "c" :type item :template "- %?"
-;;                            :file "projects/cybele.org")
-;;                           ("GlasData" :keys "g" :type item :template "- %?"
-;;                            :file "projects/glasdata.org")))
-
-;;               (,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming")
-;;                :keys "g"
-;;                :template "* TODO %?"
-;;                :headline "UNFILED"
-;;                :children (("PC" :keys "p" :file "pc-gaming.org")
-;;                           ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-;;                           ("Tabletop" :keys "t" :file "tabletop-games.org")))
-
-;;               (,(emoji-heading 'all-the-icons-faicon "television" "Watch")
-;;                :keys "w"
-;;                :file "projects/media.org"
-;;                :headline "UNFILED"
-;;                :template "* TODO %?")
-
-;;               (,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
-;;                :keys "m"
-;;                :file "projects/media.org"
-;;                :headline "Music"
-;;                :template "* TODO %?")
-
-;;               (,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
-;;                :keys "G"
-;;                :file "projects/Guitar.org"
-;;                :headline "Songs to Learn"
-;;                :template "* TODO %?")
-
-;;               (,(emoji-heading 'all-the-icons-octicon "book" "Book")
-;;                :keys "b"
-;;                :file "projects/reading.org"
-;;                :headline "REFILE"
-;;                :template "* TODO %?")
-
-;;               (,(emoji-heading 'all-the-icons-octicon "comment" "Quote")
-;;                :keys "Q"
-;;                :file "journal.org"
-;;                :type item
-;;                :datetree t
-;;                :template "- /\"%?\"/")
-
-;;               (,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
-;;                :keys "a"
-;;                :file "projects/todo.org"
-;;                :headline "anki"
-;;                :template "* TODO %?")
-
-;;               (,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
-;;                :keys "L"
-;;                :file "literature.org"
-;;                :headline "REFILE"
-;;                :template "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
-;;                :immediate-finish t))))
-
-(setq cd/my-capture-templates org-capture-templates)
+(setq org-capture-templates cd/org-capture-templates)
 
 ;;; org agenda settings
 (defvar cd/work-agenda-files '("~/Dropbox/org/projects/work.org"
@@ -173,7 +101,7 @@
       org-agenda-remove-tags t
       org-agenda-skip-deadline-prewarning-if-scheduled t
       org-agenda-files '("~/Dropbox/org/projects"
-                         "~/Dropbox/org/journal"
+                         "~/Dropbox/org/journal.org"
                          "~/Dropbox/org/archive.org")
       org-agenda-time-grid '((daily today require-timed)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
@@ -228,13 +156,6 @@
 
 (setq org-roam-tag-separator " ")
 
-;;; org journal settings
-(setq org-journal-file-format "%Y%m%d--%A.org"
-      org-journal-find-file 'find-file
-      org-journal-date-format "%A, %d %B %Y"
-      org-journal-file-header "#+TITLE: %Y-%m-%d %A\n\n")
-
-
 ;;; other utility
 (require 'org-id)
 (defun cd/org-id-every-heading ()
@@ -248,6 +169,7 @@
            'org-indent-mode
            'abbrev-mode
            'undo-tree-mode
+           '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
            '(lambda () (set-face-italic 'italic t)))
 
 
@@ -258,9 +180,13 @@
 ;; match any of these groups, with the default order position of 99
 (setq org-super-agenda-groups
       `((:name "Habit" :habit t)
+        (:name "Overdue" :deadline past :scheduled past)
         (:name "Today" :time-grid t :todo "TODAY")
         (:name "Important" :priority "A")
-        (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")))
+        (:name "In Progress" :todo "WIP")
+        (:name "Todo" :todo "TODO")
+        (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")
+        (:name "DONE" :todo "DONE" :date today :log closed :order 99)))
 
 (defun cd/agenda-books-in-progress ()
   (interactive)
@@ -269,6 +195,13 @@
           `((:name "Books to Read" :file-path ,bookpath)
             (:discard (:anything t)))))
     (org-todo-list "WIP")))
+
+(defun cd/agenda-todo-no-books ()
+  (interactive)
+  (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
+         (org-super-agenda-groups
+          `((:name "Todo" (:not :file-path ,bookpath)))))
+    (org-todo-list)))
 
 
 (org-super-agenda-mode 1)

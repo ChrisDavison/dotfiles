@@ -6,7 +6,7 @@
 ;;; Doom appearance Utility
 (setq doom-font "Hack-14")
 (setq cd/light-theme 'kaolin-breeze)
-(setq cd/dark-theme 'kaolin-bubblegum)
+(setq cd/dark-theme 'seoul256)
 (setq doom-theme cd/dark-theme)
 
 ;;; Programming - rust
@@ -60,6 +60,7 @@
 (set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
 (set-register ?w '(file . "~/Dropbox/org/projects/work.org"))
 (set-register ?r '(file . "~/Dropbox/org/projects/reading.org"))
+(set-register ?j '(file . "~/Dropbox/org/journal.org"))
 (set-register ?m '(file . "~/Dropbox/org/projects/media.org"))
 
 ;;; Load my custom modules
