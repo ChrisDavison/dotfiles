@@ -45,3 +45,4 @@
 (package! afternoon-theme)
 (package! kaolin-themes)
 (package! cyberpunk-theme)
+(package! seoul256-theme)
