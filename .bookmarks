@@ -1,34 +1,31 @@
-1. Everyday
+Everyday
     Hacker News;https://news.ycombinator.com
     Lobsters;https://lobste.rs
     BBC News;https://bbc.co.uk/news/uk
 
-2. Youtube
+Youtube
     YT Subscriptions;https://www.youtube.com/feed/subscriptions
     YT Watch Later;https://www.youtube.com/playlist?list=WL
     YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
     Youtube;https://www.youtube.com
 
-3. Work .Strath.
+Strathclyde - email, calendar, slack
     Strath Email;https://outlook.office365.com/mail/inbox
     Strath Calendar;https://outlook.office365.com/calendar/view/workweek
     Slack;https://cidcom.slack.com
 
 Reddit programming
-    Reddit Rust;https://www.reddit.com/r/rust
-    Reddit Haskell;https://www.reddit.com/r/haskell
-    Reddit Python;https://www.reddit.com/r/python
-    Reddit Programming;https://www.reddit.com/r/programming
-
-Reddit video
-    video;https://www.reddit.com/r/videos
+    reddit rust;https://www.reddit.com/r/rust
+    reddit haskell;https://www.reddit.com/r/haskell
+    reddit python;https://www.reddit.com/r/python
+    reddit programming;https://www.reddit.com/r/programming
+    reddit emacs;https://www.reddit.com/r/programming
 
 Reddit machine learning
-    Reddit ML;https://www.reddit.com/r/machinelearning
-    Reddit AI;https://www.reddit.com/r/artificial
+    reddit ml;https://www.reddit.com/r/machinelearning
+    reddit ai;https://www.reddit.com/r/artificial
 
 Twitch
-    Twitch.tv;https://twitch.tv/mcdm/videos
     Twitch - MCDM;https://twitch.tv/mcdm/videos
     Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
 
@@ -36,25 +33,34 @@ Weather
     Weather - DarkSky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
     Weather - BBC;https://www.bbc.co.uk/weather/2648579
 
-Google Mail and Calendar
-    GMail - google email;https://mail.google.com
-    GCalendar;https://calendar.google.com
+Google - email and calendar
+    google email;https://mail.google.com
+    google calendar;https://calendar.google.com
 
-FMS .Strath.
-    Strath FMS;https://fms.strath.ac.uk/
+Strathclyde - FMS Finance
+    strathclyde fms;https://fms.strath.ac.uk/
 
-MyPlace .Strath.
-    Strath Myplace;https://classes.myplace.strath.ac.uk
+Strathclyde - MyPlace
+    strathclyde myplace;https://classes.myplace.strath.ac.uk
 
 Wikipedia
     Wikipedia;https://www.wikipedia.com
 
-LoL
+LoL Worlds
     LoL Worlds;https://lol.gamepedia.com/2020_Season_World_Championship/Main_Event
 
-z 9gag
+9gag
     z 9gag;https://www.9gag.com
     z 9gag girl;https://www.9gag.com/girl
     z 9gag nsfw;https://www.9gag.com/nsfw
+
+Github CYBELE
+    github ryax senprep;https://github.com/cidcom/cybele_sentinel_preprocessing
+    github senprep;https://github.com/cidcom/Sentinel_Preprocess
+    github wheat ear counting;https://github.com/cidcom/cybele-wheat-counting
+    github crop yield;https://github.com/cidcom/cybele-crop-yield-protein
+
+Amazon Orders
+    amazon orders;https://www.amazon.co.uk/gp/css/order-history/
 
 ignore
