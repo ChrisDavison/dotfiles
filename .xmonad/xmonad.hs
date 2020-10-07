@@ -51,14 +51,16 @@ myModMask = mod3Mask
 data SimpleKeybind = K CDMask KeySym (X())
 data SimpleMousebind = M CDMask Button (Window -> X())
 
-data CDMask = Hyper | Win | Alt | HyperShift | WinShift | AltShift | None
+data CDMask = Hyper | Win | Alt | Shift | HyperShift | WinShift | AltShift | HyperCtrl | None
 
 fromKeybind :: SimpleKeybind -> ((KeyMask, KeySym), X ())
 fromKeybind (K None       k command) = ((0, k), command)
 fromKeybind (K Hyper      k command) = ((mod3Mask, k), command)
 fromKeybind (K Win        k command) = ((mod4Mask, k), command)
 fromKeybind (K Alt        k command) = ((mod1Mask, k), command)
+fromKeybind (K Shift      k command) = ((shiftMask, k), command)
 fromKeybind (K HyperShift k command) = ((mod3Mask .|. shiftMask, k), command)
+fromKeybind (K HyperCtrl  k command) = ((mod3Mask .|. controlMask, k), command)
 fromKeybind (K WinShift   k command) = ((mod4Mask .|. shiftMask, k), command)
 fromKeybind (K AltShift   k command) = ((mod1Mask .|. shiftMask, k), command)
 
@@ -67,6 +69,7 @@ fromMousebind (M None       b command) = ((0, b), command)
 fromMousebind (M Hyper      b command) = ((mod3Mask, b), command)
 fromMousebind (M Win        b command) = ((mod4Mask, b), command)
 fromMousebind (M Alt        b command) = ((mod1Mask, b), command)
+fromMousebind (M Shift      b command) = ((shiftMask, b), command)
 fromMousebind (M HyperShift b command) = ((mod3Mask .|. shiftMask, b), command)
 fromMousebind (M WinShift   b command) = ((mod4Mask .|. shiftMask, b), command)
 fromMousebind (M AltShift   b command) = ((mod1Mask .|. shiftMask, b), command)
@@ -80,8 +83,8 @@ myMouseBindings _conf = keysFromSimpleMousebinds
   , M Hyper      button2 (\w -> focus w >> windows W.swapMaster) -- Middle = make master
   , M Hyper      button3 (\w -> focus w >> mouseResizeWindow w) -- Right = resize
     -- Mouse wheel is sensitive, so use  smaller volume increments
-  , M Hyper      button4 (\w -> (spawn "volume.sh --up")) -- Scroll up = vol up
-  , M Hyper      button5 (\w -> (spawn "volume.sh --down")) -- Scroll down = vol down
+  , M Hyper      button4 (\w -> (doVolume "up")) -- Scroll up = vol up
+  , M Hyper      button5 (\w -> (doVolume "down")) -- Scroll down = vol down
   , M HyperShift button4 (\w -> gotoNonEmptyWS Prev) -- Scroll up = vol up
   , M HyperShift button5 (\w -> gotoNonEmptyWS Next) -- Scroll down = vol down
   ]
@@ -112,8 +115,8 @@ myKeys conf = keysFromSimpleKeybinds $
   --- LAYOUT   
   , K Hyper      xK_space        (sendMessage NextLayout)         -- Use next configured layout
   , K HyperShift xK_space        (setLayout $ XMonad.layoutHook conf)             -- reset to default layout
-  , K Hyper      xK_f            (fullscreenNoBar)                -- toggle fullscreen on focused window
-  , K HyperShift xK_f            (sendMessage ToggleStruts)       -- toggle fullscreen on focused window
+  , K Hyper      xK_f            (toggleFullscreen)                -- toggle fullscreen on focused window
+  , K HyperShift xK_f            (toggleBar)                      -- toggle fullscreen on focused window
   , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
@@ -138,6 +141,11 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_F2           (raiseEmacsAndRun "(org-agenda)")
   , K Hyper      xK_F3           (raiseEmacsAndRun "(org-agenda nil \"c1\")")
   , K Hyper      xK_F4           (raiseEmacsAndRun "(org-agenda nil \"cW\")")
+  -- Keybinds for specific captures - note, note entry, todo, and work todo
+  , K Hyper      xK_c            (submapFromKeybind [ K None  xK_n (orgCapture "nn")
+                                                    , K Shift xK_n (orgCapture "nN")
+                                                    , K Shift xK_t (orgCapture "tt")
+                                                    , K Shift xK_w (orgCapture "tw")])
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
   , K Hyper      xK_End                   (doVolume "down")
@@ -150,6 +158,8 @@ myKeys conf = keysFromSimpleKeybinds $
   , K None       xF86XK_AudioPrev         (doSpotify "prev")
   , K None       xF86XK_AudioNext         (doSpotify "next")
   , K None       xF86XK_AudioPlay         (doSpotify "play-pause")
+  , K HyperShift xK_Home                  (doMic "up")
+  , K HyperShift xK_End                   (doMic "down")
                                                                            -- Brightness
   , K None       xF86XK_KbdBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
   , K None       xF86XK_MonBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
@@ -171,11 +181,15 @@ myKeys conf = keysFromSimpleKeybinds $
   keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
   keyScreenPairs = zip [xK_a, xK_s] [0 ..]
   
-  doSpotify cmd = spawn $ "$HOME/.bin/spotify.sh " ++ cmd
-  doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
-  cycleFirefox = raiseNextMaybe (return ()) (className =? "Firefox")
 
 data Volume = VolUp | VolDown | VolToggleMute
+
+doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
+doMic cmd = spawn $ "$HOME/.bin/micgain.sh --" ++ cmd
+
+doSpotify cmd = spawn $ "$HOME/.bin/spotify.sh " ++ cmd
+
+cycleFirefox = raiseNextMaybe (return ()) (className =? "Firefox")
 
 ------------------------------------------------------------------------
 -- Layouts:
@@ -209,6 +223,7 @@ myManageHook = manageDocks <> composeAll
   , className =? "Anki"            --> doShift "4"
   , className =? "TeamViewer"      --> doShift "5"
   , className =? "Droidcam"        --> doShift "7"
+  , className =? "Pulseeffects"    --> doShift "7" <> doFloat
   , className =? "Spotify"         --> doShift "8"
   , className =? "Bitwarden"       --> doFloat
   , className =? "Pavucontrol"     --> doFloat
@@ -312,7 +327,13 @@ myDmenuConfig = "-l 10 -i -fn 'Hack-14' -p 'App:' " ++ intercalate " " pairs
                  
 
 fullscreenNoBar :: X()
-fullscreenNoBar = sendMessage (Toggle "Full") <> sendMessage ToggleStruts
+fullscreenNoBar = toggleFullscreen <> toggleBar
+
+toggleFullscreen :: X()
+toggleFullscreen = sendMessage (Toggle "Full")
+
+toggleBar :: X()
+toggleBar = sendMessage ToggleStruts
 
 getNonEmptyWs :: Direction1D -> X WorkspaceId
 getNonEmptyWs dir = findWorkspace getSortByIndex dir HiddenNonEmptyWS 1
@@ -345,11 +366,17 @@ gotoNonEmptyWS dir = (getNonEmptyWs dir) >>= viewWs
 shiftToEmptyWS :: Direction1D -> X ()
 shiftToEmptyWS dir = moveWinToWs =<< getEmptyWs dir
 
-raiseEmacsAndRun :: String -> X ()
-raiseEmacsAndRun cmd = sequence_ [raise (className =? "Emacs"), runEmacs cmd]
-
+-- EMACS utilities
 runEmacs :: String -> X ()
 runEmacs cmd = spawn $ "emacsclient -e '" ++ cmd ++ "'"
+
+raiseEmacsAndRun :: String -> X ()
+raiseEmacsAndRun cmd = runOrRaise "emacsclient -c" (className =? "Emacs") <> runEmacs cmd
+
+orgCapture :: String -> X ()
+orgCapture keys = raiseEmacsAndRun $ "(org-capture nil \"" ++ keys ++ "\")"
+--- end emacs utilities
+
 
 -- Substring version of XMonad's =?
 -- e.g. (title =?? "asmr") will match ("this is an asmr video")
