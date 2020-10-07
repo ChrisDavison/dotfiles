@@ -20,5 +20,5 @@ Config { font = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
                     , Run StdinReader]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " <fc=#f438ee>%date%</fc> ::: %StdinReader% }{ %default:Master% ::: %cpu% %memory% "
+       , template = " <fc=#f438ee>%date%</fc> ::: %StdinReader% }{ %default:Master%::: %cpu% ::: %memory% "
        }
