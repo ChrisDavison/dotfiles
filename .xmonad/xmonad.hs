@@ -182,32 +182,34 @@ myKeys conf = keysFromSimpleKeybinds $
   keyScreenPairs = zip [xK_a, xK_s] [0 ..]
   
 
-data Volume = VolUp | VolDown | VolToggleMute
-
+doVolume :: String -> X()
 doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
+
+doMic :: String -> X()
 doMic cmd = spawn $ "$HOME/.bin/micgain.sh --" ++ cmd
 
+doSpotify :: String -> X()
 doSpotify cmd = spawn $ "$HOME/.bin/spotify.sh " ++ cmd
 
+cycleFirefox :: X()
 cycleFirefox = raiseNextMaybe (return ()) (className =? "Firefox")
 
 ------------------------------------------------------------------------
 -- Layouts:
 lFull      = noBorders Full
-lTall      = ResizableTall 1 (3/100) (2/3) []
-lTallEven  = ResizableTall 1 (3/100) (1/2) []
-lTiled     = toggleLayouts lFull (gaps $ lTall)
-lTiledEven = toggleLayouts lFull (gaps $ lTallEven)
-lTwoPane   = toggleLayouts lFull $ gaps $ TwoPanePersistent Nothing (3/100) (1/2)
-gaps       = spacing 10
+lTall      = smartBorders $ ResizableTall 1 (3/100) (2/3) []
+lTallEven  = smartBorders $ ResizableTall 1 (3/100) (1/2) []
+lTiled     = toggleLayouts lFull lTall
+lTiledEven = toggleLayouts lFull lTallEven
+lTwoPane   = toggleLayouts lFull $ TwoPanePersistent Nothing (3/100) (1/2)
+gaps       = spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
 
-defaultLayouts = avoidStruts $
+defaultLayouts = avoidStruts . gaps $
   lTiled
   ||| Mirror lTiled
   ||| lTwoPane
 
-myLayout = onWorkspace "8" lFull
-  $ defaultLayouts 
+myLayout = defaultLayouts
 
 -- Manage Hook is for applying rules to specific windows
 -- className matches xprop WM_CLASS[2]
