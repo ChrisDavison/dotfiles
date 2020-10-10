@@ -309,8 +309,11 @@ myXPConfigLG = myXPConfig { font = myFontXFT 18
 
 myBringConfig :: WindowBringerConfig
 myBringConfig = def {
-  menuArgs = map unpack $ splitOn (pack " ") (pack myDmenuConfig)
+  menuArgs = map (repl . unpack) $ splitOn (pack " ") (pack myDmenuConfig)
   }
+  where repl c = case c of
+          "'"       -> ""
+          otherwise -> otherwise
 
 -- Execution of programs
 myJ4Command :: String
