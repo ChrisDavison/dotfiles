@@ -44,3 +44,4 @@ history.sqlite
 *.hi
 *.o
 /.xmonad/prompt-history
+nohup.out

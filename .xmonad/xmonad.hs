@@ -2,7 +2,7 @@
 import Control.Arrow ( first )
 import Control.Concurrent (threadDelay)
 import Data.List ( isInfixOf , intercalate)
-import Data.Text (splitOn, unpack, pack)
+import Data.Text (splitOn, unpack, pack, replace)
 import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 import System.Posix.Unistd
@@ -17,9 +17,9 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops ( ewmh )
 import XMonad.Hooks.ManageDocks
 import XMonad.Layout.CenteredMaster ( centerMaster )
-import XMonad.Layout.NoBorders ( noBorders )
+import XMonad.Layout.NoBorders ( noBorders, smartBorders )
 import XMonad.Layout.PerWorkspace (onWorkspace)
-import XMonad.Layout.Spacing ( spacing )
+import XMonad.Layout.Spacing
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.TwoPanePersistent
@@ -115,12 +115,12 @@ myKeys conf = keysFromSimpleKeybinds $
   --- LAYOUT   
   , K Hyper      xK_space        (sendMessage NextLayout)         -- Use next configured layout
   , K HyperShift xK_space        (setLayout $ XMonad.layoutHook conf)             -- reset to default layout
-  , K Hyper      xK_f            (toggleFullscreen)                -- toggle fullscreen on focused window
+  , K Hyper      xK_f            (fullscreenNoBar)                -- toggle fullscreen on focused window
   , K HyperShift xK_f            (toggleBar)                      -- toggle fullscreen on focused window
   , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
---   , K HyperShift xK_g            (bringMenu)--Config myBringConfig)
+  , K HyperShift xK_g            (bringMenuConfig myBringConfig)
   , K Hyper      xK_r            (spawn $ myTerminal ++ " -e ranger")
   , K Hyper      xK_Return       (spawn myTerminal)
   , K Alt        xK_Return       (spawn myTerminal)
@@ -137,15 +137,15 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
   , K Hyper      xK_F12          (S.promptSearch myXPConfig S.duckduckgo)
   --- LAUNCHERS EMACS
-  , K Hyper      xK_F1           (raiseEmacsAndRun "(org-capture)")
-  , K Hyper      xK_F2           (raiseEmacsAndRun "(org-agenda)")
-  , K Hyper      xK_F3           (raiseEmacsAndRun "(org-agenda nil \"c1\")")
-  , K Hyper      xK_F4           (raiseEmacsAndRun "(org-agenda nil \"cW\")")
+  , K Hyper      xK_F1           (onMainMonitor <> raiseEmacsAndRun "(org-capture)")
+  , K Hyper      xK_F2           (onMainMonitor <> raiseEmacsAndRun "(org-agenda)")
+  , K Hyper      xK_F3           (onMainMonitor <> raiseEmacsAndRun "(org-agenda nil \"c1\")")
+  , K Hyper      xK_F4           (onMainMonitor <> raiseEmacsAndRun "(org-agenda nil \"Rw\")")
   -- Keybinds for specific captures - note, note entry, todo, and work todo
-  , K Hyper      xK_c            (submapFromKeybind [ K None  xK_n (orgCapture "nn")
-                                                    , K Shift xK_n (orgCapture "nN")
-                                                    , K Shift xK_t (orgCapture "tt")
-                                                    , K Shift xK_w (orgCapture "tw")])
+  , K Hyper      xK_c            (submapFromKeybind [ K None  xK_n (onMainMonitor <> orgCapture "nn")
+                                                    , K Shift xK_n (onMainMonitor <> orgCapture "nN")
+                                                    , K None  xK_t (onMainMonitor <> orgCapture "tt")
+                                                    , K None  xK_w (onMainMonitor <> orgCapture "tw")])
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
   , K Hyper      xK_End                   (doVolume "down")
@@ -372,6 +372,12 @@ runEmacs cmd = spawn $ "emacsclient -e '" ++ cmd ++ "'"
 
 raiseEmacsAndRun :: String -> X ()
 raiseEmacsAndRun cmd = runOrRaise "emacsclient -c" (className =? "Emacs") <> runEmacs cmd
+
+onMainMonitor :: X()
+onMainMonitor = focusMonitor 0
+
+onSecondMonitor :: X()
+onSecondMonitor = focusMonitor 1
 
 orgCapture :: String -> X ()
 orgCapture keys = raiseEmacsAndRun $ "(org-capture nil \"" ++ keys ++ "\")"
