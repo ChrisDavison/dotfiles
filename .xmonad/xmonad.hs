@@ -260,7 +260,7 @@ logWorkspacesOnXmobar pipe = dynamicLogWithPP xmobarPP
 
 myConfig pipe = def { terminal           = myTerminal
                     , focusFollowsMouse  = True
-                    , borderWidth        = 3
+                    , borderWidth        = 2
                     , modMask            = myModMask
                     , workspaces         = myWorkspaces
                     , normalBorderColor  = cGrey
