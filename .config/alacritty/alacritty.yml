@@ -8,7 +8,7 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        Hack
+        mononoki
     myfontsize: &fontsize
         12
 
@@ -20,8 +20,8 @@ window:
     #    x: 0
     #    y: 0
     padding: # Blank space around the window. Scaled by DPI.
-        x: 1
-        y: 1
+        x: 5
+        y: 5
     dynamic_padding: true # spread padding evenly around the terminal
     dynamic_title: true  # Terminal applications can change Alacritty's title
 
@@ -286,30 +286,13 @@ schemes:
             cyan:    '0x4fb8cc'
             white:   '0xf1f1f1'
 
-# Default colors
     synthwave: &synthwave
         primary:
             background: '0x3a2263'
             foreground: '0xFF6AD5'
-
-        # Cursor colors
-        #
-        # Colors which should be used to draw the terminal cursor. If these are unset,
-        # the cursor color will be the inverse of the cell color.
         cursor:
             text: '0x000000'
             cursor: '0xFF6AD5'
-
-        # Selection colors
-        #
-        # Colors which should be used to draw the selection area. If selection 
-        # background is unset, selection color will be the inverse of the cell colors. 
-        # If only text is unset the cell text color will remain the same.
-        #selection:
-        #  text: '0xeaeaea'
-        #  background: '0x404040'
-
-        # Normal colors
         normal:
             black:   '0x000000'
             red:     '0xd54e53'
@@ -319,8 +302,6 @@ schemes:
             magenta: '0xc397d8'
             cyan:    '0x70c0ba'
             white:   '0xeaeaea'
-
-        # Bright colors
         bright:
             black:   '0x666666'
             red:     '0xff3334'
