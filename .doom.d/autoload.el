@@ -189,3 +189,7 @@ otherwise use the subtree title."
 (defun cd/reload-config ()
   (interactive)
   (load (expand-file-name "~/.doom.d/config.el")))
+
+;;;###autoload
+(defun next-circular-index (i n)
+  (mod (+ 1 i) n))
