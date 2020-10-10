@@ -1,66 +1,66 @@
-Everyday
-    Hacker News;https://news.ycombinator.com
-    Lobsters;https://lobste.rs
-    BBC News;https://bbc.co.uk/news/uk
+everyday
+    hacker news;https://news.ycombinator.com
+    lobsters;https://lobste.rs
+    bbc news;https://bbc.co.uk/news/uk
 
-Youtube
-    YT Subscriptions;https://www.youtube.com/feed/subscriptions
-    YT Watch Later;https://www.youtube.com/playlist?list=WL
-    YT Asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
-    Youtube;https://www.youtube.com
+youtube
+    yt subscriptions;https://www.youtube.com/feed/subscriptions
+    yt watch later;https://www.youtube.com/playlist?list=WL
+    yt asmr;https://www.youtube.com/playlist?list=PLHCsA_6Hf0ebZEZrdTkL5IwizYOYmLnNc
+    youtube;https://www.youtube.com
 
-Strathclyde - email, calendar, slack
-    Strath Email;https://outlook.office365.com/mail/inbox
-    Strath Calendar;https://outlook.office365.com/calendar/view/workweek
-    Slack;https://cidcom.slack.com
+strathclyde - email, calendar, slack
+    strath email;https://outlook.office365.com/mail/inbox
+    strath calendar;https://outlook.office365.com/calendar/view/workweek
+    slack;https://cidcom.slack.com
 
-Reddit programming
+reddit programming
     reddit rust;https://www.reddit.com/r/rust
     reddit haskell;https://www.reddit.com/r/haskell
     reddit python;https://www.reddit.com/r/python
     reddit programming;https://www.reddit.com/r/programming
-    reddit emacs;https://www.reddit.com/r/programming
+    reddit emacs;https://www.reddit.com/r/emacs
 
-Reddit machine learning
+reddit machine learning
     reddit ml;https://www.reddit.com/r/machinelearning
     reddit ai;https://www.reddit.com/r/artificial
 
-Twitch
-    Twitch - MCDM;https://twitch.tv/mcdm/videos
-    Twitch - CriticalRole;https://twitch.tv/criticalrole/videos
+twitch
+    twitch - mcdm;https://twitch.tv/mcdm/videos
+    twitch - criticalrole;https://twitch.tv/criticalrole/videos
 
-Weather
-    Weather - DarkSky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
-    Weather - BBC;https://www.bbc.co.uk/weather/2648579
+weather
+    weather - darksky;https://darksky.net/forecast/55.8611,-4.2502/uk212/en
+    #weather - bbc;https://www.bbc.co.uk/weather/2648579
 
-Google - email and calendar
+google - email and calendar
     google email;https://mail.google.com
     google calendar;https://calendar.google.com
 
-Strathclyde - FMS Finance
+strathclyde - fms finance
     strathclyde fms;https://fms.strath.ac.uk/
 
-Strathclyde - MyPlace
+strathclyde - myplace
     strathclyde myplace;https://classes.myplace.strath.ac.uk
 
-Wikipedia
-    Wikipedia;https://www.wikipedia.com
+wikipedia
+    wikipedia;https://www.wikipedia.com
 
-LoL Worlds
-    LoL Worlds;https://lol.gamepedia.com/2020_Season_World_Championship/Main_Event
+lol worlds
+    lol worlds;https://lol.gamepedia.com/2020_Season_World_Championship/Main_Event
 
 9gag
     z 9gag;https://www.9gag.com
     z 9gag girl;https://www.9gag.com/girl
     z 9gag nsfw;https://www.9gag.com/nsfw
 
-Github CYBELE
+github cybele
     github ryax senprep;https://github.com/cidcom/cybele_sentinel_preprocessing
     github senprep;https://github.com/cidcom/Sentinel_Preprocess
     github wheat ear counting;https://github.com/cidcom/cybele-wheat-counting
     github crop yield;https://github.com/cidcom/cybele-crop-yield-protein
 
-Amazon Orders
+amazon orders
     amazon orders;https://www.amazon.co.uk/gp/css/order-history/
 
 ignore
