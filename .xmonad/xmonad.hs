@@ -285,15 +285,14 @@ cGrey = "#333333"
 cLightGrey = "#dddddd"
 cWhite = "#ffffff"
 
-myFont      = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
-myFontXL    = "xft:Hack:pixelsize=18:antialias=true:hinting=true"
-myFontSmall = "xft:Hack:pixelsize=12:antialias=true:hinting=true"
+myFont = "mononoki"
+myFontXFT size = "xft:" ++ myFont ++ ":pixelsize=" ++ show size ++ ":antialias=true:hinting=true"
 
 myTerminal = "alacritty"
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 myXPConfig :: XPConfig
-myXPConfig = def { font                = myFont
+myXPConfig = def { font                = myFontXFT 14
                  , bgColor             = cGrey
                  , fgColor             = cLightGrey
                  , borderColor         = cGrey
@@ -304,7 +303,7 @@ myXPConfig = def { font                = myFont
                  --, height              = 21
                  , alwaysHighlight     = True
                  }
-myXPConfigLG = myXPConfig { font = myFontXL
+myXPConfigLG = myXPConfig { font = myFontXFT 18
                           , height = 21
                           }
 
@@ -318,8 +317,9 @@ myJ4Command :: String
 myJ4Command = "j4-dmenu-desktop --dmenu=\"dmenu " ++ myDmenuConfig ++ "\""
 
 myDmenuConfig :: String
-myDmenuConfig = "-l 10 -i -fn 'Hack-14' -p 'App:' " ++ intercalate " " pairs
+myDmenuConfig = "-l 10 -i -fn '" ++ font ++ "' -p 'App:' " ++ intercalate " " pairs
   where
+    font = myFont ++ "-14"
     args = [("-sb", cPurple),                         -- background colour
             ("-nhb", cLightPurple), ("-nhf", cWhite), -- colour for non-highlighted lines
             ("-shb", cLightPurple), ("-shf", cWhite)] -- colour for highlighted lines
