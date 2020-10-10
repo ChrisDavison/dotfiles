@@ -21,7 +21,7 @@ if [ ! -z "$option" ]; then
     awkBmCmd="
     /^$option/{start=1; next} # find the matching header
     /^[a-zA-Z1-9]/ && start==1{exit}     # if we're printing, stop at next header
-    /^#/{next}                  # skip commented bookmarks
+    /^\s*#/{next}                  # skip commented bookmarks
     start == 1{gsub(/    .*;/, \"\"); print} # strip bookmark name
     "
     awk "$awkBmCmd" $bmFile | while read -r bookmark; do
