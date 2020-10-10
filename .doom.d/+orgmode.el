@@ -34,14 +34,10 @@
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
       org-roam-directory org-directory
       org-startup-folded 'fold
-        ;;; agenda
-
       org-id-track-globally t
         ;;; org-roam / deft / zetteldeft
       deft-directory org-directory
-      deft-recursive t
-      org-fancy-priorities-list '((?A . "H") (?B . "M") (?C . "L"))
-      )
+      deft-recursive t)
 
 (setq cd/org-capture-templates
       `(
@@ -116,21 +112,35 @@
         ("cw" "Work" ((todo ""
                             ((org-agenda-files cd/work-agenda-files)
                              (org-agenda-overriding-header "Work")))))
-        ("cb" "Reading in progress" ((todo ""
-                            ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
-                             (org-agenda-overriding-header "Books in Progress")))))
 
-        ("cW" "Weekly Review (last 7 days' DONE)"
+
+
+        ("cT" "Todos, no books"
+         ((todo "" ((org-agenda-tag-filter-preset
+                     '("-readinglist" "-hobby"))))))
+
+        ("R" . "+review")
+        ("Rw" "Weekly Review (last 7 days' DONE)"
          ((agenda "" ((org-super-agenda-groups nil)
                       (org-agenda-span 7)
                       (org-agenda-start-day "-7d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
-        ("cD" "DONE today"
+        ("Rd" "DONE today"
          ((agenda "" ((org-agenda-span 1)
                       (org-agenda-start-day "-0d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
+
+        ("r" . "+reading")
+        ("rr" "Reading - in progress" ((todo "WIP"
+                            ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                             (org-agenda-overriding-header "Books in Progress")))))
+        ("rf" "Reading - future priorities"
+         ((todo "TODO|DONE"
+                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                 (org-agenda-overriding-header "Possible next books")
+                 (org-agenda-regexp-filter-preset '("+\#[A-Za-z]"))))))
         )
       org-agenda-sorting-strategy
       '(
@@ -193,15 +203,18 @@
   (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
          (org-super-agenda-groups
           `((:name "Books to Read" :file-path ,bookpath)
-            (:discard (:anything t)))))
+           (:discard (:anything t)))))
     (org-todo-list "WIP")))
 
 (defun cd/agenda-todo-no-books ()
   (interactive)
   (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
          (org-super-agenda-groups
-          `((:name "Todo" (:not :file-path ,bookpath)))))
+          `((:name "Todo" (:discard (:file-path bookpath))))))
     (org-todo-list)))
 
 
 (org-super-agenda-mode 1)
+
+;; Make capture windows take of 90% of the frame
+(set-popup-rule! "^CAPTURE" :side 'bottom :size 0.90 :select t :ttl nil)
