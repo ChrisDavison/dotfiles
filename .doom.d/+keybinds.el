@@ -12,14 +12,7 @@
         :desc "Status of all branches" "b" #'cd/repo/branchstat
         :desc "Fetch all branches" "f" #'cd/repo/fetch
         :desc "List all managed repos" "l" #'cd/repo/list)
-       (:prefix ("a" . "agenda (custom)")
-        :desc "Reading in progress" "b" #'cd/agenda-books-in-progress
-        :desc "Today" "t" #'(lambda () (interactive) (org-agenda nil "c1"))
-        :desc "Weekly review" "w" #'(lambda () (interactive)
-                                      (let ((org-super-agenda-groups nil)) (org-agenda nil "cW"))))
-       (:prefix ("j" . "journal")
-        :desc "Search all entries" "s" #'org-journal-search-forever
-        :desc "Open today" "o" #'org-journal-open-current-journal-file)))
+       ))
 
 ;; Test editing
 (map! :n "C-;" #'iedit-mode)
@@ -31,7 +24,7 @@
 (map! "<f1>" 'org-capture)
 (map! "<f2>" 'org-agenda)
 (map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
-(map! "<f4>" '(lambda () (interactive) (org-agenda nil "cW")))
+(map! "<f4>" '(lambda () (interactive) (org-agenda nil "Rw")))
 (map! :map org-mode-map :n "<SPC> m r a" 'change-state-and-archive)
 (map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)
 (map! :map org-mode-map :n "<SPC> o s" 'cd/org-open-link-same)
@@ -62,5 +55,5 @@
         :desc "org-roam-find-file" "f" #'org-roam-find-file
         :desc "org-roam-show-graph" "g" #'org-roam-show-graph
         :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-journal" "j" #'org-journal-new-entry
+        :desc "org-journal" "j" #'(lambda () (interactive) (find-file "~/Dropbox/org/journal.org"))
         :desc "org-roam-capture" "c" #'org-roam-capture))
