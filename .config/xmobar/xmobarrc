@@ -1,4 +1,4 @@
-Config { font = "xft:Hack:pixelsize=14:antialias=true:hinting=true"
+Config { font = "xft:mononoki:pixelsize=14:antialias=true:hinting=true"
        , additionalFonts = []
        , borderColor = "black"
        , bgColor = "#333333"
