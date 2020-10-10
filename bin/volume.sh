@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-active=`pactl list short sinks | rg RUNNING | cut -f2`
+active=`pactl list short sinks | rg RUNNING | rg -v Pulse | cut -f2`
 
 active_volume(){
     awk_cmd="/Name: $active/{start=1}
@@ -19,11 +19,11 @@ case "$cmd" in
         if [ $activeVol -gt -7 ]; then
             pactl set-sink-volume $active 0dB
         else
-            pactl set-sink-volume $active +6dB
+            pactl set-sink-volume $active +3dB
         fi
 
         ;;
-    --down) pactl set-sink-volume $active -6dB ;;
+    --down) pactl set-sink-volume $active -3dB ;;
     --mute) pactl set-sink-mute $active toggle ;;
     *) echo "Unknown volume.sh command: $cmd" ;;
 esac
