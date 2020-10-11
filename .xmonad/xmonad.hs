@@ -136,10 +136,10 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
   , K Hyper      xK_F12          (S.promptSearch myXPConfig S.duckduckgo)
   --- LAUNCHERS EMACS
-  , K Hyper      xK_F1           (onMainMonitor <> raiseEmacsAndRun "(org-capture)")
-  , K Hyper      xK_F2           (onMainMonitor <> raiseEmacsAndRun "(org-agenda)")
-  , K Hyper      xK_F3           (onMainMonitor <> raiseEmacsAndRun "(org-agenda nil \"c1\")")
-  , K Hyper      xK_F4           (onMainMonitor <> raiseEmacsAndRun "(org-agenda nil \"Rw\")")
+  , K Hyper      xK_F1           (focusMonitor 0 <> raiseEmacsAndRun "(org-capture)")
+  , K Hyper      xK_F2           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)")
+  , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"c1\")")
+  , K Hyper      xK_F4           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"Rw\")")
   -- Keybinds for specific captures - note, note entry, todo, and work todo
   , K Hyper      xK_c            (submapFromKeybind [ K None  xK_n (onMainMonitor <> orgCapture "nn")
                                                     , K Shift xK_n (onMainMonitor <> orgCapture "nN")
