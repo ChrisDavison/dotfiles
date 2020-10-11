@@ -390,16 +390,12 @@ runEmacs cmd = spawn $ "emacsclient -e '" ++ cmd ++ "'"
 raiseEmacsAndRun :: String -> X ()
 raiseEmacsAndRun cmd = runOrRaise "emacsclient -c" (className =? "Emacs") <> runEmacs cmd
 
-onMainMonitor :: X()
-onMainMonitor = focusMonitor 0
-
-onSecondMonitor :: X()
-onSecondMonitor = focusMonitor 1
-
 orgCapture :: String -> X ()
 orgCapture keys = raiseEmacsAndRun $ "(org-capture nil \"" ++ keys ++ "\")"
 --- end emacs utilities
 
+delay :: Int -> X ()
+delay us = io (threadDelay us)
 
 -- Substring version of XMonad's =?
 -- e.g. (title =?? "asmr") will match ("this is an asmr video")
