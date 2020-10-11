@@ -1,6 +1,7 @@
 {- LANGUAGE OverloadedStrings -}
 import Control.Arrow ( first )
 import Control.Concurrent (threadDelay)
+import Control.Monad (liftM2)
 import Data.List ( isInfixOf , intercalate)
 import Data.Text (splitOn, unpack, pack, replace)
 import Graphics.X11.ExtraTypes.XF86
@@ -50,47 +51,39 @@ myModMask = mod3Mask
                  
 data SimpleKeybind = K CDMask KeySym (X())
 data SimpleMousebind = M CDMask Button (Window -> X())
-
 data CDMask = Hyper | Win | Alt | Shift | HyperShift | WinShift | AltShift | HyperCtrl | None
 
+toKeyMask :: CDMask -> KeyMask
+toKeyMask None       = 0
+toKeyMask Hyper      = mod3Mask                 
+toKeyMask Win        = mod4Mask                 
+toKeyMask Alt        = mod1Mask                 
+toKeyMask Shift      = shiftMask                
+toKeyMask HyperShift = mod3Mask .|. shiftMask   
+toKeyMask HyperCtrl  = mod3Mask .|. controlMask 
+toKeyMask WinShift   = mod4Mask .|. shiftMask   
+toKeyMask AltShift   = mod1Mask .|. shiftMask   
+
 fromKeybind :: SimpleKeybind -> ((KeyMask, KeySym), X ())
-fromKeybind (K None       k command) = ((0, k), command)
-fromKeybind (K Hyper      k command) = ((mod3Mask, k), command)
-fromKeybind (K Win        k command) = ((mod4Mask, k), command)
-fromKeybind (K Alt        k command) = ((mod1Mask, k), command)
-fromKeybind (K Shift      k command) = ((shiftMask, k), command)
-fromKeybind (K HyperShift k command) = ((mod3Mask .|. shiftMask, k), command)
-fromKeybind (K HyperCtrl  k command) = ((mod3Mask .|. controlMask, k), command)
-fromKeybind (K WinShift   k command) = ((mod4Mask .|. shiftMask, k), command)
-fromKeybind (K AltShift   k command) = ((mod1Mask .|. shiftMask, k), command)
+fromKeybind (K mask k command) = ((toKeyMask mask, k), command)
 
 fromMousebind :: SimpleMousebind -> ((KeyMask, Button), Window -> X ())
-fromMousebind (M None       b command) = ((0, b), command)
-fromMousebind (M Hyper      b command) = ((mod3Mask, b), command)
-fromMousebind (M Win        b command) = ((mod4Mask, b), command)
-fromMousebind (M Alt        b command) = ((mod1Mask, b), command)
-fromMousebind (M Shift      b command) = ((shiftMask, b), command)
-fromMousebind (M HyperShift b command) = ((mod3Mask .|. shiftMask, b), command)
-fromMousebind (M WinShift   b command) = ((mod4Mask .|. shiftMask, b), command)
-fromMousebind (M AltShift   b command) = ((mod1Mask .|. shiftMask, b), command)
+fromMousebind (M mask b command) = ((toKeyMask mask, b), command)
 
-submapFromKeybind = submap . keysFromSimpleKeybinds
-keysFromSimpleKeybinds = M.fromList . (map fromKeybind) 
-keysFromSimpleMousebinds = M.fromList . (map fromMousebind)
-
-myMouseBindings _conf = keysFromSimpleMousebinds
-  [ M Hyper      button1 (\w -> focus w >> mouseMoveWindow w) -- Left = move
-  , M Hyper      button2 (\w -> focus w >> windows W.swapMaster) -- Middle = make master
-  , M Hyper      button3 (\w -> focus w >> mouseResizeWindow w) -- Right = resize
-    -- Mouse wheel is sensitive, so use  smaller volume increments
-  , M Hyper      button4 (\w -> (doVolume "up")) -- Scroll up = vol up
-  , M Hyper      button5 (\w -> (doVolume "down")) -- Scroll down = vol down
-  , M HyperShift button4 (\w -> gotoNonEmptyWS Prev) -- Scroll up = vol up
-  , M HyperShift button5 (\w -> gotoNonEmptyWS Next) -- Scroll down = vol down
+myMouseBindings _conf = M.fromList . (map fromMousebind) $
+  [ M Hyper      button1 (\w -> focus w >> mouseMoveWindow w)     -- Left        = move
+  , M Hyper      button2 (\w -> focus w >> windows W.swapMaster)  -- Middle      = make master
+  , M Hyper      button3 (\w -> focus w >> mouseResizeWindow w)   -- Right       = resize
+    --- Mouse wheel is sensitive, so use  smaller volume increments
+  , M Hyper      button4 (\w -> (doVolume "up"))                  -- Scroll up   = vol up
+  , M Hyper      button5 (\w -> (doVolume "down"))                -- Scroll down = vol down
+  , M HyperShift button4 (\w -> gotoNonEmptyWS Prev)              -- Scroll up   = vol up
+  , M HyperShift button5 (\w -> gotoNonEmptyWS Next)              -- Scroll down = vol down
   ]
 
 -- need '$' to apply func to all '++' concatenated lists
-myKeys conf = keysFromSimpleKeybinds $  
+makeKeybinds = M.fromList . (map fromKeybind)
+myKeys conf = makeKeybinds $  
   [ K HyperShift xK_q            (io (exitWith ExitSuccess))      -- QUIT
   , K HyperShift xK_c            (kill)                           -- close the focused window
   , K Hyper      xK_q            (restart "xmonad" True)
@@ -141,10 +134,11 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"c1\")")
   , K Hyper      xK_F4           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"Rw\")")
   -- Keybinds for specific captures - note, note entry, todo, and work todo
-  , K Hyper      xK_c            (submapFromKeybind [ K None  xK_n (onMainMonitor <> orgCapture "nn")
-                                                    , K Shift xK_n (onMainMonitor <> orgCapture "nN")
-                                                    , K None  xK_t (onMainMonitor <> orgCapture "tt")
-                                                    , K None  xK_w (onMainMonitor <> orgCapture "tw")])
+  , K Hyper      xK_c            (submap . makeKeybinds $ [
+                                     K None  xK_n (focusMonitor 0 <> orgCapture "nn")
+                                   , K Shift xK_n (focusMonitor 0 <> orgCapture "nN")
+                                   , K None  xK_t (focusMonitor 0 <> orgCapture "tt")
+                                   , K None  xK_w (focusMonitor 0 <> orgCapture "tw")])
   , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
@@ -166,8 +160,9 @@ myKeys conf = keysFromSimpleKeybinds $
   , K None       xF86XK_KbdBrightnessDown (spawn "$HOME/.bin/bright.sh down")
   , K None       xF86XK_MonBrightnessDown (spawn "$HOME/.bin/bright.sh down")
                                                                            -- KEYCHORD - H-d {e,a} -- open ebooks or literature
-  , K Hyper      xK_d (submapFromKeybind [ K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
-                                         , K None xK_a (spawn "$HOME/.bin/dmenu_articles.sh")])
+  , K Hyper      xK_d (submap . makeKeybinds $ [
+                        K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
+                      , K None xK_a (spawn "$HOME/.bin/dmenu_articles.sh")])
   ]
                                                                            
   ++ [ K Hyper      key (pullWs ws)           | (key, ws) <- keyWsPairs ]     -- mod-[1..9]       :: view workspace on current monitor
@@ -180,7 +175,6 @@ myKeys conf = keysFromSimpleKeybinds $
  where
   keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
   keyScreenPairs = zip [xK_a, xK_s] [0 ..]
-  
 
 doVolume :: String -> X()
 doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
