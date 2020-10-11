@@ -125,7 +125,7 @@ myKeys conf = keysFromSimpleKeybinds $
   , K Hyper      xK_Return       (spawn myTerminal)
   , K Alt        xK_Return       (spawn myTerminal)
   , K Win        xK_Return       (spawn myTerminal)
-  , K Hyper      xK_p            (spawn $ myJ4Command)
+  , K Hyper      xK_p            (spawn myJ4Command)
   , K Hyper      xK_w            (spawn "$HOME/.bin/dmenu_win_switcher.sh")
   , K Hyper      xK_b            (spawn "$HOME/.bin/dmenu_bookmark_groups.sh")
   , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
