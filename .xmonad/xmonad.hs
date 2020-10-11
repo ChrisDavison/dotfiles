@@ -407,5 +407,6 @@ q =?? f = fmap (f `isInfixOf`) q
 (=?!) :: Query String -> String -> Query Bool
 q =?! f = fmap (fuzzyMatch f) q
 
-delay :: Int -> X ()
-delay us = io (threadDelay us)
+-- Basically query NOT infix match
+(=/?) :: Query String -> String -> Query Bool
+q =/? f = fmap (not . (f `isInfixOf`)) q
