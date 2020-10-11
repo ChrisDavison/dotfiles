@@ -227,19 +227,20 @@ myLayout = defaultLayouts
 --    fuzzy =?!   (e.g. 'n something EEDLE' =?! 'needle')   ! case insensitive
 myManageHook = manageDocks <> composeAll
   [
-    className =? "zoom"            --> doShift "3"
-  , className =? "Anki"            --> doShift "4"
-  , className =? "TeamViewer"      --> doShift "5"
-  , className =? "Droidcam"        --> doShift "7"
-  , className =? "Pulseeffects"    --> doShift "7"
-  , className =? "Steam"           --> doShift "7"
-  , className =? "Spotify"         --> doShift "8"
-  , className =? "Bitwarden"       --> doFloat
-  , className =? "Pavucontrol"     --> doFloat
-  , className =? "Blueman-manager" --> doFloat
-  , resource  =? "desktop_window"  --> doIgnore
-  , resource  =? "kdesktop"        --> doIgnore
-  , title     =? "scratchpad"      --> doFloat
+    className =? "zoom"               --> doShift "3"
+  , className =? "Anki"               --> doShift "4"
+  , className =? "TeamViewer"         --> doShift "5"
+  , className =? "Droidcam"           --> doShift "7"
+  , className =? "Pulseeffects"       --> doShift "7"
+  , className =? "Steam"              --> doShift "7"
+  , className =? "Spotify"            --> doShift "8"
+  , className =? "Bitwarden"          --> doFloat
+  , className =? "Pavucontrol"        --> doFloat
+  , className =? "Blueman-manager"    --> doFloat
+  , resource  =? "desktop_window"     --> doIgnore
+  , resource  =? "kdesktop"           --> doIgnore
+  , title     =? "scratchpad"         --> doFloat
+  , title     =? "Picture-in-Picture" --> doFloat
   ]
 
 ------------------------------------------------------------------------
