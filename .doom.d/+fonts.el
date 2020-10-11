@@ -12,7 +12,8 @@
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
   (interactive)
-  (set-frame-font (ivy-read "Pick font:" cd-fonts) 1))
+  (setq doom-font (ivy-read "Pick font:" cd-fonts))
+  (doom/reload-font))
 
 (defun next-font ()
   (interactive)
