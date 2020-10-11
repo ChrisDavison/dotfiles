@@ -131,7 +131,6 @@ myKeys conf = keysFromSimpleKeybinds $
   , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
   , K Hyper      xK_F5           (runOrRaise "spotify" (className =? "Spotify"))
   , K Hyper      xK_F6           (cycleFirefox)
-  , K HyperShift xK_d            (spawn $ "notify-send -- " ++ myDmenuConfig)
   --- firefox / youtube doesn't work well with instant xdotool, so add 100ms delay after switching window
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
