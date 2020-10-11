@@ -46,6 +46,13 @@
 (map! :leader :prefix "w" :desc "evil-window-vsplit (follow)"
       "v" (lambda () (interactive) (+evil-window-vsplit-a) (evil-window-right 1)))
 
+(defun cd/jump-to-todays-journal ()
+  (interactive)
+  (progn
+    (find-file "~/Dropbox/org/journal.org")
+    (goto-char (point-min))
+    (search-forward (format-time-string "%F %A"))))
+
 (after! org-roam
   (map! :leader
         :prefix "n"
@@ -55,5 +62,5 @@
         :desc "org-roam-find-file" "f" #'org-roam-find-file
         :desc "org-roam-show-graph" "g" #'org-roam-show-graph
         :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-journal" "j" #'(lambda () (interactive) (find-file "~/Dropbox/org/journal.org"))
+        :desc "org-journal" "j" #'cd/jump-to-todays-journal
         :desc "org-roam-capture" "c" #'org-roam-capture))
