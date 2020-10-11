@@ -145,6 +145,7 @@ myKeys conf = keysFromSimpleKeybinds $
                                                     , K Shift xK_n (onMainMonitor <> orgCapture "nN")
                                                     , K None  xK_t (onMainMonitor <> orgCapture "tt")
                                                     , K None  xK_w (onMainMonitor <> orgCapture "tw")])
+  , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
   , K Hyper      xK_End                   (doVolume "down")
