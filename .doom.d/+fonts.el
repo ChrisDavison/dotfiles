@@ -1,13 +1,11 @@
 ;;; ../code/dotfiles/.doom.d/autoload/fonts.el -*- lexical-binding: t; -*-
 
-(setq font-preferences
-      '("Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
-        "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code"
-        "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
-        "Liberation Mono" "Fira Code" "Iosevka Term"))
-
 (after! dash
-        (setq cd-fonts (--filter (member it (font-family-list)) font-preferences)))
+  (setq cd-fonts (--filter (member it (font-family-list))
+                           '("Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
+                             "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
+                             "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
+                             "Liberation Mono" "Fira Code" "Iosevka Term"))))
 
 (defvar current-font-idx 0)
 

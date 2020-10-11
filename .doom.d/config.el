@@ -4,7 +4,7 @@
       user-mail-address "c.jr.davison@gmail.com")
 
 ;;; Doom appearance Utility
-(setq doom-font "mononoki-14")
+(setq doom-font "Rec Mono SemiCasual-12")
 (setq cd/light-theme 'kaolin-breeze)
 (setq cd/dark-theme 'kaolin-aurora)
 (setq doom-theme cd/dark-theme)
