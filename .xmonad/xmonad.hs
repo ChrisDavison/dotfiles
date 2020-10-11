@@ -193,6 +193,18 @@ doSpotify cmd = spawn $ "$HOME/.bin/spotify.sh " ++ cmd
 cycleFirefox :: X()
 cycleFirefox = raiseNextMaybe (return ()) (className =? "Firefox")
 
+cycleFirefoxMatching query = raiseNextMaybe f foxQuery
+  where
+    f = return ()
+    fox = className =? "Firefox"
+    foxQuery = liftM2 (\a -> \b -> a && b) fox query
+
+cycleFirefoxNotMatching query = raiseNextMaybe f foxQuery
+  where
+    f = return ()
+    fox = className =? "Firefox"
+    foxQuery = liftM2 (\a -> \b -> a && (not b)) fox query
+
 ------------------------------------------------------------------------
 -- Layouts:
 lFull      = noBorders Full
