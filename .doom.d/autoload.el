@@ -193,3 +193,25 @@ otherwise use the subtree title."
 ;;;###autoload
 (defun next-circular-index (i n)
   (mod (+ 1 i) n))
+
+;;;###autoload
+(defun cd/paste-checkbox-list ()
+  (interactive)
+  (insert (replace-regexp-in-string "^" "- [ ] " (current-kill 0))))
+
+;;;###autoload
+(defun cd/paste-todo-header-list ()
+  (interactive)
+  (insert (replace-regexp-in-string "^" "* TODO " (current-kill 0))))
+
+;;;###autoload
+(defun cd/org-archive-level1-done ()
+  (interactive)
+  (save-excursion
+    (goto-char 1)
+    (org-archive-all-done)))
+
+;;;###autoload
+(defun cd/org-archive-done-under-subtree ()
+  (interactive)
+  (org-archive-all-done))
