@@ -51,7 +51,9 @@ myModMask = mod3Mask
                  
 data SimpleKeybind = K CDMask KeySym (X())
 data SimpleMousebind = M CDMask Button (Window -> X())
-data CDMask = Hyper | Win | Alt | Shift | HyperShift | WinShift | AltShift | HyperCtrl | None
+data CDMask = Hyper | Win | Alt | Shift
+  | HyperShift | WinShift | AltShift
+  | HyperCtrl | HyperAlt | None
 
 toKeyMask :: CDMask -> KeyMask
 toKeyMask None       = 0
@@ -61,6 +63,7 @@ toKeyMask Alt        = mod1Mask
 toKeyMask Shift      = shiftMask                
 toKeyMask HyperShift = mod3Mask .|. shiftMask   
 toKeyMask HyperCtrl  = mod3Mask .|. controlMask 
+toKeyMask HyperAlt   = mod3Mask .|. mod1Mask
 toKeyMask WinShift   = mod4Mask .|. shiftMask   
 toKeyMask AltShift   = mod1Mask .|. shiftMask   
 
@@ -83,6 +86,7 @@ myMouseBindings _conf = M.fromList . (map fromMousebind) $
 
 -- need '$' to apply func to all '++' concatenated lists
 makeKeybinds = M.fromList . (map fromKeybind)
+makeSubmap = submap . M.fromList . (map fromKeybind)
 myKeys conf = makeKeybinds $  
   [ K HyperShift xK_q            (io (exitWith ExitSuccess))      -- QUIT
   , K HyperShift xK_c            (kill)                           -- close the focused window
@@ -90,8 +94,10 @@ myKeys conf = makeKeybinds $
   --- WINDOW FOCUS 
   , K Hyper      xK_bracketleft  (gotoNonEmptyWS Prev)            -- find prev empty workspace
   , K Hyper      xK_bracketright (gotoNonEmptyWS Next)            -- find next empty workspace
-  , K HyperShift xK_bracketleft  (tagToEmptyWorkspace)         -- move win to prev empty workspace
-  , K HyperShift xK_bracketright (shiftToEmptyWS Next)         -- move win to next empty workspace
+  , K HyperAlt   xK_bracketleft  (gotoEmptyWS Prev)               -- find prev empty workspace
+  , K HyperAlt   xK_bracketright (gotoEmptyWS Next)               -- find next empty workspace
+  , K HyperShift xK_bracketleft  (tagToEmptyWorkspace)            -- move win to prev empty workspace
+  , K HyperShift xK_bracketright (shiftToEmptyWS Next)            -- move win to next empty workspace
   , K Hyper      xK_j            (windows W.focusDown)            -- focus window up stack
   , K Hyper      xK_k            (windows W.focusUp)              -- focus window down stack
   , K Hyper      xK_m            (windows W.focusMaster)          -- focus master window
@@ -108,13 +114,13 @@ myKeys conf = makeKeybinds $
   --- LAYOUT   
   , K Hyper      xK_space        (sendMessage NextLayout)         -- Use next configured layout
   , K HyperShift xK_space        (setLayout $ XMonad.layoutHook conf)             -- reset to default layout
-  , K Hyper      xK_f            (fullscreenNoBar)                -- toggle fullscreen on focused window
+  , K Hyper      xK_f            (toggleFullscreen)               -- toggle fullscreen on focused window
   , K HyperShift xK_f            (toggleBar)                      -- toggle fullscreen on focused window
   , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
   , K HyperShift xK_g            (bringMenuConfig myBringConfig)
-  , K Hyper      xK_r            (spawn $ myTerminal ++ " -e ranger")
+  , K Hyper      xK_r            appSpawnerSubmap
   , K Hyper      xK_Return       (spawn myTerminal)
   , K Alt        xK_Return       (spawn myTerminal)
   , K Win        xK_Return       (spawn myTerminal)
@@ -124,21 +130,18 @@ myKeys conf = makeKeybinds $
   , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
   , K Hyper      xK_F5           (runOrRaise "spotify" (className =? "Spotify"))
   , K Hyper      xK_F6           (cycleFirefox)
+  , K HyperShift xK_w            (spawn "nitrogen ~/Dropbox/pictures/wallpapers")
   --- firefox / youtube doesn't work well with instant xdotool, so add 100ms delay after switching window
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
   , K Hyper      xK_F12          (S.promptSearch myXPConfig S.duckduckgo)
   --- LAUNCHERS EMACS
-  , K Hyper      xK_F1           (focusMonitor 0 <> raiseEmacsAndRun "(org-capture)")
-  , K Hyper      xK_F2           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)")
-  , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"c1\")")
-  , K Hyper      xK_F4           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda nil \"Rw\")")
+  , K Hyper      xK_F1           (focusMonitor 0 <> raiseEmacsAndRun "(org-capture)") 
+  , K Hyper      xK_F2           (focusMonitor 0 <> orgAgenda "c1") 
+  , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)") 
   -- Keybinds for specific captures - note, note entry, todo, and work todo
-  , K Hyper      xK_c            (submap . makeKeybinds $ [
-                                     K None  xK_n (focusMonitor 0 <> orgCapture "nn")
-                                   , K Shift xK_n (focusMonitor 0 <> orgCapture "nN")
-                                   , K None  xK_t (focusMonitor 0 <> orgCapture "tt")
-                                   , K None  xK_w (focusMonitor 0 <> orgCapture "tw")])
+  , K Hyper      xK_e            (makeSubmap [ K None xK_c (raiseEmacsAndRun "(org-capture)")
+                                             , K None xK_a (raiseEmacsAndRun "(org-agenda)")])
   , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
@@ -160,7 +163,7 @@ myKeys conf = makeKeybinds $
   , K None       xF86XK_KbdBrightnessDown (spawn "$HOME/.bin/bright.sh down")
   , K None       xF86XK_MonBrightnessDown (spawn "$HOME/.bin/bright.sh down")
                                                                            -- KEYCHORD - H-d {e,a} -- open ebooks or literature
-  , K Hyper      xK_d (submap . makeKeybinds $ [
+  , K Hyper      xK_d                     (makeSubmap [
                         K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
                       , K None xK_a (spawn "$HOME/.bin/dmenu_articles.sh")])
   ]
@@ -175,6 +178,16 @@ myKeys conf = makeKeybinds $
  where
   keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
   keyScreenPairs = zip [xK_a, xK_s] [0 ..]
+  appSpawnerSubmap = makeSubmap [
+     K None xK_r (spawn $ myTerminal ++ " -e ranger")
+   , K None xK_c (spawn $ myTerminal ++ " -e eva")
+   , K None xK_f (spawn "firefox")
+   , K None xK_l (spawn $ myTerminal ++ " -e $HOME/.bin/lyricsearch.sh")
+   , K None xK_e (runOrRaise "emacsclient -c" (className =? "Emacs"))
+   , K None xK_z (spawn "zoom")
+   , K None xK_b (runOrRaise "bitwarden" (className =? "Bitwarden"))
+   , K None xK_p (runOrRaise "pavucontrol" (className =? "Pavucontrol"))
+   , K None xK_a (spawn "anki")]
 
 doVolume :: String -> X()
 doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
@@ -210,12 +223,10 @@ lTiledEven = toggleLayouts lFull lTallEven
 lTwoPane   = toggleLayouts lFull $ TwoPanePersistent Nothing (3/100) (1/2)
 gaps       = spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
 
-defaultLayouts = avoidStruts . gaps $
-  lTiled
+myLayout = avoidStruts . gaps $
+  lTiledEven
   ||| Mirror lTiled
   ||| lTwoPane
-
-myLayout = defaultLayouts
 
 -- Manage Hook is for applying rules to specific windows
 -- className matches xprop WM_CLASS[2]
@@ -251,6 +262,7 @@ myStartupHook = do
   spawnOnce "~/.fehbg"
   spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
+  spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
   spawnOnce
     "trayer --edge top --align center --widthtype request --padding 0 --SetDockType true --SetPartialStrut true --expand true --monitor 0 --transparent true --alpha 255 --height 21 &"
   spawnOnce "dropbox start"
@@ -270,7 +282,7 @@ logWorkspacesOnXmobar pipe = dynamicLogWithPP xmobarPP
 
 myConfig pipe = def { terminal           = myTerminal
                     , focusFollowsMouse  = True
-                    , borderWidth        = 2
+                    , borderWidth        = 1
                     , modMask            = myModMask
                     , workspaces         = myWorkspaces
                     , normalBorderColor  = cGrey
@@ -376,6 +388,9 @@ viewWs = windows . W.view
 gotoNonEmptyWS :: Direction1D -> X ()
 gotoNonEmptyWS dir = (getNonEmptyWs dir) >>= viewWs
 
+gotoEmptyWS :: Direction1D -> X()
+gotoEmptyWS dir = (getEmptyWs dir) >>= viewWs
+
 shiftToEmptyWS :: Direction1D -> X ()
 shiftToEmptyWS dir = moveWinToWs =<< getEmptyWs dir
 
@@ -388,6 +403,9 @@ raiseEmacsAndRun cmd = runOrRaise "emacsclient -c" (className =? "Emacs") <> run
 
 orgCapture :: String -> X ()
 orgCapture keys = raiseEmacsAndRun $ "(org-capture nil \"" ++ keys ++ "\")"
+
+orgAgenda :: String -> X ()
+orgAgenda keys = raiseEmacsAndRun $ "(org-agenda nil \"" ++ keys ++ "\")"
 --- end emacs utilities
 
 delay :: Int -> X ()
