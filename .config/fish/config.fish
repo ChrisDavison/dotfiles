@@ -81,4 +81,4 @@ if test $status -eq 0
     end
 end
 
-test -f ~/.envs/ml/bin/activate.fish; and source ~/.envs/ml/bin/activate.fish
+# test -f ~/.envs/ml/bin/activate.fish; and source ~/.envs/ml/bin/activate.fish

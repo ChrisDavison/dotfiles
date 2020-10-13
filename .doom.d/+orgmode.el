@@ -1,12 +1,16 @@
 ;;; ../code/dotfiles/.doom.d/autoload/orgutil.el -*- lexical-binding: t; -*-
 
 ;;; general org settings
+(setq cd/todo-keywords '((sequence "TODO(t)" "WIP(w)" "|"
+                                    "DONE(d)" "CANCELLED(c)")
+                                        ; local use only (orgzly wont use)
+                          (sequence "BACKBURNER(b)" "|" "FINISHED(f)")))
 (setq org-directory "~/Dropbox/org"
       org-default-notes-file "~/Dropbox/org/inbox.org"
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column 0
+      org-tags-column -80
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -14,11 +18,7 @@
       ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
-      org-todo-keywords '((sequence "TODO(t)" "WIP(w)" "|"
-                                    "DONE(d)" "CANCELLED(c)")
-                                        ; local use only (orgzly wont use)
-                          (sequence "BACKBURNER(b)" "|" "FINISHED(f)"))
-
+      org-todo-keywords cd/todo-keywords
       org-cycle-separator-lines 0
       org-list-indent-offset 2
       org-modules '(org-habit)
@@ -39,6 +39,7 @@
       deft-directory org-directory
       deft-recursive t)
 
+;;; capture templates
 (setq cd/org-capture-templates
       `(
         ("n" ,(emoji-heading 'all-the-icons-octicon "comment" "Note"))
@@ -99,7 +100,7 @@
       org-agenda-files '("~/Dropbox/org/projects"
                          "~/Dropbox/org/journal.org"
                          "~/Dropbox/org/archive.org")
-      org-agenda-time-grid '((daily today require-timed)
+      org-agenda-time-grid '((daily today require-timed remove-match)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
                              "")
@@ -108,12 +109,11 @@
       '(("c" . "+my stuff")
         ("c1" "One day" ((agenda ""
                                  ((org-agenda-span 'day)
+                                  (org-todo-keywords cd/todo-keywords)
                                   (org-agenda-start-day "-0d")))))
         ("cw" "Work" ((todo ""
                             ((org-agenda-files cd/work-agenda-files)
                              (org-agenda-overriding-header "Work")))))
-
-
 
         ("cT" "Todos, no books"
          ((todo "" ((org-agenda-tag-filter-preset
@@ -123,7 +123,7 @@
         ("Rw" "Weekly Review (last 7 days' DONE)"
          ((agenda "" ((org-super-agenda-groups nil)
                       (org-agenda-span 7)
-                      (org-agenda-start-day "-7d")
+                      (org-agenda-start-day "-8d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
         ("Rd" "DONE today"
@@ -184,19 +184,23 @@
 
 
 
+;;; agenda super groups
 ;; Each group has an implicit boolean OR operator between its selectors.
 ;;
 ;; After the last group, the agenda will display items that didn't
 ;; match any of these groups, with the default order position of 99
 (setq org-super-agenda-groups
-      `((:name "Habit" :habit t)
-        (:name "Overdue" :deadline past :scheduled past)
-        (:name "Today" :time-grid t :todo "TODAY")
+      `(
+        (:name "Habit" :habit t)
+        (:name "Today" :time-grid t
+         :todo "TODAY" :and (:discard (:todo "CANCELLED") :deadline past :scheduled past))
         (:name "Important" :priority "A")
         (:name "In Progress" :todo "WIP")
         (:name "Todo" :todo "TODO")
         (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")
-        (:name "DONE" :todo "DONE" :date today :log closed :order 99)))
+        (:name "DONE" :todo "DONE" :date today :log closed :order 99)
+        (:discard :anything)
+        ))
 
 (defun cd/agenda-books-in-progress ()
   (interactive)
