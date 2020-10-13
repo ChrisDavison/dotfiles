@@ -1,9 +1,7 @@
 #!/bin/bash
 # browser=google-chrome
-browser=firefox
 
-songinfo=`playerctl metadata --format "{{ title }} {{ artist }}"`
-searchUrl="https://search.azlyrics.com/search.php?q=$songinfo"
+lyrics-cli spotify 
 
-$browser --new-tab "$searchUrl"
+read -n 1 -p 'Exit.' blah
 
