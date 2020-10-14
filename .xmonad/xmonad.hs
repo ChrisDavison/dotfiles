@@ -140,8 +140,10 @@ myKeys conf = makeKeybinds $
   , K Hyper      xK_F2           (focusMonitor 0 <> orgAgenda "c1") 
   , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)") 
   -- Keybinds for specific captures - note, note entry, todo, and work todo
-  , K Hyper      xK_e            (makeSubmap [ K None xK_c (raiseEmacsAndRun "(org-capture)")
-                                             , K None xK_a (raiseEmacsAndRun "(org-agenda)")])
+  , K Hyper      xK_c            (makeSubmap [ K None  xK_t (orgCapture "t")
+                                             , K None  xK_n (orgCapture "j")
+                                             , K Shift xK_n (orgCapture "J")
+                                             ])
   , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")

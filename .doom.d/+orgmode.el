@@ -42,48 +42,53 @@
 ;;; capture templates
 (setq cd/org-capture-templates
       `(
-        ("n" ,(emoji-heading 'all-the-icons-octicon "comment" "Note"))
-        ("nn" "Item" item (file+olp+datetree "journal.org"))
-        ("nN" "Entry" entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
 
-        ("t" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo"))
-        ("tt" "Todo" entry (file "projects/todo.org") "* TODO %?")
-        ("tw" "Work" entry (file+headline "projects/work.org" "Tasks") "* TODO %?")
-        ("ti" "IoF" entry (file+headline "projects/iof2020.org" "Tasks") "* TODO %?")
-        ("tc" "Cybele" entry (file+headline "projects/cybele.org" "Tasks") "* TODO %?")
+        ("t" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo")
+         entry (file "projects/todo.org") "* TODO %?")
+        ;; ("T" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo (Work)")
+        ;;  entry (file+headline "projects/work.org" "Tasks - General") "* TODO %?")
+       
+        ("j" ,(emoji-heading 'all-the-icons-octicon "comment" "Journal (item)")
+         item (file+olp+datetree "journal.org"))
+        ("J" ,(emoji-heading 'all-the-icons-octicon "comment" "Journal (entry)")
+         entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
 
-        ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook"))
-        ("ll" "Item" item (file+olp+datetree "projects/work.org"))
-        ("lL" "Entry" entry (file+olp+datetree "projects/work.org"))
-        ("ld" "Dated Entry" entry (file+olp+datetree "projects/work.org") "* %?" :time-prompt t)
-        ("lc" "Cybele" item (file+olp+datetree "projects/cybele.org"))
-        ("li" "IoF / Glasdata" item (file+olp+datetree "projects/iof2020.org"))
+
+
+        ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (item)")
+         item (file+olp+datetree "projects/work.org"))
+        ("L" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (entry)")
+         entry (file+olp+datetree "projects/work.org"))
 
         ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
-        ("gp" "PC" entry (file "pc-gaming.org") "* TODO %?")
-        ("gn" "Nintendo Switch" entry (file "nintendo-switch.org") "* TODO %?")
-        ("gt" "Tabletop" entry (file "tabletop-games.org") "* TODO %?")
+        ("gp" "PC" entry (file "pc-gaming.org") "* TODO %^{PC Game}")
+        ("gn" "Nintendo Switch" entry (file "nintendo-switch.org") "* TODO %^{Nintendo Switch Game}")
+        ("gt" "Tabletop" entry (file "tabletop-games.org") "* TODO %^{Tabletop game}")
 
-        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch"))
-        ("ww" "Watch" entry (file+headline "projects/media.org" "UNFILED") "* TODO %?")
-        ("wW" "Watch (clipboard link)" entry (file+headline "projects/media.org" "UNFILED") "* TODO %c\n\n%?" :immediate-finish t)
+        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
+         entry (file+headline "projects/media.org" "UNFILED")
+         "* TODO watch %?")
 
         ("m" ,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
-         entry (file+headline "projects/media.org" "Music") "* TODO %?")
+         entry (file+headline "projects/media.org" "Music")
+         "* TODO %^{Music}" :immediate-finish t)
 
-        ("G" ,(emoji-heading 'all-the-icons-faicon "music" "Guitar")
-         entry (file+headline "projects/Guitar.org" "Songs to Learn") "* TODO %?")
+        ("G" ,(emoji-heading 'all-the-icons-faicon "music" "Guitar song to learn")
+         entry (file+headline "projects/Guitar.org" "Songs to Learn")
+         "* TODO %^{Guitar song}" :immediate-finish t)
 
-        ("b" ,(emoji-heading 'all-the-icons-octicon "book" "Book")
-         entry (file+headline "projects/reading.org"  "REFILE") "* TODO %?")
+        ("b" ,(emoji-heading 'all-the-icons-octicon "book" "Books / reading")
+         entry (file+headline "projects/reading.org"  "REFILE")
+         "* TODO %^{Book}" :immediate-finish t)
 
         ("a" ,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
-         entry (file+headline "projects/todo.org" "anki") "* TODO %?")
+         entry (file+headline "projects/todo.org" "anki")
+         "* TODO %^{Anki}" :immediate-finish t)
 
-        ("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
-         entry (file+headline "literature.org" "REFILE")
-         "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
-         :immediate-finish t)
+        ;; ("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
+        ;;  entry (file+headline "literature.org" "REFILE")
+        ;;  "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
+        ;;  :immediate-finish t)
         ))
 
 (setq org-capture-templates cd/org-capture-templates)
