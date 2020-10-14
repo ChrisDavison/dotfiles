@@ -28,7 +28,7 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/archive.org::"
+      org-archive-location "~/Dropbox/org/archive.org::* From %s"
       org-refile-use-outline-path 'full-file-path
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
