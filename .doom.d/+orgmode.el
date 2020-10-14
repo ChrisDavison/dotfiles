@@ -64,8 +64,9 @@
         ("gn" "Nintendo Switch" entry (file "nintendo-switch.org") "* TODO %?")
         ("gt" "Tabletop" entry (file "tabletop-games.org") "* TODO %?")
 
-        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
-         entry (file+headline "projects/media.org" "UNFILED") "* TODO %?")
+        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch"))
+        ("ww" "Watch" entry (file+headline "projects/media.org" "UNFILED") "* TODO %?")
+        ("wW" "Watch (clipboard link)" entry (file+headline "projects/media.org" "UNFILED") "* TODO %c\n\n%?" :immediate-finish t)
 
         ("m" ,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
          entry (file+headline "projects/media.org" "Music") "* TODO %?")
