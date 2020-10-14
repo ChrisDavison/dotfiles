@@ -8,7 +8,7 @@
 
 cdsettings: # a place for my custom settings
     myfont: &fontface
-        mononoki
+        Rec Mono SemiCasual
     myfontsize: &fontsize
         12
 
