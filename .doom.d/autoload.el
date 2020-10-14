@@ -200,9 +200,22 @@ otherwise use the subtree title."
   (insert (replace-regexp-in-string "^" "- [ ] " (current-kill 0))))
 
 ;;;###autoload
-(defun cd/paste-todo-header-list ()
+(defun cd/paste-todo-header-list (&optional level)
   (interactive)
-  (insert (replace-regexp-in-string "^" "* TODO " (current-kill 0))))
+  (let* ((level (or level 1))
+         (stars (s-repeat level "*"))
+         (todo (s-concat stars " TODO ")))
+    (insert (replace-regexp-in-string "^" todo (current-kill 0)))))
+
+;;;###autoload
+(defun cd/paste-todo-header-list-l2 ()
+  (interactive)
+  (cd/paste-todo-header-list 2))
+
+;;;###autoload
+(defun cd/paste-todo-header-list-l3 ()
+  (interactive)
+  (cd/paste-todo-header-list 3))
 
 ;;;###autoload
 (defun cd/org-archive-level1-done ()
