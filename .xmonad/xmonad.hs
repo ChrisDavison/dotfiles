@@ -120,6 +120,7 @@ myKeys conf = makeKeybinds $
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
   , K HyperShift xK_g            (bringMenuConfig myBringConfig)
+  -- , K HyperShift xK_g            (bringMenuConfig def)
   , K Hyper      xK_r            appSpawnerSubmap
   , K Hyper      xK_Return       (spawn myTerminal)
   , K Alt        xK_Return       (spawn myTerminal)
@@ -333,11 +334,18 @@ myXPConfigLG = myXPConfig { font = myFontXFT 18
 
 myBringConfig :: WindowBringerConfig
 myBringConfig = def {
-  menuArgs = map (repl . unpack) $ splitOn (pack " ") (pack myDmenuConfig)
+  menuArgs = map (removeQuote . unpack) $ splitOn (pack " ") (pack myDmenuConfig)
   }
-  where repl c = case c of
-          "'"       -> ""
-          otherwise -> otherwise
+
+removeChars :: [Char] -> [Char] -> [Char]
+removeChars chars xs = [ x | x <- xs, not (x `elem` chars)]
+
+removePunc :: [Char] -> [Char]
+removePunc xs = removeChars ",.?!-:;\"\'" xs
+
+removeQuote :: [Char] -> [Char]
+removeQuote xs = removeChars "\'" xs
+
 
 -- Execution of programs
 myJ4Command :: String
