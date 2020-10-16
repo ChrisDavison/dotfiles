@@ -33,6 +33,7 @@
 (package! doct)  ; org-capture, decleratively
 (package! anki-editor)
 (package! org-super-agenda)
+(package! org-superstar)
 
 ;;; Themes
 (package! minimal-theme)

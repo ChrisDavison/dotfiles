@@ -185,6 +185,7 @@
            'org-indent-mode
            'abbrev-mode
            'undo-tree-mode
+           '(lambda () (org-superstar-mode 1))
            '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
            '(lambda () (set-face-italic 'italic t)))
 
@@ -229,3 +230,4 @@
 
 ;; Make capture windows take of 90% of the frame
 (set-popup-rule! "^CAPTURE" :side 'bottom :size 0.90 :select t :ttl nil)
+
