@@ -13,10 +13,12 @@ off
 output DP-5
 off
 output DVI-I-1
+gamma 1.25:1.0:0.833
 mode 1920x1080
 pos 0x0
 rate 60.00
 output HDMI-0
+gamma 1.25:1.0:0.833
 mode 1920x1080
 pos 1920x0
 rate 60.00
