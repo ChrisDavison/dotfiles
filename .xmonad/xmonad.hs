@@ -224,7 +224,8 @@ lTallEven  = smartBorders $ ResizableTall 1 (3/100) (1/2) []
 lTiled     = toggleLayouts lFull lTall
 lTiledEven = toggleLayouts lFull lTallEven
 lTwoPane   = toggleLayouts lFull $ TwoPanePersistent Nothing (3/100) (1/2)
-gaps       = spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
+gaps       = spacingRaw True (Border gaps gaps gaps gaps) True (Border gaps gaps gaps gaps) True
+  where gaps = 5
 
 myLayout = avoidStruts . gaps $
   lTiledEven
@@ -338,14 +339,13 @@ myBringConfig = def {
   }
 
 removeChars :: [Char] -> [Char] -> [Char]
-removeChars chars xs = [ x | x <- xs, not (x `elem` chars)]
+removeChars chars str = [x | x <- str, not (x `elem` chars)]
 
 removePunc :: [Char] -> [Char]
-removePunc xs = removeChars ",.?!-:;\"\'" xs
+removePunc str = removeChars ",.?!-:;\"\'" str
 
 removeQuote :: [Char] -> [Char]
-removeQuote xs = removeChars "\'" xs
-
+removeQuote str = removeChars "\'" str
 
 -- Execution of programs
 myJ4Command :: String
