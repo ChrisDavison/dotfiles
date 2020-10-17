@@ -36,8 +36,6 @@ sleep, 50
 Send ^!v
 return
 
-CapsLock & t::Run https://www.todoist.com
-
 CapsLock & n::Send ^!n
 
 CapsLock & XButton2::
@@ -52,33 +50,6 @@ CapsLock & XButton1::WinActivate, ahk_id %beforeSpotify%
 ; return
 
 ; F10::WinActivate ahk_id %beforeSpotify%
-
-F9::
-Send +{TAB}
-sleep 100
-Send {Down}
-sleep 100
-Send {Tab}
-sleep 100
-Send ^c
-sleep 100
-Send !{TAB}
-sleep 100
-Send ^c
-sleep 50
-Send ^l
-sleep 100
-Send {Enter}
-sleep 100
-Send ^y
-sleep 100
-Send {Enter}
-sleep 100
-Send j
-sleep 100
-Send !{TAB}
-sleep 100
-return
 
 ;###########################################################
 ;               EXTERNAL SCRIPTS BELOW HERE
@@ -103,8 +74,6 @@ CapsLock & 1::MoveTo("left", "left")
 CapsLock & 2::MoveTo("left", "right")
 CapsLock & 3::MoveTo("right", "left")
 CapsLock & 4::MoveTo("right", "right")
-
-
 
 CapsLock & F1::FullscreenOnMonitor("left")
 CapsLock & F2::FullscreenOnMonitor("right")
