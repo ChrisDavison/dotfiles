@@ -82,3 +82,5 @@ if test $status -eq 0
 end
 
 # test -f ~/.envs/ml/bin/activate.fish; and source ~/.envs/ml/bin/activate.fish
+
+starship init fish | source
