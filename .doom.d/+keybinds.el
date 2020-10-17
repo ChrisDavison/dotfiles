@@ -46,12 +46,9 @@
 (map! :leader :prefix "w" :desc "evil-window-vsplit (follow)"
       "v" (lambda () (interactive) (+evil-window-vsplit-a) (evil-window-right 1)))
 
-(defun cd/jump-to-todays-journal ()
-  (interactive)
-  (progn
-    (find-file "~/Dropbox/org/journal.org")
-    (goto-char (point-min))
-    (search-forward (format-time-string "%F %A"))))
+(map! :map org-mode-map :n "<SPC> m l u" 'cd/org-export-url)
+
+
 
 (after! org-roam
   (map! :leader
