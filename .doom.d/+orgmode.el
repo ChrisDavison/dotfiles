@@ -61,9 +61,12 @@
          entry (file+olp+datetree "projects/work.org"))
 
         ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
-        ("gp" "PC" entry (file "pc-gaming.org") "* TODO %^{PC Game}")
-        ("gn" "Nintendo Switch" entry (file "nintendo-switch.org") "* TODO %^{Nintendo Switch Game}")
-        ("gt" "Tabletop" entry (file "tabletop-games.org") "* TODO %^{Tabletop game}")
+        ("gp" "PC" entry (file+headline "pc-gaming.org" "UNFILED")
+         "* TODO %^{PC Game}")
+        ("gn" "Nintendo Switch" entry (file+headline "nintendo-switch.org" "UNFILED")
+         "* TODO %^{Nintendo Switch Game}")
+        ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "UNFILED")
+         "* TODO %^{Tabletop game}")
 
         ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
          entry (file+headline "projects/media.org" "UNFILED")
