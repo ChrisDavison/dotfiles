@@ -11,6 +11,7 @@
 (package! iedit)
 (package! yasnippet)
 (package! dired-narrow)
+(package! undo-tree)
 
 ;;; Languages
 (package! rust-mode)
