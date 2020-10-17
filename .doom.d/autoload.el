@@ -1,5 +1,8 @@
 ;;; ../code/dotfiles/.doom.d/autoload.el -*- lexical-binding: t; -*-
 
+;;----------------------------------------------------------------------------
+;;; WINDOWS SUBSYSTEM FOR LINUX (WSL)
+;;----------------------------------------------------------------------------
 ;;;###autoload
 (defun set-wsl-interop ()
   (setenv "WSL_INTEROP" (string-trim (get-string-from-file "~/.wsl_interop"))))
@@ -21,51 +24,10 @@
     (setq clipboard (substring clipboard 0 -1))
     (insert clipboard)))
 
-;;;###autoload
-(defun emoji-heading (fontfunc fonticon headingname)
-  (format "%s %s"
-          (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01)
-          headingname))
 
-;;;###autoload
-(defun unpackaged/org-fix-blank-lines (prefix)
-  "Ensure that blank lines exist between headings and between headings and their contents.
-With prefix, operate on whole buffer. Ensures that blank lines
-exist after each headings's drawers."
-  (interactive "P")
-  (org-map-entries (lambda ()
-                     (org-with-wide-buffer
-                      ;; `org-map-entries' narrows the buffer, which prevents us from seeing
-                      ;; newlines before the current heading, so we do this part widened.
-                      (while (not (looking-back "\n\n" nil))
-                        ;; Insert blank lines before heading.
-                        (insert "\n")))
-                     (let ((end (org-entry-end-position)))
-                       ;; Insert blank lines before entry content
-                       (forward-line)
-                       (while (and (org-at-planning-p)
-                                   (< (point) (point-max)))
-                         ;; Skip planning lines
-                         (forward-line))
-                       (while (re-search-forward org-drawer-regexp end t)
-                         ;; Skip drawers. You might think that `org-at-drawer-p' would suffice, but
-                         ;; for some reason it doesn't work correctly when operating on hidden text.
-                         ;; This works, taken from `org-agenda-get-some-entry-text'.
-                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
-                         (goto-char (match-end 0)))
-                       (unless (or (= (point) (point-max))
-                                   (org-at-heading-p)
-                                   (looking-at-p "\n"))
-                         (insert "\n"))))
-                   t (if prefix
-                         nil
-                       'tree)))
-
-;;;###autoload
-(defun fish-term ()
-  (interactive)
-  (term "/usr/bin/fish"))
-
+;;----------------------------------------------------------------------------
+;;; ORG_MODE
+;;----------------------------------------------------------------------------
 ;;;###autoload
 (defun cd/org-file-from-subtree (filename)
   "Take the current subtree and create a new file from
@@ -148,7 +110,7 @@ otherwise use the subtree title."
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
         (old-refile-targets org-refile-targets))
-    (progn (setq org-refile-targets `((filename . (:maxlevel . 6))))
+    (progn (setq org-refile-targets `((,filename . (:maxlevel . 6))))
            (org-refile)
            (setq org-refile-targets old-refile-targets))))
 
@@ -172,27 +134,6 @@ otherwise use the subtree title."
   (interactive)
   (org-todo)
   (org-archive-subtree-default))
-
-;;;###autoload
-(defun cd/set-theme-dark ()
-  (interactive)
-  (setq doom-theme cd/dark-theme)
-  (doom/reload-theme))
-
-;;;###autoload
-(defun cd/set-theme-light ()
-  (interactive)
-  (setq doom-theme cd/light-theme)
-  (doom/reload-theme))
-
-;;;###autoload
-(defun cd/reload-config ()
-  (interactive)
-  (load (expand-file-name "~/.doom.d/config.el")))
-
-;;;###autoload
-(defun next-circular-index (i n)
-  (mod (+ 1 i) n))
 
 ;;;###autoload
 (defun cd/paste-checkbox-list ()
@@ -228,3 +169,96 @@ otherwise use the subtree title."
 (defun cd/org-archive-done-under-subtree ()
   (interactive)
   (org-archive-all-done))
+
+;;;###autoload
+(defun cd/org-export-url (&optional arg)
+  "Extract URL from org-mode link and add it to kill ring."
+  (interactive "P")
+  (let* ((link (org-element-lineage (org-element-context) '(link) t))
+          (type (org-element-property :type link))
+          (url (org-element-property :path link))
+          (url (concat type ":" url)))
+    (kill-new url)
+    (message (concat "Copied URL: " url))))
+
+;;;###autoload
+(defun cd/jump-to-todays-journal ()
+  (interactive)
+  (progn
+    (find-file "~/Dropbox/org/journal.org")
+    (goto-char (point-min))
+    (search-forward (format-time-string "%F %A"))))
+
+
+;;----------------------------------------------------------------------------
+;;; Themes / appearance
+;;----------------------------------------------------------------------------
+;;;###autoload
+(defun cd/set-theme-dark ()
+  (interactive)
+  (setq doom-theme cd/dark-theme)
+  (doom/reload-theme))
+
+;;;###autoload
+(defun cd/set-theme-light ()
+  (interactive)
+  (setq doom-theme cd/light-theme)
+  (doom/reload-theme))
+
+
+;;----------------------------------------------------------------------------
+;;; Utility
+;;----------------------------------------------------------------------------
+;;;###autoload
+(defun cd/reload-config ()
+  (interactive)
+  (load (expand-file-name "~/.doom.d/config.el")))
+
+;;;###autoload
+(defun next-circular-index (i n)
+  (mod (+ 1 i) n))
+
+;;;###autoload
+(defun emoji-heading (fontfunc fonticon headingname)
+  (format "%s %s"
+          (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01)
+          headingname))
+
+;;;###autoload
+(defun unpackaged/org-fix-blank-lines (prefix)
+  "Ensure that blank lines exist between headings and between headings and their contents.
+With prefix, operate on whole buffer. Ensures that blank lines
+exist after each headings's drawers."
+  (interactive "P")
+  (org-map-entries (lambda ()
+                     (org-with-wide-buffer
+                      ;; `org-map-entries' narrows the buffer, which prevents us from seeing
+                      ;; newlines before the current heading, so we do this part widened.
+                      (while (not (looking-back "\n\n" nil))
+                        ;; Insert blank lines before heading.
+                        (insert "\n")))
+                     (let ((end (org-entry-end-position)))
+                       ;; Insert blank lines before entry content
+                       (forward-line)
+                       (while (and (org-at-planning-p)
+                                   (< (point) (point-max)))
+                         ;; Skip planning lines
+                         (forward-line))
+                       (while (re-search-forward org-drawer-regexp end t)
+                         ;; Skip drawers. You might think that `org-at-drawer-p' would suffice, but
+                         ;; for some reason it doesn't work correctly when operating on hidden text.
+                         ;; This works, taken from `org-agenda-get-some-entry-text'.
+                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
+                         (goto-char (match-end 0)))
+                       (unless (or (= (point) (point-max))
+                                   (org-at-heading-p)
+                                   (looking-at-p "\n"))
+                         (insert "\n"))))
+                   t (if prefix
+                         nil
+                       'tree)))
+
+;;;###autoload
+(defun fish-term ()
+  (interactive)
+  (term "/usr/bin/fish"))
