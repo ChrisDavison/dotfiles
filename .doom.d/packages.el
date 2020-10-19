@@ -27,6 +27,7 @@
 (package! fsharp-mode)
 (package! haskell-mode)
 (package! yaml-mode)
+(package! ahk-mode)
 
 ;;; Notetaking
 ;; (package! zetteldeft)
