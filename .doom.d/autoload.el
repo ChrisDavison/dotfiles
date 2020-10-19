@@ -214,6 +214,10 @@ otherwise use the subtree title."
   (interactive)
   (load (expand-file-name "~/.doom.d/config.el")))
 
+(defun cd/reload-org-config ()
+  (interactive)
+  (load (expand-file-name "~/.doom.d/+orgmode.el")))
+
 ;;;###autoload
 (defun next-circular-index (i n)
   (mod (+ 1 i) n))
