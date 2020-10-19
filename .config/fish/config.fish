@@ -51,6 +51,7 @@ alias rl="repoutil list"
 alias rf="repoutil fetch"
 alias rb="repoutil branchstat | sed -e 's/.*code\///' | sort | column -s'|' -t"
 
+alias fd="fdfind"
 alias ls="exa --group-directories-first"
 alias lsa="exa --group-directories-first"
 alias ll="ls --long --group-directories-first"
