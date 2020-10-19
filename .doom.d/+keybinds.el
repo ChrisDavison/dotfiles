@@ -26,6 +26,7 @@
 (map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
 (map! "<f4>" '(lambda () (interactive) (org-agenda nil "Rw")))
 (map! :map org-mode-map :n "<SPC> m r a" 'change-state-and-archive)
+(map! :map org-mode-map :n "<SPC> m r A" 'org-archive-to-archive-sibling)
 (map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)
 (map! :map org-mode-map :n "<SPC> o s" 'cd/org-open-link-same)
 (map! :map org-mode-map :n "<SPC> o o" 'org-open-at-point)
