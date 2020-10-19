@@ -28,8 +28,8 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/archive.org::* From %s"
-      org-refile-use-outline-path 'full-file-path
+      org-archive-location "~/Dropbox/org/projects/DONE.org::* From %s"
+      org-refile-use-outline-path 't
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
       org-roam-directory org-directory
@@ -53,8 +53,6 @@
         ("J" ,(emoji-heading 'all-the-icons-octicon "comment" "Journal (entry)")
          entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
 
-
-
         ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (item)")
          item (file+olp+datetree "projects/work.org"))
         ("L" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (entry)")
@@ -62,11 +60,11 @@
 
         ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
         ("gp" "PC" entry (file+headline "pc-gaming.org" "UNFILED")
-         "* TODO %^{PC Game}")
+         "* TODO %?")
         ("gn" "Nintendo Switch" entry (file+headline "nintendo-switch.org" "UNFILED")
-         "* TODO %^{Nintendo Switch Game}")
+         "* TODO %?")
         ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "UNFILED")
-         "* TODO %^{Tabletop game}")
+         "* TODO %?")
 
         ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
          entry (file+headline "projects/media.org" "UNFILED")
@@ -74,19 +72,19 @@
 
         ("m" ,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
          entry (file+headline "projects/media.org" "Music")
-         "* TODO %^{Music}" :immediate-finish t)
+         "* TODO %?" :immediate-finish t)
 
         ("G" ,(emoji-heading 'all-the-icons-faicon "music" "Guitar song to learn")
          entry (file+headline "projects/Guitar.org" "Songs to Learn")
-         "* TODO %^{Guitar song}" :immediate-finish t)
+         "* TODO %?" :immediate-finish t)
 
         ("b" ,(emoji-heading 'all-the-icons-octicon "book" "Books / reading")
          entry (file+headline "projects/reading.org"  "REFILE")
-         "* TODO %^{Book}" :immediate-finish t)
+         "* TODO %?" :immediate-finish t)
 
         ("a" ,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
          entry (file+headline "projects/todo.org" "anki")
-         "* TODO %^{Anki}" :immediate-finish t)
+         "* TODO %?" :immediate-finish t)
 
         ;; ("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
         ;;  entry (file+headline "literature.org" "REFILE")
