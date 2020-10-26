@@ -28,7 +28,7 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/projects/DONE.org::* From %s"
+      org-archive-location "~/Dropbox/org/projects/done.org::* From %s"
       org-refile-use-outline-path 't
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
@@ -39,26 +39,81 @@
       deft-directory org-directory
       deft-recursive t)
 
+
+(setq cd/capture-literature
+      `("L" ,(emoji-heading-faicon "graduation-cap" "Literature")
+        entry (file+headline "literature.org" "REFILE")
+        "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"))
+
+
+(setq cd/org-capture-templates-doct
+      (doct
+       `(("Todo"
+          :keys "t"
+          :file "projects/todo.org"
+          :template "* TODO %?")
+
+         ("JOURNAL"
+          :keys "j"
+          :file "journal.org"
+          :children (("Logbook Item" :keys "j" :type item :template "- %?")
+                     ("Logbook Entry" :keys "J" :template "* %?" :datetree t)))
+
+        ("LOGBOOK"
+          :keys "l"
+          :file "projects/work.org"
+          :children (("Logbook Item" :keys "l" :type item :template "- %?")
+                     ("Logbook Entry" :keys "L" :template "* %?" :datetree t)))
+
+        ("GAMING"
+        :keys "g"
+        :headline "UNFILED"
+        :template "* TODO %?"
+        :children (("PC" :keys "p" :file "pc-gaming.org")
+                   ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
+                   ("Tabletop" :keys "t" :file "tabletop-games.org")))
+
+        ("MEDIA"
+         :keys "m"
+         :file "projects/media.org"
+         :children (("Watch" :keys "w" :headline "UNFILED" :template "* TODO watch %?")
+                    ("Music" :keys "m" :headline "Music" :template "* TODO %?")))
+
+        ("Guitar song to learn"
+         :keys "G"
+         :file "projects/guitar.org" :headline "Songs to Learn"
+         :template "* TODO %?")
+
+        ("Books / reading"
+         :keys "b"
+         :file "projects/reading.org" :headline "REFILE"
+         :template "* TODO %?")
+
+        ("Anki"
+         :keys "a"
+         :file "projects/todo.org" :headline "anki"
+         :template "* TODO %?")
+         )))
+
 ;;; capture templates
 (setq cd/org-capture-templates
       `(
-
-        ("t" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo")
+        ("t" ,(emoji-heading-octicon "checklist" "Todo")
          entry (file "projects/todo.org") "* TODO %?")
         ;; ("T" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo (Work)")
         ;;  entry (file+headline "projects/work.org" "Tasks - General") "* TODO %?")
        
-        ("j" ,(emoji-heading 'all-the-icons-octicon "comment" "Journal (item)")
+        ("j" ,(emoji-heading-octicon "comment" "Journal (item)")
          item (file+olp+datetree "journal.org"))
-        ("J" ,(emoji-heading 'all-the-icons-octicon "comment" "Journal (entry)")
+        ("J" ,(emoji-heading-octicon "comment" "Journal (entry)")
          entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
 
-        ("l" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (item)")
+        ("l" ,(emoji-heading-octicon "repo" "Logbook (item)")
          item (file+olp+datetree "projects/work.org"))
-        ("L" ,(emoji-heading 'all-the-icons-octicon "repo" "Logbook (entry)")
+        ("L" ,(emoji-heading-octicon "repo" "Logbook (entry)")
          entry (file+olp+datetree "projects/work.org"))
 
-        ("g" ,(emoji-heading 'all-the-icons-faicon "gamepad" "Gaming"))
+        ("g" ,(emoji-heading-faicon "gamepad" "Gaming"))
         ("gp" "PC" entry (file+headline "pc-gaming.org" "UNFILED")
          "* TODO %?")
         ("gn" "Nintendo Switch" entry (file+headline "nintendo-switch.org" "UNFILED")
@@ -66,33 +121,29 @@
         ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "UNFILED")
          "* TODO %?")
 
-        ("w" ,(emoji-heading 'all-the-icons-faicon "television" "Watch")
+        ("w" ,(emoji-heading-faicon "television" "Watch")
          entry (file+headline "projects/media.org" "UNFILED")
          "* TODO watch %?")
 
-        ("m" ,(emoji-heading 'all-the-icons-faicon "headphones" "Music")
-         entry (file+headline "projects/media.org" "Music")
-         "* TODO %?" :immediate-finish t)
+        ("m" ,(emoji-heading-faicon "headphones" "Music")
+         entry (file+headline "projects/media.org" "Music") "* TODO %?")
 
-        ("G" ,(emoji-heading 'all-the-icons-faicon "music" "Guitar song to learn")
-         entry (file+headline "projects/Guitar.org" "Songs to Learn")
-         "* TODO %?" :immediate-finish t)
+        ("G" ,(emoji-heading-faicon "music" "Guitar song to learn")
+         entry (file+headline "projects/Guitar.org" "Songs to Learn") "* TODO %?")
 
-        ("b" ,(emoji-heading 'all-the-icons-octicon "book" "Books / reading")
-         entry (file+headline "projects/reading.org"  "REFILE")
-         "* TODO %?" :immediate-finish t)
+        ("b" ,(emoji-heading-octicon "book" "Books / reading")
+         entry (file+headline "projects/reading.org"  "REFILE") "* TODO %?")
 
-        ("a" ,(emoji-heading 'all-the-icons-octicon "comment" "Anki")
-         entry (file+headline "projects/todo.org" "anki")
-         "* TODO %?" :immediate-finish t)
+        ("a" ,(emoji-heading-octicon "comment" "Anki")
+         entry (file+headline "projects/todo.org" "anki") "* TODO %?")
 
-        ;; ("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
-        ;;  entry (file+headline "literature.org" "REFILE")
-        ;;  "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"
-        ;;  :immediate-finish t)
+        ;; disable literature captures for now, as have my literature list
+        ;; alerady in a file, so not doing a large batch job of converting/recording
+        ;; ,cd/capture-literature ;; Has key 'L'
         ))
 
-(setq org-capture-templates cd/org-capture-templates)
+;; (setq org-capture-templates cd/org-capture-templates)
+(setq org-capture-templates cd/org-capture-templates-doct)
 
 ;;; org agenda settings
 (defvar cd/work-agenda-files '("~/Dropbox/org/projects/work.org"
@@ -202,12 +253,9 @@
         (:name "Habit" :habit t)
         (:name "Today" :time-grid t
          :todo "TODAY" :and (:discard (:todo "CANCELLED") :deadline past :scheduled past))
-        (:name "Important" :priority "A")
-        (:name "In Progress" :todo "WIP")
-        (:auto-category t)
+        (:name "DONE" :not (:todo "TODO"))
+        (:name "Work" :file-path ".*work.org")
         (:name "Todo" :todo "TODO" )
-        (:name "Waiting" :todo "WAITING" :todo "WAIT" :tag "waiting")
-        (:name "DONE" :todo "DONE" :date today :log closed :order 99)
         (:discard :anything)
         ))
 
