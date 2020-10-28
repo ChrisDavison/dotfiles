@@ -78,8 +78,16 @@ common_bg_jobs() {
   echo -n $bg_status
 }
 
+p_at='%(!.%F{red}%B#%b%f.@)'
+p_host='%F{yellow}%m%f'
+p_path='%F{yellow}%~%f'
+p_pr='%(?.%F{yellow}.%F{red})>%f'
+
+PS1="$p_at$p_host $p_path$p_pr "
+unset p_at p_host p_path p_pr
+
 # Left Prompt
-PROMPT="$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)"
+# PROMPT="$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)"
 
 # Right Prompt
 RPROMPT=""
