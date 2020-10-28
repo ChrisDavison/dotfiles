@@ -288,7 +288,7 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    au BufEnter * Root
+    " au BufEnter * Root
     au VimLeave * call s:save_last_session()
 augroup END
 
