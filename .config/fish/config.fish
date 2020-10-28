@@ -85,3 +85,18 @@ end
 # test -f ~/.envs/ml/bin/activate.fish; and source ~/.envs/ml/bin/activate.fish
 
 starship init fish | source
+
+cd ~
+
+for i in (pstree -np -s $fish_pid | grep -o -E '[0-9]+')
+    if ! test -e "/run/WSL/$i_interop"
+        set -x WSL_INTEROP /run/WSL/$i_interop
+        echo $WSL_INTEROP >~/.wsl_interop
+    end
+end
+
+if test -e $TMUX
+    tmux new-session
+else
+    tmux attach
+end
