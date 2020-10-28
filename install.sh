@@ -6,6 +6,12 @@ function remove_and_symlink() {
     ln -s $CODEDIR/dotfiles/$1 $HOME/$1
 }
 
+function remove_and_symlink_dir() {
+    [ -d $HOME/$1 ] && rm $HOME/$1
+    ln -s $CODEDIR/dotfiles/$1 $HOME/$1
+}
+
+
 echo "----- get submodules (vim plugins)"
 git submodule update --init
 
@@ -19,9 +25,9 @@ remove_and_symlink .zshrc
 
 
 echo "----- symlinking vim and emacs dirs"
-remove_and_symlink .vim
-remove_and_symlink .todo
-remove_and_symlink .todo.actions.d
+remove_and_symlink_dir .vim
+remove_and_symlink_dir .todo
+remove_and_symlink_dir .todo.actions.d
 # remove_and_symlink .emacs.d
 
 
@@ -35,6 +41,9 @@ for direc in .config/* ; do
 done
 
 echo "----- symlinking bin/ binaries"
+if [ ! -d "$HOME/.bin" ]; then
+    mkdir "$HOME/.bin"
+fi
 for bin in bin/* ; do
     base=$(basename $bin)
     if [ -f $HOME/.bin/$base ] || [ -h $HOME/.bin/$base ] ; then
