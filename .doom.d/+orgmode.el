@@ -10,7 +10,7 @@
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column -80
+      org-tags-column 0
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -41,17 +41,25 @@
 
 
 (setq cd/capture-literature
-      `("L" ,(emoji-heading-faicon "graduation-cap" "Literature")
+      `("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
         entry (file+headline "literature.org" "REFILE")
         "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"))
 
 
-(setq cd/org-capture-templates-doct
+(setq cd/org-capture-templates
       (doct
        `(("Todo"
           :keys "t"
           :file "projects/todo.org"
           :template "* TODO %?")
+
+         ("Work"
+          :keys "w"
+          :template "* TODO %?"
+          :headline "Tasks"
+          :children (("General" :keys "w" :file "projects/work.org")
+                     ("GlasData" :keys "g" :file "projects/glasdata.org")
+                     ("Cybele" :keys "c" :file "projects/cybelework.org")))
 
          ("JOURNAL"
           :keys "j"
@@ -95,55 +103,7 @@
          :template "* TODO %?")
          )))
 
-;;; capture templates
-(setq cd/org-capture-templates
-      `(
-        ("t" ,(emoji-heading-octicon "checklist" "Todo")
-         entry (file "projects/todo.org") "* TODO %?")
-        ;; ("T" ,(emoji-heading 'all-the-icons-octicon "checklist" "Todo (Work)")
-        ;;  entry (file+headline "projects/work.org" "Tasks - General") "* TODO %?")
-       
-        ("j" ,(emoji-heading-octicon "comment" "Journal (item)")
-         item (file+olp+datetree "journal.org"))
-        ("J" ,(emoji-heading-octicon "comment" "Journal (entry)")
-         entry (file+olp+datetree "journal.org") "* %?" :empty-lines 1)
-
-        ("l" ,(emoji-heading-octicon "repo" "Logbook (item)")
-         item (file+olp+datetree "projects/work.org"))
-        ("L" ,(emoji-heading-octicon "repo" "Logbook (entry)")
-         entry (file+olp+datetree "projects/work.org"))
-
-        ("g" ,(emoji-heading-faicon "gamepad" "Gaming"))
-        ("gp" "PC" entry (file+headline "pc-gaming.org" "UNFILED")
-         "* TODO %?")
-        ("gn" "Nintendo Switch" entry (file+headline "nintendo-switch.org" "UNFILED")
-         "* TODO %?")
-        ("gt" "Tabletop" entry (file+headline "tabletop-games.org" "UNFILED")
-         "* TODO %?")
-
-        ("w" ,(emoji-heading-faicon "television" "Watch")
-         entry (file+headline "projects/media.org" "UNFILED")
-         "* TODO watch %?")
-
-        ("m" ,(emoji-heading-faicon "headphones" "Music")
-         entry (file+headline "projects/media.org" "Music") "* TODO %?")
-
-        ("G" ,(emoji-heading-faicon "music" "Guitar song to learn")
-         entry (file+headline "projects/Guitar.org" "Songs to Learn") "* TODO %?")
-
-        ("b" ,(emoji-heading-octicon "book" "Books / reading")
-         entry (file+headline "projects/reading.org"  "REFILE") "* TODO %?")
-
-        ("a" ,(emoji-heading-octicon "comment" "Anki")
-         entry (file+headline "projects/todo.org" "anki") "* TODO %?")
-
-        ;; disable literature captures for now, as have my literature list
-        ;; alerady in a file, so not doing a large batch job of converting/recording
-        ;; ,cd/capture-literature ;; Has key 'L'
-        ))
-
-;; (setq org-capture-templates cd/org-capture-templates)
-(setq org-capture-templates cd/org-capture-templates-doct)
+(setq org-capture-templates cd/org-capture-templates)
 
 ;;; org agenda settings
 (defvar cd/work-agenda-files '("~/Dropbox/org/projects/work.org"
