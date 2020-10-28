@@ -224,9 +224,8 @@ otherwise use the subtree title."
 
 ;;;###autoload
 (defun emoji-heading (fontfunc fonticon headingname)
-  (format "%s %s"
-          (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01)
-          headingname))
+  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01))))
+  (format "%s %s" icon headingname))
 
 ;;;###autoload
 (defun unpackaged/org-fix-blank-lines (prefix)
