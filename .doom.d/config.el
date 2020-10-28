@@ -4,10 +4,13 @@
       user-mail-address "c.jr.davison@gmail.com")
 
 ;;; Doom appearance Utility
-(setq doom-font "Rec Mono SemiCasual-12")
+(setq doom-font "Hack-12")
 (setq cd/light-theme 'kaolin-breeze)
 (setq cd/dark-theme 'kaolin-aurora)
 (setq doom-theme cd/dark-theme)
+
+(after! s
+ (setq is-wsl? (s-contains? "microsoft" (shell-command-to-string "uname -a"))))
 
 ;;; Programming - rust
 (add-hook! rust-mode
@@ -34,6 +37,7 @@
 
 ;;; General settings
 (setq auto-save-default t
+      auto-save-timeout 5
       avy-all-windows t
       vterm-shell "/usr/bin/fish"
       recentf-auto-cleanup 60
@@ -55,8 +59,6 @@
 (setq nov-text-width 80)
 
 ;;; registers - easily navigate to files, or specific places
-(set-register ?c '(file . "~/Dropbox/org/projects/cybele.org"))
-(set-register ?i '(file . "~/Dropbox/org/projects/iof2020.org"))
 (set-register ?t '(file . "~/Dropbox/org/projects/todo.org"))
 (set-register ?w '(file . "~/Dropbox/org/projects/work.org"))
 (set-register ?r '(file . "~/Dropbox/org/projects/reading.org"))
@@ -66,14 +68,16 @@
 ;;; Load my custom modules
 (defun load!-with-message (filename)
   (load! filename)
-  (message "Loading %s" filename))
+  (message "Loaded config: %s" filename))
 
 (load!-with-message "+bibcapture")
 (load!-with-message "+fonts")
 (load!-with-message "+misc")
 (load!-with-message "+narrow")
 (load!-with-message "+orgmode")
-(load!-with-message "+wsl-setup")
+(when is-wsl?
+  (load!-with-message "+wsl-setup"))
+(setq x-selection-timeout 10)
 (load!-with-message "+vterm")
 (load!-with-message "+ssh")
 (load!-with-message "+keybinds")
@@ -86,6 +90,9 @@
 (delete-selection-mode 1)
 (global-undo-tree-mode 1)
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
-(org-roam-mode)
+
+;; (org-roam-mode)
+(message "Org-roam mode not started automatically")
 
 (add-hook! 'prog-mode-hook 'undo-tree-mode)
+
