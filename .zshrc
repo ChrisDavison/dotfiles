@@ -155,7 +155,7 @@ monospace-fonts(){ # {{{1
 } # }}}1
 
 aliases(){ # {{{1
-    grep "^\s*alias.*=" ~/.zshrc | sed -e 's/^[ ]\+//g' | column -s '=' -t | cut -d' ' -f2-
+    grep "^\s*alias.*=" ~/.zshrc | sed -e 's/^[ ]\+//g' | sed -e 's/=/@/' | column -s '@' -t | cut -d' ' -f2-
 } # }}}1
 
 nonascii(){ # {{{1
@@ -272,6 +272,7 @@ source $HOME/code/dotfiles/functions-notes.sh
 # source_if_exists ~/.envs/ml/bin/activate
 source_if_exists ~/.envs/py/bin/activate
 source_if_exists ~/code/dotfiles/zsh-prompt.sh
+eval "$(starship init zsh)"
 source_if_exists $HOME/.cargo/env
 source_if_exists $HOME/.fzf/shell/key-bindings.zsh
 source_if_exists ~/.fzf.zsh
