@@ -201,8 +201,6 @@
            '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
            '(lambda () (set-face-italic 'italic t)))
 
-
-
 ;;; agenda super groups
 ;; Each group has an implicit boolean OR operator between its selectors.
 ;;
@@ -214,26 +212,24 @@
         (:name "Today" :time-grid t
          :todo "TODAY" :and (:discard (:todo "CANCELLED") :deadline past :scheduled past))
         (:name "DONE" :not (:todo "TODO"))
-        (:name "Work" :file-path ".*work.org")
+        (:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org")
         (:name "Todo" :todo "TODO" )
         (:discard :anything)
         ))
 
 (defun cd/agenda-books-in-progress ()
   (interactive)
-  (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
+  (let* (
          (org-super-agenda-groups
-          `((:name "Books to Read" :file-path ,bookpath)
+          `((:name "Books to Read" :file-path "projects/reading.org")
            (:discard (:anything t)))))
     (org-todo-list "WIP")))
 
 (defun cd/agenda-todo-no-books ()
   (interactive)
-  (let* ((bookpath (expand-file-name "~/Dropbox/org/projects/reading.org"))
-         (org-super-agenda-groups
-          `((:name "Todo" (:discard (:file-path bookpath))))))
+  (let* ((org-super-agenda-groups
+          `((:name "Todo" :discard (:file-path "projects/reading.org")))))
     (org-todo-list)))
-
 
 (org-super-agenda-mode 1)
 
