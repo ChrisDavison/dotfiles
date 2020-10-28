@@ -59,7 +59,7 @@
           :headline "Tasks"
           :children (("General" :keys "w" :file "projects/work.org")
                      ("GlasData" :keys "g" :file "projects/glasdata.org")
-                     ("Cybele" :keys "c" :file "projects/cybelework.org")))
+                     ("Cybele" :keys "c" :file "projects/cybele.org")))
 
          ("JOURNAL"
           :keys "j"
@@ -122,6 +122,7 @@
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
                              "")
+      org-agenda-skip-archived-trees nil
       org-agenda-use-time-grid nil
       org-agenda-custom-commands
       '(("c" . "+my stuff")
@@ -236,3 +237,9 @@
 ;; Make capture windows take of 90% of the frame
 (set-popup-rule! "^CAPTURE" :side 'bottom :size 0.90 :select t :ttl nil)
 
+(defun fix-lines-in-orgmode ()
+  (when (eq major-mode 'org-mode)
+    (message "Fixing whitespace")
+    (unpackaged/org-fix-blank-lines t)))
+
+(add-hook! 'before-save-hook #'fix-lines-in-orgmode)
