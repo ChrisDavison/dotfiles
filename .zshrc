@@ -1,6 +1,6 @@
 PROMPT="%~ » "
 # exports / environment variables {{{1
-export EDITOR="nvim"
+export EDITOR="emacsclient -t"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
 # export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
@@ -10,11 +10,11 @@ export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export MAIL=~/.mbox
-export TODOFILE=~/Dropbox/todo.txt
-export DONEFILE=~/Dropbox/done.txt
 export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 export RANGER_LOAD_DEFAULT_RC=0
 export RUST_SRC_PATH="$HOME/.rust_src"
+
+export BROWSER="firefox"
 
 # add paths to dir, if they exists {{{1
 maybe_append_to_path() {
@@ -26,7 +26,6 @@ maybe_append_to_path $HOME/bin
 maybe_append_to_path $HOME/.bin
 maybe_append_to_path $HOME/.fzf/bin/
 maybe_append_to_path $HOME/code/scripts/
-maybe_append_to_path $HOME/code/scripts/covid/
 maybe_append_to_path $HOME/.cargo/bin
 maybe_append_to_path $HOME/.local/bin
 maybe_append_to_path $HOME/.nimble/bin
@@ -70,7 +69,7 @@ alias mv="mv -v"     # Always explain move actions
 alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
-alias v="$EDITOR"
+alias v="vim"
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
 [[ -e $(which hub) ]] && alias g="hub"
@@ -86,20 +85,23 @@ alias n="note.py"
 alias clip="xclip -sel clipboard"
 alias df="df -x squashfs"
 alias clip="xclip -sel clipboard"
-alias zc="ziputil choose"
-alias zv="ziputil view"
-alias open="xdg-open"
-alias j="nvim ~/Dropbox/notes/journal.md"
-alias viml="vim -S ~/.lastsession.vim"
 # }}}1
 
 # aliases (conditional) {{{1
+if type fdfind > /dev/null; then
+    # fd was installed from apt, so is installed as fdfind to not shadow
+    # another 'fd' command
+    alias fd="fdfind"
+fi
+
+
 if type repoutil > /dev/null; then
     alias ru="repoutil unclean"
     alias rs="repoutil stat"
     alias rl="repoutil list"
     alias rf="repoutil fetch"
-    alias rb="repoutil branchstat"
+    alias rb="repoutil branchstat | sed -e 's/.*code\///' | sort | column -s'|' -t"
+
 else
     echo "repoutil not installed"
 fi
@@ -114,6 +116,13 @@ if type exa > /dev/null; then
     alias ltg="lt --git-ignore"
 else
     echo "exa not installed"
+fi
+
+if type ziputil > /dev/null; then
+    alias zc="ziputil choose"
+    alias zv="ziputil view"
+else
+    echo "ziputil not installed"
 fi
 # }}}1
 
@@ -227,16 +236,19 @@ export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
 export LIBGL_ALWAYS_INDIRECT=1
 setsid emacs'
 
-alias emee='
-export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
-export LIBGL_ALWAYS_INDIRECT=1
-setsid emacs
-exit'
-
 # Windows / WSL-specific config {{{1
 if [[ $(uname -a | grep -i -q 'Microsoft') -eq 1 ]]; then
     export BROWSER=$(which firefox)
     export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
+    export LIBGL_ALWAYS_INDIRECT=1
+    export NO_AT_BRIDGE=1
+    for i in $(pstree -np -s %self | grep -o -E '[1-9]+'); do
+        set fname /run/WSL/"$i"_interop
+        if [[ -e "$fname" ]]; then
+            export WSL_INTEROP=$fname
+            echo $fname > ~/.wsl_interop
+        fi
+    done
 fi
 # }}}1
 
@@ -257,7 +269,8 @@ source $HOME/code/dotfiles/functions-git-fzf.sh
 # notes - go to notes dir and ls
 source $HOME/code/dotfiles/functions-notes.sh
 
-source_if_exists ~/.envs/ml/bin/activate
+# source_if_exists ~/.envs/ml/bin/activate
+source_if_exists ~/.envs/py/bin/activate
 source_if_exists ~/code/dotfiles/zsh-prompt.sh
 source_if_exists $HOME/.cargo/env
 source_if_exists $HOME/.fzf/shell/key-bindings.zsh
@@ -267,12 +280,4 @@ source_if_exists ~/.fzf.zsh
 
 [[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
 
-if [[ "$TERM" == "dumb" ]]
-then
-  unsetopt zle
-  unsetopt prompt_cr
-  unsetopt prompt_subst
-  unfunction precmd
-  unfunction preexec
-  PS1='$ '
-fi
+[[ -z "$TMUX" ]] && {tmux attach || tmux new-session;}
