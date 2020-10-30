@@ -231,25 +231,22 @@ fzfp(){ # fzf with preview {{{1
     fzf --preview="bat {}" --preview-window=right:70%:wrap
 } # }}}1
 
-alias eme='
-export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
-export LIBGL_ALWAYS_INDIRECT=1
-setsid emacs'
-
 # Windows / WSL-specific config {{{1
-if [[ $(uname -a | grep -i -q 'Microsoft') -eq 1 ]]; then
+if [[ $(uname -a | grep -i -q 'Microsoft') -eq 0 ]]; then
     export BROWSER=$(which firefox)
     export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
     export LIBGL_ALWAYS_INDIRECT=1
     export NO_AT_BRIDGE=1
-    for i in $(pstree -np -s %self | grep -o -E '[1-9]+'); do
+    for i in $(pstree -np -s $$ | grep -o -E '[1-9]+'); do
         set fname /run/WSL/"$i"_interop
         if [[ -e "$fname" ]]; then
             export WSL_INTEROP=$fname
             echo $fname > ~/.wsl_interop
         fi
     done
+    echo "WSL Interop setup"
 fi
+alias eme='LIBGL_ALWAYS_INDIRECT=1 NO_AT_BRIDGE=1 setsid emacs'
 # }}}1
 
 # SOURCE scripts and plugins {{{1
@@ -281,4 +278,10 @@ source_if_exists ~/.fzf.zsh
 
 [[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
 
-[[ -z "$TMUX" ]] && {tmux attach || tmux new-session;}
+if [[ -e "$TMUX" ]] &&  [[ "$(hostname)" = "i9-kraken" ]]; then
+    {tmux attach || tmux new-session;}
+fi
+
+[[ ! -f "$HOME/.hushlogin" ]] && touch "$HOME/.hushlogin"
+
+cd ~
