@@ -84,7 +84,7 @@
         ("MEDIA"
          :keys "m"
          :file "projects/media.org"
-         :children (("Watch" :keys "w" :headline "UNFILED" :template "* TODO watch %?")
+         :children (("Watch" :keys "w" :headline "UNFILED" :template "* TODO %?")
                     ("Music" :keys "m" :headline "Music" :template "* TODO %?")))
 
         ("Guitar song to learn"
