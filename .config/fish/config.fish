@@ -73,11 +73,10 @@ if test $status -eq 0
     set -Ux LIBGL_ALWAYS_INDIRECT 1
 
     set -Ux NO_AT_BRIDGE 1
-    for i in (pstree -np -s %self | grep -o -E '[1-9]+')
-        set fname /run/WSL/"$i"_interop
-        if test -e $fname
-            set -x WSL_INTEROP $fname
-            echo $fname >~/.wsl_interop
+    for i in (pstree -np -s $fish_pid | grep -o -E '[0-9]+')
+        if ! test -e "/run/WSL/$i_interop"
+            set -x WSL_INTEROP /run/WSL/$i_interop
+            echo $WSL_INTEROP >~/.wsl_interop
         end
     end
 end
@@ -87,16 +86,3 @@ end
 starship init fish | source
 
 cd ~
-
-for i in (pstree -np -s $fish_pid | grep -o -E '[0-9]+')
-    if ! test -e "/run/WSL/$i_interop"
-        set -x WSL_INTEROP /run/WSL/$i_interop
-        echo $WSL_INTEROP >~/.wsl_interop
-    end
-end
-
-if test -e $TMUX
-    tmux new-session
-else
-    tmux attach
-end
