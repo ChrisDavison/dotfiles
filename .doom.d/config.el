@@ -18,11 +18,16 @@
       nov-text-width 80
       cd/use-org-roam-on-startup nil
       cd/light-theme 'kaolin-breeze
-      cd/dark-theme 'kaolin-aurora)
+      cd/dark-theme 'doom-dracula)
 
 (setq doom-font "Hack-12")
 (setq doom-theme cd/dark-theme)
 
+(setq ibuffer-formats
+      `((mark modified read-only vc-status-mini " "
+              (name 30 30 :left :elide) " "
+              (mode 10 10 :left) " "
+              vc-relative-file)))
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'auth-sources "~/.authinfo")
@@ -35,20 +40,18 @@
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
 ;;; Load my custom modules
-(defun load!-with-message (filename)
-  (load! filename)
-  (message "Loaded config: %s" filename))
-
-(load!-with-message "+rust")
-;; (load!-with-message "+golang")
-(load!-with-message "+bibcapture")
-(load!-with-message "+fonts")
-(load!-with-message "+misc")
-(load!-with-message "+narrow")
-(load!-with-message "+orgmode")
-(load!-with-message "+vterm")
-(load!-with-message "+ssh")
-(load!-with-message "+keybinds")
+(load! "+rust")
+;; (load! "+golang")
+(load! "+bibcapture")
+(load! "+fonts")
+(load! "+misc")
+(load! "+narrow")
+(load! "+orgmode")
+(load! "+orgcapture")
+(load! "+orgagenda")
+(load! "+vterm")
+(load! "+ssh")
+(load! "+keybinds")
 
 (when is-wsl?
   (load!-with-message "+wsl-setup")
@@ -64,5 +67,6 @@
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
 (if cd/use-org-roam-on-startup
-        (org-roam-mode)
-        (message "Org-roam mode not started automatically"))
+    (org-roam-mode)
+  (message "Org-roam mode not started automatically"))
+
