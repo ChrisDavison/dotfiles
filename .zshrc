@@ -278,7 +278,7 @@ source_if_exists ~/.fzf.zsh
 
 [[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
 
-if [[ -e "$TMUX" ]] &&  [[ "$(hostname)" = "i9-kraken" ]]; then
+if [[ "$(hostname)" = "i9-kraken" ]]; then
     {tmux attach || tmux new-session;}
 fi
 
