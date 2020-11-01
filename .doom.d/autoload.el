@@ -216,11 +216,14 @@ otherwise use the subtree title."
 
 (defun cd/reload-org-config ()
   (interactive)
-  (load (expand-file-name "~/.doom.d/+orgmode.el")))
+  (--each '("+orgmode" "+orgcapture" "+orgagenda")
+    (load (expand-file-name (format "~/.doom.d/%s.el" it))))
+  (message "Reloaded org-mode config"))
 
 ;;;###autoload
-(defun next-circular-index (i n)
-  (mod (+ 1 i) n))
+(defun next-circular-index (i n &optional reverse)
+  (let ((func (if reverse '- '+)))
+    (mod (funcall func i 1) n)))
 
 ;;;###autoload
 (defun emoji-heading (fontfunc fonticon headingname)
@@ -265,3 +268,24 @@ exist after each headings's drawers."
 (defun fish-term ()
   (interactive)
   (term "/usr/bin/fish"))
+
+;;;###autoload
+(defun next-theme ()
+  (interactive)
+  (let* ((themes (custom-available-themes))
+         (idx-current (cl-position doom-theme themes))
+         (idx-next (next-circular-index idx-current (length themes)))
+         (next (nth idx-next themes)))
+    (message "%s" next)
+    (setq doom-theme next)
+    (doom/reload-theme)))
+
+(defun prev-theme ()
+  (interactive)
+  (let* ((themes (custom-available-themes))
+         (idx-current (cl-position doom-theme themes))
+         (idx-next (next-circular-index idx-current (length themes) t))
+         (next (nth idx-next themes)))
+    (message "%s" next)
+    (setq doom-theme next)
+    (doom/reload-theme)))
