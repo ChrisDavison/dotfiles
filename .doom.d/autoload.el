@@ -231,7 +231,7 @@ otherwise use the subtree title."
     (format "%s %s" icon headingname)))
 
 ;;;###autoload
-(defun unpackaged/org-fix-blank-lines (prefix)
+(defun cd/org-fix-blank-lines (prefix)
   "Ensure that blank lines exist between headings and between headings and their contents.
 With prefix, operate on whole buffer. Ensures that blank lines
 exist after each headings's drawers."
@@ -289,3 +289,8 @@ exist after each headings's drawers."
     (message "%s" next)
     (setq doom-theme next)
     (doom/reload-theme)))
+
+(defun jump-to-here-anchor ()
+  (interactive)
+  (goto-char (point-min))
+  (search-forward "<<here>>"))
