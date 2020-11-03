@@ -34,17 +34,20 @@
 
         ("GAMING"
         :keys "g"
-        :headline "UNFILED"
+        :headline "Games to Buy"
         :template "* TODO %?"
         :children (("PC" :keys "p" :file "pc-gaming.org")
                    ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-                   ("Tabletop" :keys "t" :file "tabletop-games.org")))
+                   ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
 
         ("MEDIA"
          :keys "m"
-         :file "projects/media.org"
-         :children (("Watch" :keys "w" :headline "UNFILED" :template "* TODO %?")
-                    ("Music" :keys "m" :headline "Music" :template "* TODO %?")))
+         :type entry
+         :template "* TODO %?"
+         :children (("Watch" :keys "w"
+                     :file "projects/stuff-to-watch.org" :headline "UNFILED")
+                    ("Music" :keys "m"
+                     :file "projects/music.org"  :headline "Music")))
 
         ("Guitar song to learn"
          :keys "G"

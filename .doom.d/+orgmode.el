@@ -8,6 +8,7 @@
       org-src-window-setup 'reorganize-frame
       org-agenda-window-setup 'reorganize-frame
       org-agenda-restore-windows-after-quit t
+      org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
       org-tags-column 0
@@ -70,12 +71,3 @@
            '(lambda () (org-superstar-mode 1))
            '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
            '(lambda () (set-face-italic 'italic t)))
-
-
-
-(defun fix-lines-in-orgmode ()
-  (when (eq major-mode 'org-mode)
-    (message "Fixing whitespace")
-    (unpackaged/org-fix-blank-lines t)))
-
-(add-hook! 'before-save-hook #'fix-lines-in-orgmode)
