@@ -1,22 +1,29 @@
-PROMPT="%~ » "
-# exports / environment variables {{{1
+####### #     # #     #       #     #    #    ######   #####
+#       ##    # #     #       #     #   # #   #     # #     #
+#       # #   # #     #       #     #  #   #  #     # #
+#####   #  #  # #     #       #     # #     # ######   #####
+#       #   # #  #   #         #   #  ####### #   #         #
+#       #    ##   # #           # #   #     # #    #  #     #
+####### #     #    #             #    #     # #     #  #####
 export EDITOR="emacsclient -t"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
-# export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
-export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
-export FZF_ALT_C_COMMAND='fd -t d . $HOME'
+if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
+    export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
+    export FZF_ALT_C_COMMAND='fd -t d . $HOME'
+else 
+    export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
+fi
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-export MAIL=~/.mbox
+export MAIL=$HOME/.mbox
 export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 export RANGER_LOAD_DEFAULT_RC=0
 export RUST_SRC_PATH="$HOME/.rust_src"
-
 export BROWSER="firefox"
 
-# add paths to dir, if they exists {{{1
+
 maybe_append_to_path() {
     [[ -d "$1" ]] && export PATH="$1":$PATH
 }
@@ -32,10 +39,14 @@ maybe_append_to_path $HOME/.nimble/bin
 maybe_append_to_path /usr/local/go/bin
 maybe_append_to_path $HOME/.local/go/bin
 maybe_append_to_path $HOME/code/seadas-7.5.3/bin
-# }}}1
-# settings {{{1
-setopt  autocd autopushd pushdignoredups
 
+ #####  ####### ####### ####### ### #     #  #####   #####
+#     # #          #       #     #  ##    # #     # #     #
+#       #          #       #     #  # #   # #       #
+ #####  #####      #       #     #  #  #  # #  ####  #####
+      # #          #       #     #  #   # # #     #       #
+#     # #          #       #     #  #    ## #     # #     #
+ #####  #######    #       #    ### #     #  #####   #####
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
@@ -61,7 +72,7 @@ zstyle ':completion:::::' completer _expand _complete _ignored _approximate #ena
 
 autoload -Uz compinit;compinit -i
 
-# aliases {{{1
+
 alias tmux="set TERM xterm-256color; tmux"
 alias c="clear"
 alias cp="cp -rv"    # Always recursively and verbosely copy
@@ -78,16 +89,15 @@ alias tmux="tmux -2"
 alias ts="tagsearch"
 alias bm="bookmarks"
 alias b="bat --tabs 2 --color=always --style=numbers,changes "
-alias n="echo '-  $argv' >> ~/code/knowledge/inbox.txt"
-alias nt="echo '-  [ ] $argv' >> ~/code/knowledge/inbox.txt"
-alias inbox="nvim ~/code/knowledge/inbox.txt"
+alias n="echo '-  $argv' >> $HOME/code/knowledge/inbox.txt"
+alias nt="echo '-  [ ] $argv' >> $HOME/code/knowledge/inbox.txt"
+alias inbox="nvim $HOME/code/knowledge/inbox.txt"
 alias n="note.py"
 alias clip="xclip -sel clipboard"
 alias df="df -x squashfs"
 alias clip="xclip -sel clipboard"
-# }}}1
 
-# aliases (conditional) {{{1
+# aliases (conditional) 
 if type fdfind > /dev/null; then
     # fd was installed from apt, so is installed as fdfind to not shadow
     # another 'fd' command
@@ -124,135 +134,133 @@ if type ziputil > /dev/null; then
 else
     echo "ziputil not installed"
 fi
-# }}}1
 
-# keybinds {{{1
+
+# keybinds 
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
-# }}}1
 
-#===========================================================
-# FUNCTIONS
-#===========================================================
-is_in_git_repo() { # {{{1
+
+
+####### #     # #     #  #####  ####### ### ####### #     #  #####
+#       #     # ##    # #     #    #     #  #     # ##    # #     #
+#       #     # # #   # #          #     #  #     # # #   # #
+#####   #     # #  #  # #          #     #  #     # #  #  #  #####
+#       #     # #   # # #          #     #  #     # #   # #       #
+#       #     # #    ## #     #    #     #  #     # #    ## #     #
+#        #####  #     #  #####     #    ### ####### #     #  #####
+is_in_git_repo() { 
   git rev-parse HEAD > /dev/null 2>&1
-} # }}}1
+} 
 
-sanitise(){ # {{{1
+sanitise(){ 
     [[ $# -eq 0 ]] && echo "usage: sanitise <filename>" && return
     direc=$(dirname $1)
     base=$(basename $1)
     echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
-} # }}}1
+} 
 
-ppath(){ # {{{1
+ppath(){ 
     echo "$PATH" | tr ":" "\n"
-} # }}}1
+} 
 
-monospace-fonts(){ # {{{1
-	fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
-} # }}}1
+monospace-fonts(){ 
+    fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
+} 
 
-aliases(){ # {{{1
-    grep "^\s*alias.*=" ~/.zshrc | sed -e 's/^[ ]\+//g' | sed -e 's/=/@/' | column -s '@' -t | cut -d' ' -f2-
-} # }}}1
+aliases(){ 
+    grep "^\s*alias.*=" $HOME/.zshrc | sed -e 's/^[ ]\+//g' | sed -e 's/=/@/' | column -s '@' -t | cut -d' ' -f2-
+} 
 
-nonascii(){ # {{{1
+
+nonascii(){ 
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
-} # }}}1
+} 
 
-is_tmux_alive(){ # {{{1
+is_tmux_alive(){ 
     if [ $(tmux list-sessions | wc -l) -gt 0 ];
     then
         echo "TMUX"
     else
         echo "noMUX"
         fi
-} # }}}1
+} 
 
-datezipdir(){ # {{{1
+datezipdir(){ 
     [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
     dirname=$(basename $1)
     zipname=$(date +"$dirname--%Y-%m-%d.zip")
     echo $zipname
     zip -r $zipname $1
-} # }}}1
+} 
 
-aesenc(){ # {{{1
+aesenc(){ 
     [[ $# = 0 ]] && echo "usage: aesenc <file>" && return
     gpg --symmetric -a --cipher-algo aes256 --output "$1".asc "$1"
     echo "$1.asc created"
-} # }}}1
+} 
 
-mdformatwrap(){ # format markdown using pandoc {{{1
+mdformatwrap(){ # format markdown using pandoc 
     pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
-} # }}}1
+} 
 
-tmc(){ # fuzzy choose a tmux session {{{1
+tmc(){ # fuzzy choose a tmux session 
     chosen=$(tmux list-sessions 2> /dev/null | cut -d: -f1 | fzf -0)
     [[ -n "$chosen" ]] && tmux attach -t "$chosen"
-} # }}}1
+} 
 
-vs(){ # fuzzy select a vim session {{{1
-    chosen=$(ls -1 ~/.vimsessions | fzf -0)
-    [[ -n "$chosen" ]] && nvim -S "~/.vimsessions/$chosen"
-} # }}}1
+vs(){ # fuzzy select a vim session 
+    chosen=$(ls -1 $HOME/.vimsessions | fzf -0)
+    [[ -n "$chosen" ]] && nvim -S "$HOME/.vimsessions/$chosen"
+} 
 
-duplicates(){ # find duplicate words in a file {{{1
+duplicates(){ # find duplicate words in a file 
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true
-} # }}}1
+} 
 
-asmrmpv(){ # launch a random asmr video using mpv {{{1
+asmrmpv(){ # launch a random asmr video using mpv 
     nohup mpv $(randomasmr) &> /dev/null &
-} # }}}1
+} 
 
-wallpaper(){ # set linux wallpaper using feh {{{1
-    chosen=$(fd . -t f ~/Dropbox/wallpapers | rg -v mobile | fzf)
+wallpaper(){ # set linux wallpaper using feh 
+    chosen=$(fd . -t f $HOME/Dropbox/wallpapers | rg -v mobile | fzf)
     [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
-} # }}}1
+} 
 
-skyemull() { # alias to ssh to mull, via skye, with tunneling {{{1
+skyemull() { # alias to ssh to mull, via skye, with tunneling 
     echo "Mull:8811 routed to localhost:9999, via Skye"
     ssh -L -T 9999:localhost:9999 cdavison@skye ssh -T -L 9999:localhost:8811 cdavison@mull
-} # }}}1
+} 
 
-mull() { # alias to ssh to mull with tunneling {{{1
+mull() { # alias to ssh to mull with tunneling 
     echo "Mull:8811 routed to localhost:9999, via Skye"
     ssh mull -L 9999:localhost:8811
-} # }}}1
+} 
 
-fzs(){ # make a string 'fuzzy', for searching {{{1
+fzs(){ # make a string 'fuzzy', for searching 
     echo "$@" | sed -e 's/\s/.*/g'
-} # }}}1
+} 
 
-fzfp(){ # fzf with preview {{{1
+fzfp(){ # fzf with preview 
     fzf --preview="bat {}" --preview-window=right:70%:wrap
-} # }}}1
+} 
 
-# Windows / WSL-specific config {{{1
-if [[ $(uname -a | grep -i -q 'Microsoft') -eq 0 ]]; then
-    export BROWSER=$(which firefox)
-    export DISPLAY=$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0
-    export LIBGL_ALWAYS_INDIRECT=1
-    export NO_AT_BRIDGE=1
-    for i in $(pstree -np -s $$ | grep -o -E '[1-9]+'); do
-        set fname /run/WSL/"$i"_interop
-        if [[ -e "$fname" ]]; then
-            export WSL_INTEROP=$fname
-            echo $fname > ~/.wsl_interop
-        fi
-    done
-    echo "WSL Interop setup"
-fi
-alias eme='LIBGL_ALWAYS_INDIRECT=1 NO_AT_BRIDGE=1 setsid emacs'
-# }}}1
 
-# SOURCE scripts and plugins {{{1
+ #####  ####### #     # ######   #####  #######
+#     # #     # #     # #     # #     # #
+#       #     # #     # #     # #       #
+ #####  #     # #     # ######  #       #####
+      # #     # #     # #   #   #       #
+#     # #     # #     # #    #  #     # #
+ #####  #######  #####  #     #  #####  #######
 source_if_exists(){
-    [[ -f "$1" ]] && source "$1"
-    [[ $VERBOSE_ZSHRC -eq 1 ]] && echo "Sourced" "$1"
+    if [[ -f "$1" ]]; then
+        source "$1"
+    else
+        echo "$1 doesn't exist"
+    fi
 }
 
 # fco - fuzzy checkout [C-g b]
@@ -266,22 +274,18 @@ source $HOME/code/dotfiles/functions-git-fzf.sh
 # notes - go to notes dir and ls
 source $HOME/code/dotfiles/functions-notes.sh
 
-# source_if_exists ~/.envs/ml/bin/activate
-source_if_exists ~/.envs/py/bin/activate
-source_if_exists ~/code/dotfiles/zsh-prompt.sh
-eval "$(starship init zsh)"
+# source_if_exists $HOME/.envs/ml/bin/activate
+source_if_exists $HOME/.envs/py/bin/activate
+source_if_exists $HOME/code/dotfiles/zsh-prompt.sh
 source_if_exists $HOME/.cargo/env
 source_if_exists $HOME/.fzf/shell/key-bindings.zsh
-source_if_exists ~/.fzf.zsh
+source_if_exists $HOME/code/dotfiles/wsl.sh
 
-# }}}1
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-[[ -f $HOME/.servername ]] && echo "On server: $(cat $HOME/.servername)"
 
-if [[ "$(hostname)" = "i9-kraken" ]]; then
-    {tmux attach || tmux new-session;}
-fi
-
+# Hide server welcome messages (message of the day, MOTD)
 [[ ! -f "$HOME/.hushlogin" ]] && touch "$HOME/.hushlogin"
 
-cd ~
+cd $HOME
+
