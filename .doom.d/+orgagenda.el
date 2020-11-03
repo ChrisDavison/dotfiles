@@ -18,7 +18,7 @@
                              "......"
                              "")
       org-agenda-skip-archived-trees nil
-      org-agenda-use-time-grid nil
+      org-agenda-use-time-grid t
       org-agenda-custom-commands
       '(("c" . "+my stuff")
         ("c1" "One day" ((agenda ""
@@ -75,10 +75,10 @@
       `(
         (:name "Habit" :habit t)
         (:name "Today" :time-grid t
-         :todo "TODAY" :and (:discard (:todo "CANCELLED") :deadline past :scheduled past))
-        (:name "DONE" :not (:todo "TODO"))
+         :todo "TODAY" :and (:deadline past :scheduled past))
         (:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org")
         (:name "Todo" :todo "TODO" )
+        (:name "DONE" :not (:todo "TODO"))
         (:discard :anything)
         ))
 
