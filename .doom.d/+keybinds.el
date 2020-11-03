@@ -1,7 +1,8 @@
 ;;; ../code/dotfiles/.doom.d/+keybinds.el -*- lexical-binding: t; -*-
 
 (map! "C-<" 'avy-goto-word-1) ;; C-S-,
-(map! :leader "j" 'jump-to-register)
+;; (map! :leader "j" 'jump-to-register)
+(map! :mode 'org-mode :leader "j h" 'jump-to-here-anchor)
 
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
