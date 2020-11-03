@@ -54,7 +54,7 @@
 (load! "+keybinds")
 
 (when is-wsl?
-  (load!-with-message "+wsl-setup")
+  (load! "+wsl-setup")
   (setq x-selection-timeout 10))
 
 ;;; Final stuff (launch modes etc)
