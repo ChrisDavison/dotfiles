@@ -45,3 +45,4 @@ history.sqlite
 *.o
 /.xmonad/prompt-history
 nohup.out
+*flycheck*

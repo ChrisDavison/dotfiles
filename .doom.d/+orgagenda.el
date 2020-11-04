@@ -90,6 +90,14 @@
            (:discard (:anything t)))))
     (org-todo-list "WIP")))
 
+(defun cd/work-todos ()
+  (interactive)
+  (let* (
+         (org-super-agenda-groups
+          `((:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org")
+           (:discard (:anything t)))))
+    (org-todo-list)))
+
 (defun cd/agenda-todo-no-books ()
   (interactive)
   (let* ((org-super-agenda-groups
