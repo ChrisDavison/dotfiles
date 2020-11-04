@@ -6,7 +6,7 @@
 (setq org-directory "~/Dropbox/org"
       org-default-notes-file "~/Dropbox/org/inbox.org"
       org-src-window-setup 'reorganize-frame
-      org-agenda-window-setup 'reorganize-frame
+      org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
@@ -63,6 +63,11 @@
   (while (outline-previous-heading)
     (org-id-get-create)))
 
+(setq cd/first-org-reload-done nil)
+(defun cd/reload-org-on-first-startup ()
+  (cd/reload-org-config)
+  (setq cd/first-org-reload-done t))
+
 (add-hook! org-mode
            'visual-line-mode
            'org-indent-mode
@@ -70,4 +75,5 @@
            'undo-tree-mode
            '(lambda () (org-superstar-mode 1))
            '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
+           'cd/reload-org-on-first-startup
            '(lambda () (set-face-italic 'italic t)))

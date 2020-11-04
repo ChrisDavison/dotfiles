@@ -286,3 +286,19 @@ export SCM_CHECK=true
 
 # Load Bash It
 # source "$BASH_IT"/bash_it.sh
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/davison/.conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/davison/.conda/etc/profile.d/conda.sh" ]; then
+        . "/home/davison/.conda/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/davison/.conda/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
