@@ -8,8 +8,11 @@ else
     set -Ux is_wsl 0
 end
 
+
+
 set -Ux GOPATH "$HOME"
 set -Ux GOBIN "$HOME/bin"
+set -l CARGOBIN "$HOME/.cargo/bin"
 set -Ux WORKON_HOME "$HOME/.envs"
 set -Ux LESS FRSX
 set -Ux CODEDIR "$HOME/code/"
@@ -17,11 +20,14 @@ set -Ux VIRTUAL_ENV_DISABLE_PROMPT 0
 set -Ux RUST_SRC_PATH "$HOME/.rust_src"
 set -Ux RANGER_LOAD_DEFAULT_RC 0
 
-if test $is_wsl
-    set -Ux EDITOR "emacsclient -t"
-else
-    set -Ux EDITOR "vim"
+############################################################
+for direc in $GOBIN $HOME/.bin $HOME/code/scripts $CARGOBIN /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin $HOME/.conda/bin
+    if not contains $direc $PATH
+        set PATH $direc $PATH
+    end
 end
+
+############################################################
 
 # some local vars for testing existance of tools
 set -l rg_path (which rg)
@@ -40,12 +46,7 @@ else if test -x "$rg_path"
     set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 end
 
-############################################################
-for direc in $GOBIN $HOME/.bin $HOME/code/scripts $HOME/.cargo/bin /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin
-    if not contains $direc $PATH
-        set PATH $direc $PATH
-    end
-end
+
 
 ############################################################
 alias tmux="set TERM xterm-256color; tmux"
@@ -115,6 +116,12 @@ test -x "$HOME/.envs/ml/bin/activate.fish"; and source "$HOME/.envs/ml/bin/activ
 test -x "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"
 test -x "$HOME/.cargo/env"; and source "$HOME/.cargo/env"
 test -x "$starship_path"; and starship init fish | source
+
+if test $is_wsl
+    set -Ux EDITOR "emacsclient -t"
+else
+    set -Ux EDITOR "vim"
+end
 
 ############################################################
 if ! test -f "$HOME/.hushlogin"
