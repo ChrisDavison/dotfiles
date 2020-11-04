@@ -20,7 +20,7 @@
       cd/light-theme 'kaolin-breeze
       cd/dark-theme 'doom-dracula)
 
-(setq doom-font "Hack-12")
+(setq doom-font "CamingoCode-12")
 (setq doom-theme cd/dark-theme)
 
 (setq ibuffer-formats
