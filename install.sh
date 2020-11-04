@@ -90,12 +90,17 @@ if ! type cargo > /dev/null; then
 fi
 
 #=========================================================== 
-echo "Installing rust utilities: fd exa bat rg starship"
-cargo install -q fd-find > /dev/null
-cargo install -q exa > /dev/null
-cargo install -q bat > /dev/null
-cargo install -q ripgrep > /dev/null
-cargo install -q starship > /dev/null
+echo "Installing rust utilities"
+echo "  fd"
+cargo install -q fd-find
+echo "  exa"
+cargo install -q exa
+echo "  bat"
+cargo install -q bat
+echo "  ripgrep"
+cargo install -q ripgrep
+echo "  starship"
+cargo install -q starship
 
 #=========================================================== 
 echo "Installing doom emacs"
