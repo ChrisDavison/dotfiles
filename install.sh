@@ -18,6 +18,7 @@ for thing in "${plain_files[@]}"; do
         rm "$target"
     fi
     ln -s "$source" "$target"
+    echo "  $thing"
 done
 unset plain_files; unset source; unset target;
 
@@ -36,6 +37,7 @@ for thing in "${directories[@]}"; do
         rm "$target"
     fi
     ln -s "$source" "$target"
+    echo "  $thing"
 done
 unset directories; unset source; unset target;
 
