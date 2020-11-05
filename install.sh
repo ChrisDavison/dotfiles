@@ -82,6 +82,9 @@ if ! type fzf > /dev/null; then
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install
 fi
+echo "  refreshing symlink to keybinds"
+rm ~/.config/fish/functions/fzf_key_bindings.fish
+ln -s ~/.fzf/shell/key-bindings.fish ~/.config/fish/functions/fzf_key_bindings.fish
 
 #=========================================================== 
 echo "Installing rust"
