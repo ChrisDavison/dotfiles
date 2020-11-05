@@ -63,17 +63,19 @@
   (while (outline-previous-heading)
     (org-id-get-create)))
 
-(setq cd/first-org-reload-done nil)
+
 (defun cd/reload-org-on-first-startup ()
-  (cd/reload-org-config)
-  (setq cd/first-org-reload-done t))
+  (when (not cd/first-org-reload-done)
+    (cd/reload-org-config)
+    (setq cd/first-org-reload-done t)
+    (revert-buffer)))
 
 (add-hook! org-mode
            'visual-line-mode
            'org-indent-mode
            'abbrev-mode
            'undo-tree-mode
+           'cd/reload-org-on-first-startup
            '(lambda () (org-superstar-mode 1))
            '(lambda () (interactive) (setq org-capture-templates cd/org-capture-templates))
-           'cd/reload-org-on-first-startup
            '(lambda () (set-face-italic 'italic t)))

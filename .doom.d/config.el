@@ -17,6 +17,7 @@
       +format-with-lsp nil
       nov-text-width 80
       cd/use-org-roam-on-startup nil
+      cd/first-org-reload-done nil
       cd/light-theme 'kaolin-breeze
       cd/dark-theme 'doom-dracula)
 
