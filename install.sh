@@ -94,16 +94,26 @@ fi
 
 #=========================================================== 
 echo "Installing rust utilities"
-echo "  fd"
-cargo install -q fd-find
-echo "  exa"
-cargo install -q exa
-echo "  bat"
-cargo install -q bat
-echo "  ripgrep"
-cargo install -q ripgrep
-echo "  starship (from bin, not cargo)"
-curl -fsSL https://starship.rs/install.sh | bash
+if ! type fd > /dev/null; then
+    echo "  fd"
+    cargo install -q fd-find
+fi
+if ! type exa > /dev/null; then
+    echo "  exa"
+    cargo install -q exa
+fi
+if ! type bat > /dev/null; then
+    echo "  bat"
+    cargo install -q bat
+fi
+if ! type rg > /dev/null; then
+    echo "  ripgrep"
+    cargo install -q ripgrep
+fi
+if ! type starship > /dev/null; then
+    echo "  starship (from bin, not cargo)"
+    curl -fsSL https://starship.rs/install.sh | bash
+fi
 
 #=========================================================== 
 echo "Installing doom emacs"
