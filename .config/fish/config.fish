@@ -1,7 +1,7 @@
 set -Ux fish_greeting ""
 
 # Export an env var to declare we are in WSL or not
-if ! test (uname -r | grep -i -q 'microsoft-standard')
+if not test (uname -r | grep -i -q 'microsoft-standard')
     # grep returns 0 if match is found, so invert result
     set -Ux is_wsl 1
 else
@@ -124,7 +124,7 @@ else
 end
 
 ############################################################
-if ! test -f "$HOME/.hushlogin"
+if not test -f "$HOME/.hushlogin"
     touch "$HOME/.hushlogin"
     echo "Future server MOTDs will be ignored"
 end
