@@ -99,8 +99,8 @@ echo "  bat"
 cargo install -q bat
 echo "  ripgrep"
 cargo install -q ripgrep
-echo "  starship"
-cargo install -q starship
+echo "  starship (from bin, not cargo)"
+curl -fsSL https://starship.rs/install.sh | bash
 
 #=========================================================== 
 echo "Installing doom emacs"
