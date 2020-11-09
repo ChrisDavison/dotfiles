@@ -44,10 +44,8 @@
          :keys "m"
          :type entry
          :template "* TODO %?"
-         :children (("Watch" :keys "w"
-                     :file "projects/stuff-to-watch.org" :headline "UNFILED")
-                    ("Music" :keys "m"
-                     :file "projects/music.org"  :headline "Music")))
+         :children (("Watch" :keys "w" :file "projects/stuff-to-watch.org")
+                    ("Music" :keys "m" :file "projects/music.org")))
 
         ("Guitar song to learn"
          :keys "G"
