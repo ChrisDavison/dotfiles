@@ -18,7 +18,7 @@
                              "......"
                              "")
       org-agenda-skip-archived-trees nil
-      org-agenda-use-time-grid t
+      org-agenda-use-time-grid nil
       org-agenda-custom-commands
       '(("c" . "+my stuff")
         ("c1" "One day" ((agenda ""
@@ -73,12 +73,13 @@
 ;; match any of these groups, with the default order position of 99
 (setq org-super-agenda-groups
       `(
-        (:name "Habit" :habit t)
-        (:name "Today" :time-grid t
+        (:name "Habit" :habit t :order 1)
+        (:name "DONE" :todo "DONE" :order 99)
+        (:name "Today" :time-grid nil :order 2
          :todo "TODAY" :and (:deadline past :scheduled past))
-        (:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org")
-        (:name "Todo" :todo "TODO" )
-        (:name "DONE" :not (:todo "TODO"))
+        (:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org" :order 3)
+        (:name "Todo" :and (:todo "TODO" :file-path "todo.org") :order 4)
+        (:name "Projects" :todo "TODO" :order 5)
         (:discard :anything)
         ))
 
