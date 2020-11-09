@@ -21,7 +21,7 @@ set -Ux RUST_SRC_PATH "$HOME/.rust_src"
 set -Ux RANGER_LOAD_DEFAULT_RC 0
 
 ############################################################
-for direc in $GOBIN $HOME/.bin $HOME/code/scripts $CARGOBIN /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin $HOME/.conda/bin
+for direc in $GOBIN $HOME/.bin $HOME/code/scripts $CARGOBIN /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin $HOME/.conda/bin /usr/local/zig
     if not contains $direc $PATH
         set PATH $direc $PATH
     end
