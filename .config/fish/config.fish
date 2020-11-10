@@ -1,4 +1,5 @@
 set -Ux fish_greeting ""
+set -Ux EDITOR "vim"
 
 # Export an env var to declare we are in WSL or not
 if not test (uname -r | grep -i -q 'microsoft-standard')
@@ -56,7 +57,7 @@ alias mv="mv -v" # Always explain move actions
 alias mkdir="mkdir -pv" # Always make parent directories, and explain what was done
 alias less='less -R' # Use color codes in 'less'
 alias rg='rg -S' # Make ripgrep use smart-case by default
-alias v="$EDITOR"
+alias v="vim"
 alias ipython="ipython --pprint --no-banner"
 if test -x "$hub_path"
     alias g="hub"
@@ -117,11 +118,6 @@ test -x "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activ
 test -x "$HOME/.cargo/env"; and source "$HOME/.cargo/env"
 test -x "$starship_path"; and starship init fish | source
 
-if test $is_wsl
-    set -Ux EDITOR "emacsclient -t"
-else
-    set -Ux EDITOR "vim"
-end
 
 ############################################################
 if not test -f "$HOME/.hushlogin"
