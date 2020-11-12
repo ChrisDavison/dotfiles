@@ -10,9 +10,10 @@
 (map! :leader
       (:prefix-map ("a" . "applications")
        (:prefix ("r" . "repoutil")
-        :desc "Status of all branches" "b" #'cd/repo/branchstat
-        :desc "Fetch all branches" "f" #'cd/repo/fetch
-        :desc "List all managed repos" "l" #'cd/repo/list)
+        :desc "Status of all branches" "b" #'repoutil-branchstat
+        :desc "Fetch all branches" "f" #'repoutil-fetch
+        :desc "List all managed repos" "l" #'repoutil-list
+        :desc "List all unclean repos" "u" #'repoutil-unclean)
        ))
 
 ;; Test editing
@@ -26,15 +27,15 @@
 (map! "<f2>" 'org-agenda)
 (map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
 (map! "<f4>" '(lambda () (interactive) (org-agenda nil "Rw")))
-(map! :map org-mode-map :n "<SPC> m r a" 'change-state-and-archive)
+(map! :map org-mode-map :n "<SPC> m r a" 'org-change-state-and-archive)
 (map! :map org-mode-map :n "<SPC> m r A" 'org-archive-to-archive-sibling)
 (map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)
-(map! :map org-mode-map :n "<SPC> o s" 'cd/org-open-link-same)
+(map! :map org-mode-map :n "<SPC> o s" 'org-open-link-same-window)
 (map! :map org-mode-map :n "<SPC> o o" 'org-open-at-point)
 (map! :map org-mode-map :n "<SPC> N" 'org-toggle-narrow-to-subtree)
 (map! :map org-mode-map
-      :n "C-x C-n" 'cd/org-file-from-subtree
-      :v "C-x C-n" 'cd/org-file-from-selection)
+      :n "C-x C-n" 'org-file-from-subtree
+      :v "C-x C-n" 'org-file-from-selection)
 
 (map! "<f5>" #'(lambda () (interactive) (find-next-file nil)))
 (map! "<f6>" #'(lambda () (interactive) (find-next-file t)))
@@ -48,7 +49,7 @@
 (map! :leader :prefix "w" :desc "evil-window-vsplit (follow)"
       "v" (lambda () (interactive) (+evil-window-vsplit-a) (evil-window-right 1)))
 
-(map! :map org-mode-map :n "<SPC> m l u" 'cd/org-export-url)
+(map! :map org-mode-map :n "<SPC> m l u" 'org-copy-link-url)
 
 
 
@@ -61,5 +62,5 @@
         :desc "org-roam-find-file" "f" #'org-roam-find-file
         :desc "org-roam-show-graph" "g" #'org-roam-show-graph
         :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-journal" "j" #'cd/jump-to-todays-journal
+        :desc "org-journal" "j" #'jump-to-todays-journal
         :desc "org-roam-capture" "c" #'org-roam-capture))

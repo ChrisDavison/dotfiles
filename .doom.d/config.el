@@ -16,13 +16,13 @@
       display-line-numbers-type t
       +format-with-lsp nil
       nov-text-width 80
-      cd/use-org-roam-on-startup nil
-      cd/first-org-reload-done nil
-      cd/light-theme 'kaolin-breeze
-      cd/dark-theme 'doom-dracula)
+      use-org-roam-on-startup nil
+      first-org-reload-done nil
+      theme-preference-light 'kaolin-breeze
+      theme-preference-dark 'doom-molokai)
 
 (setq doom-font "CamingoCode-12")
-(setq doom-theme cd/dark-theme)
+(setq doom-theme theme-preference-dark)
 
 (setq ibuffer-formats
       `((mark modified read-only vc-status-mini " "
@@ -40,23 +40,77 @@
 ;;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
+;;; vterm configuration
+(defun run-in-vterm-kill (process event)
+  "A process sentinel. Kills PROCESS's buffer if it is live."
+  (let ((b (process-buffer process)))
+    (and (buffer-live-p b)
+         (kill-buffer b))))
+
+(defun run-in-vterm (command)
+  "Execute string COMMAND in a new vterm.
+
+Interactively, prompt for COMMAND with the current buffer's file
+name supplied. When called from Dired, supply the name of the
+file at point.
+
+Like `async-shell-command`, but run in a vterm for full terminal features.
+
+The new vterm buffer is named in the form `*foo bar.baz*`, the
+command and its arguments in earmuffs.
+
+When the command terminates, the shell remains open, but when the
+shell exits, the buffer is killed."
+  (interactive
+   (list
+    (let* ((f (cond (buffer-file-name)
+                    ((eq major-mode 'dired-mode)
+                     (dired-get-filename nil t))))
+           (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
+      (read-shell-command "Terminal command: "
+                          (cons filename 0)
+                          (cons 'shell-command-history 1)
+                          (list filename)))))
+  (with-current-buffer (vterm (concat "*" command "*"))
+    (set-process-sentinel vterm--process #'run-in-vterm-kill)
+    (vterm-send-string command)
+    (vterm-send-return)))
+
+
+;;; font configuration
+(after! dash
+  (setq cd-fonts (--filter (member it (font-family-list))
+                           '("Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
+                             "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
+                             "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
+                             "Liberation Mono" "Fira Code" "Iosevka Term"))))
+
+(defvar current-font-idx 0)
+
+(defun set-pretty-font ()
+  "Set a font from one of the available fonts that I like"
+  (interactive)
+  (setq doom-font (ivy-read "Pick font:" cd-fonts))
+  (doom/reload-font))
+
+(defun next-font ()
+  (interactive)
+  (setq current-font-idx
+        (% (+ 1 current-font-idx)
+           (length cd-fonts)))
+  (let ((next-font-name (nth current-font-idx cd-fonts)))
+    (set-frame-font next-font-name 1)
+    (message next-font-name)))
+
 ;;; Load my custom modules
-(load! "+rust")
-;; (load! "+golang")
-(load! "+bibcapture")
-(load! "+fonts")
-(load! "+misc")
-(load! "+narrow")
-(load! "+orgmode")
-(load! "+orgcapture")
-(load! "+orgagenda")
-(load! "+vterm")
 (load! "+ssh")
 (load! "+keybinds")
+(load! "+orgmode")
+(load! "+rust")
+(load! "+functions") ;; also remember autoload.el
+;; (load! "+golang")
 
-(when is-wsl?
-  (load! "+wsl-setup")
-  (setq x-selection-timeout 10))
+(when is-wsl? (load! "+wsl-setup"))
 
 ;;; Final stuff (launch modes etc)
 (global-visual-line-mode 1)
@@ -67,7 +121,7 @@
 (global-undo-tree-mode 1)
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
-(if cd/use-org-roam-on-startup
+(if use-org-roam-on-startup
     (org-roam-mode)
   (message "Org-roam mode not started automatically"))
 

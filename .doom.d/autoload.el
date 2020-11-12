@@ -1,35 +1,8 @@
 ;;; ../code/dotfiles/.doom.d/autoload.el -*- lexical-binding: t; -*-
 
-;;----------------------------------------------------------------------------
-;;; WINDOWS SUBSYSTEM FOR LINUX (WSL)
-;;----------------------------------------------------------------------------
-;;;###autoload
-(defun set-wsl-interop ()
-  (setenv "WSL_INTEROP" (string-trim (get-string-from-file "~/.wsl_interop"))))
 
 ;;;###autoload
-(defun wsl-copy (start end)
-  (interactive "r")
-  (setenv "WSL_INTEROP" (string-trim (get-string-from-file "~/.wsl_interop")))
-  (shell-command-on-region start end "win32yank.exe -i")
-  (deactivate-mark))
-
-;;;###autoload
-(defun wsl-paste ()
-  (interactive)
-  (setenv "WSL_INTEROP" (string-trim (get-string-from-file "~/.wsl_interop")))
-  (let ((clipboard
-         (shell-command-to-string "win32yank.exe -o")))
-    (setq clipboard (replace-regexp-in-string "\r" "" clipboard))
-    (setq clipboard (substring clipboard 0 -1))
-    (insert clipboard)))
-
-
-;;----------------------------------------------------------------------------
-;;; ORG_MODE
-;;----------------------------------------------------------------------------
-;;;###autoload
-(defun cd/org-file-from-subtree (filename)
+(defun org-file-from-subtree (filename)
   "Take the current subtree and create a new file from
   it. Replace the current subtree with its main heading (i.e.,
   delete all of its childen), and make the heading into a link
@@ -69,7 +42,7 @@ otherwise use the subtree title."
       (org-paste-subtree))))
 
 ;;;###autoload
-(defun cd/org-file-from-selection ()
+(defun org-file-from-selection ()
   "Create a new file from current selection, inserting a link.
 
   Prompt for a filename, and create. Prompt for an org-mode
@@ -90,7 +63,7 @@ otherwise use the subtree title."
         (evil-paste-after 1)))))
 
 ;;;###autoload
-(defun cd/org-open-link-same ()
+(defun org-open-link-same-window ()
   (interactive)
   (let ((old-setup org-link-frame-setup))
     (setq org-link-frame-setup '((file . find-file)))
@@ -98,7 +71,7 @@ otherwise use the subtree title."
     (setq org-link-frame-setup old-setup)))
 
 ;;;###autoload
-(defun cd/refile (file headline &optional arg)
+(defun my-refile (file headline &optional arg)
   (let ((pos (save-excursion
                (find-file file)
                (org-find-exact-headline-in-buffer headline))))
@@ -106,7 +79,7 @@ otherwise use the subtree title."
   (switch-to-buffer (current-buffer)))
 
 ;;;###autoload
-(defun cd/refile-to-file (&optional target)
+(defun org-refile-to-file (&optional target)
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
         (old-refile-targets org-refile-targets))
@@ -115,33 +88,33 @@ otherwise use the subtree title."
            (setq org-refile-targets old-refile-targets))))
 
 ;;;###autoload
-(defun cd/refile-to-this-file ()
+(defun org-refile-to-this-file ()
   (interactive)
-  (cd/refile-to-file (buffer-name)))
+  (org-refile-to-file (buffer-name)))
 
 ;;;###autoload
-(defun cd/rg-journal (search)
+(defun rg-journal (search)
   (interactive "Msearch string: ")
   (rg search "org" org-journal-dir))
 
 ;;;###autoload
-(defun cd/rg-org (search)
+(defun rg-org (search)
   (interactive "Msearch string: ")
   (rg search "org" org-directory))
 
 ;;;###autoload
-(defun change-state-and-archive ()
+(defun org-change-state-and-archive ()
   (interactive)
   (org-todo)
   (org-archive-subtree-default))
 
 ;;;###autoload
-(defun cd/paste-checkbox-list ()
+(defun org-paste-checkbox-list ()
   (interactive)
   (insert (replace-regexp-in-string "^" "- [ ] " (current-kill 0))))
 
 ;;;###autoload
-(defun cd/paste-todo-header-list (&optional level)
+(defun org-paste-todo-header-list (&optional level)
   (interactive)
   (let* ((level (or level 1))
          (stars (s-repeat level "*"))
@@ -149,29 +122,29 @@ otherwise use the subtree title."
     (insert (replace-regexp-in-string "^" todo (current-kill 0)))))
 
 ;;;###autoload
-(defun cd/paste-todo-header-list-l2 ()
+(defun org-paste-todo-header-list-l2 ()
   (interactive)
-  (cd/paste-todo-header-list 2))
+  (org-paste-todo-header-list 2))
 
 ;;;###autoload
-(defun cd/paste-todo-header-list-l3 ()
+(defun org-paste-todo-header-list-l3 ()
   (interactive)
-  (cd/paste-todo-header-list 3))
+  (org-paste-todo-header-list 3))
 
 ;;;###autoload
-(defun cd/org-archive-level1-done ()
+(defun org-archive-level1-done ()
   (interactive)
   (save-excursion
     (goto-char 1)
     (org-archive-all-done)))
 
 ;;;###autoload
-(defun cd/org-archive-done-under-subtree ()
+(defun org-archive-done-under-subtree ()
   (interactive)
   (org-archive-all-done))
 
 ;;;###autoload
-(defun cd/org-export-url (&optional arg)
+(defun org-copy-link-url (&optional arg)
   "Extract URL from org-mode link and add it to kill ring."
   (interactive "P")
   (let* ((link (org-element-lineage (org-element-context) '(link) t))
@@ -182,56 +155,15 @@ otherwise use the subtree title."
     (message (concat "Copied URL: " url))))
 
 ;;;###autoload
-(defun cd/jump-to-todays-journal ()
+(defun jump-to-todays-journal ()
   (interactive)
   (progn
     (find-file "~/Dropbox/org/journal.org")
     (goto-char (point-min))
     (search-forward (format-time-string "%F %A"))))
 
-
-;;----------------------------------------------------------------------------
-;;; Themes / appearance
-;;----------------------------------------------------------------------------
 ;;;###autoload
-(defun cd/set-theme-dark ()
-  (interactive)
-  (setq doom-theme cd/dark-theme)
-  (doom/reload-theme))
-
-;;;###autoload
-(defun cd/set-theme-light ()
-  (interactive)
-  (setq doom-theme cd/light-theme)
-  (doom/reload-theme))
-
-
-;;----------------------------------------------------------------------------
-;;; Utility
-;;----------------------------------------------------------------------------
-;;;###autoload
-(defun cd/reload-config ()
-  (interactive)
-  (load (expand-file-name "~/.doom.d/config.el")))
-
-(defun cd/reload-org-config ()
-  (interactive)
-  (--each '("+orgmode" "+orgcapture" "+orgagenda")
-    (load (expand-file-name (format "~/.doom.d/%s.el" it))))
-  (message "Reloaded org-mode config"))
-
-;;;###autoload
-(defun next-circular-index (i n &optional reverse)
-  (let ((func (if reverse '- '+)))
-    (mod (funcall func i 1) n)))
-
-;;;###autoload
-(defun emoji-heading (fontfunc fonticon headingname)
-  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01)))
-    (format "%s %s" icon headingname)))
-
-;;;###autoload
-(defun cd/org-fix-blank-lines (prefix)
+(defun org-fix-blank-lines (prefix)
   "Ensure that blank lines exist between headings and between headings and their contents.
 With prefix, operate on whole buffer. Ensures that blank lines
 exist after each headings's drawers."
@@ -264,6 +196,41 @@ exist after each headings's drawers."
                          nil
                        'tree)))
 
+;;----------------------------------------------------------------------------
+;;; Themes / appearance
+;;----------------------------------------------------------------------------
+;;;###autoload
+(defun set-theme-dark ()
+  (interactive)
+  (setq doom-theme theme-preference-dark)
+  (doom/reload-theme))
+
+;;;###autoload
+(defun set-theme-light ()
+  (interactive)
+  (setq doom-theme theme-preference-light)
+  (doom/reload-theme))
+
+
+;;----------------------------------------------------------------------------
+;;; Utility
+;;----------------------------------------------------------------------------
+;;;###autoload
+(defun reload-config ()
+;;;###autoload
+  (interactive)
+  (load (expand-file-name "~/.doom.d/config.el")))
+
+;;;###autoload
+(defun next-circular-index (i n &optional reverse)
+  (let ((func (if reverse '- '+)))
+    (mod (funcall func i 1) n)))
+
+;;;###autoload
+(defun emoji-heading (fontfunc fonticon headingname)
+  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-green :v-adjust 0.01)))
+    (format "%s %s" icon headingname)))
+
 ;;;###autoload
 (defun fish-term ()
   (interactive)
@@ -280,6 +247,7 @@ exist after each headings's drawers."
     (setq doom-theme next)
     (doom/reload-theme)))
 
+;;;###autoload
 (defun prev-theme ()
   (interactive)
   (let* ((themes (custom-available-themes))
@@ -290,6 +258,7 @@ exist after each headings's drawers."
     (setq doom-theme next)
     (doom/reload-theme)))
 
+;;;###autoload
 (defun jump-to-here-anchor ()
   (interactive)
   (goto-char (point-min))
