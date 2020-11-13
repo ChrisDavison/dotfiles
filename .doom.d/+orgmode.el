@@ -62,15 +62,17 @@
          ("Work"
           :keys "w"
           :template "* TODO %?"
-          :children (("General" :keys "w" :file "projects/work.org" :headline "Tasks")
-                     ("GlasData" :keys "g" :file "projects/glasdata.org")
-                     ("Cybele" :keys "c" :file "projects/cybele.org")))
+          :file "projects/work.org"
+          :children (("General" :keys "w" :headline "Tasks")
+                     ("GlasData" :keys "g" :headline "Tasks - IoF + GlasData")
+                     ("Pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
+                     ("Cybele" :keys "c" :headline "Tasks - Cybele")))
 
-         ("JOURNAL"
-          :keys "j"
-          :file "journal.org"
-          :children (("Logbook Item" :keys "j" :type item :template "- %?")
-                     ("Logbook Entry" :keys "J" :template "* %?" :datetree t)))
+         ;; ("JOURNAL"
+         ;;  :keys "j"
+         ;;  :file "journal.org"
+         ;;  :children (("Logbook Item" :keys "j" :type item :template "- %?")
+         ;;             ("Logbook Entry" :keys "J" :template "* %?" :datetree t)))
 
          ;; ("LOGBOOK"
          ;;  :keys "l"
@@ -161,9 +163,7 @@
       org-agenda-sort-notime-is-late nil
       org-agenda-remove-tags t
       org-agenda-skip-deadline-prewarning-if-scheduled t
-      org-agenda-files '("~/Dropbox/org/projects"
-                         "~/Dropbox/org/journal.org"
-                         "~/Dropbox/org/archive.org")
+      org-agenda-files '("~/Dropbox/org/projects")
       org-agenda-time-grid '((daily today require-timed remove-match)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
@@ -229,11 +229,10 @@
         (:name "DONE" :todo "DONE" :order 99)
         (:name "Today" :time-grid nil :order 2
          :todo "TODAY" :and (:deadline past :scheduled past))
-        (:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org" :order 3)
+        (:name "Work" :file-path "work.org" :order 3)
         (:name "Todo" :and (:todo "TODO" :file-path "todo.org") :order 4)
         (:name "Projects" :todo "TODO" :order 5)
-        (:discard :anything)
-        ))
+        (:discard :anything)))
 
 (defun org-agenda-books-in-progress ()
   (interactive)
