@@ -2,7 +2,10 @@
 
 (map! "C-<" 'avy-goto-word-1) ;; C-S-,
 ;; (map! :leader "j" 'jump-to-register)
-(map! :mode 'org-mode :leader "j h" 'jump-to-here-anchor)
+(map! :leader
+      :desc "jump to here anchor" "j h" 'jump-to-here-anchor
+      :desc "jump to todays journal" "j j" 'jump-to-todays-journal
+      :desc "jump to todays logbook" "j l" 'jump-to-todays-logbook)
 
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
@@ -62,5 +65,4 @@
         :desc "org-roam-find-file" "f" #'org-roam-find-file
         :desc "org-roam-show-graph" "g" #'org-roam-show-graph
         :desc "org-roam-insert" "i" #'org-roam-insert
-        :desc "org-journal" "j" #'jump-to-todays-journal
         :desc "org-roam-capture" "c" #'org-roam-capture))

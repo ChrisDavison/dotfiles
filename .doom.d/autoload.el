@@ -155,12 +155,45 @@ otherwise use the subtree title."
     (message (concat "Copied URL: " url))))
 
 ;;;###autoload
+(defun new-journal ()
+  (let ((old-journal-file org-journal-file-format)
+        (temp-journal-file "journal-%Y.org"))
+    (setq org-journal-file-format temp-journal-file)
+    (org-journal-new-entry)
+    (setq org-journal-file-format old-journal-file)))
+
+;;;###autoload
+(defun new-logbook ()
+  (let ((old-journal-file org-journal-file-format)
+        (temp-journal-file "logbook-%Y.org"))
+    (setq org-journal-file-format temp-journal-file)
+    (org-journal-new-entry)
+    (setq org-journal-file-format old-journal-file)))
+
+(defun jump-to-journal (journal-prefix)
+  (let* ((time-string (concat journal-prefix "-%Y.org"))
+        (filename (format-time-string time-string))
+        (filepath (f-join org-directory "projects" filename))
+        (old-journal-format org-journal-file-format))
+    (find-file filepath)
+    (goto-char (point-min))
+    ;; if header doesn't exist, search-forward will return (point-min)
+    ;; so create a new journal entry
+    (when (not (search-forward (format-time-string "%F %A") nil t))
+      (setq org-journal-file-format filename)
+      (org-journal-new-entry nil)
+      (setq org-journal-file-format old-journal-format))))
+
+;;;###autoload
+(defun jump-to-todays-logbook ()
+  (interactive)
+  (jump-to-journal "logbook"))
+
+;;;###autoload
 (defun jump-to-todays-journal ()
   (interactive)
-  (progn
-    (find-file "~/Dropbox/org/journal.org")
-    (goto-char (point-min))
-    (search-forward (format-time-string "%F %A"))))
+  (jump-to-journal "journal"))
+
 
 ;;;###autoload
 (defun org-fix-blank-lines (prefix)

@@ -3,8 +3,8 @@
 ;;; general org settings
 (setq org-directory "~/Dropbox/org"
       org-default-notes-file "~/Dropbox/org/inbox.org"
-      org-src-window-setup 'reorganize-frame
-      org-agenda-window-setup 'reorganize-frame
+      org-src-window-setup 'current-window
+      org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
@@ -52,7 +52,8 @@
 
 ;;; org capture
 
-(setq org-capture-templates (doct
+(setq org-capture-templates
+      (doct
        `(("Todo"
           :keys "t"
           :file "projects/todo.org"
@@ -61,8 +62,7 @@
          ("Work"
           :keys "w"
           :template "* TODO %?"
-          :headline "Tasks"
-          :children (("General" :keys "w" :file "projects/work.org")
+          :children (("General" :keys "w" :file "projects/work.org" :headline "Tasks")
                      ("GlasData" :keys "g" :file "projects/glasdata.org")
                      ("Cybele" :keys "c" :file "projects/cybele.org")))
 
@@ -72,41 +72,41 @@
           :children (("Logbook Item" :keys "j" :type item :template "- %?")
                      ("Logbook Entry" :keys "J" :template "* %?" :datetree t)))
 
-        ("LOGBOOK"
-          :keys "l"
-          :file "projects/work.org"
-          :children (("Logbook Item" :keys "l" :type item :template "- %?")
-                     ("Logbook Entry" :keys "L" :template "* %?" :datetree t)))
+         ;; ("LOGBOOK"
+         ;;  :keys "l"
+         ;;  :file "projects/work.org"
+         ;;  :children (("Logbook Item" :keys "l" :type item :template "- %?")
+         ;;             ("Logbook Entry" :keys "L" :template "* %?" :datetree t)))
 
-        ("GAMING"
-        :keys "g"
-        :headline "Games to Buy"
-        :template "* TODO %?"
-        :children (("PC" :keys "p" :file "pc-gaming.org")
-                   ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-                   ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
+         ("GAMING"
+          :keys "g"
+          :headline "Games to Buy"
+          :template "* TODO %?"
+          :children (("PC" :keys "p" :file "pc-gaming.org")
+                     ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
+                     ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
 
-        ("MEDIA"
-         :keys "m"
-         :type entry
-         :template "* TODO %?"
-         :children (("Watch" :keys "w" :file "projects/stuff-to-watch.org")
-                    ("Music" :keys "m" :file "projects/music.org")))
+         ("MEDIA"
+          :keys "m"
+          :type entry
+          :template "* TODO %?"
+          :children (("Watch" :keys "w" :file "projects/stuff-to-watch.org")
+                     ("Music" :keys "m" :file "projects/music.org")))
 
-        ("Guitar song to learn"
-         :keys "G"
-         :file "projects/guitar.org" :headline "Songs to Learn"
-         :template "* TODO %?")
+         ("Guitar song to learn"
+          :keys "G"
+          :file "projects/guitar.org" :headline "Songs to Learn"
+          :template "* TODO %?")
 
-        ("Books / reading"
-         :keys "b"
-         :file "projects/reading.org" :headline "REFILE"
-         :template "* TODO %?")
+         ("Books / reading"
+          :keys "b"
+          :file "projects/reading.org" :headline "REFILE"
+          :template "* TODO %?")
 
-        ("Anki"
-         :keys "a"
-         :file "projects/todo.org" :headline "anki"
-         :template "* TODO %?")
+         ("Anki"
+          :keys "a"
+          :file "projects/todo.org" :headline "anki"
+          :template "* TODO %?")
          )))
 
 ;; Make capture windows take of 90% of the frame
@@ -212,7 +212,7 @@
       org-agenda-sorting-strategy
       '(
         (agenda habit-down time-up todo-state-up priority-down)
-        (todo todo-s-tate-down priority-down category-keep)
+        (todo todo-state-down priority-down category-keep)
         (tags priority-down category-keep)
         (search category-keep)
         )
@@ -258,3 +258,10 @@
     (org-todo-list)))
 
 (org-super-agenda-mode 1)
+
+
+(setq org-journal-file-type 'yearly
+      org-journal-file-format "logbook-%Y.org"
+      org-journal-date-format "%F %A"
+      org-journal-time-format ""
+      org-journal-dir (f-join org-directory "projects"))
