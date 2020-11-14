@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+
 choose_tmux_session() {
     if tmux list-sessions 2>&1 > /dev/null ; then
         selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
@@ -106,7 +108,7 @@ hex2dec() { # Convert passed hex values to decimal
     done
 }
 
-function cdl () {
+cdl () {
     builtin cd "$1"
     ls
 }
@@ -124,3 +126,100 @@ copy_dotfiles(){
     rsync -r --exclude-from=excludes.txt . ~
     popd > /dev/null
 }
+
+is_in_git_repo() { 
+  git rev-parse HEAD > /dev/null 2>&1
+} 
+
+sanitise(){ 
+    [[ $# -eq 0 ]] && echo "usage: sanitise <filename>" && return
+    direc=$(dirname $1)
+    base=$(basename $1)
+    echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
+} 
+
+ppath(){ 
+    echo "$PATH" | tr ":" "\n"
+} 
+
+monospace-fonts(){ 
+    fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
+} 
+
+aliases(){ 
+    grep "^\s*alias.*=" $HOME/.zshrc | sed -e 's/^[ ]\+//g' | sed -e 's/=/@/' | column -s '@' -t | cut -d' ' -f2-
+} 
+
+nonascii(){ 
+    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
+} 
+
+is_tmux_alive(){ 
+    if [ $(tmux list-sessions | wc -l) -gt 0 ];
+    then
+        echo "TMUX"
+    else
+        echo "noMUX"
+        fi
+} 
+
+datezipdir(){ 
+    [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
+    dirname=$(basename $1)
+    zipname=$(date +"$dirname--%Y-%m-%d.zip")
+    echo $zipname
+    zip -r $zipname $1
+} 
+
+aesenc(){ 
+    [[ $# = 0 ]] && echo "usage: aesenc <file>" && return
+    gpg --symmetric -a --cipher-algo aes256 --output "$1".asc "$1"
+    echo "$1.asc created"
+} 
+
+mdformatwrap(){ # format markdown using pandoc 
+    pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
+} 
+
+tmc(){ # fuzzy choose a tmux session 
+    chosen=$(tmux list-sessions 2> /dev/null | cut -d: -f1 | fzf -0)
+    [[ -n "$chosen" ]] && tmux attach -t "$chosen"
+} 
+
+vs(){ # fuzzy select a vim session 
+    chosen=$(ls -1 $HOME/.vimsessions | fzf -0)
+    [[ -n "$chosen" ]] && nvim -S "$HOME/.vimsessions/$chosen"
+} 
+
+duplicates(){ # find duplicate words in a file 
+    [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
+    grep -Eo '(\b.+) \1\b' $1 || true
+} 
+
+asmrmpv(){ # launch a random asmr video using mpv 
+    nohup mpv $(randomasmr) &> /dev/null &
+} 
+
+wallpaper(){ # set linux wallpaper using feh 
+    chosen=$(fd . -t f $HOME/Dropbox/wallpapers | rg -v mobile | fzf)
+    [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
+} 
+
+skyemull() { # alias to ssh to mull, via skye, with tunneling 
+    echo "Mull:8811 routed to localhost:9999, via Skye"
+    ssh -L -T 9999:localhost:9999 cdavison@skye ssh -T -L 9999:localhost:8811 cdavison@mull
+} 
+
+mull() { # alias to ssh to mull with tunneling 
+    echo "Mull:8811 routed to localhost:9999, via Skye"
+    ssh mull -L 9999:localhost:8811
+} 
+
+fzs(){ # make a string 'fuzzy', for searching 
+    echo "$@" | sed -e 's/\s/.*/g'
+} 
+
+fzfp(){ # fzf with preview 
+    fzf --preview="bat {}" --preview-window=right:70%:wrap
+} 
+

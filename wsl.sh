@@ -1,9 +1,7 @@
 #!/usr/bin/env zsh
-set -euo pipefail
 
 # Windows / WSL-specific config
 if [[ $(uname -a | grep -i -q 'Microsoft') -eq 0 ]]; then
-    echo "using WSL"
     export USING_WSL=1
 fi
 
@@ -21,7 +19,6 @@ setup_wsl_interop(){
                 echo $fname > ~/.wsl_interop
             fi
         done
-        echo "WSL Interop setup ($WSL_INTEROP)"
     fi
 }
 

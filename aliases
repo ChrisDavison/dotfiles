@@ -1,0 +1,54 @@
+#!/usr/bin/bash
+
+alias tmux="set TERM xterm-256color; tmux"
+alias c="clear"
+alias cp="cp -rv"    # Always recursively and verbosely copy
+alias mv="mv -v"     # Always explain move actions
+alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
+alias less='less -R'    # Use color codes in 'less'
+alias rg='rg -S'   # Make ripgrep use smart-case by default
+alias v="vim"
+alias ipython="ipython --pprint --no-banner"
+alias g="git"
+[[ -e $(which hub) ]] && alias g="hub"
+alias today="date +%F"
+alias tmux="tmux -2"
+alias ts="tagsearch"
+alias bm="bookmarks"
+alias b="bat --tabs 2 --color=always --style=numbers,changes "
+alias n="echo '-  $argv' >> $HOME/code/knowledge/inbox.txt"
+alias nt="echo '-  [ ] $argv' >> $HOME/code/knowledge/inbox.txt"
+alias inbox="nvim $HOME/code/knowledge/inbox.txt"
+alias n="note.py"
+alias clip="xclip -sel clipboard"
+alias df="df -x squashfs"
+alias clip="xclip -sel clipboard"
+
+
+# aliases (conditional)
+ 
+# fd was installed from apt, so is installed as fdfind to not shadow
+# another 'fd' command
+[[ -x $(which fdfind) ]] && alias fd="fdfind"
+
+alias ru="repoutil unclean"
+alias rs="repoutil stat"
+alias rl="repoutil list"
+alias rf="repoutil fetch"
+alias rb="repoutil branchstat | sed -e 's/.*code\///' | sort | column -s'|' -t"
+
+alias ls="ls --color --group-directories-first"
+if [[ -x "$HOME/.cargo/bin/exa" ]]; then
+    default_exa="exa --group-directories-first"
+    alias ls="$default_exa"
+    alias lsg="$default_exa --git-ignore"
+    alias lsa="$default_exa -a"
+    alias ll="$default_exa --long --git"
+    alias la="$default_exa --long -a --git"
+    alias lt="$default_exa --tree -L 2"
+    alias lg="$default_exa --long --git-ignore --git"
+    alias ltg="$default_exa --tree -L 2 --git-ignore"
+fi
+
+alias zc="ziputil choose"
+alias zv="ziputil view"
