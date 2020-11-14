@@ -108,9 +108,14 @@ otherwise use the subtree title."
   (org-todo)
   (org-archive-subtree-default))
 
+(defun insert-newline-if-not-at-start ()
+  (unless (= (point) (line-beginning-position))
+    (newline)))
+
 ;;;###autoload
 (defun org-paste-checkbox-list ()
   (interactive)
+  (insert-newline-if-not-at-start)
   (insert (replace-regexp-in-string "^" "- [ ] " (current-kill 0))))
 
 ;;;###autoload
@@ -119,6 +124,7 @@ otherwise use the subtree title."
   (let* ((level (or level 1))
          (stars (s-repeat level "*"))
          (todo (s-concat stars " TODO ")))
+    (insert-newline-if-not-at-start)
     (insert (replace-regexp-in-string "^" todo (current-kill 0)))))
 
 ;;;###autoload
