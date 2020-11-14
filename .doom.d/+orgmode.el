@@ -169,7 +169,7 @@
                              "......"
                              "")
       org-agenda-skip-archived-trees nil
-      org-agenda-use-time-grid nil
+      org-agenda-use-time-grid t
       org-agenda-custom-commands
       '(("c" . "+my stuff")
         ("c1" "One day" ((agenda ""
@@ -177,9 +177,7 @@
                                   (org-agenda-start-day "-0d")))))
         ("cw" "Work" ((todo ""
                             ((org-agenda-files
-                              '("~/Dropbox/org/projects/work.org"
-                                "~/Dropbox/org/projects/cybele.org"
-                                "~/Dropbox/org/projects/iof2020.org"))
+                              '("~/Dropbox/org/projects/work.org"))
                              (org-agenda-overriding-header "Work")))))
 
         ("cT" "Todos, no books"
@@ -236,24 +234,19 @@
 
 (defun org-agenda-books-in-progress ()
   (interactive)
-  (let* (
-         (org-super-agenda-groups
-          `((:name "Books to Read" :file-path "projects/reading.org")
-           (:discard (:anything t)))))
+  (let* ((org-super-agenda-groups `((:name "Books to Read" :file-path "projects/reading.org")
+                                    (:discard (:anything t)))))
     (org-todo-list "WIP")))
 
 (defun org-agenda-todo-list--work ()
   (interactive)
-  (let* (
-         (org-super-agenda-groups
-          `((:name "Work" :file-path "work.org" :file-path "cybele.org" :file-path "glasdata.org")
-           (:discard (:anything t)))))
+  (let* ((org-super-agenda-groups `((:name "Work" :file-path "work.org")
+                                    (:discard (:anything t)))))
     (org-todo-list)))
 
 (defun org-agenda-todo-list--books ()
   (interactive)
-  (let* ((org-super-agenda-groups
-          `((:name "Todo" :discard (:file-path "projects/reading.org")))))
+  (let* ((org-super-agenda-groups `((:name "Todo" :discard (:file-path "projects/reading.org")))))
     (org-todo-list)))
 
 (org-super-agenda-mode 1)
