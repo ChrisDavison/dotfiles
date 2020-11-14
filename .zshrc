@@ -5,7 +5,7 @@
 #       #   # #  #   #         #   #  ####### #   #         #
 #       #    ##   # #           # #   #     # #    #  #     #
 ####### #     #    #             #    #     # #     #  #####
-export EDITOR="emacsclient -t"
+export EDITOR="vim"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
 if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
