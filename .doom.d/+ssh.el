@@ -1,8 +1,9 @@
 ;;; ../code/dotfiles/.doom.d/+ssh.el -*- lexical-binding: t; -*-
 
 ;;; Easier connection to machines over ssh
-(defvar remote-machines
+(setq remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
+    ("uist" . ,(list :username "cdavison" :ip "130.159.95.176"))
     ("iona" . ,(list :username "cdavison" :ip "130.159.94.187"))))
 
 (defun connect-remote ()
