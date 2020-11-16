@@ -228,9 +228,10 @@ ipy() { # run ipython docker image
         docker start ipython
         docker attach ipython
     else
-        docker run -it -p 8889:8888 -v (pwd):/home/jovyan --name=ipython jupyter/datascience-notebook:latest ipython
+        docker run -it -p 8889:8888 -v $(pwd):/home/jovyan --name=ipython cdavison/ipython:latest ipython
     fi
 }
+
 
 tun(){
     if [[ $# -lt 2 ]]; then
@@ -246,6 +247,6 @@ tun(){
         target=$2
         port=$3
         echo "Tunneling $hop -> $target (port $port)"   
-        ssh -t -L 8888:localhost:$port "cdavison@$hop" ssh -L $port:localhost:$port "cdavison@$target"
+        ssh -t -L "8888:localhost:$port" "cdavison@$hop" ssh -L "$port":localhost:"$port" "cdavison@$target"
     fi
 }
