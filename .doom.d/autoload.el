@@ -191,9 +191,30 @@ otherwise use the subtree title."
       (setq org-journal-file-format old-journal-format))))
 
 ;;;###autoload
+(defun make-new-journal (journal-prefix)
+  (let* ((time-string (concat journal-prefix "-%Y.org"))
+        (filename (format-time-string time-string))
+        (filepath (f-join org-directory "projects" filename))
+        (old-journal-format org-journal-file-format))
+    (find-file filepath)
+    (setq org-journal-file-format filename)
+    (org-journal-new-entry nil)
+    (setq org-journal-file-format old-journal-format)))
+
+;;;###autoload
 (defun jump-to-todays-logbook ()
   (interactive)
   (jump-to-journal "logbook"))
+
+;;;###autoload
+(defun jump-to-new-logbook()
+  (interactive)
+  (make-new-journal "logbook"))
+
+;;;###autoload
+(defun jump-to-new-journal ()
+  (interactive)
+  (make-new-journal "journal"))
 
 ;;;###autoload
 (defun jump-to-todays-journal ()

@@ -5,7 +5,9 @@
 (map! :leader
       :desc "jump to here anchor" "j h" 'jump-to-here-anchor
       :desc "jump to todays journal" "j j" 'jump-to-todays-journal
-      :desc "jump to todays logbook" "j l" 'jump-to-todays-logbook)
+      :desc "jump to todays logbook" "j l" 'jump-to-todays-logbook
+      :desc "jump to new journal" "j J" 'jump-to-new-journal
+      :desc "jump to new logbook" "j L" 'jump-to-new-logbook)
 
 (map! :v "C-c C-c" 'wsl-copy)
 (map! :v "C-c C-v" 'wsl-paste)
@@ -29,7 +31,7 @@
 (map! "<f1>" 'org-capture)
 (map! "<f2>" 'org-agenda)
 (map! "<f3>" '(lambda () (interactive) (org-agenda nil "c1")))
-(map! "<f4>" '(lambda () (interactive) (org-agenda nil "Rw")))
+(map! "<f4>" '(lambda () (interactive) (org-agenda nil "cr")))
 (map! :map org-mode-map :n "<SPC> m r a" 'org-change-state-and-archive)
 (map! :map org-mode-map :n "<SPC> m r A" 'org-archive-to-archive-sibling)
 (map! :map org-mode-map :n "<SPC> m d i" 'org-time-stamp-inactive)

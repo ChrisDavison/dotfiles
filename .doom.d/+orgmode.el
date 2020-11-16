@@ -17,7 +17,7 @@
       ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
-      org-todo-keywords '((sequence "TODO(t)" "WIP(w)" "|" "DONE(d)" "CANCELLED(c)"))
+      org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WIP(w)" "|" "DONE(d)"))
       org-cycle-separator-lines 0
       org-list-indent-offset 2
       org-modules '(org-habit)
@@ -47,7 +47,6 @@
            'org-indent-mode
            'abbrev-mode
            'undo-tree-mode
-           '(lambda () (org-superstar-mode 1))
            '(lambda () (set-face-italic 'italic t)))
 
 ;;; org capture
@@ -157,103 +156,113 @@
 
 
 ;;; org agenda
+(setq my-agenda-files--work '("~/Dropbox/org/projects/work.org"
+                              "~/Dropbox/org/projects/thesis.org")
+      my-agenda-files--main '("~/Dropbox/org/projects/work.org"
+                              "~/Dropbox/org/projects/todo.org")
+      my-agenda-files--all '("~/Dropbox/org/projects"))
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t
-      org-agenda-compact-blocks t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-compact-blocks nil
       org-agenda-todo-ignore-scheduled 'future
       org-agenda-sort-notime-is-late nil
       org-agenda-remove-tags t
-      org-agenda-skip-deadline-prewarning-if-scheduled t
-      org-agenda-files '("~/Dropbox/org/projects")
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-files my-agenda-files--all
       org-agenda-time-grid '((daily today require-timed remove-match)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
                              "")
       org-agenda-skip-archived-trees nil
-      org-agenda-use-time-grid t
-      org-agenda-custom-commands
-      '(("c" . "+my stuff")
-        ("c1" "One day" ((agenda ""
-                                 ((org-agenda-span 'day)
-                                  (org-agenda-start-day "-0d")))))
+      org-agenda-use-time-grid nil
+
+      org-agenda-sorting-strategy
+      '((agenda habit-up time-up todo-state-up priority-down)
+        (todo todo-state-down priority-down category-keep)
+        (tags priority-down category-keep)
+        (search category-keep)))
+
+(setq my-agenda-done-today-cmd
+      '(agenda "" ((org-agenda-span 1)
+                      (org-agenda-start-day "-0d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-show-log t))))
+
+(setq org-agenda-custom-commands
+      '(("c" . "Custom agenda views")
+
+        ("c1" "One day"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day "-0d")))
+          (todo "WIP" ((org-agenda-overriding-header "In Progress ('open loops')")
+                       (org-agenda-todo-ignore-scheduled t)
+                       (org-agenda-tag-filter-preset '("-readinglist" "-hobby"))))
+          (todo "NEXT" ((org-agenda-overriding-header "Possible next tasks")
+                        (org-agenda-tag-filter-preset '("-readinglist" "-hobby"))))))
+
         ("cw" "Work" ((todo ""
-                            ((org-agenda-files
-                              '("~/Dropbox/org/projects/work.org"))
+                            ((org-agenda-files '("~/Dropbox/org/projects/work.org"))
                              (org-agenda-overriding-header "Work")))))
 
-        ("cT" "Todos, no books"
+        ("ct" "Todos, no books"
          ((todo "" ((org-agenda-tag-filter-preset
                      '("-readinglist" "-hobby"))))))
 
-        ("R" . "+review")
-        ("Rw" "Weekly Review (last 7 days' DONE)"
+        ("cr" "Review (Last 7 days' work)"
          ((agenda "" ((org-super-agenda-groups nil)
                       (org-agenda-span 7)
                       (org-agenda-start-day "-8d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))))
-        ("Rd" "DONE today"
-         ((agenda "" ((org-agenda-span 1)
-                      (org-agenda-start-day "-0d")
-                      (org-agenda-entry-types '(:timestamp))
-                      (org-agenda-show-log t)))))
 
-        ("r" . "+reading")
-        ("rr" "Reading - in progress" ((todo "WIP"
-                            ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
-                             (org-agenda-overriding-header "Books in Progress")))))
-        ("rf" "Reading - future priorities"
-         ((todo "TODO|DONE"
-                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
-                 (org-agenda-overriding-header "Possible next books")
-                 (org-agenda-regexp-filter-preset '("+\#[A-Za-z]"))))))
-        )
-      org-agenda-sorting-strategy
-      '(
-        (agenda habit-down time-up todo-state-up priority-down)
-        (todo todo-state-down priority-down category-keep)
-        (tags priority-down category-keep)
-        (search category-keep)
-        )
-      )
+        ("cp" "Planning (Work and Personal TODO)"
+         ((todo "WIP" ((org-agenda-files '("work.org"))
+                        (org-agenda-overriding-header "Work IN PROGRESS")))
+          (todo "TODO" ((org-agenda-files '("work.org"))
+                        (org-agenda-overriding-header "Work TODO")))
+          (todo "WIP" ((org-agenda-files '("todo.org"))
+                        (org-agenda-overriding-header "Personal IN PROGRESS")))
+          (todo "TODO" ((org-agenda-files '("todo.org"))
+                        (org-agenda-overriding-header "Personal TODO")))))
+
+        ("cR" "Reading (books in progress, and next options)"
+         ((todo "WIP"
+                ((org-agenda-files '("reading.org"))
+                 (org-agenda-overriding-header "Books in Progress")))
+          (todo "NEXT"
+                ((org-agenda-files '("reading.org"))
+                 (org-agenda-overriding-header "Possible next books")))))
+
+        ("cL" "Literature in progress, and next options"
+         ((todo "WIP"
+                ((org-agenda-files '("literature.org"))
+                 (org-agenda-overriding-header "Papers in Progress")))
+          (todo "NEXT"
+                ((org-agenda-files '("literature.org"))
+                 (org-agenda-overriding-header "Possible next papers")))))))
 
 ;; org-agenda super groups
 ;; Each group has an implicit boolean OR operator between its selectors.
 ;;
 ;; After the last group, the agenda will display items that didn't
 ;; match any of these groups, with the default order position of 99
-(setq org-super-agenda-groups
-      `(
-        (:name "Habit" :habit t :order 1)
-        (:name "DONE" :todo "DONE" :order 99)
-        (:name "Today" :time-grid nil :order 2
-         :todo "TODAY" :and (:deadline past :scheduled past))
-        (:name "Work" :file-path "work.org" :order 3)
-        (:name "Todo" :and (:todo "TODO" :file-path "todo.org") :order 4)
-        (:name "Projects" :todo "TODO" :order 5)
-        (:discard :anything)))
+;; (setq org-super-agenda-groups
+;;       `(
+;;         ;;(:name "Habit" :habit t :order 1)
+;;         ;; (:name "DONE" :todo "DONE" :order 99)
+;;         ;; (:name "Scheduled Today" :time-grid nil :order 2
+;;         ;;  :todo "TODAY" :and (:deadline past :scheduled past))
+;;         ;; (:name "Work" :file-path "work.org" :order 3)
+;;         (:name "Todo" :todo "TODO" :order 4)
+;;         (:discard (:todo "DONE"))
+;;         (:discard :anything)))
 
-(defun org-agenda-books-in-progress ()
-  (interactive)
-  (let* ((org-super-agenda-groups `((:name "Books to Read" :file-path "projects/reading.org")
-                                    (:discard (:anything t)))))
-    (org-todo-list "WIP")))
+;; (org-super-agenda-mode 1)
 
-(defun org-agenda-todo-list--work ()
-  (interactive)
-  (let* ((org-super-agenda-groups `((:name "Work" :file-path "work.org")
-                                    (:discard (:anything t)))))
-    (org-todo-list)))
-
-(defun org-agenda-todo-list--books ()
-  (interactive)
-  (let* ((org-super-agenda-groups `((:name "Todo" :discard (:file-path "projects/reading.org")))))
-    (org-todo-list)))
-
-(org-super-agenda-mode 1)
-
-
-(setq org-journal-file-type 'yearly
+(after! f
+  (setq org-journal-file-type 'yearly
       org-journal-file-format "logbook-%Y.org"
       org-journal-date-format "%F %A"
       org-journal-time-format ""
-      org-journal-dir (f-join org-directory "projects"))
+      org-journal-dir (f-join org-directory "projects")))
