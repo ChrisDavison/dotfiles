@@ -138,8 +138,8 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='seoul256'
-let g:light_scheme='seoul256-light'
+let g:dark_scheme='corvine'
+let g:light_scheme='corvine_light'
 function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
         call s:colour_dark()
