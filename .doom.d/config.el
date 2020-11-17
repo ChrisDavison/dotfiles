@@ -22,6 +22,7 @@
       theme-preference-dark 'doom-molokai)
 
 (setq doom-font "CamingoCode-12")
+(setq doom-variable-pitch-font "Deja Vu Sans-12")
 (setq doom-theme theme-preference-dark)
 
 (setq ibuffer-formats
@@ -30,7 +31,7 @@
               (mode 10 10 :left) " "
               vc-relative-file)))
 
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (add-to-list 'auth-sources "~/.authinfo")
 (add-hook! dired-mode 'dired-hide-details-mode)
 
