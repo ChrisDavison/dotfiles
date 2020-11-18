@@ -122,7 +122,4 @@ shell exits, the buffer is killed."
 (global-undo-tree-mode 1)
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
-(if use-org-roam-on-startup
-    (org-roam-mode)
-  (message "Org-roam mode not started automatically"))
-
+(add-hook 'after-init-hook #'reload-config)
