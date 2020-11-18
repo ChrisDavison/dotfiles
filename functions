@@ -232,21 +232,7 @@ ipy() { # run ipython docker image
     fi
 }
 
-
-tun(){
-    if [[ $# -lt 2 ]]; then
-        echo "usage: tun <hop> <target> [<port>]"
-        return
-    elif [[ $# -eq 2 ]]; then
-        hop=$1
-        target=$2
-        echo "Tunneling $hop -> $target"
-        ssh -t "cdavison@$hop" ssh "cdavison@$target"
-    else
-        hop=$1
-        target=$2
-        port=$3
-        echo "Tunneling $hop -> $target (port $port)"   
-        ssh -t -L "8888:localhost:$port" "cdavison@$hop" ssh -L "$port":localhost:"$port" "cdavison@$target"
-    fi
+repo() {
+    cd $HOME/code/`ls $HOME/code | fzf --tac`
 }
+
