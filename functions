@@ -236,3 +236,6 @@ repo() {
     cd $HOME/code/`ls $HOME/code | fzf --tac`
 }
 
+wslhome() {
+    cd /mnt/c/Users/davison/"$1"
+}
