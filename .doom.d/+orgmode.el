@@ -153,44 +153,51 @@
         entry (file+headline "literature.org" "REFILE")
         "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"))
 
-
-
 ;;; org agenda
-(setq my-agenda-files--work '("~/Dropbox/org/projects/work.org"
-                              "~/Dropbox/org/projects/thesis.org")
-      my-agenda-files--main '("~/Dropbox/org/projects/work.org"
-                              "~/Dropbox/org/projects/todo.org")
-      my-agenda-files--all '("~/Dropbox/org/projects"))
-
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
       org-agenda-compact-blocks nil
       org-agenda-todo-ignore-scheduled 'future
       org-agenda-sort-notime-is-late nil
-      org-agenda-remove-tags t
+      org-agenda-remove-tags nil
       org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
-      org-agenda-files my-agenda-files--all
+      org-agenda-files '("~/Dropbox/org/projects")
       org-agenda-time-grid '((daily today require-timed remove-match)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
                              "")
       org-agenda-skip-archived-trees nil
       org-agenda-use-time-grid nil
-
+      org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
       org-agenda-sorting-strategy
       '((agenda habit-up time-up todo-state-up priority-down)
         (todo todo-state-down priority-down category-keep)
         (tags priority-down category-keep)
         (search category-keep)))
 
+;;; NEW AGENDA SETTINGS
+(setq org-agenda-scheduled-leaders '("[S] " "[S %dx] ")
+      org-agenda-deadline-leaders '("[D]" "[in %d days]"))
+;;; END - NEW AGENDA SETTINGS
+
 (setq org-agenda-custom-commands
       '(("c" . "Custom agenda views")
 
+         ;; today's agenda, with overdue
+         ;; HIDE blocked or stuff I've put on hold (BLCK WAIT)
+         ;; show a todo list of IN-PROGRESS
+         ;; show a todo list of BLOCKED or WAITING
+         ;; show a todo list of POSSIBLE-NEXT-ITEMS
         ("c1" "One day"
+
          ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day "-0d")))
+                      (org-agenda-start-day "-0d")
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
           (todo "WIP" ((org-agenda-overriding-header "In Progress ('open loops')")
+                       (org-agenda-todo-ignore-scheduled t)
+                       (org-agenda-tag-filter-preset '("-readinglist" "-hobby"))))
+          (todo "WAIT|BLCK" ((org-agenda-overriding-header "Blocked or on-hold ('open loops')")
                        (org-agenda-todo-ignore-scheduled t)
                        (org-agenda-tag-filter-preset '("-readinglist" "-hobby"))))
           (todo "NEXT" ((org-agenda-overriding-header "Possible next tasks")
@@ -215,12 +222,14 @@
                       (org-agenda-show-log t)))))
 
         ("cp" "Planning (Work and Personal TODO)"
-         ((todo "WIP" ((org-agenda-files my-agenda-files--work)
-                        (org-agenda-overriding-header "Work IN PROGRESS")))
-          (todo "TODO" ((org-agenda-files my-agenda-files--work))
-                        (org-agenda-overriding-header "Work TODO"))
+         ((todo "WIP" ((org-agenda-files '("~/Dropbox/org/projects/work.org"
+                              "~/Dropbox/org/projects/thesis.org"))
+                       (org-agenda-overriding-header "Work IN PROGRESS")))
+          (todo "TODO" ((org-agenda-files '("~/Dropbox/org/projects/work.org"
+                              "~/Dropbox/org/projects/thesis.org")))
+                (org-agenda-overriding-header "Work TODO"))
           (todo "WIP" ((org-agenda-files '("~/Dropbox/org/projects/todo.org"))
-                        (org-agenda-overriding-header "Personal IN PROGRESS")))
+                       (org-agenda-overriding-header "Personal IN PROGRESS")))
           (todo "TODO" ((org-agenda-files '("~/Dropbox/org/projects/todo.org"))
                         (org-agenda-overriding-header "Personal TODO")))))
 
