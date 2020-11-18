@@ -17,11 +17,10 @@
       ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
       ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
-      org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WIP(w)" "|" "DONE(d)"))
+      org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
       org-cycle-separator-lines 0
       org-list-indent-offset 2
       org-modules '(org-habit)
-      ;;       org-modules '(org-bibtex org-habit org-tempo)
       org-log-repeat t
       org-log-done 'time
       org-log-done-with-time t
