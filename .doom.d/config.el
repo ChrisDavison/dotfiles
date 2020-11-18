@@ -9,7 +9,7 @@
       auto-save-default t
       auto-save-timeout 5
       avy-all-windows t
-      vterm-shell "/usr/bin/fish"
+      vterm-shell "/usr/bin/zsh"
       recentf-auto-cleanup 60
       global-auto-revert-mode t
       projectile-project-search-path '("~/code")
