@@ -1,10 +1,10 @@
 ;;; ../code/dotfiles/.doom.d/autoload/orgutil.el -*- lexical-binding: t; -*-
 
 ;;; general org settings
-(setq org-directory "~/Dropbox/org"
-      org-default-notes-file "~/Dropbox/org/inbox.org"
-      org-src-window-setup 'current-window
-      org-agenda-window-setup 'current-window
+(setq org-directory (expand-file-name "~/Dropbox/org")
+      org-default-notes-file (expand-file-name "~/Dropbox/org/inbox.org")
+      org-src-window-setup 'reorganize-frame
+      org-agenda-window-setup 'reorganize-frame
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
