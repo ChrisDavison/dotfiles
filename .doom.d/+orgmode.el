@@ -3,8 +3,8 @@
 ;;; general org settings
 (setq org-directory (expand-file-name "~/Dropbox/org")
       org-default-notes-file (expand-file-name "~/Dropbox/org/inbox.org")
-      org-src-window-setup 'reorganize-frame
-      org-agenda-window-setup 'reorganize-frame
+      org-src-window-setup 'current-window
+      org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
@@ -156,6 +156,7 @@
 ;;; org agenda
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
+      org-agenda-block-separator "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n"
       org-agenda-skip-deadline-if-done t
       org-agenda-compact-blocks nil
       org-agenda-todo-ignore-scheduled 'future
@@ -171,7 +172,7 @@
       org-agenda-use-time-grid nil
       org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
       org-agenda-sorting-strategy
-      '((agenda habit-up time-up todo-state-up priority-down)
+      '((agenda habit-up category-up scheduled-up  time-up todo-state-up  priority-down)
         (todo todo-state-down priority-down category-keep)
         (tags priority-down category-keep)
         (search category-keep)))
