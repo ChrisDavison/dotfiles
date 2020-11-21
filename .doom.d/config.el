@@ -19,10 +19,23 @@
       use-org-roam-on-startup nil
       first-org-reload-done nil
       theme-preference-light 'kaolin-breeze
-      theme-preference-dark 'doom-molokai)
+      theme-preference-dark 'doom-one)
 
-(setq doom-font "CamingoCode-12")
-(setq doom-variable-pitch-font "Deja Vu Sans-12")
+;; dark themes
+;;      doom-one
+;;      kaolin-bubblegum
+;;      kaolin-eclipse
+;;      kaolin-temple
+;;      dracula
+;; light themes
+;;      kaolin-breeze
+;;      solarized-light
+;;      leuven
+;;      kaolin-light
+;;      apropospriate-light
+
+(setq doom-font "Hack-14")
+(setq doom-variable-pitch-font "Montserrat-16")
 (setq doom-theme theme-preference-dark)
 
 (setq ibuffer-formats
