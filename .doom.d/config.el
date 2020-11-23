@@ -136,3 +136,4 @@ shell exits, the buffer is killed."
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
 (add-hook 'after-init-hook #'reload-config)
+(add-hook 'visual-line-mode-hook #'visual-fill-column-mode)

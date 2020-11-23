@@ -12,6 +12,7 @@
 (package! yasnippet)
 (package! dired-narrow)
 (package! undo-tree)
+(package! visual-fill-column)
 
 ;;; Languages
 (package! rust-mode)
