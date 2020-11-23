@@ -91,6 +91,11 @@
           :keys "a"
           :file "todo.org" :headline "anki"
           :template "* TODO %?")
+
+        ("Learn"
+          :keys "l"
+          :file "todo.org" :headline "Stuff to learn (refile to appropriate file)"
+          :template "* TODO learn about: %?")
          )))
 
 ;; Make capture windows take of 90% of the frame
@@ -238,7 +243,9 @@
                 ((org-agenda-files '("~/Dropbox/org/literature.org"))
                  (org-agenda-overriding-header "Possible next papers")))))))
 
-
+;;; ==========================
+;;; JOURNAL
+;;; ==========================
 (after! f
   (setq org-journal-file-type 'yearly
       org-journal-file-format "logbook-%Y.org"
@@ -246,6 +253,8 @@
       org-journal-time-format ""
       org-journal-dir org-directory))
 
-;;; ==========================
-;;; JOURNAL
-;;; ==========================
+
+(dir-locals-set-class-variables
+ 'my-org-dir-local-stuff
+ '((nil . ((projectile-project-root "~/Dropbox/org")))))
+(dir-locals-set-directory-class "~/Dropbox/org" 'my-org-dir-local-stuff)
