@@ -1,18 +1,15 @@
 ;; ../code/dotfiles/.doom.d/autoload/orgutil.el -*- lexical-binding: t; -*-
 
-;;; general org settings
-;;;
-(defun get-agenda-files (to-ignore)
-  (let* ((ignores (s-join "|" to-ignore))
-         (agenda-dir (expand-file-name "~/Dropbox/org/projects"))
-         (files (directory-files-recursively agenda-dir "\.org$")))
-    (--remove (s-matches? (format "(%s)$" ignores) it) files)))
+;;; ==========================
+;;; GENERAL ORG SETTINGS
+;;; ==========================
 
 (setq org-directory (expand-file-name "~/Dropbox/org")
       org-default-notes-file (expand-file-name "~/Dropbox/org/inbox.org")
       org-src-window-setup 'current-window
       org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
+      org-agenda-files '("~/Dropbox/org")
       org-agenda-inhibit-startup nil
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
@@ -33,7 +30,7 @@
       org-log-done-with-time t
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
-      org-archive-location "~/Dropbox/org/projects/done.org::* From %s"
+      org-archive-location "~/Dropbox/org/done.org::* From %s"
       org-refile-use-outline-path 't
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
@@ -56,35 +53,20 @@
            'undo-tree-mode
            '(lambda () (set-face-italic 'italic t)))
 
-;;; org capture
-
+;;; ==========================
+;;; ORG-CAPTURE
+;;; ==========================
 (setq org-capture-templates
       (doct
        `(("Todo"
           :keys "t"
-          :file "projects/todo.org"
-          :template "* TODO %?")
-
-         ("Work"
-          :keys "w"
           :template "* TODO %?"
-          :file "projects/work.org"
-          :children (("General" :keys "w" :headline "Tasks")
-                     ("GlasData" :keys "g" :headline "Tasks - IoF + GlasData")
-                     ("Pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
-                     ("Cybele" :keys "c" :headline "Tasks - Cybele")))
-
-         ;; ("JOURNAL"
-         ;;  :keys "j"
-         ;;  :file "journal.org"
-         ;;  :children (("Logbook Item" :keys "j" :type item :template "- %?")
-         ;;             ("Logbook Entry" :keys "J" :template "* %?" :datetree t)))
-
-         ;; ("LOGBOOK"
-         ;;  :keys "l"
-         ;;  :file "projects/work.org"
-         ;;  :children (("Logbook Item" :keys "l" :type item :template "- %?")
-         ;;             ("Logbook Entry" :keys "L" :template "* %?" :datetree t)))
+          :file "work.org"
+          :children (("Todo (personal)" :keys "t" :file "todo.org")
+                     ("Work - General" :keys "w" :headline "Tasks")
+                     ("Work - GlasData" :keys "g" :headline "Tasks - IoF + GlasData")
+                     ("Work Pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
+                     ("Work Cybele" :keys "c" :headline "Tasks - Cybele")))
 
          ("GAMING"
           :keys "g"
@@ -98,22 +80,22 @@
           :keys "m"
           :type entry
           :template "* TODO %?"
-          :children (("Watch" :keys "w" :file "projects/stuff-to-watch.org")
-                     ("Music" :keys "m" :file "projects/music.org")))
+          :children (("Watch" :keys "w" :file "stuff-to-watch.org")
+                     ("Music" :keys "m" :file "music.org")))
 
          ("Guitar song to learn"
           :keys "G"
-          :file "projects/guitar.org" :headline "Songs to Learn"
+          :file "guitar.org" :headline "Songs to Learn"
           :template "* TODO %?")
 
          ("Books / reading"
           :keys "b"
-          :file "projects/reading.org" :headline "REFILE"
+          :file "reading.org" :headline "REFILE"
           :template "* TODO %?")
 
          ("Anki"
           :keys "a"
-          :file "projects/todo.org" :headline "anki"
+          :file "todo.org" :headline "anki"
           :template "* TODO %?")
          )))
 
@@ -170,7 +152,7 @@
       org-agenda-sort-notime-is-late nil
       org-agenda-remove-tags nil
       org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
-      org-agenda-files '("~/Dropbox/org/projects")
+      org-agenda-files '("~/Dropbox/org")
       org-agenda-time-grid '((daily today require-timed remove-match)
                              (900 1000 1100 1200 1300 1400 1500 1600 1700)
                              "......"
@@ -238,31 +220,34 @@
 
         ("cR" "Reading (books in progress, and next options)"
          ((todo "WIP"
-                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                ((org-agenda-files '("~/Dropbox/org/reading.org"))
                  (org-agenda-overriding-header "Books in Progress")))
           (todo "NEXT"
-                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                ((org-agenda-files '("~/Dropbox/org/reading.org"))
                  (org-agenda-overriding-header "Possible next books")))
           (todo "MAYB"
-                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                ((org-agenda-files '("~/Dropbox/org/reading.org"))
                  (org-agenda-overriding-header "Books to consider")))
           (todo "TODO"
-                ((org-agenda-files '("~/Dropbox/org/projects/reading.org"))
+                ((org-agenda-files '("~/Dropbox/org/reading.org"))
                  (org-agenda-overriding-header "Rest of the books...")))))
 
         ("cL" "Literature in progress, and next options"
          ((todo "WIP"
-                ((org-agenda-files '("~/Dropbox/org/projects/literature.org"))
+                ((org-agenda-files '("~/Dropbox/org/literature.org"))
                  (org-agenda-overriding-header "Papers in Progress")))
           (todo "NEXT"
-                ((org-agenda-files '("~/Dropbox/org/projects/literature.org"))
+                ((org-agenda-files '("~/Dropbox/org/literature.org"))
                  (org-agenda-overriding-header "Possible next papers")))))))
+
 
 (after! f
   (setq org-journal-file-type 'yearly
       org-journal-file-format "logbook-%Y.org"
       org-journal-date-format "%F %A"
       org-journal-time-format ""
-      org-journal-dir (f-join org-directory "projects")))
+      org-journal-dir org-directory))
 
-(setq auto-save-hook 'org-save-all-org-buffers)
+;;; ==========================
+;;; JOURNAL
+;;; ==========================
