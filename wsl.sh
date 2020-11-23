@@ -17,6 +17,7 @@ setup_wsl_interop(){
                 export WSL_INTEROP=$fname
                 [[ -f "~/.wsl_interop" ]] && rm "~/.wsl_interop"
                 echo $fname > ~/.wsl_interop
+                return
             fi
         done
     fi

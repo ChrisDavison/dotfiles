@@ -23,17 +23,10 @@ export RANGER_LOAD_DEFAULT_RC=0
 export RUST_SRC_PATH="$HOME/.rust_src"
 export BROWSER="firefox"
 
-prepend_to_path_if_exists() {
-    [[ -d "$1" ]] && export PATH="$1":$PATH
-}
-
-home_paths=(bin .fzf/bin code/scripts .cargo/bin .local/bin .nimble/bin .local/go/bin)
-for p in ${home_paths[@]}; do
-    prepend_to_path_if_exists "$p"
+paths=($HOME/bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin)
+for p in ${paths[@]}; do
+    export PATH="$1":$PATH
 done
-
-prepend_to_path_if_exists "/usr/local/go/bin"
-
 
  #####  ####### ####### ####### ### #     #  #####   #####
 #     # #          #       #     #  ##    # #     # #     #
@@ -97,4 +90,3 @@ done
 [[ ! -f "$HOME/.hushlogin" ]] && touch "$HOME/.hushlogin"
 
 cd $HOME
-
