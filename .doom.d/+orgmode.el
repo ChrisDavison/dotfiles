@@ -18,32 +18,26 @@
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
       org-link-frame-setup '((file . find-file-other-window))
-      ;;       ;; Use M-+ M-- to change todo, and leave S-<arrow> for windows
-      ;;       org-replace-disputed-keys t
       org-hide-emphasis-markers t
       org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
       org-cycle-separator-lines 0
       org-list-indent-offset 2
       org-modules '(org-habit)
-      org-log-repeat t
-      org-log-done 'time
-      org-log-done-with-time t
+      org-log-repeat nil
+      org-log-done nil
+      org-log-done-with-time nil
       org-treat-insert-todo-heading-as-state-change t
       org-log-into-drawer t
       org-archive-location "~/Dropbox/org/done.org::* From %s"
       org-refile-use-outline-path 't
       org-refile-allow-creating-parent-nodes 'confirm
       org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
-      org-roam-directory org-directory
       org-startup-folded 'fold
-      org-id-track-globally t
-        ;;; org-roam / deft / zetteldeft
-      deft-directory org-directory
-      deft-recursive t)
+      org-id-track-globally t)
 
-;;; org roam config
 
-(setq org-roam-tag-separator " ")
+(setq org-agenda-files
+      (directory-files org-directory t ".*\.org"))
 
 (add-hook! org-mode
            'visual-line-mode
@@ -142,10 +136,14 @@
         entry (file+headline "literature.org" "REFILE")
         "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"))
 
-;;; org agenda
+(setq auto-save-hook 'org-save-all-org-buffers)
+
+;;; ==========================
+;;; AGENDA
+;;; ==========================
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done t
-      org-agenda-block-separator "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n"
+      org-agenda-block-separator ""
       org-agenda-skip-deadline-if-done t
       org-agenda-compact-blocks nil
       org-agenda-todo-ignore-scheduled 'future
@@ -160,6 +158,8 @@
       org-agenda-skip-archived-trees nil
       org-image-actual-width 600
       org-agenda-use-time-grid nil
+      org-agenda-scheduled-leaders '("[S] " "[S %dx] ")
+      org-agenda-deadline-leaders '("[D]" "[in %d days]")
       org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
       org-agenda-sorting-strategy
       '((agenda habit-up category-up scheduled-up  time-up todo-state-up  priority-down)
@@ -167,14 +167,14 @@
         (tags priority-down category-keep)
         (search category-keep)))
 
-;;; NEW AGENDA SETTINGS
-(setq org-agenda-scheduled-leaders '("[S] " "[S %dx] ")
-      org-agenda-deadline-leaders '("[D]" "[in %d days]"))
-;;; END - NEW AGENDA SETTINGS
-
 (setq org-agenda-custom-commands
       '(("c" . "Custom agenda views")
 
+        ("cc" "'Clean' - today's agenda only"
+
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day "-0d")
+                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))))
          ;; today's agenda, with overdue
          ;; HIDE blocked or stuff I've put on hold (BLCK WAIT)
          ;; show a todo list of IN-PROGRESS
@@ -185,17 +185,15 @@
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day "-0d")
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
-          (todo "WIP" ((org-agenda-overriding-header "In Progress ('open loops')")
+          (todo "WIP" ((org-agenda-overriding-header "In Progress")
                        (org-agenda-todo-ignore-scheduled t)))
-          (todo "WAIT|BLCK" ((org-agenda-overriding-header "Blocked or on-hold ('open loops')")
-                             (org-agenda-todo-ignore-scheduled t)))
-          (todo "NEXT" ((org-agenda-overriding-header "Possible next tasks")
-                        (org-agenda-todo-ignore-scheduled t)))))
+          (todo "WAIT|BLCK" ((org-agenda-overriding-header "Blocked or on-hold")
+                             (org-agenda-todo-ignore-scheduled t)))))
 
         ("cn" "NEXT" ((todo "NEXT" nil)))
 
         ("cw" "Work" ((todo ""
-                            ((org-agenda-files '("~/Dropbox/org/projects/work.org"))
+                            ((org-agenda-files '("~/Dropbox/org/work.org"))
                              (org-agenda-overriding-header "Work")))))
 
         ("ct" "Todos, no books"

@@ -18,7 +18,7 @@
       nov-text-width 80
       use-org-roam-on-startup nil
       first-org-reload-done nil
-      theme-preference-light 'kaolin-breeze
+      theme-preference-light 'kaolin-light
       theme-preference-dark 'doom-one)
 
 ;; dark themes
