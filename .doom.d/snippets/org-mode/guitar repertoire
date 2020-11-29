@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: guitar repertoire
+# uuid: repertoire
+# key: repertoire
+# condition: t
+# --
+/"$1",/ by $2
