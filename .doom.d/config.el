@@ -136,4 +136,11 @@ shell exits, the buffer is killed."
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
 (add-hook 'after-init-hook #'reload-config)
-(add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+(setq fill-column 120)
+(add-hook 'org-mode-hook #'visual-fill-column-mode)
+(add-hook 'org-mode-hook #'undo-tree-mode)
+(add-hook 'prog-mode-hook #'undo-tree-mode)
+
+(setq fullscreen-at-startup t)
+(when fullscreen-at-startup
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
