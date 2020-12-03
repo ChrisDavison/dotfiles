@@ -18,25 +18,12 @@
       nov-text-width 80
       use-org-roam-on-startup nil
       first-org-reload-done nil
-      theme-preference-light 'kaolin-light
-      theme-preference-dark 'doom-one)
-
-;; dark themes
-;;      doom-one
-;;      kaolin-bubblegum
-;;      kaolin-eclipse
-;;      kaolin-temple
-;;      dracula
-;; light themes
-;;      kaolin-breeze
-;;      solarized-light
-;;      leuven
-;;      kaolin-light
-;;      apropospriate-light
+      theme-preferences-light '(kaolin-breeze kaolin-light leuven apropospriate-light)
+      theme-preferences-dark '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
 
 (setq doom-font "Hack-14")
 (setq doom-variable-pitch-font "Montserrat-16")
-(setq doom-theme theme-preference-dark)
+(setq doom-theme (nth 0 theme-preferences-dark))
 
 (setq ibuffer-formats
       `((mark modified read-only vc-status-mini " "
