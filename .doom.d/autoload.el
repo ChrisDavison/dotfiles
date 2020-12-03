@@ -297,22 +297,11 @@ exist after each headings's drawers."
   (term "/usr/bin/fish"))
 
 ;;;###autoload
-(defun next-theme ()
+(defun next-theme (&optional backward alternate-theme-list)
   (interactive)
-  (let* ((themes (custom-available-themes))
+  (let* ((themes (if alternate-theme-list alternate-theme-list (custom-available-themes)))
          (idx-current (cl-position doom-theme themes))
-         (idx-next (next-circular-index idx-current (length themes)))
-         (next (nth idx-next themes)))
-    (message "%s" next)
-    (setq doom-theme next)
-    (doom/reload-theme)))
-
-;;;###autoload
-(defun prev-theme ()
-  (interactive)
-  (let* ((themes (custom-available-themes))
-         (idx-current (cl-position doom-theme themes))
-         (idx-next (next-circular-index idx-current (length themes) t))
+         (idx-next (next-circular-index (if idx-current idx-current 0) (length themes) (if backward t nil)))
          (next (nth idx-next themes)))
     (message "%s" next)
     (setq doom-theme next)
