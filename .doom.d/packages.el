@@ -1,4 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
+
 ;; $DOOMDIR/packages.el
 
 ;;; Utility
@@ -27,6 +28,7 @@
 (package! haskell-mode)
 (package! yaml-mode)
 (package! ahk-mode)
+(package! zig-mode)
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
