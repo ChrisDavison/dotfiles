@@ -45,6 +45,8 @@
       "C-x C-n" 'org-file-from-subtree
       :v "C-x C-n" 'org-file-from-selection)
 
+(map! :map rust-mode-map :leader :n "c d" 'racer-find-definition)
+
 (map! "<f5>" #'find-next-file
       "<f6>" #'find-previous-file)
 
@@ -55,8 +57,12 @@
 
 (map! :leader
       :prefix "w"
-      :desc "evil-window-split (follow)" "s" #'split-horizontal-and-follow
-      :desc "evil-window-vsplit (follow)" "v" #'split-vertical-and-follow)
+      :desc "evil-window-split (follow)" "s" (lambda () (interactive)
+        (evil-window-split)
+        (evil-window-down 1))
+      :desc "evil-window-vsplit (follow)" "v" (lambda () (interactive)
+        (evil-window-vsplit)
+        (evil-window-right 1)))
 
 (map! :map org-mode-map :n "<SPC> m l u" 'org-copy-link-url)
 
