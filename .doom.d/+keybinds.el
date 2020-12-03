@@ -40,6 +40,7 @@
       "m d i" 'org-time-stamp-inactive
       "o s" 'org-open-link-same-window
       "o o" 'org-open-at-point
+      "Q" 'org-unfill-paragraph
       "N" 'org-toggle-narrow-to-subtree)
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
