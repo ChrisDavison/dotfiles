@@ -20,7 +20,7 @@
       org-modules nil
       org-treat-insert-todo-heading-as-state-change t
       org-log-repeat nil
-      org-log-done nil
+      org-log-done 'time
       org-log-done-with-time nil
       org-log-into-drawer t
       org-archive-location (format "%s::* From %%s" (concat org-directory "archive.org"))
@@ -71,6 +71,10 @@
       org-journal-date-format "%F %A"
       org-journal-time-format ""
       org-journal-dir org-directory
+;;; ==========================
+;;; DEFT
+;;; ==========================
+      deft-directory org-directory
 )
 
 
@@ -180,10 +184,11 @@
          ((todo "" ((org-agenda-tag-filter-preset '("-readinglist"))))))
 
         ("cr" "Review the last week"
-         ((agenda "" ((org-super-agenda-groups nil)
-                      (org-agenda-span 7)
-                      (org-agenda-start-day "-8d")
+         ((agenda "" ((org-agenda-start-day "-8d")
                       (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-archives-mode t)
+                      (org-agenda-later 1)
+                      (org-agenda_log-mode 16)
                       (org-agenda-show-log t)))))
 
         ("cp" "Planning"
