@@ -3,74 +3,74 @@
 ;;; ==========================
 ;;; GENERAL ORG SETTINGS
 ;;; ==========================
-  (setq org-directory (expand-file-name "~/code/knowledge/")
-org-src-window-setup 'current-window
-org-indent-indentation-per-level 1
-org-adapt-indentation nil
-org-tags-column 0
-org-pretty-entities t
-org-catch-invisible-edits 'show-and-error
-org-imenu-depth 4
-org-link-frame-setup '((file . find-file-other-window))
-org-hide-emphasis-markers t
-org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
-org-cycle-separator-lines 0
-org-list-indent-offset 2
-;; org-modules '(org-habit)
-org-modules nil
-org-treat-insert-todo-heading-as-state-change t
-org-log-repeat nil
-org-log-done nil
-org-log-done-with-time nil
-org-log-into-drawer t
-org-archive-location "::* ARCHIVE :ARCHIVE:"
-org-refile-use-outline-path 't
-org-refile-allow-creating-parent-nodes 'confirm
-org-startup-folded 'fold
-org-id-track-globally t
-org-image-actual-width 600
+(setq org-directory (expand-file-name "~/code/knowledge/")
+      org-src-window-setup 'current-window
+      org-indent-indentation-per-level 1
+      org-adapt-indentation nil
+      org-tags-column 0
+      org-pretty-entities t
+      org-catch-invisible-edits 'show-and-error
+      org-imenu-depth 4
+      org-link-frame-setup '((file . find-file-other-window))
+      org-hide-emphasis-markers t
+      org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
+      org-cycle-separator-lines 0
+      org-list-indent-offset 2
+      ;; org-modules '(org-habit)
+      org-modules nil
+      org-treat-insert-todo-heading-as-state-change t
+      org-log-repeat nil
+      org-log-done nil
+      org-log-done-with-time nil
+      org-log-into-drawer t
+      org-archive-location (format "%s::* From %%s" (concat org-directory "archive.org"))
+      org-refile-use-outline-path 't
+      org-refile-allow-creating-parent-nodes 'confirm
+      org-startup-folded 'fold
+      org-id-track-globally t
+      org-image-actual-width 600
 
 ;;; ==========================
 ;;; AGENDA
 ;;; ==========================
-org-agenda-window-setup 'current-window
-org-agenda-restore-windows-after-quit t
-org-agenda-inhibit-startup nil
-org-agenda-files `(,org-directory
-                        ,(concat org-directory "books")
-                        ,(concat org-directory "work"))
-org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
-org-agenda-skip-scheduled-if-deadline-is-shown t
-org-agenda-skip-scheduled-if-done t
-org-agenda-skip-deadline-if-done t
-org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
-org-agenda-skip-archived-trees nil
-org-agenda-block-separator ""
-org-agenda-compact-blocks nil
-org-agenda-todo-ignore-scheduled 'future
-org-agenda-sort-notime-is-late nil
-org-agenda-remove-tags t
-org-agenda-time-grid '((daily today require-timed remove-match)
-                        (900 1000 1100 1200 1300 1400 1500 1600 1700)
-                        "......"
-                        "")
-org-agenda-use-time-grid nil
-org-agenda-scheduled-leaders '("" "LATE x%d")
-org-agenda-deadline-leaders '("" " in %dd")
-org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
-org-agenda-sorting-strategy '((agenda habit-up time-up category-up scheduled-up todo-state-up  priority-down)
-                                (todo priority-down category-up todo-state-down )
-                                (tags priority-down category-keep)
-                                (search category-keep))
+      org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t
+      org-agenda-inhibit-startup nil
+      org-agenda-files `(,org-directory
+                         ,(concat org-directory "books")
+                         ,(concat org-directory "work"))
+      org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-skip-archived-trees nil
+      org-agenda-block-separator ""
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
+      org-agenda-time-grid '((daily today require-timed remove-match)
+                             (900 1000 1100 1200 1300 1400 1500 1600 1700)
+                             "......"
+                             "")
+      org-agenda-use-time-grid nil
+      org-agenda-scheduled-leaders '("" "LATE x%d")
+      org-agenda-deadline-leaders '("" " in %dd")
+      org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
+      org-agenda-sorting-strategy '((agenda habit-up time-up category-up scheduled-up todo-state-up  priority-down)
+                                    (todo priority-down category-up todo-state-down )
+                                    (tags priority-down category-keep)
+                                    (search category-keep))
 
 ;;; ==========================
 ;;; JOURNAL
 ;;; ==========================
-org-journal-file-type 'yearly
-org-journal-file-format "logbook-%Y.org"
-org-journal-date-format "%F %A"
-org-journal-time-format ""
-org-journal-dir org-directory
+      org-journal-file-type 'yearly
+      org-journal-file-format "logbook-%Y.org"
+      org-journal-date-format "%F %A"
+      org-journal-time-format ""
+      org-journal-dir org-directory
 )
 
 
@@ -84,11 +84,11 @@ org-journal-dir org-directory
           :keys "t"
           :template "* TODO %?"
           :file "work.org"
-          :children (("Todo (personal)" :keys "t" :file "todo.org")
-                     ("Work - General" :keys "w" :headline "Tasks")
-                     ("Work - GlasData" :keys "g" :headline "Tasks - IoF + GlasData")
-                     ("Work Pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
-                     ("Work Cybele" :keys "c" :headline "Tasks - Cybele")))
+          :children (("Todo @personal" :keys "t" :file "todo.org")
+                     ("Work @general" :keys "w" :headline "Tasks")
+                     ("Work @glasdata" :keys "g" :headline "Tasks - IoF + GlasData")
+                     ("Work @pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
+                     ("Work @cybele" :keys "c" :headline "Tasks - Cybele")))
 
          ("GAMING"
           :keys "g"
@@ -135,6 +135,15 @@ org-journal-dir org-directory
 ;;; ==========================
 ;;; CUSTOM AGENDAS
 ;;; ==========================
+(defun org-files-work ()
+  (--map (concat org-directory it)
+         '("work.org" "literature.org")))
+
+(defun org-files-non-work ()
+  (cl-set-difference
+   (org-agenda-files) (org-files-work)
+   :test 'equal))
+
 (setq org-agenda-custom-commands
       '(("c" . "Custom agenda views")
 
@@ -149,11 +158,14 @@ org-journal-dir org-directory
          ;; show a todo list of BLOCKED or WAITING
          ;; show a todo list of POSSIBLE-NEXT-ITEMS
         ("c1" "One day"
-
          ((agenda "" ((org-agenda-span 'day)
                       (org-agenda-start-day "-0d")
                       (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
+          (todo "WIP" ((org-agenda-overriding-header "Work - In Progress")
+                       (org-agenda-files (org-files-work))
+                       (org-agenda-todo-ignore-scheduled t)))
           (todo "WIP" ((org-agenda-overriding-header "In Progress")
+                       (org-agenda-files (--filter (not (s-contains? "work.org" it)) (org-agenda-files)))
                        (org-agenda-todo-ignore-scheduled t)))
           (todo "WAIT|BLCK" ((org-agenda-overriding-header "Blocked or on-hold")
                              (org-agenda-todo-ignore-scheduled t)))))
@@ -195,7 +207,12 @@ org-journal-dir org-directory
         ("cL" "Literature in progress, and next options"
          ((todo "WIP|NEXT"
                 ((org-agenda-files '((concat org-directory "literature.org")))
-                 (org-agenda-overriding-header "Papers in Progress")))))))
+                 (org-agenda-overriding-header "Papers in Progress")))))
+
+        ("ca" "Stuff to anki"
+         ((todo "" ((org-agenda-regexp-filter-preset '("+anki"))
+                    (org-agenda-sorting-strategy '((todo todo-state-down priority-down category-up))))))
+         )))
 
 
 
