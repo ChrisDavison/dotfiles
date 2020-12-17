@@ -23,7 +23,6 @@
     discard=checkout --
     staged=diff --cached
     l=log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-    ll=log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all origin..
     d=diff -w
     s=status -s -b
     branch-name=rev-parse --abbrev-ref HEAD
@@ -47,6 +46,7 @@
     unpublish="!git push origin :$(git branch-name)"
     editmodified="!$EDITOR $(git ls-files -m -o)"
     sa="!git submodule add https://github.com/$@"
+    wip="for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads"
 [core]
     excludesfile = ~/.global_ignore
     commitGraph = true
