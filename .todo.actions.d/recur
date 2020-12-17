@@ -21,11 +21,11 @@ def shift_date(recur_string_match, cur_due_date):
     shiftnum = int(recur_string_match.group(1))
     freq=recur_string_match.group(2)
     after = cur_due_date
-    if freq is 'd':
+    if freq == 'd':
         after += datetime.timedelta(days=shiftnum)
         if after < datetime.date.today():
             after = datetime.date.today() + datetime.timedelta(days=shiftnum)
-    elif freq is 'w':
+    elif freq == 'w':
         after += datetime.timedelta(weeks=shiftnum)
         if after < datetime.date.today():
             after = datetime.date.today() + datetime.timedelta(weeks=shiftnum)
