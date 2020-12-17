@@ -5,13 +5,13 @@
 #       #   # #  #   #         #   #  ####### #   #         #
 #       #    ##   # #           # #   #     # #    #  #     #
 ####### #     #    #             #    #     # #     #  #####
-export EDITOR="vim"
+export EDITOR="nvim"
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
 if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
     export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
     export FZF_ALT_C_COMMAND='fd -t d . $HOME'
-else 
+else
     export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 fi
 export WORKON_HOME="$HOME/.envs"
@@ -23,7 +23,7 @@ export RANGER_LOAD_DEFAULT_RC=0
 export RUST_SRC_PATH="$HOME/.rust_src"
 export BROWSER="firefox"
 
-paths=($HOME/bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin)
+paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin)
 for p in ${paths[@]}; do
     export PATH="$1":$PATH
 done
@@ -60,7 +60,7 @@ zstyle ':completion:::::' completer _expand _complete _ignored _approximate #ena
 
 autoload -Uz compinit;compinit -i
 
-# keybinds 
+# keybinds
 # up and down do history search
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
@@ -74,7 +74,7 @@ external_scripts=(
     $HOME/.envs/py/bin/activate
     $HOME/.cargo/env
     $HOME/.fzf/shell/key-bindings.zsh
-    $HOME/code/dotfiles/wsl.sh   
+    $HOME/code/dotfiles/wsl.sh
     $HOME/.fzf.zsh
 )
 
@@ -89,4 +89,8 @@ done
 # Hide server welcome messages (message of the day, MOTD)
 [[ ! -f "$HOME/.hushlogin" ]] && touch "$HOME/.hushlogin"
 
-cd $HOME
+# cd $HOME
+
+export WASMTIME_HOME="$HOME/.wasmtime"
+
+export PATH="$WASMTIME_HOME/bin:$PATH"
