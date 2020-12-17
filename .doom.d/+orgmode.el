@@ -75,6 +75,8 @@
 ;;; DEFT
 ;;; ==========================
       deft-directory org-directory
+      deft-incremental-search nil
+      deft-recursive t
 )
 
 
@@ -106,7 +108,7 @@
          ("MEDIA"
           :keys "m"
           :type entry
-          :children (("Watch" :keys "w" :file "stuff-to-watch.org" :template "* TODO %?")
+          :children (("Watch" :keys "w" :file "watch.org" :template "* TODO %?")
                      ("Music" :keys "m" :file "music.org"
                       :template "* TODO /\"%^{Title}\",/ by %^{Artist}"
                       :immediate-finish t)))
@@ -115,13 +117,13 @@
           :keys "G"
           :file "guitar.org" :headline "Songs to Learn"
           :immediate-finish t
-          :template "* TODO /\"%^{Title}\",/ by %^{Artist}")
+          :template "* TODO %^{Artist} -- %^{Title}")
 
          ("Books / reading"
           :keys "b"
           :file "reading.org" :headline "REFILE"
-          :immediate-finish t
-          :template "* TODO %^{Read}")
+          :type item
+          :template "%^{Book name}")
 
          ("Anki"
           :keys "a"
@@ -170,9 +172,9 @@
                        (org-agenda-todo-ignore-scheduled t)))
           (todo "WIP" ((org-agenda-overriding-header "In Progress")
                        (org-agenda-files (--filter (not (s-contains? "work.org" it)) (org-agenda-files)))
+                       (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
                        (org-agenda-todo-ignore-scheduled t)))
-          (todo "WAIT|BLCK" ((org-agenda-overriding-header "Blocked or on-hold")
-                             (org-agenda-todo-ignore-scheduled t)))))
+          ))
 
         ("cn" "NEXT" ((todo "NEXT" nil)))
 
