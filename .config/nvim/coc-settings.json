@@ -16,7 +16,7 @@
         "rust",
         "go"
     ],
-    "coc.preferences.hoverTarget": "echo",
+    "coc.preferences.hoverTarget": "float",
     "python.jediEnabled": false,
     "languageServer": {
         "nim": {
