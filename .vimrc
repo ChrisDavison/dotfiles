@@ -5,7 +5,8 @@ let mapleader=" "
 call plug#begin('~/.vim/plugins')
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-
+Plug 'mhinz/vim-startify'
+  
 Plug 'Konfekt/FastFold'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'wellle/targets.vim'
@@ -13,6 +14,7 @@ Plug 'mbbill/undotree'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
+Plug 'easymotion/vim-easymotion'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'airblade/vim-gitgutter'
 Plug 'ludovicchabant/vim-gutentags'
@@ -25,20 +27,30 @@ Plug 'tpope/vim-surround'
 Plug 'kana/vim-textobj-user'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
+Plug 'jiangmiao/auto-pairs'
 " Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
 Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
 Plug 'vim-voom/VOoM'
-Plug 'elixir-editors/vim-elixir'
-Plug 'udalov/kotlin-vim'
+Plug 'rust-lang/rust.vim'
+
+if has('nvim')
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " Plug 'autozimu/LanguageClient-neovim', {'do': ':UpdateRemotePlugins' }
+else
+    Plug 'prabirshrestha/async.vim'
+    Plug 'prabirshrestha/vim-lsp'
+    Plug 'prabirshrestha/asyncomplete.vim'
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+endif
 " Themes
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
-Plug 'pgdouyon/vim-yin-yang'
 Plug 'owickstrom/vim-colors-paramount'
 call plug#end()
 
@@ -68,8 +80,10 @@ set guioptions-=T
 if has('gui')
     set gfn=Rec\ Mono\ Casual\ 12
 endif
-
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set hlsearch
+" set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set listchars=tab:>-
+set listchars+=trail:⋄
 set cmdheight=2
 set shortmess+=c
 
@@ -138,8 +152,8 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='corvine'
-let g:light_scheme='corvine_light'
+let g:dark_scheme='seoul256'
+let g:light_scheme='seoul256-light'
 function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
         call s:colour_dark()
@@ -168,7 +182,7 @@ function s:colour_light()
     set bg=light
 endfunction
 
-call s:colour_time()
+call s:colour_dark()
 
 command! ColourDark call s:colour_dark()
 command! ColourToggle call s:colour_toggle()
@@ -206,6 +220,9 @@ let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:slime_target='tmux'
+let g:LanguageClient_serverCommands = {
+            \ 'rust': ['rust-analyzer'],
+            \}
 
 " keybinds {{{1 
 nnoremap <silent> Q =ip
@@ -227,6 +244,8 @@ nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
 
 nnoremap S :%s///g<LEFT><LEFT>
+nmap s <Plug>(easymotion-s)
+nmap s <Plug>(easymotion-s2)
 
 imap jk <ESC>
 imap kj <ESC>
@@ -242,6 +261,31 @@ nnoremap <F3> :VoomToggle<CR>
 nnoremap <F6> :set paste!<BAR>set paste?<CR>
 nnoremap <leader>j :e ~/Dropbox/notes/journal.md<BAR>normal G<CR>
 nnoremap <leader>l :e ~/Dropbox/notes/logbook.md<CR>
+nnoremap <leader><leader> :Files ~/code/knowledge/<CR>
+
+" coc.nvim
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+command! -nargs=? Format :call CocAction('format')
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+
+function! s:show_documentation()
+    if(index(['vim', 'help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+    else
+        call CocAction('doHover')
+    endif
+endfunction
 
 let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
@@ -281,14 +325,24 @@ augroup vimrc
     au Filetype rust set foldmethod=syntax
     au Filetype python set foldmethod=indent formatoptions-=a
     au BufRead,BufNewFile *.latex set filetype=tex
+    au BufWritePre *.rs exec ":!cargo fmt"
     au Filetype tex set foldmethod=expr
                 \ foldexpr=vimtex#fold#level(v:lnum)
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
+    let s:clip = '/mnt/c/Windows/System32/clip.exe' 
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
     " au BufEnter * Root
     au VimLeave * call s:save_last_session()
+    au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
 augroup END
+
+if executable(s:clip)
+    augroup WSLYank
+        autocmd!
+        autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
+    augroup END
+end
 
