@@ -1,7 +1,7 @@
 # === EDIT FILE LOCATIONS BELOW ===
 
 # Your todo.txt directory (this should be an absolute path)
-export TODO_DIR="$HOME/Dropbox/notes"
+export TODO_DIR="$HOME/code/knowledge"
 
 # Your todo/done/report.txt locations
 export TODO_FILE="$TODO_DIR/todo.txt"
@@ -109,12 +109,12 @@ export COLOR_CONTEXT=$PURPLE
 # priority, context, and project.
 #
 #export TODOTXT_SORT_COMMAND='env LC_COLLATE=C sort -f -k2'
-#export TODOTXT_SORT_COMMAND='env LC_COLLATE=C sort -k 2,2 -k 1'
-export TODOTXT_SORT_COMMAND='todotxt_sort_priority_then_number.py'
+export TODOTXT_SORT_COMMAND='env LC_COLLATE=C sort -k 2,2 -k 1'
+#export TODOTXT_SORT_COMMAND='todotxt_sort_priority_then_number.py'
 
 # TODOTXT_FINAL_FILTER will filter list output after colorization,
 # priority hiding, context hiding, and project hiding. That is,
 # just before the list output is displayed.
 #
 export TODOTXT_FINAL_FILTER='cat'
-export TODOTXT_DEFAULT_ACTION=mit
+export TODOTXT_DEFAULT_ACTION=due
