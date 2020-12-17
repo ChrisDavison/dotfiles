@@ -21,7 +21,7 @@
       theme-preferences-light '(kaolin-breeze kaolin-light leuven apropospriate-light)
       theme-preferences-dark '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
 
-(setq doom-font "Hack-14")
+(setq doom-font "Cascadia Code-16")
 (setq doom-variable-pitch-font "Montserrat-16")
 (setq doom-theme (nth 0 theme-preferences-dark))
 
@@ -126,8 +126,11 @@ shell exits, the buffer is killed."
 (setq fill-column 120)
 (add-hook 'org-mode-hook #'visual-fill-column-mode)
 (add-hook 'org-mode-hook #'undo-tree-mode)
+(add-hook 'org-mode-hook '(lambda () (interactive) (setq fill-column 120)))
 (add-hook 'prog-mode-hook #'undo-tree-mode)
 
 (setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
+
+(setq shell-file-name "/usr/bin/zsh")
