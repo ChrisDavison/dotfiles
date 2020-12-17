@@ -262,15 +262,24 @@ exist after each headings's drawers."
 ;;;###autoload
 (defun set-theme-dark ()
   (interactive)
-  (setq doom-theme theme-preference-dark)
+  (setq doom-theme (nth 0 theme-preferences-dark))
   (doom/reload-theme))
 
 ;;;###autoload
 (defun set-theme-light ()
   (interactive)
-  (setq doom-theme theme-preference-light)
+  (setq doom-theme (nth 0 theme-preferences-light))
   (doom/reload-theme))
 
+;;;###autoload
+(defun next-theme-dark ()
+  (interactive)
+  (next-theme nil theme-preferences-dark))
+
+;;;###autoload
+(defun next-theme-light ()
+  (interactive)
+  (next-theme nil theme-preferences-light))
 
 ;;----------------------------------------------------------------------------
 ;;; Utility
