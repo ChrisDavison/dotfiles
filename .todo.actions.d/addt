@@ -1,0 +1,13 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "    addt \"THING I NEED TO DO +project @context\""
+  echo "      Add an item and schedule it today"
+  echo ""
+  exit
+}
+
+"$TODO_SH" command add "$@ due:$(date +%F)"
