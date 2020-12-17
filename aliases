@@ -7,7 +7,10 @@ alias mv="mv -v"     # Always explain move actions
 alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
 alias less='less -R'    # Use color codes in 'less'
 alias rg='rg -S'   # Make ripgrep use smart-case by default
-alias v="vim"
+alias v="nvim"
+if [[ -x "$HOME/.bin/nvim.appimage" ]]; then
+    alias v="$HOME/.bin/nvim.appimage"
+fi
 alias ipython="ipython --pprint --no-banner"
 alias g="git"
 [[ -e $(which hub) ]] && alias g="hub"
@@ -23,7 +26,7 @@ alias n="note.py"
 alias clip="xclip -sel clipboard"
 alias df="df -x squashfs"
 alias clip="xclip -sel clipboard"
-
+alias t="todo.sh"
 
 # aliases (conditional)
  
