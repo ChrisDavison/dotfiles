@@ -4,4 +4,4 @@
 # key: repertoire
 # condition: t
 # --
-/"$1",/ by $2
+$1 -- $2
