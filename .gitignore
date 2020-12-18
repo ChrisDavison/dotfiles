@@ -47,3 +47,5 @@ history.sqlite
 nohup.out
 *flycheck*
 .cache/
+.vim/backups/
+.vim/swapfiles/
