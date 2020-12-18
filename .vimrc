@@ -2,7 +2,9 @@ filetype plugin indent on
 syntax enable
 let mapleader=" "
 
+" Plugins {{{1
 call plug#begin('~/.vim/plugins')
+" Plugins - Utility {{{2
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'mhinz/vim-startify'
@@ -31,34 +33,44 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
 Plug 'jiangmiao/auto-pairs'
-" Language support
+Plug 'dense-analysis/ale'
+Plug 'honza/vim-snippets'
+
+" Plugins - Language support {{{2
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
 Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
-Plug 'vim-voom/VOoM'
 Plug 'rust-lang/rust.vim'
 
+" Plugins - Language server {{{2 
 if has('nvim')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    " Plug 'autozimu/LanguageClient-neovim', {'do': ':UpdateRemotePlugins' }
 else
     Plug 'prabirshrestha/async.vim'
     Plug 'prabirshrestha/vim-lsp'
     Plug 'prabirshrestha/asyncomplete.vim'
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
 endif
-" Themes
+" }}}
+" Plugins - Themes {{{2
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
 Plug 'owickstrom/vim-colors-paramount'
+Plug 'ayu-theme/ayu-vim'
+Plug 'endel/vim-github-colorscheme'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'tomasr/molokai'
+Plug 'arcticicestudio/nord-vim'
+Plug 'sainnhe/sonokai'
 call plug#end()
 
+" }}}1
 " settings {{{1
 set nocompatible
 let &showbreak = '   ┆'
 set cpo+=n
-set number
+set number 
 set wrap lbr
 set autoindent
 set breakindent
@@ -101,7 +113,8 @@ endif
 set sessionoptions-=options
 set viewoptions-=options
 
-set directory=~/.temp,.
+set directory=~/.vim/swapfiles//,.
+set directory=~/.vim/backups//,.
 set ignorecase smartcase " ignore case unless i specifically mix letter case
 set wildmenu
 set wildmode=longest:list,full
@@ -121,7 +134,7 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ (%n)\ %t:%l:%c\ %m%r\ %y
+set statusline=\ (%n)\ %t:%l:%c\ %{fugitive#statusline()}\ %m%r\ %y
 set ruler
 set encoding=utf-8
 
@@ -143,6 +156,8 @@ endif
 if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
+
+let g:netrw_browsex_viewer="firefox --new-tab"
 " appearance {{{1
 set termguicolors
 set t_ut= " Fix issues with background color on some terminals
@@ -152,8 +167,8 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='seoul256'
-let g:light_scheme='seoul256-light'
+let g:dark_scheme='sonokai'
+let g:light_scheme='github'
 function s:colour_time()
     if strftime("%H") >= 21 || strftime("%H") < 8
         call s:colour_dark()
@@ -200,7 +215,7 @@ if g:colors_name == 'paramount'
     hi! link htmlH5      Question
     hi! link htmlH6      Question
 endif
-" plugins & programming language config {{{1
+" plugin & programming language config {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
 let g:fzf_preview_window=''
@@ -220,9 +235,6 @@ let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:slime_target='tmux'
-let g:LanguageClient_serverCommands = {
-            \ 'rust': ['rust-analyzer'],
-            \}
 
 " keybinds {{{1 
 nnoremap <silent> Q =ip
@@ -246,21 +258,21 @@ nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
 nnoremap S :%s///g<LEFT><LEFT>
 nmap s <Plug>(easymotion-s)
 nmap s <Plug>(easymotion-s2)
+let g:EasyMotion_smartcase=1
 
 imap jk <ESC>
 imap kj <ESC>
 " Keybinds for common commands
-nnoremap <leader>en :Files ~/Dropbox/notes<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
-nnoremap <F3> :VoomToggle<CR>
 nnoremap <F6> :set paste!<BAR>set paste?<CR>
-nnoremap <leader>j :e ~/Dropbox/notes/journal.md<BAR>normal G<CR>
-nnoremap <leader>l :e ~/Dropbox/notes/logbook.md<CR>
+nnoremap <leader>i :CocList outline<CR>
+nnoremap <leader>j :exec "e ~/code/knowledge/journal/".strftime("%Y%m%d-%A.md")<CR>
+nnoremap <leader>l :exec "e ~/code/knowledge/logbook/".strftime("%Y%m%d-%A.md")<CR>
 nnoremap <leader><leader> :Files ~/code/knowledge/<CR>
 
 " coc.nvim
@@ -275,6 +287,13 @@ xmap if <Plug>(coc-funcobj-i)
 xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
+
+imap <C-l> <Plug>(coc-snippets-expand)
+imap <C-j> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+xmap <leader>x <Plug>(coc-convert-snippet)
 
 command! -nargs=? Format :call CocAction('format')
 command! -nargs=? Fold :call CocAction('fold', <f-args>)
@@ -295,10 +314,12 @@ let g:fzf_action = {
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
 cnoreabbrev W w
+cnoreabbrev Wq wq
 cnoreabbrev Qa qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
 cnoreabbrev BD bp<bar>bd #
+cnoreabbrev Bd bd
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
@@ -325,20 +346,19 @@ augroup vimrc
     au Filetype rust set foldmethod=syntax
     au Filetype python set foldmethod=indent formatoptions-=a
     au BufRead,BufNewFile *.latex set filetype=tex
-    au BufWritePre *.rs exec ":!cargo fmt"
     au Filetype tex set foldmethod=expr
                 \ foldexpr=vimtex#fold#level(v:lnum)
                 \ foldtext=vimtex#fold#text()
                 \ fillchars=fold:\  
                 \ formatoptions-=a
-    let s:clip = '/mnt/c/Windows/System32/clip.exe' 
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    " au BufEnter * Root
+    au BufEnter * Root
     au VimLeave * call s:save_last_session()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
 augroup END
 
+let s:clip = '/mnt/c/Windows/System32/clip.exe' 
 if executable(s:clip)
     augroup WSLYank
         autocmd!
