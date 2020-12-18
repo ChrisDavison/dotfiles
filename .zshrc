@@ -25,8 +25,10 @@ export BROWSER="firefox"
 
 paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin)
 for p in ${paths[@]}; do
-    export PATH="$1":$PATH
+    export PATH="$p":$PATH
 done
+typeset -U path
+typeset -U PATH
 
  #####  ####### ####### ####### ### #     #  #####   #####
 #     # #          #       #     #  ##    # #     # #     #
