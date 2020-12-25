@@ -371,14 +371,6 @@ augroup vimrc
     " Don't use autochdir when using 'Root'
     au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call s:save_last_session()
-    " au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
+    au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
 augroup END
-
-" let s:clip = '/mnt/c/Windows/System32/clip.exe' 
-" if executable(s:clip)
-"     augroup WSLYank
-"         autocmd!
-"         autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
-"     augroup END
-" end
 
