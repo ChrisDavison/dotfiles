@@ -1,1 +1,0 @@
-/home/cdavison/code/dotfiles/.vimrc

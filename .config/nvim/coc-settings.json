@@ -7,7 +7,7 @@
     "suggest.autoTrigger":"always",
     "suggest.triggerAfterInsertEnter": true,
     "suggest.enablePreview": true,
-    "suggest.floatEnable": false,
+    "suggest.floatEnable": true,
     "suggest.echodocSupport": false,
     "codeLens.enable": true,
     "diagnostic.enable": false,
@@ -18,28 +18,6 @@
     ],
     "coc.preferences.hoverTarget": "float",
     "python.jediEnabled": false,
-    "languageServer": {
-        "nim": {
-            "command": "nimlsp"
-        },
-        "haskell": {
-            "command": "hie-wrapper",
-            "args": ["--lsp"],
-            "rootPatterns": [
-                "stack.yaml",
-                "cabal.config",
-                "package.yaml"
-            ],
-            "filetypes": [
-                "hs",
-                "lhs",
-                "haskell"
-            ],
-            "initializationOptions": {
-                "languageServerHaskell": {
-                    "hlintOn": true
-                }
-            }
-        }
-    }
+    "languageServer": { },
+    "rust-analyzer.serverPath": "/usr/local/bin/rust-analyzer"
 }
