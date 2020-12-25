@@ -266,10 +266,14 @@ nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 nnoremap <F2> :NERDTreeToggle<CR>
 nnoremap <F6> :set paste!<BAR>set paste?<CR>
-nnoremap <leader>i :CocList outline<CR>
-nnoremap <leader>j :exec "e ~/code/knowledge/journal/".strftime("%Y%m%d-%A.md")<CR>
-nnoremap <leader>l :exec "e ~/code/knowledge/logbook/".strftime("%Y%m%d-%A.md")<CR>
-nnoremap <leader><leader> :Files ~/code/knowledge/<CR>
+nnoremap <leader>j :NewJournal<CR>
+nnoremap <leader>l :NewLogbook<CR>
+nnoremap <leader>en :Files ~/code/knowledge/<CR>
+nnoremap <leader>ev :e ~/.vimrc<CR>
+
+nnoremap <right> :next<CR>
+nnoremap <left> :prev<CR>
+
 
 " coc.nvim
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -304,6 +308,24 @@ let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
         \ 'ctrl-x': 'split',
         \ 'ctrl-v': 'vsplit' }
+" Functions {{{1
+function! s:new_dated_file(root)
+    let filename=expand(strftime(a:root . "/%Y%m%d-%A.md"))
+    if filereadable(l:filename)
+        exec "e " . l:filename
+        normal G
+    else
+        exec "e " . l:filename
+        exec "norm i" . strftime("# %Y-%m-%d %A")
+        norm o
+        norm o
+    endif
+endfunction
+
+command NewJournal call <SID>new_dated_file("~/code/knowledge/journal")
+command NewLogbook call <SID>new_dated_file("~/code/knowledge/logbook")
+
+" }}}
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
@@ -347,16 +369,16 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    au BufEnter * Root
+    au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call s:save_last_session()
-    au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
+    " au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
 augroup END
 
-let s:clip = '/mnt/c/Windows/System32/clip.exe' 
-if executable(s:clip)
-    augroup WSLYank
-        autocmd!
-        autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
-    augroup END
-end
+" let s:clip = '/mnt/c/Windows/System32/clip.exe' 
+" if executable(s:clip)
+"     augroup WSLYank
+"         autocmd!
+"         autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
+"     augroup END
+" end
 
