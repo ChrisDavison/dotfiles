@@ -27,6 +27,7 @@
     s=status -s -b
     branch-name=rev-parse --abbrev-ref HEAD
     branches=branch -a
+    bd=branch -D
     tags=tag
     stashes=stash list
     sshow=stash show --text
