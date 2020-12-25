@@ -121,7 +121,7 @@ set nojoinspaces   " don't autoinsert two spaces after '.' etc in join
 set switchbuf=useopen,usetab
 set splitbelow splitright
 set showmode
-let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__,.*\.aux,.*\.log,.*\.bbl,.*\.blg,.*\.fdb_latexmk,.*\.fls,.*\.log,.*\.out,.*\.toc'
+let g:netrw_list_hide=netrw_gitignore#Hide() . '.*\.swp$,\.DS_Store,*.so,*.zip,\.git,\~$,.mypy_cache,__pycache__,.*\.aux,.*\.log,.*\.bbl,.*\.blg,.*\.fdb_latexmk,.*\.fls,.*\.log,.*\.out,.*\.toc,.*\.bak'
 
 set smarttab
 set nrformats-=octal
@@ -243,7 +243,6 @@ nnoremap Y      y$
 nnoremap <BS>   <C-^>
 nnoremap <TAB>  za
 tnoremap <Esc> <C-\><C-n>
-nnoremap <silent> <expr> <c-\> &colorcolumn == 0 ? ":set colorcolumn=81<cr>" : ":set colorcolumn=0<cr>"
 " Run 'equalprg' (format) and return to mark
 nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
@@ -252,9 +251,10 @@ nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
 
 nnoremap S :%s///g<LEFT><LEFT>
+vnoremap S :s///g<LEFT><LEFT>
 nmap s <Plug>(easymotion-s)
-nmap s <Plug>(easymotion-s2)
 let g:EasyMotion_smartcase=1
+" nmap s <Plug>(easymotion-s2)
 
 imap jk <ESC>
 imap kj <ESC>
