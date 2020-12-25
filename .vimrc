@@ -4,10 +4,10 @@ let mapleader=" "
 
 " Plugins {{{1
 call plug#begin('~/.vim/plugins')
+
 " Plugins - Utility {{{2
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'mhinz/vim-startify'
   
 Plug 'Konfekt/FastFold'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -27,7 +27,7 @@ Plug 'jpalardy/vim-slime'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'kana/vim-textobj-user'
-Plug 'christoomey/vim-tmux-navigator'
+" Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
@@ -35,6 +35,8 @@ Plug 'kshenoy/vim-signature'
 Plug 'jiangmiao/auto-pairs'
 Plug 'dense-analysis/ale'
 Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'freitass/todo.txt-vim'
 
 " Plugins - Language support {{{2
 Plug 'lervag/vimtex'
@@ -43,16 +45,10 @@ Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
 
-" Plugins - Language server {{{2 
-if has('nvim')
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-else
-    Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/vim-lsp'
-    Plug 'prabirshrestha/asyncomplete.vim'
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
-endif
-" }}}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim'
+
+"}}}
 " Plugins - Themes {{{2
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
@@ -281,22 +277,20 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> R :call CocAction('doHover')<CR>
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <leader>o :CocList symbols<CR>
+nnoremap <leader>i :CocList outline<CR>
 
 xmap if <Plug>(coc-funcobj-i)
 xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
 
-imap <C-l> <Plug>(coc-snippets-expand)
-imap <C-j> <Plug>(coc-snippets-select)
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-xmap <leader>x <Plug>(coc-convert-snippet)
-
-command! -nargs=? Format :call CocAction('format')
-command! -nargs=? Fold :call CocAction('fold', <f-args>)
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-k>"
+let g:UltiSnipsEditSplit="vertical"
 
 function! s:show_documentation()
     if(index(['vim', 'help'], &filetype) >= 0)
