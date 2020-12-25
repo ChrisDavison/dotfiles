@@ -6,6 +6,9 @@
 #       #    ##   # #           # #   #     # #    #  #     #
 ####### #     #    #             #    #     # #     #  #####
 export EDITOR="nvim"
+if [[ -x "$HOME/.bin/nvim.appimage" ]]; then
+    export EDITOR="$HOME/.bin/nvim.appimage"
+fi
 export GOPATH="$HOME"
 export GOBIN="$HOME/bin"
 if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
