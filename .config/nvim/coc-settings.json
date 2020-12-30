@@ -17,7 +17,10 @@
         "go"
     ],
     "coc.preferences.hoverTarget": "float",
-    "python.jediEnabled": false,
+    "python.jediEnabled": true,
+    "jedi.enable": true,
+    "jedi.startupMessage": true,
+    "jedi.markupKindPreferred": "markdown",
     "languageServer": { },
     "rust-analyzer.serverPath": "/usr/local/bin/rust-analyzer"
 }
