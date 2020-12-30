@@ -1,0 +1,25 @@
+snippet qq "Quick quote"
+_"$1"_
+endsnippet
+
+snippet cdi "My annotation"
+_(cd: $1)_
+endsnippet
+
+snippet it "Italic"
+_$1_
+endsnippet
+
+snippet b "Bold"
+**$1**
+endsnippet
+
+snippet bi "Bold italic"
+***$1***
+endsnippet
+
+snippet ``` "Codeblock, pasting clipboard"
+\`\`\`${1}
+${0:`!v getreg("*")`}
+\`\`\`
+endsnippet
