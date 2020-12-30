@@ -8,6 +8,7 @@ import sys
 USAGE = """    schedule ITEM# WHEN
       Add or replace due date on ITEM# with WHEN
       WHEN can be date (YYYY-MM-DD)
+                  'N days'
                   '[next ]week|month|year'
                   'today|tomorrow'
                   'monday'..'sunday'
@@ -46,12 +47,16 @@ def parse_when(when):
     elif when in weekdays:
         tomorrow = datetime.date.today()+datetime.timedelta(days=1)
         return next_weekday(tomorrow, when).strftime("%F")
-    elif when == 'tomorrow':
+    elif when == "tomorrow":
         tomorrow = datetime.date.today()+datetime.timedelta(days=1)
         return tomorrow
-    elif when == 'today':
+    elif when == "today":
         today = datetime.date.today()
         return today
+    elif when.split(' ')[1] == "days":
+        n = int(when.split(' ')[0])
+        today = datetime.date.today()
+        return (today + datetime.timedelta(days=n)).strftime("%F")
     else:
         if when.startswith('next '):
             when = when.split(' ')[1]

@@ -75,7 +75,7 @@ def recur_task(task):
     elif match_rec_word:
         next_date = recur_date_word(match_rec_word.group(1), cur_due_date)
     else:
-        next_date = datetime.date.today() + timedelta(days=1)
+        next_date = datetime.date.today() + datetime.timedelta(days=1)
     # Generate new task name
     new_task = '{} due:{}'.format(task, next_date)
     return done_task, new_task
