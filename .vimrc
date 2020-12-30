@@ -12,7 +12,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'Konfekt/FastFold'
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'wellle/targets.vim'
-Plug 'mbbill/undotree'
+Plug 'simnalamburt/vim-mundo'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
@@ -27,12 +27,10 @@ Plug 'jpalardy/vim-slime'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'kana/vim-textobj-user'
-" Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
-Plug 'jiangmiao/auto-pairs'
 Plug 'dense-analysis/ale'
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
@@ -44,9 +42,9 @@ Plug 'vim-python/python-syntax'
 Plug 'plasticboy/vim-markdown/'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
+Plug 'cespare/vim-toml'
 
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc.nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "}}}
 " Plugins - Themes {{{2
@@ -130,7 +128,7 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ (%n)\ %t:%l:%c\ %{fugitive#statusline()}\ %m%r\ %y
+set statusline=\ (%n)\ %f:%l:%c\ %{fugitive#statusline()}\ %m%r\ %y
 set ruler
 set encoding=utf-8
 
@@ -211,7 +209,7 @@ if g:colors_name == 'paramount'
     hi! link htmlH5      Question
     hi! link htmlH6      Question
 endif
-" plugin & programming language config {{{1
+" plugin configuration {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
 let g:fzf_preview_window=''
@@ -231,6 +229,10 @@ let g:vimtex_format_enabled=1
 let g:tex_flavor = "latex"
 let g:vimtex_compiler_progname = 'nvr'
 let g:slime_target='tmux'
+let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
+let g:slime_dont_ask_default=1
+let g:snips_author="C.Davison"
+let g:snips_email="c.jr.davison@gmail.com"
 
 " keybinds {{{1 
 nnoremap <silent> Q =ip
@@ -274,7 +276,6 @@ nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <right> :next<CR>
 nnoremap <left> :prev<CR>
 
-
 " coc.nvim
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -308,24 +309,6 @@ let g:fzf_action = {
         \ 'ctrl-t': 'tab split',
         \ 'ctrl-x': 'split',
         \ 'ctrl-v': 'vsplit' }
-" Functions {{{1
-function! s:new_dated_file(root)
-    let filename=expand(strftime(a:root . "/%Y%m%d-%A.md"))
-    if filereadable(l:filename)
-        exec "e " . l:filename
-        normal G
-    else
-        exec "e " . l:filename
-        exec "norm i" . strftime("# %Y-%m-%d %A")
-        norm o
-        norm o
-    endif
-endfunction
-
-command NewJournal call <SID>new_dated_file("~/code/knowledge/journal")
-command NewLogbook call <SID>new_dated_file("~/code/knowledge/logbook")
-
-" }}}
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
@@ -340,14 +323,30 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
-" commands {{{1
-command! MakeTags !ctags -R .
-" autocommands {{{1
+" commands & functions {{{1
 function! s:save_last_session()
     exec "!rm ~/.lastsession.vim"
     mks ~/.lastsession.vim
 endfunction
 
+function! s:new_dated_file(root)
+    let filename=expand(a:root . strftime("/%Y%m%d-%A.md"))
+    if filereadable(l:filename)
+        exec "e " . l:filename
+        normal G
+    else
+        exec "e " . l:filename
+        exec "norm i" . strftime("# %Y-%m-%d %A")
+        norm o
+        norm o
+    endif
+endfunction
+
+command! NewJournal call <SID>new_dated_file("~/code/knowledge/journal")
+command! NewLogbook call <SID>new_dated_file("~/code/knowledge/logbook")
+command! MakeTags !ctags -R .
+
+" autocommands {{{1
 augroup vimrc
     autocmd!
     au TextChanged,InsertLeave,FocusLost * silent! wall
