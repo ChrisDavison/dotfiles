@@ -1,4 +1,4 @@
-function! datedfiles#new(root)
+function! datedfiles#new_or_jump(root)
     let filename=expand(a:root . strftime("/%Y%m%d-%A.md"))
     if filereadable(l:filename)
         exec "e " . l:filename

@@ -5,38 +5,37 @@ let mapleader=" "
 " Plugins {{{1
 call plug#begin('~/.vim/plugins')
 
-" Plugins - Utility {{{2
+" Utility
+Plug 'airblade/vim-gitgutter'
+Plug 'chrisdavison/vim-cdroot'
+Plug 'dahu/vim-fanfingtastic'
+Plug 'dense-analysis/ale'
+Plug 'easymotion/vim-easymotion'
+Plug 'freitass/todo.txt-vim'
+Plug 'honza/vim-snippets'
+Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-  
-Plug 'Konfekt/FastFold'
-Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'wellle/targets.vim'
-Plug 'simnalamburt/vim-mundo'
-Plug 'chrisdavison/vim-cdroot'
-Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
-Plug 'easymotion/vim-easymotion'
-Plug 'dahu/vim-fanfingtastic'
-Plug 'airblade/vim-gitgutter'
+Plug 'kana/vim-textobj-user'
+Plug 'Konfekt/FastFold'
+Plug 'kshenoy/vim-signature'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-qf'
 Plug 'romainl/vim-qlist'
+Plug 'simnalamburt/vim-mundo'
+Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
-Plug 'jpalardy/vim-slime'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
-Plug 'kana/vim-textobj-user'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
-Plug 'kshenoy/vim-signature'
-Plug 'dense-analysis/ale'
-Plug 'honza/vim-snippets'
-Plug 'SirVer/ultisnips'
-Plug 'freitass/todo.txt-vim'
+Plug 'wellle/targets.vim'
 
-" Plugins - Language support {{{2
+" Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
 Plug 'plasticboy/vim-markdown/'
@@ -44,17 +43,10 @@ Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-"}}}
-" Plugins - Themes {{{2
-Plug 'arzg/vim-corvine'
+" Themes
 Plug 'junegunn/seoul256.vim'
-Plug 'endel/vim-github-colorscheme'
-Plug 'jonathanfilip/vim-lucius'
-Plug 'tomasr/molokai'
-Plug 'arcticicestudio/nord-vim'
 Plug 'sainnhe/sonokai'
+
 call plug#end()
 
 " }}}1
@@ -158,9 +150,8 @@ if !has('gui_running')
     set t_Co=256
 endif
 let g:rehash256 = 1
-set bg=dark
-let g:dark_scheme='ayu'
-let g:light_scheme='ayu'
+let g:dark_scheme='sonokai'
+let g:light_scheme='ayu-light'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
 call colourtoggle#light()
@@ -196,44 +187,58 @@ let g:snips_author="C.Davison"
 let g:snips_email="c.jr.davison@gmail.com"
 
 " keybinds {{{1 
+" Format the current paragraph
 nnoremap <silent> Q =ip
+
 vnoremap <      <gv
 vnoremap >      >gv
+" Make j and k work, even on visually-wrapped (not hard-wrapped) lines
 nnoremap <expr> j      (v:count == 0? 'gj' : 'j')
 nnoremap <expr> k      (v:count == 0? 'gk' : 'k')
 nnoremap D      dd
 nnoremap Y      y$
+" Easier rebind to go to the previously used buffer
 nnoremap <BS>   <C-^>
+" Tab to toggle fold at point
 nnoremap <TAB>  za
-tnoremap <Esc> <C-\><C-n>
-" Run 'equalprg' (format) and return to mark
-nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
-" <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
-inoremap <C-c> <ESC>
-nnoremap <leader>s :e ~/.scratch<CR>
-
-
+" S to quickly jump to a replace using the last searched pattern
 nnoremap S :%s///g<LEFT><LEFT>
 vnoremap S :s///g<LEFT><LEFT>
+
+" Use esc to go to normal mode in vim's inbuilt terminal
+tnoremap <Esc> <C-\><C-n>
+
+" Run 'equalprg' (format) and return to mark
+nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
+
+" <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
+inoremap <C-c> <ESC>
+
+" Press 's', followed by a single character, to get a HUD for jumping to a
+" word beginning with that character somewhere on screen
 nmap s <Plug>(easymotion-s)
 let g:EasyMotion_smartcase=1
-" nmap s <Plug>(easymotion-s2)
 
 imap jk <ESC>
 imap kj <ESC>
-" Keybinds for common commands
+
+nnoremap <F6> :set paste!<BAR>set paste?<CR>
+
+" Navigate to stuff in project (files, buffers, or tags)
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :Files %:p:h<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
-nnoremap <F2> :NERDTreeToggle<CR>
-nnoremap <F6> :set paste!<BAR>set paste?<CR>
-nnoremap <leader>j :NewJournal<CR>
-nnoremap <leader>l :NewLogbook<CR>
+
+" Navigate to specific files
+nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
+nnoremap <leader>j :call datedfiles#new_or_jump("~/code/knowledge/journal")<CR>
+nnoremap <leader>l :call datedfiles#new_or_jump("~/code/knowledge/logbook")<CR>
 
+" Navigate :arglist
 nnoremap <right> :next<CR>
 nnoremap <left> :prev<CR>
 
@@ -253,10 +258,11 @@ xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
 
+" Use tab to start snippets, c-j/k to navigate the $'s
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-k>"
-let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsEditSplit="horizontal"
 
 function! s:show_documentation()
     if(index(['vim', 'help'], &filetype) >= 0)
@@ -267,15 +273,16 @@ function! s:show_documentation()
 endfunction
 
 let g:fzf_action = {
-        \ 'ctrl-t': 'tab split',
-        \ 'ctrl-x': 'split',
-        \ 'ctrl-v': 'vsplit' }
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit' }
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
 cnoreabbrev W w
 cnoreabbrev Wq wq
 cnoreabbrev Qa qa
+cnoreabbrev QA qa
 cnoreabbrev E e
 cnoreabbrev Q! q!
 cnoreabbrev BD bp<bar>bd #
@@ -284,9 +291,8 @@ iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
+
 " commands & functions {{{1
-command! NewJournal call datedfiles#new("~/code/knowledge/journal")
-command! NewLogbook call datedfiles#new("~/code/knowledge/logbook")
 command! MakeTags !ctags -R .
 
 " autocommands {{{1
