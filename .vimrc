@@ -50,8 +50,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plugins - Themes {{{2
 Plug 'arzg/vim-corvine'
 Plug 'junegunn/seoul256.vim'
-Plug 'owickstrom/vim-colors-paramount'
-Plug 'ayu-theme/ayu-vim'
 Plug 'endel/vim-github-colorscheme'
 Plug 'jonathanfilip/vim-lucius'
 Plug 'tomasr/molokai'
@@ -64,7 +62,7 @@ call plug#end()
 set nocompatible
 let &showbreak = '   ┆'
 set cpo+=n
-set number 
+set number relativenumber
 set wrap lbr
 set autoindent
 set breakindent
@@ -128,7 +126,7 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ (%n)\ %f:%l:%c\ %{fugitive#statusline()}\ %m%r\ %y
+set statusline=\ %f\ %l,%c\ %{fugitive#statusline()}\ %m%r\ %y
 set ruler
 set encoding=utf-8
 
@@ -161,54 +159,17 @@ if !has('gui_running')
 endif
 let g:rehash256 = 1
 set bg=dark
-let g:dark_scheme='sonokai'
-let g:light_scheme='github'
-function s:colour_time()
-    if strftime("%H") >= 21 || strftime("%H") < 8
-        call s:colour_dark()
-    else
-        call s:colour_light()
-    end
-endfunction
+let g:dark_scheme='ayu'
+let g:light_scheme='ayu'
 
-function s:colour_toggle()
-    if &bg == "dark"
-        call s:colour_light()
-    else
-        call s:colour_dark()
-    endif
-endfunction
+" Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
+call colourtoggle#light()
 
-function s:colour_dark()
-    " colorscheme corvine
-    exec "colorscheme " . g:dark_scheme
-    set bg=dark
-endfunction
+command! ColourDark call colourtoggle#dark()
+command! ColourToggle call colourtoggle#toggle()
+command! ColourLight call colourtoggle#light()
+command! ColourTime call colourtoggle#time()
 
-function s:colour_light()
-    " colorscheme corvine_light
-    exec "colorscheme " . g:light_scheme
-    set bg=light
-endfunction
-
-call s:colour_dark()
-
-command! ColourDark call s:colour_dark()
-command! ColourToggle call s:colour_toggle()
-command! ColourLight call s:colour_light()
-command! ColourTime call s:colour_time()
-
-" Rather than modifying 'paramount' directly,
-" Just link html (markdown) headers to 'Question' to get
-" a pinkish header
-if g:colors_name == 'paramount'
-    hi! link htmlH1      Question
-    hi! link htmlH2      Question
-    hi! link htmlH3      Question
-    hi! link htmlH4      Question
-    hi! link htmlH5      Question
-    hi! link htmlH6      Question
-endif
 " plugin configuration {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
@@ -250,7 +211,7 @@ nnoremap <leader>F :normal mzgg=G`zmzzz<CR>
 " <C-C> doesn't trigger InsertLeave autocmd, so rebind to esc
 inoremap <C-c> <ESC>
 nnoremap <leader>s :e ~/.scratch<CR>
-nnoremap <leader>S :e ~/.scratch<BAR>normal ggdG<CR>
+
 
 nnoremap S :%s///g<LEFT><LEFT>
 vnoremap S :s///g<LEFT><LEFT>
@@ -324,26 +285,8 @@ iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 " commands & functions {{{1
-function! s:save_last_session()
-    exec "!rm ~/.lastsession.vim"
-    mks ~/.lastsession.vim
-endfunction
-
-function! s:new_dated_file(root)
-    let filename=expand(a:root . strftime("/%Y%m%d-%A.md"))
-    if filereadable(l:filename)
-        exec "e " . l:filename
-        normal G
-    else
-        exec "e " . l:filename
-        exec "norm i" . strftime("# %Y-%m-%d %A")
-        norm o
-        norm o
-    endif
-endfunction
-
-command! NewJournal call <SID>new_dated_file("~/code/knowledge/journal")
-command! NewLogbook call <SID>new_dated_file("~/code/knowledge/logbook")
+command! NewJournal call datedfiles#new("~/code/knowledge/journal")
+command! NewLogbook call datedfiles#new("~/code/knowledge/logbook")
 command! MakeTags !ctags -R .
 
 " autocommands {{{1
@@ -369,7 +312,9 @@ augroup vimrc
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
     au BufEnter *.rs,*.py,*.md Root
-    au VimLeave * call s:save_last_session()
+    au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
+    au InsertEnter * set norelativenumber
+    au InsertLeave * set relativenumber
 augroup END
 

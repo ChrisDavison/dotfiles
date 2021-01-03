@@ -6,7 +6,14 @@ snippet cdi "My annotation"
 _(cd: $1)_
 endsnippet
 
-snippet it "Italic"
+snippet cdq "My quote annotation"
+
+> cd: $1
+
+endsnippet
+
+
+snippet i "Italic"
 _$1_
 endsnippet
 
@@ -22,4 +29,16 @@ snippet ``` "Codeblock, pasting clipboard"
 \`\`\`${1}
 ${0:`!v getreg("*")`}
 \`\`\`
+endsnippet
+
+snippet noun "'Nounify' something"
+**'${1}'**
+endsnippet
+
+snippet music "Artist - _Album_"
+$1 - _$2_
+endsnippet
+
+snippet urlc "Link from clipboard"
+[$1](${0:`!v getreg("*")`})$2
 endsnippet

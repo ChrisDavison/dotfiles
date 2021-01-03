@@ -4,7 +4,7 @@ let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
 let md_standalone=" --standalone"
 
-let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links+pandoc_title_block --markdown-headings=atx"
+let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
 let md_equalprg .= md_wrap . md_standalone
 
 let g:voom_default_mode="pandoc"
@@ -26,7 +26,11 @@ nnoremap <buffer> <leader>i :g/^#/:p<CR>:
 command! H1 g/^#\{1,1\} /
 command! H2 g/^#\{1,2\} /
 command! H3 g/^#\{1,3\} /
-command! FMT normal mzggvG=`z
+command! FMT silent normal mzggvG=`z
+
+" Insert a new 'section' (L2 markdown header)
+nnoremap <leader>S :norm Go<CR>:norm o## <CR>a
+
 
 " fn: Goto file {{{
 function! Markdown_goto_file(split)
@@ -55,6 +59,7 @@ function! Markdown_goto_file(split)
 endfunction " 
 nnoremap <buffer> gf :call Markdown_goto_file(0)<CR>
 nnoremap <buffer> gs :call Markdown_goto_file(2)<CR>
+
 " }}}
 " fn: Backlinks - files that link TO this file {{{
 function! Markdown_backlinks(use_grep)
