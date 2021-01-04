@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+import datetime
+import os
+import re
+import sys
+
+
+USAGE = """    unschedule ITEM#[, ITEM#, ITEM#, ...]
+      Remove due date from items
+"""
+
+rx_due = re.compile(r"due:(\d\d\d\d-\d\d-\d\d)")
+rx_date = re.compile(r"\d\d\d\d-\d\d-\d\d")
+rx_space = re.compile(r"\s\s+")
+
+
+def main(item):
+    todofile = os.environ["TODO_FILE"]
+    todos = open(todofile, 'r').read().splitlines()
+    for item in items:
+        if item > len(todos):
+            print("ITEM# out of range")
+            return
+        todos[item-1] = rx_due.sub("", todos[item-1])
+        print("UNSCHEDULED:", todos[item-1])
+    with open(todofile, 'w') as todo_file:
+        for task in todos:
+            print(rx_space.sub(" ", task), file=todo_file)
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if args[0] == "usage":
+        print(USAGE)
+        sys.exit(0)
+    items = [int(a) for a in args[1:]]
+    main(items)
+
