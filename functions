@@ -239,3 +239,9 @@ repo() {
 wslhome() {
     cd /mnt/c/Users/davison/"$1"
 }
+
+knowledgeTODropbox() {
+    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge ~/Dropbox/notes 
+    zip -r ~/Dropbox/archive/notes-$(date +%F).zip $(cd ~/code/knowledge && git ls-files)
+
+}
