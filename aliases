@@ -27,6 +27,7 @@ alias clip="xclip -sel clipboard"
 alias df="df -x squashfs"
 alias clip="xclip -sel clipboard"
 alias t="todo.sh"
+alias rgl="rg --multiline --multiline-dotall"
 
 # aliases (conditional)
  
