@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugins')
 " Utility
 Plug 'airblade/vim-gitgutter'
 Plug 'chrisdavison/vim-cdroot'
+Plug 'chrisdavison/vim-datedfiles'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dense-analysis/ale'
 Plug 'easymotion/vim-easymotion'
@@ -46,6 +47,8 @@ Plug 'cespare/vim-toml'
 " Themes
 Plug 'junegunn/seoul256.vim'
 Plug 'sainnhe/sonokai'
+Plug 'sainnhe/forest-night'
+
 
 call plug#end()
 
@@ -69,7 +72,7 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
-set noautochdir
+set autochdir
 set cursorline
 set guioptions-=m
 set guioptions-=T
@@ -150,11 +153,11 @@ if !has('gui_running')
     set t_Co=256
 endif
 let g:rehash256 = 1
-let g:dark_scheme='sonokai'
+let g:dark_scheme='forest-night'
 let g:light_scheme='ayu-light'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
-call colourtoggle#light()
+call colourtoggle#dark()
 
 command! ColourDark call colourtoggle#dark()
 command! ColourToggle call colourtoggle#toggle()
@@ -235,8 +238,9 @@ nnoremap <leader>t :BTags<CR>
 nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
-nnoremap <leader>j :call datedfiles#new_or_jump("~/code/knowledge/journal")<CR>
-nnoremap <leader>l :call datedfiles#new_or_jump("~/code/knowledge/logbook")<CR>
+nnoremap <leader>j :DatedFile ~/code/knowledge/journal<CR>
+nnoremap <leader>l :DatedFile ~/code/knowledge/logbook<CR>
+nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m_%B<CR>
 
 " Navigate :arglist
 nnoremap <right> :next<CR>
@@ -294,6 +298,7 @@ iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 
 " commands & functions {{{1
 command! MakeTags !ctags -R .
+command! ShaID exec 'r!shaid ' . expand('%:p')
 
 " autocommands {{{1
 augroup vimrc
@@ -317,10 +322,9 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    au BufEnter *.rs,*.py,*.md Root
+    " au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     au InsertEnter * set norelativenumber
     au InsertLeave * set relativenumber
 augroup END
-
