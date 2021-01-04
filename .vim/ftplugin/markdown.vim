@@ -4,7 +4,8 @@ let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
 let md_standalone=" --standalone"
 
-let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+yaml_metadata_block-shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
+" let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
+let md_equalprg="pandoc --to gfm --markdown-headings=atx"
 let md_equalprg .= md_wrap . md_standalone
 
 let g:voom_default_mode="pandoc"

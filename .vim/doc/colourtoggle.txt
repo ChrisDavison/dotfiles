@@ -1,0 +1,37 @@
+*colourtoggle.txt* my colourscheme helpers
+
+========================================================================
+
+CONTENTS                                          *ColourToggleContents*
+
+    1. Configuration .............. |ColourToggleConfig|
+    2. Usage ...................... |ColourToggleUsage|
+
+========================================================================
+
+SECTION 1. CONFIGURATION                            *ColourToggleConfig*
+
+Colourtoggle is configured through two variables, g:dark_scheme and
+g:light_scheme
+
+
+SECTION 2. USAGE                                     *ColourToggleUsage*
+
+                                                            *ColourDark*
+`:ColourDark` will set the colourscheme to g:dark_scheme, and will set 'bg' to
+dark.
+
+                                                           *ColourLight*
+`:ColourLight` will set the colourscheme to g:light_scheme, and will set 'bg' to
+light.
+
+                                                          *ColourToggle*
+`:ColourToggle` will change from dark to light, or vice-versa.
+
+                                                            *ColourTime*
+`:ColourTime` will call `:ColourLight` between 8am and 9pm, otherwise it will
+use the dark colour scheme settings.
+
+------------------------------------------------------------------------
+
+vim:tw=78:ts=8:ft=help:norl:
