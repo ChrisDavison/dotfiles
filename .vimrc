@@ -72,7 +72,7 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
-set autochdir
+set noautochdir
 set cursorline
 set guioptions-=m
 set guioptions-=T
@@ -188,6 +188,8 @@ let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
 let g:slime_dont_ask_default=1
 let g:snips_author="C.Davison"
 let g:snips_email="c.jr.davison@gmail.com"
+let g:datedfile_default_format="%Y%m%d-%A"
+let g:datedfile_default_header_format="%Y-%m-%d %A"
 
 " keybinds {{{1 
 " Format the current paragraph
@@ -322,7 +324,7 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    " au BufEnter *.rs,*.py,*.md Root
+    au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     au InsertEnter * set norelativenumber
