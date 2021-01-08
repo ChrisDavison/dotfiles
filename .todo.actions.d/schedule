@@ -21,6 +21,8 @@ rx_space = re.compile(r"\s\s+")
 
 weekdays = ['monday', 'tuesday', 'wednesday', 
     'thursday', 'friday', 'saturday', 'sunday']
+months = ['january', 'february', 'march', 'april', 'may', 
+          'june', 'july', 'august', 'september', 'october', 'november', 'december']
 
 
 def next_weekday(date, weekday):
@@ -46,22 +48,28 @@ def parse_when(when):
         return when
     elif when in weekdays:
         tomorrow = datetime.date.today()+datetime.timedelta(days=1)
-        return next_weekday(tomorrow, when).strftime("%F")
+        return next_weekday(tomorrow, when)
+    elif when in months:
+        today = datetime.date.today()
+        month = months.index(when) + 1 # Python date months are 1-indexed
+        if month == today.month:
+            today = today.replace(year=today.year+1)
+        return today.replace(month=month, day=1)
     elif when == "tomorrow":
         tomorrow = datetime.date.today()+datetime.timedelta(days=1)
         return tomorrow
-    elif when == "today":
+    elif when == "to.strfday":
         today = datetime.date.today()
         return today
     elif when.split(' ')[1] == "days":
         n = int(when.split(' ')[0])
         today = datetime.date.today()
-        return (today + datetime.timedelta(days=n)).strftime("%F")
+        return (today + datetime.timedelta(days=n))
     else:
         if when.startswith('next '):
             when = when.split(' ')[1]
         today = datetime.date.today()
-        return next_from_word(today, when).strftime("%F")
+        return next_from_word(today, when)
 
 
 def main(item, when):
@@ -72,7 +80,10 @@ def main(item, when):
         print("ITEM# out of range")
         return
     todos[item-1] = rx_due.sub("", todos[item-1])
-    todos[item-1] += ' due:{}'.format(parse_when(when))
+    when = parse_when(when)
+    if not isinstance(when, str):
+        when = when.strftime("%F")
+    todos[item-1] += ' due:{}'.format(when)
     print("SCHEDULED:", todos[item-1])
     with open(todofile, 'w') as todo_file:
         for task in todos:
