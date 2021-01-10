@@ -9,8 +9,10 @@ call plug#begin('~/.vim/plugins')
 Plug 'airblade/vim-gitgutter'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'chrisdavison/vim-datedfiles'
+Plug 'chrisdavison/checkmark'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dense-analysis/ale'
+Plug 'dhruvasagar/vim-table-mode'
 Plug 'easymotion/vim-easymotion'
 Plug 'freitass/todo.txt-vim'
 Plug 'honza/vim-snippets'
@@ -48,7 +50,10 @@ Plug 'cespare/vim-toml'
 Plug 'junegunn/seoul256.vim'
 Plug 'sainnhe/sonokai'
 Plug 'sainnhe/forest-night'
-
+Plug 'reedes/vim-colors-pencil'
+Plug 'sainnhe/edge'
+Plug 'wadackel/vim-dogrun'
+Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
@@ -121,7 +126,7 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ %f\ %l,%c\ %{fugitive#statusline()}\ %m%r\ %y
+set statusline=\ %f\ %4l,%-3c\ %3p%%\ %{fugitive#statusline()}\ %m%r\ %y
 set ruler
 set encoding=utf-8
 
@@ -153,8 +158,8 @@ if !has('gui_running')
     set t_Co=256
 endif
 let g:rehash256 = 1
-let g:dark_scheme='forest-night'
-let g:light_scheme='ayu-light'
+let g:dark_scheme='edge'
+let g:light_scheme='edge'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
 call colourtoggle#dark()
@@ -190,6 +195,7 @@ let g:snips_author="C.Davison"
 let g:snips_email="c.jr.davison@gmail.com"
 let g:datedfile_default_format="%Y%m%d-%A"
 let g:datedfile_default_header_format="%Y-%m-%d %A"
+let g:table_mode_corner='|'
 
 " keybinds {{{1 
 " Format the current paragraph
@@ -242,7 +248,7 @@ nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>j :DatedFile ~/code/knowledge/journal<CR>
 nnoremap <leader>l :DatedFile ~/code/knowledge/logbook<CR>
-nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m_%B<CR>
+nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B<CR>
 
 " Navigate :arglist
 nnoremap <right> :next<CR>
