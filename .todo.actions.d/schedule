@@ -64,7 +64,7 @@ def parse_when(when):
     elif when.split(' ')[1] == "days":
         n = int(when.split(' ')[0])
         today = datetime.date.today()
-        return (today + datetime.timedelta(days=n))
+        return today + datetime.timedelta(days=n)
     else:
         if when.startswith('next '):
             when = when.split(' ')[1]
