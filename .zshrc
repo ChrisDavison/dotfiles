@@ -10,7 +10,7 @@ if [[ -x "$HOME/.bin/nvim.appimage" ]]; then
     export EDITOR="$HOME/.bin/nvim.appimage"
 fi
 export GOPATH="$HOME"
-export GOBIN="$HOME/bin"
+export GOBIN="$HOME/.bin"
 if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
     export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
     export FZF_ALT_C_COMMAND='fd -t d . $HOME'
