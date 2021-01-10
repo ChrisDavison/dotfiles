@@ -245,3 +245,7 @@ knowledgeTODropbox() {
     zip -r ~/Dropbox/archive/notes-$(date +%F).zip $(cd ~/code/knowledge && git ls-files)
 
 }
+
+dls() {
+    cat ~/.download
+}
