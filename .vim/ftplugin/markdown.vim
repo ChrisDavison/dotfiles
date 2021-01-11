@@ -20,7 +20,7 @@ setlocal foldexpr=mkdx#fold(v:lnum)
 setlocal foldenable foldlevelstart=0
 " setlocal foldenable foldmethod=expr foldlevelstart=1 
 setlocal nospell 
-setlocal conceallevel=0
+setlocal conceallevel=2
 setlocal formatoptions-=a textwidth=80 formatoptions+=n
 nnoremap <buffer> <leader>i :g/^#/:p<CR>:
 
