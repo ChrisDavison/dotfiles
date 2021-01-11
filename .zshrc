@@ -23,8 +23,9 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 export MAIL=$HOME/.mbox
 export RE_UUID="[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 export RANGER_LOAD_DEFAULT_RC=0
-export RUST_SRC_PATH="$HOME/.rust_src"
+export RUST_SRC_PATH="$HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library"
 export BROWSER="firefox"
+export LC_ALL=en_GB.UTF-8
 
 paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin)
 for p in ${paths[@]}; do

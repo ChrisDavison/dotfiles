@@ -240,12 +240,19 @@ wslhome() {
     cd /mnt/c/Users/davison/"$1"
 }
 
-knowledgeTODropbox() {
-    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge ~/Dropbox/notes 
-    zip -r ~/Dropbox/archive/notes-$(date +%F).zip $(cd ~/code/knowledge && git ls-files)
-
+syncKnowledge() {
+    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge/ ~/Dropbox/notes/ 
+    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge/ /media/nas/notes/
 }
 
 dls() {
     cat ~/.download
+}
+
+to_html() {
+    pandoc --standalone --self-contained -c ~/code/dotfiles/simple.css $1 -o $2 
+}
+
+due() {
+    nlt.py -f "due:%Y-%m-%d" $@
 }
