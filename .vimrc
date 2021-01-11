@@ -49,11 +49,8 @@ Plug 'cespare/vim-toml'
 " Themes
 Plug 'junegunn/seoul256.vim'
 Plug 'sainnhe/sonokai'
-Plug 'sainnhe/forest-night'
 Plug 'reedes/vim-colors-pencil'
 Plug 'sainnhe/edge'
-Plug 'wadackel/vim-dogrun'
-Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
