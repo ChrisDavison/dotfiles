@@ -96,7 +96,7 @@ def group_todos_by_delta_days(todos):
 
 
 def matches_filter(filter, task):
-    positives = [w[1:] for w in filter if w.startswith('+')]
+    positives = [w[1:] for w in filter if w.startswith('+') or w.startswith('@')]
     negatives = [w[1:] for w in filter if w.startswith('-')]
     if negatives:
         for neg in negatives:
@@ -169,7 +169,7 @@ else:
     for arg in sys.argv:
         if os.path.basename(arg) == scriptname:
             continue
-        elif arg.startswith('+'):
+        elif arg.startswith('+') or arg.startswith('@'):
             filters.append(arg)
         elif arg.startswith('-'):
             filters.append(arg)
