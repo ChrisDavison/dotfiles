@@ -127,6 +127,22 @@ def print_list(list_of_tasks, filter):
     return num_displayed
 
 
+def day_suffix(date):
+    day = date.day
+    suffixes = {1:'st',2:'nd',3:'rd'}
+    if 11 <= day <= 13:
+        return 'th'
+    return suffixes.get(day % 10, 'th')
+
+
+def print_header():
+    today = datetime.today()
+    header = today.strftime(f"%A, %d{day_suffix(today)} %B")
+    print(header)
+    print("=" * len(header))
+    print()
+
+
 def main(future_days=None, filter=[]):
     todo_file = os.environ["TODO_FILE"]
     tasks_by_delta = dict()
@@ -140,6 +156,7 @@ def main(future_days=None, filter=[]):
 
     num_displayed = 0
 
+    print_header()
     overdue_tasks = [t for key in sorted_delta_keys if key < 0
                     for t in tasks_by_delta[key]]
     if overdue_tasks:
