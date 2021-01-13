@@ -28,6 +28,7 @@ alias df="df -x squashfs"
 alias clip="xclip -sel clipboard"
 alias t="todo.sh"
 alias tt="todo.sh due"
+alias tw="todo.sh due @work"
 alias rgl="rg --multiline --multiline-dotall"
 
 # aliases (conditional)
@@ -57,3 +58,5 @@ fi
 
 alias zc="ziputil choose"
 alias zv="ziputil view"
+
+alias sz="source ~/.zshrc"
