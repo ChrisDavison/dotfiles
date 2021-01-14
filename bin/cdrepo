@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+chosen=`ls $HOME/code | fzf --tac`
+cd "$HOME/code/$chosen"

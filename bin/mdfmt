@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+toFmt="gfm+smart"
+pandoc --to "$toFmt" --wrap=auto --columns=80 --markdown-headings=atx $1 -o $1
+

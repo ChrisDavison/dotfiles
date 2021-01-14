@@ -1,40 +1,7 @@
 #!/usr/bin/bash
 
-choose_tmux_session() {
-    if tmux list-sessions 2>&1 > /dev/null ; then
-        selected=$(tmux list-sessions | fzf -q "$1" | cut -d: -f1)
-        [[ -n "$selected" ]] && tmux attach -d -t "$selected"
-    else
-        echo "No tmux sessions running."
-    fi
-}
-alias tma=choose_tmux_session
-
 inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1;
-}
-
-swap() { # Swap two files (move, using a temporary)
-    set -e
-    mv "$2" "$1.$$"
-    mv "$1" "$2"
-    mv "$1.$$" "$1"
-}
-
-OpenInBrowser() { # Open link in whichever browser is in path
-    read url
-    [ -z $url ] && url="$@"
-    [ -z $url ] && echo "Empty url" && return 1
-    if inpath open; then
-        open ${url}
-    elif inpath firefox; then
-        firefox ${url}
-    elif inpath chrome; then
-        chrome ${url}
-    else
-        echo "No browser..."
-        return 2
-    fi
 }
 
 noext() { # Remove extension from file
@@ -47,29 +14,6 @@ ppath() { # Pretty print $PATH
 
 mdtohtml() { # Convert a markdown file to html
     pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
-}
-
-linkedtobin(){ # View all entires in ~/bin that are symlinks to my scripts
-    ls -l ~/bin | awk -F' ' '/-> .*scripts.*/{print $7":"$9}' | column -s':' -t
-}
-
-add2md(){ # Add an asset to an md file as a link
-    dest=$1
-    dest_base=$(dirname $dest)
-    file_dir="assets"
-    target=$dest_base/$file_dir
-    [ ! -f "$dest" ] && echo "No note file: $dest" && return 1
-    [ ! -d "$target" ] && echo "No dir: $target" && return 2
-    shift
-    echo "Linking notes to $dest"
-    for fn in $@
-    do
-        fn_short=$(basename $fn)
-        echo "Move $fn_short to $target"
-        echo "- [$fn_short](./$file_dir/$fn_short)" >> $dest
-    done
-    echo "===== TAIL OF THE NOTE FILE ====="
-    tail -n $(( $# + 2 )) $dest
 }
 
 logbook() { # Open todays logbook in $EDITOR
@@ -121,21 +65,8 @@ git_aliases (){
     git config --list | rg alias | column -s '=' -t | sort
 }
 
-copy_dotfiles(){
-    pushd $CODEDIR/dotfiles > /dev/null
-    rsync -r --exclude-from=excludes.txt . ~
-    popd > /dev/null
-}
-
 is_in_git_repo() { 
   git rev-parse HEAD > /dev/null 2>&1
-} 
-
-sanitise(){ 
-    [[ $# -eq 0 ]] && echo "usage: sanitise <filename>" && return
-    direc=$(dirname $1)
-    base=$(basename $1)
-    echo "$base" |tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9.-]/-/g' | tr -s - - | sed 's/\-$//g'
 } 
 
 ppath(){ 
@@ -154,55 +85,9 @@ nonascii(){
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
 } 
 
-is_tmux_alive(){ 
-    if [ $(tmux list-sessions | wc -l) -gt 0 ];
-    then
-        echo "TMUX"
-    else
-        echo "noMUX"
-        fi
-} 
-
-datezipdir(){ 
-    [[ $# -eq 0 ]] && echo "usage: datezipdir <directory>" && return
-    dirname=$(basename $1)
-    zipname=$(date +"$dirname--%Y-%m-%d.zip")
-    echo $zipname
-    zip -r $zipname $1
-} 
-
-aesenc(){ 
-    [[ $# = 0 ]] && echo "usage: aesenc <file>" && return
-    gpg --symmetric -a --cipher-algo aes256 --output "$1".asc "$1"
-    echo "$1.asc created"
-} 
-
-mdformatwrap(){ # format markdown using pandoc 
-    pandoc --to markdown-shortcut_reference_links+pipe_tables-simple_tables-fenced_code_attributes-smart --wrap=auto --columns=72 --atx-headers $1 -o $1
-} 
-
-tmc(){ # fuzzy choose a tmux session 
-    chosen=$(tmux list-sessions 2> /dev/null | cut -d: -f1 | fzf -0)
-    [[ -n "$chosen" ]] && tmux attach -t "$chosen"
-} 
-
-vs(){ # fuzzy select a vim session 
-    chosen=$(ls -1 $HOME/.vimsessions | fzf -0)
-    [[ -n "$chosen" ]] && nvim -S "$HOME/.vimsessions/$chosen"
-} 
-
 duplicates(){ # find duplicate words in a file 
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true
-} 
-
-asmrmpv(){ # launch a random asmr video using mpv 
-    nohup mpv $(randomasmr) &> /dev/null &
-} 
-
-wallpaper(){ # set linux wallpaper using feh 
-    chosen=$(fd . -t f $HOME/Dropbox/wallpapers | rg -v mobile | fzf)
-    [[ -n "$chosen" ]] && feh --bg-fill "$chosen"
 } 
 
 skyemull() { # alias to ssh to mull, via skye, with tunneling 
@@ -214,40 +99,6 @@ mull() { # alias to ssh to mull with tunneling
     echo "Mull:8811 routed to localhost:9999, via Skye"
     ssh mull -L 9999:localhost:8811
 } 
-
-fzs(){ # make a string 'fuzzy', for searching 
-    echo "$@" | sed -e 's/\s/.*/g'
-} 
-
-fzfp(){ # fzf with preview 
-    fzf --preview="bat {}" --preview-window=right:70%:wrap
-} 
-
-ipy() { # run ipython docker image
-    if docker ps -a | grep -q "ipython"; then
-        docker start ipython
-        docker attach ipython
-    else
-        docker run -it -p 8889:8888 -v $(pwd):/home/jovyan --name=ipython cdavison/ipython:latest ipython
-    fi
-}
-
-repo() {
-    cd $HOME/code/`ls $HOME/code | fzf --tac`
-}
-
-wslhome() {
-    cd /mnt/c/Users/davison/"$1"
-}
-
-syncKnowledge() {
-    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge/ ~/Dropbox/notes/ 
-    rsync -r -v --exclude .git/ --exclude .gitignore --exclude todo.txt.bak --delete-delay ~/code/knowledge/ /media/nas/notes/
-}
-
-dls() {
-    cat ~/.download
-}
 
 to_html() {
     pandoc --standalone --self-contained -c ~/code/dotfiles/simple.css $1 -o $2 

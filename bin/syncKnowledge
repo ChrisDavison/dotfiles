@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+src="~/code/knowledge/" 
+ignores="--exclude .git/ --exclude .gitignore --exclude todo.txt.bak"
+rsync -r -v $ignores --delete-delay "$src" ~/Dropbox/notes/ 
+rsync -r -v $ignores --delete-delay "$src" /media/nas/notes/
+
