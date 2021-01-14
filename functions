@@ -4,14 +4,6 @@ inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1;
 }
 
-noext() { # Remove extension from file
-    echo "${1%.*}"
-}
-
-ppath() { # Pretty print $PATH
-    echo "$PATH" | tr ':' '\n'
-}
-
 mdtohtml() { # Convert a markdown file to html
     pandoc "$1" -o $(noext "$1").html --from markdown-simple_tables+subscript+superscript --filter pandoc-tablenos -s --toc --toc-depth=2 -c ~/src/github.com/chrisdavison/dotfiles/simple.css -s --mathjax
 }
@@ -38,23 +30,8 @@ logbook_search() { # Display logbooks with contents matching query
 }
 alias lbs="logbook_search"
 
-shfuncs() { # List shell functions, functions in bashrc
-    rg "^[a-zA-Z_]+\(" ~/.bashrc | column -t -s '{'
-}
-
 nonascii() { # Ripgrep for non-ascii, greek, or "£"
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
-}
-
-hex2dec() { # Convert passed hex values to decimal
-    for f in $@; do
-        printf "$f is %d\n" "$f"
-    done
-}
-
-cdl () {
-    builtin cd "$1"
-    ls
 }
 
 refresh_dmenu() {
@@ -69,35 +46,13 @@ is_in_git_repo() {
   git rev-parse HEAD > /dev/null 2>&1
 } 
 
-ppath(){ 
-    echo "$PATH" | tr ":" "\n"
-} 
-
 monospace-fonts(){ 
     fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
-} 
-
-aliases(){ 
-    grep "^\s*alias.*=" $HOME/.zshrc | sed -e 's/^[ ]\+//g' | sed -e 's/=/@/' | column -s '@' -t | cut -d' ' -f2-
-} 
-
-nonascii(){ 
-    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading $@
 } 
 
 duplicates(){ # find duplicate words in a file 
     [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
     grep -Eo '(\b.+) \1\b' $1 || true
-} 
-
-skyemull() { # alias to ssh to mull, via skye, with tunneling 
-    echo "Mull:8811 routed to localhost:9999, via Skye"
-    ssh -L -T 9999:localhost:9999 cdavison@skye ssh -T -L 9999:localhost:8811 cdavison@mull
-} 
-
-mull() { # alias to ssh to mull with tunneling 
-    echo "Mull:8811 routed to localhost:9999, via Skye"
-    ssh mull -L 9999:localhost:8811
 } 
 
 to_html() {
