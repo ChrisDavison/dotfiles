@@ -6,7 +6,7 @@ let md_standalone=" --standalone"
 
 " let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
 let md_equalprg="pandoc --to gfm+smart --markdown-headings=atx"
-let md_equalprg .= md_wrap . md_standalone
+let md_equalprg .= md_wrap . md_reflinks . md_standalone
 
 let g:voom_default_mode="pandoc"
 let g:voom_tree_width=50

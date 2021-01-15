@@ -9,7 +9,7 @@ call plug#begin('~/.vim/plugins')
 Plug 'airblade/vim-gitgutter'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'chrisdavison/vim-datedfiles'
-Plug 'chrisdavison/checkmark'
+Plug 'chrisdavison/vim-checkmark'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dense-analysis/ale'
 Plug 'dhruvasagar/vim-table-mode'
@@ -159,7 +159,7 @@ let g:dark_scheme='edge'
 let g:light_scheme='edge'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
-call colourtoggle#dark()
+call colourtoggle#light()
 
 command! ColourDark call colourtoggle#dark()
 command! ColourToggle call colourtoggle#toggle()
