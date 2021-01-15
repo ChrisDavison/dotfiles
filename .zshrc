@@ -81,15 +81,16 @@ alias mv="mv -v"     # Always explain move actions
 alias rg='rg -S'   # Make ripgrep use smart-case by default
 alias rgl="rg --multiline --multiline-dotall"
 alias sz="source ~/.zshrc"
-alias t="todo.sh"
 alias tmux="TERM=xterm-256color tmux -2"
 alias today="date +%F"
 alias ts="tagsearch"
-alias tt="todo.sh due"
-alias tw="todo.sh due @work"
 alias v="nvim"
 alias zc="ziputil choose"
 alias zv="ziputil view"
+
+# alias t="todo.sh"
+# alias tt="todo.sh due"
+# alias tw="todo.sh due @work"
 
 # alias n="echo '-  $argv' >> $HOME/code/knowledge/inbox.txt"
 # alias nt="echo '-  [ ] $argv' >> $HOME/code/knowledge/inbox.txt"

@@ -244,7 +244,7 @@ nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>j :DatedFile ~/code/knowledge/journal<CR>
-nnoremap <leader>l :DatedFile ~/code/knowledge/logbook<CR>
+nnoremap <leader>l :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A<CR>
 nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B<CR>
 
 " Navigate :arglist
