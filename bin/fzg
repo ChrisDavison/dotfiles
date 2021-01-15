@@ -1,21 +1,14 @@
-# fco - fuzzy checkout [C-g b]
-# fshow - fuzzy show [C-g c] 
-# fgst - fuzzy select from git status (vfg - vim, fuzzy from status)
+#!/usr/bin/env bash
 
-# fzf utility functions {{{1
-# Use fd (https://github.com/sharkdp/fd) instead of the default find
-# command for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-_fzf_compgen_path() {
-  fd --hidden --follow --exclude ".git" . "$1"
-}
+USAGE="usage: fzg [cmd]
 
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude ".git" . "$1"
-}
-# }}}1
+Do some git stuff with fuzzyfind (fzf).
+
+commands:
+    show                fuzzy select commit and checkout
+    checkout (co)       fuzzy checkout tag/branch/target
+    status (stat|s)     fuzzy select from git status
+"
 
 fshow(){ # fuzzy show commit {{{1
     local commit commits
@@ -23,8 +16,6 @@ fshow(){ # fuzzy show commit {{{1
         commit=$(echo "$commits" | fzf --preview 'git show --abbrev-commit --stat --color=always $(echo {} | cut -d" " -f1)') &&
     git checkout $(echo "$branch" | cut -d' ' -f1)
 } 
-zle -N fshow
-bindkey '^gc' fshow
 # }}}1
 
 fco() { # fuzzy checkout {{{1
@@ -41,12 +32,9 @@ fco() { # fuzzy checkout {{{1
         --ansi) || return
   git checkout $(awk '{print $2}' <<<"$target" )
 }
-zle -N fco
-bindkey '^gb' fco
 # }}}1
 
 fgst() { # fuzzy pick from git status -s {{{1
-  # "Nothing to see here, move along"
   is_in_git_repo || return 1
 
   local cmd="${FZF_CTRL_T_COMMAND:-"command git status -s"}"
@@ -56,5 +44,13 @@ fgst() { # fuzzy pick from git status -s {{{1
   done
   echo
 }
-alias vfg='nvim $(fgst)'
 # }}}1
+
+case "$1" in
+    "show") fshow ;;
+    "co" | "checkout") fco ;;
+    "s" | "stat" | "status") fgst ;;
+    *) echo "$USAGE" ;;
+esac
+
+

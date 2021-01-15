@@ -95,7 +95,6 @@ alias zv="ziputil view"
 # alias nt="echo '-  [ ] $argv' >> $HOME/code/knowledge/inbox.txt"
 # alias n="note.py"
 
-[[ -e $(which hub) ]] && alias g="hub"
 [[ -x "$HOME/.bin/nvim.appimage" ]] && alias v="$HOME/.bin/nvim.appimage"
 
 # aliases (conditional)
