@@ -1,10 +1,6 @@
-####### #     # #     #       #     #    #    ######   #####
-#       ##    # #     #       #     #   # #   #     # #     #
-#       # #   # #     #       #     #  #   #  #     # #
-#####   #  #  # #     #       #     # #     # ######   #####
-#       #   # #  #   #         #   #  ####### #   #         #
-#       #    ##   # #           # #   #     # #    #  #     #
-####### #     #    #             #    #     # #     #  #####
+########################################
+#####           ENV VARS          ######
+########################################
 export EDITOR="nvim"
 if [[ -x "$HOME/.bin/nvim.appimage" ]]; then
     export EDITOR="$HOME/.bin/nvim.appimage"
@@ -34,13 +30,9 @@ done
 typeset -U path
 typeset -U PATH
 
- #####  ####### ####### ####### ### #     #  #####   #####
-#     # #          #       #     #  ##    # #     # #     #
-#       #          #       #     #  # #   # #       #
- #####  #####      #       #     #  #  #  # #  ####  #####
-      # #          #       #     #  #   # # #     #       #
-#     # #          #       #     #  #    ## #     # #     #
- #####  #######    #       #    ### #     #  #####   #####
+########################################
+#####            SETTINGS          ##### 
+########################################
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
@@ -71,10 +63,131 @@ autoload -Uz compinit;compinit -i
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
+########################################
+#####          ALIASES             #####
+########################################
+
+alias bm="bookmarks"
+alias clip="xclip -sel clipboard"
+alias cp="cp -rv"    # Always recursively and verbosely copy
+alias df="df -x squashfs"
+alias dls="cat ~/.download"
+alias g="git"
+alias inbox="nvim $HOME/code/knowledge/inbox.txt"
+alias ipython="ipython --pprint --no-banner"
+alias less='less -R'    # Use color codes in 'less'
+alias mkdir="mkdir -pv"   # Always make parent directories, and explain what was done
+alias mv="mv -v"     # Always explain move actions
+alias rg='rg -S'   # Make ripgrep use smart-case by default
+alias rgl="rg --multiline --multiline-dotall"
+alias sz="source ~/.zshrc"
+alias t="todo.sh"
+alias tmux="TERM=xterm-256color tmux -2"
+alias today="date +%F"
+alias ts="tagsearch"
+alias tt="todo.sh due"
+alias tw="todo.sh due @work"
+alias v="nvim"
+alias zc="ziputil choose"
+alias zv="ziputil view"
+
+# alias n="echo '-  $argv' >> $HOME/code/knowledge/inbox.txt"
+# alias nt="echo '-  [ ] $argv' >> $HOME/code/knowledge/inbox.txt"
+# alias n="note.py"
+
+[[ -e $(which hub) ]] && alias g="hub"
+[[ -x "$HOME/.bin/nvim.appimage" ]] && alias v="$HOME/.bin/nvim.appimage"
+
+# aliases (conditional)
+ 
+# fd was installed from apt, so is installed as fdfind to not shadow
+# another 'fd' command
+[[ -x $(which fdfind) ]] && alias fd="fdfind"
+
+alias ru="repoutil unclean"
+alias rs="repoutil stat"
+alias rl="repoutil list"
+alias rf="repoutil fetch"
+alias rb="repoutil branchstat | sed -e 's/.*code\///' | sort | column -s'|' -t"
+
+if [[ -x "$HOME/.cargo/bin/exa" ]]; then
+    default_exa="exa --group-directories-first"
+    alias ls="$default_exa"
+    alias ll="$default_exa --long --git"
+    alias la="$default_exa --long -a --git"
+else
+    alias ls="ls --color --group-directories-first"
+    alias ll="ls -l"
+    alias la="ls -l -a"
+fi
+
+########################################
+#####         FUNCTIONS            #####
+########################################
+inpath() { # Check ifa file is in $PATH
+    type "$1" >/dev/null 2>&1;
+}
+
+logbook() { # Open todays logbook in $EDITOR
+    $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
+}
+
+logbooks(){
+    a=${1:-1}
+    b=${2:-1}
+    fd . ~/Dropbox/notes/logbook -e md | sort -r | sed -n "$a","$b"p
+}
+
+logbook_recent() { # Display the last N logbooks (or from $1 to $2)
+    a=${1:-1}
+    b=${2:-10}
+    bat `logbooks $a $b` --style=header,grid
+}
+alias lbr="logbook_recent"
+
+logbook_search() { # Display logbooks with contents matching query
+    bat $(rg "$@" ~/Dropbox/notes/logbook -l | sort -r) --style=header,grid
+}
+alias lbs="logbook_search"
+
+nonascii() { # Ripgrep for non-ascii, greek, or "£"
+    rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading
+}
+
+refresh_dmenu() {
+    [ -f ~/.cache/dmenu_run ] && rm ~/.cache/dmenu_run && dmenu_path
+}
+
+git_aliases (){
+    git config --list | rg alias | column -s '=' -t | sort
+}
+
+is_in_git_repo() { 
+  git rev-parse HEAD > /dev/null 2>&1
+} 
+
+monospace-fonts(){ 
+    fc-list :mono | cut -d':' -f2  | cut -d',' -f1 | sort | uniq
+} 
+
+duplicates(){ # find duplicate words in a file 
+    [[ $# -eq 0 ]] && echo "usage: duplicates <file>..." && return
+    grep -Eo '(\b.+) \1\b' $1 || true
+} 
+
+to_html() {
+    pandoc --standalone --self-contained -c ~/code/dotfiles/simple.css $1 -o $2 
+}
+
+due() {
+    nlt.py -f "due:%Y-%m-%d" $@
+}
+
+########################################
+#####          EXTERNAL            #####
+########################################
 external_scripts=(
     $HOME/code/dotfiles/zsh-prompt.sh
-    $HOME/code/dotfiles/aliases
-    $HOME/code/dotfiles/functions
     # $HOME/code/dotfiles/functions-notes.sh # ni niv note notes
     $HOME/code/dotfiles/functions-git-fzf.sh # fco, fshow, fgst
     $HOME/.envs/py/bin/activate
