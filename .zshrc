@@ -189,7 +189,6 @@ due() {
 external_scripts=(
     $HOME/code/dotfiles/zsh-prompt.sh
     # $HOME/code/dotfiles/functions-notes.sh # ni niv note notes
-    $HOME/code/dotfiles/functions-git-fzf.sh # fco, fshow, fgst
     $HOME/.envs/py/bin/activate
     $HOME/.cargo/env
     $HOME/.fzf/shell/key-bindings.zsh
