@@ -120,6 +120,7 @@ else
     alias ll="ls -l"
     alias la="ls -l -a"
 fi
+alias dlaq="dla -q"
 
 ########################################
 #####         FUNCTIONS            #####
