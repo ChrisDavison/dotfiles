@@ -251,6 +251,9 @@ nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B<CR>
 nnoremap <right> :next<CR>
 nnoremap <left> :prev<CR>
 
+
+nnoremap <leader>z :norm `z<CR>
+
 " coc.nvim
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -304,6 +307,7 @@ iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 " commands & functions {{{1
 command! MakeTags !ctags -R .
 command! ShaID exec 'r!shaid ' . expand('%:p')
+command! Goz exec 'norm `z'
 
 " autocommands {{{1
 augroup vimrc
@@ -332,4 +336,5 @@ augroup vimrc
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     au InsertEnter * set norelativenumber
     au InsertLeave * set relativenumber
+    au BufEnter *.md let b:coc_suggest_disable=1
 augroup END
