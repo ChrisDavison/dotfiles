@@ -9,6 +9,7 @@ import System.Exit
 import System.Posix.Unistd
 
 import XMonad
+import XMonad.Actions.CopyWindow (copyToAll, killAllOtherCopies)
 import XMonad.Actions.CycleWS ( toggleWS' , moveTo , findWorkspace , shiftTo , WSType ( HiddenNonEmptyWS , EmptyWS))
 import XMonad.Actions.FindEmptyWorkspace
 import XMonad.Actions.Submap ( submap )
@@ -53,19 +54,22 @@ data SimpleKeybind = K CDMask KeySym (X())
 data SimpleMousebind = M CDMask Button (Window -> X())
 data CDMask = Hyper | Win | Alt | Shift
   | HyperShift | WinShift | AltShift
-  | HyperCtrl | HyperAlt | None
+  | HyperCtrl | HyperAlt
+  | HyperAltShift
+  | None
 
 toKeyMask :: CDMask -> KeyMask
-toKeyMask None       = 0
-toKeyMask Hyper      = mod3Mask                 
-toKeyMask Win        = mod4Mask                 
-toKeyMask Alt        = mod1Mask                 
-toKeyMask Shift      = shiftMask                
-toKeyMask HyperShift = mod3Mask .|. shiftMask   
-toKeyMask HyperCtrl  = mod3Mask .|. controlMask 
-toKeyMask HyperAlt   = mod3Mask .|. mod1Mask
-toKeyMask WinShift   = mod4Mask .|. shiftMask   
-toKeyMask AltShift   = mod1Mask .|. shiftMask   
+toKeyMask None          = 0
+toKeyMask Hyper         = mod3Mask                 
+toKeyMask Win           = mod4Mask                 
+toKeyMask Alt           = mod1Mask                 
+toKeyMask Shift         = shiftMask                
+toKeyMask HyperShift    = mod3Mask .|. shiftMask   
+toKeyMask HyperCtrl     = mod3Mask .|. controlMask 
+toKeyMask HyperAlt      = mod3Mask .|. mod1Mask
+toKeyMask HyperAltShift = mod3Mask .|. mod1Mask .|. shiftMask
+toKeyMask WinShift      = mod4Mask .|. shiftMask   
+toKeyMask AltShift      = mod1Mask .|. shiftMask   
 
 fromKeybind :: SimpleKeybind -> ((KeyMask, KeySym), X ())
 fromKeybind (K mask k command) = ((toKeyMask mask, k), command)
@@ -111,11 +115,16 @@ myKeys conf = makeKeybinds $
   , K HyperShift xK_l            (sendMessage MirrorExpand)       -- larger slave window
   , K Hyper      xK_comma        (sendMessage (IncMasterN 1))     -- increase num master windows
   , K Hyper      xK_period       (sendMessage (IncMasterN (-1)))  -- decrease num master windows
+  --- Github issues
+  , K HyperAlt   xK_i            (spawn "firefox https://github.com/ChrisDavison/knowledge/issues/new")
+  , K HyperAlt   xK_l            (spawn "firefox https://github.com/ChrisDavison/logbook/issues/new")
   --- LAYOUT   
   , K Hyper      xK_space        (sendMessage NextLayout)         -- Use next configured layout
   , K HyperShift xK_space        (setLayout $ XMonad.layoutHook conf)             -- reset to default layout
   , K Hyper      xK_f            (toggleFullscreen)               -- toggle fullscreen on focused window
   , K HyperShift xK_f            (toggleBar)                      -- toggle fullscreen on focused window
+  , K HyperAlt   xK_f            (windows copyToAll)              -- toggle fullscreen on focused window
+  , K HyperAltShift xK_f         (killAllOtherCopies)     -- toggle fullscreen on focused window
   , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
@@ -131,7 +140,7 @@ myKeys conf = makeKeybinds $
   , K HyperShift xK_b            (spawn "$HOME/.bin/dmenu_bookmarks.sh")
   , K Hyper      xK_F5           (runOrRaise "spotify" (className =? "Spotify"))
   , K Hyper      xK_F6           (cycleFirefox)
-  , K HyperShift xK_w            (spawn "nitrogen ~/Dropbox/pictures/wallpapers")
+  , K HyperShift xK_w            (spawn "nitrogen /media/nas/pictures/wallpapers")
   --- firefox / youtube doesn't work well with instant xdotool, so add 100ms delay after switching window
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
@@ -149,6 +158,8 @@ myKeys conf = makeKeybinds $
   --- AUDIO / MUSIC
   , K Hyper      xK_Home                  (doVolume "up")
   , K Hyper      xK_End                   (doVolume "down")
+  , K Hyper      xK_v                     (doVolume "up")
+  , K HyperShift xK_v                     (doVolume "down")
   , K Hyper      xK_Delete                (doSpotify "prev")
   , K Hyper      xK_Next                  (doSpotify "next")
   , K Hyper      xK_Prior                 (doSpotify "play-pause")
@@ -264,9 +275,10 @@ myStartupHook = do
   spawnOnce "redshift"
   spawnOnce "autorandr"
   spawnOnce "~/.fehbg"
-  spawnOnce "compton &"
+  -- spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
   spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
+  spawnOnce "nm-applet"
   spawnOnce
     "trayer --edge top --align center --widthtype request --padding 0 --SetDockType true --SetPartialStrut true --expand true --monitor 0 --transparent true --alpha 255 --height 21 &"
   spawnOnce "dropbox start"
@@ -286,7 +298,7 @@ logWorkspacesOnXmobar pipe = dynamicLogWithPP xmobarPP
 
 myConfig pipe = def { terminal           = myTerminal
                     , focusFollowsMouse  = True
-                    , borderWidth        = 1
+                    , borderWidth        = 3
                     , modMask            = myModMask
                     , workspaces         = myWorkspaces
                     , normalBorderColor  = cGrey
