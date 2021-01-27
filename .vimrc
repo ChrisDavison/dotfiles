@@ -8,8 +8,8 @@ call plug#begin('~/.vim/plugins')
 " Utility
 Plug 'airblade/vim-gitgutter'
 Plug 'chrisdavison/vim-cdroot'
-Plug 'chrisdavison/vim-datedfiles'
 Plug 'chrisdavison/vim-checkmark'
+Plug 'chrisdavison/vim-datedfiles'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dense-analysis/ale'
 Plug 'dhruvasagar/vim-table-mode'
@@ -19,6 +19,8 @@ Plug 'honza/vim-snippets'
 Plug 'jpalardy/vim-slime'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-textobj-user'
 Plug 'Konfekt/FastFold'
@@ -159,7 +161,7 @@ let g:dark_scheme='edge'
 let g:light_scheme='edge'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
-call colourtoggle#light()
+call colourtoggle#dark()
 
 command! ColourDark call colourtoggle#dark()
 command! ColourToggle call colourtoggle#toggle()
@@ -193,6 +195,7 @@ let g:snips_email="c.jr.davison@gmail.com"
 let g:datedfile_default_format="%Y%m%d-%A"
 let g:datedfile_default_header_format="%Y-%m-%d %A"
 let g:table_mode_corner='|'
+let g:goyo_width=100
 
 " keybinds {{{1 
 " Format the current paragraph
@@ -309,6 +312,30 @@ command! MakeTags !ctags -R .
 command! ShaID exec 'r!shaid ' . expand('%:p')
 command! Goz exec 'norm `z'
 
+function! s:goyo_enter()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status off
+    " silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
+  set noshowmode
+  set noshowcmd
+  set scrolloff=999
+  Limelight
+  " ...
+endfunction
+
+function! s:goyo_leave()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status on
+    " silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
+  set showmode
+  set showcmd
+  set scrolloff=5
+  Limelight!
+  " ...
+endfunction
+
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -334,7 +361,9 @@ augroup vimrc
     au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
-    au InsertEnter * set norelativenumber
-    au InsertLeave * set relativenumber
+    " au InsertEnter * set norelativenumber
+    " au InsertLeave * set relativenumber
     au BufEnter *.md let b:coc_suggest_disable=1
+    au User GoyoEnter nested call <sid>goyo_enter()
+    au User GoyoLeave nested call <sid>goyo_leave()
 augroup END
