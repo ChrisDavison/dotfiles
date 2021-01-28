@@ -23,7 +23,7 @@ export RUST_SRC_PATH="$HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/l
 export BROWSER="firefox"
 export LC_ALL=en_GB.UTF-8
 
-paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin $HOME/code/dotfiles/bin $HOME/.rbenv/bin)
+paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin $HOME/code/dotfiles/bin $HOME/.rbenv/bin $HOME/.rbenv/versions/3.0.0/bin)
 for p in ${paths[@]}; do
     export PATH="$p":$PATH
 done
