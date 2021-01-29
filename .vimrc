@@ -234,6 +234,7 @@ imap jk <ESC>
 imap kj <ESC>
 
 nnoremap <F6> :set paste!<BAR>set paste?<CR>
+nnoremap <F9> :Goyo<CR>
 
 " Navigate to stuff in project (files, buffers, or tags)
 nnoremap <leader>p :Files<CR>
