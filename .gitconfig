@@ -55,8 +55,5 @@
     ignoreCase = true
 [wc]
     writeCommitGraph = true
-[github]
-    user = ChrisDavison
-    oauth-token = ***REMOVED***
 [commit]
 	verbose = true
