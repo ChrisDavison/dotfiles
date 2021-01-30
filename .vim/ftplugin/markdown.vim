@@ -10,6 +10,7 @@ let md_equalprg .= md_wrap . md_reflinks . md_standalone
 
 let g:voom_default_mode="pandoc"
 let g:voom_tree_width=50
+let g:vim_markdown_conceal_code_blocks=0
 " let g:markdown_folding=1
 let g:vim_markdown_folding_style_pythonic = 1
 let g:vim_markdown_toc_autofit=1
