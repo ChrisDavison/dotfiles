@@ -129,6 +129,18 @@ inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1;
 }
 
+cdrepo(){
+    query=""
+    if [[ $# -gt 0 ]]; then
+        query="-q $@"
+    fi
+    chosen=`fd . -t d -d 1 $HOME/code | fzf --tac -1 -0 $query`
+    if [[ ! -z $chosen ]]; then
+        cd "$chosen"
+    fi
+}
+alias cdr="cdrepo"
+
 logbook() { # Open todays logbook in $EDITOR
     $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
 }

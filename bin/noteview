@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-pushd $HOME/Dropbox/notes > /dev/null
+direc="$HOME/Dropbox/notes"
+direc="$HOME/code/knowledge"
+
+pushd $direc > /dev/null
 
 with_booknotes=0
 [[ "$1" == "-b" ]] && with_booknotes=1
