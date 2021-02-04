@@ -72,3 +72,28 @@ endsnippet
 snippet ppp "Pretty print (debug mode)"
 println!("{:#?}", $1);
 endsnippet
+
+snippet cfgd "Config for debug mode"
+#[cfg(debug_assertions)]
+{
+	${1:code}
+}
+endsnippet
+snippet cfgd! "Config macro for debug mode"
+if cfg!(debug_assertions) {
+	${1:code}
+}
+endsnippet
+
+snippet cfgr "Config for release mode"
+#[cfg(not(debug_assertions))]
+{
+	${1:code}
+}
+endsnippet
+snippet cfgr! "Config macro for release mode"
+if cfg!(not(debug_assertions)) {
+	${1:code}
+}
+endsnippet
+
