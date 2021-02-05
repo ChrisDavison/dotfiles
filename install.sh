@@ -116,6 +116,8 @@ if ! type starship > /dev/null; then
     echo "  starship (from bin, not cargo)"
     curl -fsSL https://starship.rs/install.sh | bash
 fi
+cargo install -q zoxide
+
 
 #=========================================================== 
 echo "Installing doom emacs"
