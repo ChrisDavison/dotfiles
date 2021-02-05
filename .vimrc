@@ -42,7 +42,9 @@ Plug 'wellle/targets.vim'
 " Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
-Plug 'plasticboy/vim-markdown/'
+" Plug 'plasticboy/vim-markdown/'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-pandoc'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
@@ -366,4 +368,5 @@ augroup vimrc
     au BufEnter *.md let b:coc_suggest_disable=1
     au User GoyoEnter nested call <sid>goyo_enter()
     au User GoyoLeave nested call <sid>goyo_leave()
+    au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
 augroup END
