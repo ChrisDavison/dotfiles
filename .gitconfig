@@ -45,10 +45,10 @@
     publish="!git push -u origin $(git branch-name)"
     # Remove branch from remote
     unpublish="!git push origin :$(git branch-name)"
-    editmodified="!$EDITOR $(git ls-files -m -o)"
     sa="!git submodule add https://github.com/$@"
     wip="for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads"
     frbi = "!f() { git rebase -i $(git log --pretty=oneline --color=always | fzf --ansi | cut -d ' ' -f1)^ ; }; f"
+    em = "!f() { $EDITOR $(git ls-files -m -o --exclude-standard | fzf -m --ansi) ;}; f"
 [core]
     excludesfile = ~/.global_ignore
     commitGraph = true
