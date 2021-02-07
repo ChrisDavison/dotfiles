@@ -10,6 +10,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'chrisdavison/vim-cdroot'
 Plug 'chrisdavison/vim-checkmark'
 Plug 'chrisdavison/vim-datedfiles'
+Plug 'chrisdavison/vim-insertlink'
 Plug 'dahu/vim-fanfingtastic'
 Plug 'dense-analysis/ale'
 Plug 'dhruvasagar/vim-table-mode'
@@ -251,6 +252,15 @@ nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>j :DatedFile ~/code/knowledge/journal<CR>
 nnoremap <leader>l :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A<CR>
 nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B<CR>
+
+function! s:last_file_in_dir(dir)
+    let files=glob(fnamemodify(a:dir, ':p') . "*", 0, 1)
+    " echom l:files
+    return l:files[len(l:files)-1]
+endfunction
+
+command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
+command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
 
 " Navigate :arglist
 nnoremap <right> :next<CR>
