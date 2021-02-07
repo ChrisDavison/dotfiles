@@ -6,13 +6,11 @@ let md_standalone=" --standalone"
 
 " let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
 let md_equalprg="pandoc --to gfm+smart --markdown-headings=atx"
-let md_equalprg .= md_wrap . md_reflinks . md_standalone
+let md_equalprg .= md_wrap . md_standalone
 
-let g:voom_default_mode="pandoc"
-let g:voom_tree_width=50
 let g:vim_markdown_conceal_code_blocks=0
 " let g:markdown_folding=1
-let g:vim_markdown_folding_style_pythonic = 1
+" let g:vim_markdown_folding_style_pythonic = 1
 let g:vim_markdown_toc_autofit=1
 
 let g:pandoc#keyboard#use_default_mappings=0
@@ -30,8 +28,8 @@ let g:pandoc#toc#close_after_navigating=0
 
 let &l:equalprg=md_equalprg
 setlocal noautoindent
-setlocal foldexpr=mkdx#fold(v:lnum)
-setlocal foldenable foldlevelstart=0
+" setlocal foldexpr=mkdx#fold(v:lnum)
+" setlocal foldenable foldlevelstart=0
 " setlocal foldenable foldmethod=expr foldlevelstart=1 
 setlocal nospell 
 setlocal conceallevel=2
