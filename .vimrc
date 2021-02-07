@@ -302,7 +302,9 @@ endfunction
 let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
-            \ 'ctrl-v': 'vsplit' }
+            \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-i': 'InsertLinkToNoteBelow'}
+
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() =~# '^lgrep') ? 'silent lgrep' : 'lgrep'
