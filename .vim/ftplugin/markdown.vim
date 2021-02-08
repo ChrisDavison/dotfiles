@@ -8,14 +8,9 @@ let md_standalone=" --standalone"
 let md_equalprg="pandoc --to gfm+smart --markdown-headings=atx"
 let md_equalprg .= md_wrap . md_standalone
 
-let g:vim_markdown_conceal_code_blocks=0
-" let g:markdown_folding=1
-" let g:vim_markdown_folding_style_pythonic = 1
-let g:vim_markdown_toc_autofit=1
-
 let g:pandoc#keyboard#use_default_mappings=0
 let g:pandoc#formatting#mode='hA'
-let g:pandoc#formatting#smart_autoformat_on_cursormoved=1
+let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''
 let g:pandoc#formatting#textwidth=80
@@ -34,7 +29,7 @@ setlocal noautoindent
 setlocal nospell 
 setlocal conceallevel=2
 setlocal formatoptions-=a textwidth=80 formatoptions+=n
-nnoremap <buffer> <leader>i :g/^#/:p<CR>:
+" nnoremap <buffer> <leader>i :g/^#/:p<CR>:
 
 command! H1 g/^#\{1,1\} /
 command! H2 g/^#\{1,2\} /
@@ -42,8 +37,7 @@ command! H3 g/^#\{1,3\} /
 command! FMT silent normal mzggvG=`z
 
 " Insert a new 'section' (L2 markdown header)
-nnoremap <leader>S :norm Go<CR>:norm o## <CR>a
-
+nnoremap <leader>S :call append(line('$'), ['','## '])<CR>:norm G<CR>:startinsert!<CR>
 
 " fn: Goto file {{{
 function! Markdown_goto_file(split)
@@ -94,9 +88,6 @@ vnoremap <buffer> <leader>w :w <BAR>normal gvD<left><left><left><left><left><lef
 " }}}
 " Don't highlight code blocks
 " This is a hack to prevent indented lists from displaying as code blocks
-highlight clear markdownCode
-highlight clear markdownCodeBlock
-
 
 nnoremap <buffer> ]] :call pandoc#keyboard#sections#NextHeader()<CR>
 nnoremap <buffer> [[ :call pandoc#keyboard#sections#PrevHeader()<CR>
