@@ -115,6 +115,7 @@ if [[ -x "$HOME/.cargo/bin/exa" ]]; then
     alias ls="$default_exa"
     alias ll="$default_exa --long --git"
     alias la="$default_exa --long -a --git"
+    alias lt="$default_exa --tree"
 else
     alias ls="ls --color --group-directories-first"
     alias ll="ls -l"
