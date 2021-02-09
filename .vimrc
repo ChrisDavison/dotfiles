@@ -355,6 +355,34 @@ function! s:goyo_leave()
   " ...
 endfunction
 
+function! s:prompt_and_tidy_filename(dir, split, ...)
+    let projectname=input('Title: ')
+    let project_nospace=substitute(l:projectname, ' ', '-', 'g')
+    let filepath=a:dir . l:project_nospace . '.md'
+    let tags=a:000
+    if a:split
+        split
+    endif
+    exec ':edit ' . l:filepath
+    call append(0, '# ' . <sid>titlecase(l:projectname))
+    if !empty(l:tags)
+        let tags=map(copy(l:tags), '"@" . v:val')
+        call append(1, ['', join(l:tags, " ")])
+    endif
+endfunction
+
+
+function! s:titlecase(str)
+    let words=split(a:str, '\W\+')
+    let titled=map(l:words, {_, word -> toupper(word[0]) . word[1:]})
+    return join(l:titled, ' ')
+endfunction
+
+function! s:last_file_in_dir(dir)
+    let files=glob(fnamemodify(a:dir, ':p') . "*", 0, 1)
+    return l:files[len(l:files)-1]
+endfunction
+
 command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
 command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
 command! NewJournal :DatedFile ~/code/knowledge/journal
