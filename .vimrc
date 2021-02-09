@@ -256,23 +256,15 @@ nnoremap <leader>t :BTags<CR>
 nnoremap <leader>s :e ~/.scratch<CR>
 nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
-nnoremap <leader>j :DatedFile ~/code/knowledge/journal<CR>
-nnoremap <leader>l :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A<CR>
-nnoremap <leader>c :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B<CR>
+nnoremap <leader>j :NewJournal<CR>
+nnoremap <leader>l :NewLogbook<CR>
+nnoremap <leader>c :NewCalendar<CR>
 
-function! s:last_file_in_dir(dir)
-    let files=glob(fnamemodify(a:dir, ':p') . "*", 0, 1)
-    " echom l:files
-    return l:files[len(l:files)-1]
-endfunction
 
-command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
-command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
 
 " Navigate :arglist
 nnoremap <right> :next<CR>
 nnoremap <left> :prev<CR>
-
 
 nnoremap <leader>z :norm `z<CR>
 
@@ -358,6 +350,11 @@ function! s:goyo_leave()
   " ...
 endfunction
 
+command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
+command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
+command! NewJournal :DatedFile ~/code/knowledge/journal
+command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A
+command! NewCalendar :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B
 " autocommands {{{1
 augroup vimrc
     autocmd!
