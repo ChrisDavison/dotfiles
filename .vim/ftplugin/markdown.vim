@@ -3,8 +3,6 @@ let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
 let md_standalone=" --standalone"
-
-" let md_equalprg="pandoc --to markdown+pipe_tables-simple_tables-fenced_code_attributes+task_lists+shortcut_reference_links+pandoc_title_block-smart --markdown-headings=atx"
 let md_equalprg="pandoc --to gfm+smart --markdown-headings=atx"
 let md_equalprg .= md_wrap . md_standalone
 
@@ -23,18 +21,9 @@ let g:pandoc#toc#close_after_navigating=0
 
 let &l:equalprg=md_equalprg
 setlocal noautoindent
-" setlocal foldexpr=mkdx#fold(v:lnum)
-" setlocal foldenable foldlevelstart=0
-" setlocal foldenable foldmethod=expr foldlevelstart=1 
 setlocal nospell 
 setlocal conceallevel=2
 setlocal formatoptions-=a textwidth=80 formatoptions+=n
-" nnoremap <buffer> <leader>i :g/^#/:p<CR>:
-
-command! H1 g/^#\{1,1\} /
-command! H2 g/^#\{1,2\} /
-command! H3 g/^#\{1,3\} /
-command! FMT silent normal mzggvG=`z
 
 " Insert a new 'section' (L2 markdown header)
 nnoremap <leader>S :call append(line('$'), ['','## '])<CR>:norm G<CR>:startinsert!<CR>
