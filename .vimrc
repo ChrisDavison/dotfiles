@@ -323,6 +323,7 @@ cnoreabbrev Bd bd
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
+iabbrev <expr> TS strftime("«%H:%M»")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 
 " commands & functions {{{1
