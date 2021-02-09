@@ -302,8 +302,12 @@ let g:fzf_action = {
             \ 'ctrl-t': 'tab split',
             \ 'ctrl-x': 'split',
             \ 'ctrl-v': 'vsplit',
+            \ 'ctrl-f': 'InsertFilename',
             \ 'ctrl-i': 'InsertLinkToNote',
             \ 'ctrl-l': 'InsertLinkToNoteBelow'}
+
+command! -complete=file -nargs=1 InsertFilename call append(line("."), fnamemodify(<q-args>, ":~:."))
+
 
 " abbreviations {{{1
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
