@@ -39,6 +39,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
+Plug 'dkarter/bullets.vim'
 
 " Language support
 Plug 'lervag/vimtex'
@@ -198,7 +199,13 @@ let g:datedfile_default_format="%Y%m%d-%A"
 let g:datedfile_default_header_format="%Y-%m-%d %A"
 let g:table_mode_corner='|'
 let g:goyo_width=100
-
+let g:bullets_enabled_file_types = [
+    \ 'markdown',
+    \ 'text',
+    \ 'gitcommit',
+    \ 'markdown.pandoc',
+    \ 'scratch'
+    \]
 " keybinds {{{1 
 " Format the current paragraph
 nnoremap <silent> Q =ip
