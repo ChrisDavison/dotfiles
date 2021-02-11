@@ -164,7 +164,7 @@ let g:dark_scheme='edge'
 let g:light_scheme='edge'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
-call colourtoggle#dark()
+call colourtoggle#time()
 
 command! ColourDark call colourtoggle#dark()
 command! ColourToggle call colourtoggle#toggle()
@@ -387,6 +387,8 @@ command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logb
 command! NewJournal :DatedFile ~/code/knowledge/journal
 command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A
 command! NewCalendar :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B
+
+command! EditAHK :edit /mnt/c/ahk/Keybinds.ahk
 
 function! s:filename_as_header()
     let filename=expand('%:t:r')
