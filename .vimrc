@@ -79,7 +79,7 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
-" set autochdir
+set autochdir
 set cursorline
 set guioptions-=m
 set guioptions-=T
@@ -410,7 +410,7 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    au BufEnter *.rs,*.py,*.md Root
+    " au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     " au InsertEnter * set norelativenumber
