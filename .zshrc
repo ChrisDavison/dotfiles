@@ -23,7 +23,7 @@ export RUST_SRC_PATH="$HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/l
 export BROWSER="firefox"
 export LC_ALL=en_GB.UTF-8
 
-paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin $HOME/code/dotfiles/bin $HOME/.rbenv/bin $HOME/.rbenv/versions/3.0.0/bin)
+paths=($HOME/bin $HOME/.bin $HOME/.fzf/bin $HOME/code/scripts $HOME/.cargo/bin $HOME/.local/bin $HOME/.nimble/bin $HOME/.local/go/bin /usr/local/go/bin $HOME/code/dotfiles/bin $HOME/.rbenv/bin $HOME/.rbenv/versions/3.0.0/bin $HOME/.anaconda3/bin)
 for p in ${paths[@]}; do
     export PATH="$p":$PATH
 done
@@ -189,16 +189,21 @@ duplicates(){ # find duplicate words in a file
     grep -Eo '(\b.+) \1\b' $1 || true
 } 
 
-to_html() {
-    pandoc --standalone --self-contained -c ~/code/dotfiles/simple.css $1 -o $2 
-}
-
 due() {
     nlt.py -f "due:%Y-%m-%d" $@
 }
 
 tma() {
-    tmux attach -t `tmux ls | cut -d':' -f1 | fzf `
+    chosen=`tmux ls | cut -d':' -f1 | fzf -0 -1`
+    if [ ! -z "$chosen" ]; then
+        tmux attach -t "$chosen"
+    else
+        tmux
+    fi
+}
+
+winhome(){
+    echo "/mnt/c/Users/davison/"$1
 }
 
 ########################################
