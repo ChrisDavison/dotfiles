@@ -371,7 +371,6 @@ function! s:prompt_and_tidy_filename(dir, split, ...)
     endif
 endfunction
 
-
 function! s:titlecase(str)
     let words=split(a:str, '\W\+')
     let titled=map(l:words, {_, word -> toupper(word[0]) . word[1:]})
@@ -388,6 +387,12 @@ command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logb
 command! NewJournal :DatedFile ~/code/knowledge/journal
 command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A
 command! NewCalendar :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B
+
+function! s:filename_as_header()
+    let filename=expand('%:t:r')
+    call append(0, "# " . <sid>titlecase(l:filename))
+endfunction
+
 " autocommands {{{1
 augroup vimrc
     autocmd!
@@ -416,6 +421,7 @@ augroup vimrc
     " au InsertEnter * set norelativenumber
     " au InsertLeave * set relativenumber
     au BufEnter *.md let b:coc_suggest_disable=1
+    au BufNewFile *.md call <sid>filename_as_header()
     au User GoyoEnter nested call <sid>goyo_enter()
     au User GoyoLeave nested call <sid>goyo_leave()
     au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
