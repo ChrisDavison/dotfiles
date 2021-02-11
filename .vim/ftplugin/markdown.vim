@@ -3,7 +3,7 @@ let md_nowrap=' --wrap=none'
 let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
 let md_standalone=" --standalone"
-let md_equalprg="pandoc --to gfm+smart --markdown-headings=atx"
+let md_equalprg="pandoc --to markdown+smart --markdown-headings=atx"
 let md_equalprg .= md_wrap . md_standalone
 
 let g:pandoc#keyboard#use_default_mappings=0
@@ -73,7 +73,14 @@ endfunction "
 command! -bang Backlinks call Markdown_backlinks(<bang>1)
 " }}}
 " Move visual selection to another file {{{
-vnoremap <buffer> <leader>w :w <BAR>normal gvD<left><left><left><left><left><left><left><left><left><left><left>
+function! s:move_visual_selection_to_file()
+    let filename=input("Filename: ")
+    let filename_nospace=substitute(l:filename, ' ', '-', 'g')
+    exec ":'<,'>w " . l:filename_nospace . ".md"
+    exec ":normal gvD"
+endfunction
+
+vnoremap <buffer> <leader>w :call <sid>move_visual_selection_to_file()<CR>
 " }}}
 " Don't highlight code blocks
 " This is a hack to prevent indented lists from displaying as code blocks
