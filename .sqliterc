@@ -1,0 +1,4 @@
+PRAGMA journal_mode='WAL';
+PRAGMA temp_store=2;
+PRAGMA synchronous=1;
+PRAGMA cache_size=-64000;
