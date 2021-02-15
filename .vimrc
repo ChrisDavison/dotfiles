@@ -41,6 +41,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'dkarter/bullets.vim'
 
+
 " Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
@@ -79,7 +80,7 @@ set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
 set foldlevelstart=99
-set autochdir
+" set autochdir
 set cursorline
 set guioptions-=m
 set guioptions-=T
@@ -164,7 +165,7 @@ let g:dark_scheme='edge'
 let g:light_scheme='edge'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
-call colourtoggle#time()
+call colourtoggle#dark()
 
 command! ColourDark call colourtoggle#dark()
 command! ColourToggle call colourtoggle#toggle()
@@ -195,7 +196,7 @@ let g:slime_default_config = {"socket_name": "default", "target_pane": "{last}"}
 let g:slime_dont_ask_default=1
 let g:snips_author="C.Davison"
 let g:snips_email="c.jr.davison@gmail.com"
-let g:datedfile_default_format="%Y%m%d-%A"
+let g:datedfile_default_format="%Y-%m-%d-%A"
 let g:datedfile_default_header_format="%Y-%m-%d %A"
 let g:table_mode_corner='|'
 let g:goyo_width=100
@@ -248,7 +249,7 @@ nnoremap <F9> :Goyo<CR>
 " Navigate to stuff in project (files, buffers, or tags)
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>g :Files %:p:h<cr>
+nnoremap <leader>g :GFiles<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 
@@ -385,7 +386,7 @@ endfunction
 command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
 command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
 command! NewJournal :DatedFile ~/code/knowledge/journal
-command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y%m%d-%A
+command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y-%m-%d-%A
 command! NewCalendar :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B
 
 command! EditAHK :edit /mnt/c/ahk/Keybinds.ahk
@@ -417,7 +418,7 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    " au BufEnter *.rs,*.py,*.md Root
+    au BufEnter *.rs,*.py,*.md Root
     au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     " au InsertEnter * set norelativenumber
