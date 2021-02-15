@@ -58,3 +58,5 @@
     writeCommitGraph = true
 [commit]
 	verbose = true
+[github]
+    user=ChrisDavison
