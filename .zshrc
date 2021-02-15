@@ -194,6 +194,10 @@ due() {
 }
 
 tma() {
+    if [ ! -z "$TMUX" ]; then
+        echo "ALREADY IN TMUX"
+        return
+    fi
     chosen=`tmux ls | cut -d':' -f1 | fzf -0 -1`
     if [ ! -z "$chosen" ]; then
         tmux attach -t "$chosen"
