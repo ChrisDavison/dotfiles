@@ -210,6 +210,17 @@ winhome(){
     echo "/mnt/c/Users/davison/"$1
 }
 
+last_work_week(){
+    last7days.py ~/code/logbook/`date +%Y` | bat -l md
+}
+alias l7w="last_work_week"
+
+last_journal_week(){
+    last7days.py ~/code/knowledge/journal | bat -l md
+}
+alias l7j="last_journal_week"
+
+
 ########################################
 #####          EXTERNAL            #####
 ########################################
