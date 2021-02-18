@@ -40,7 +40,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
 Plug 'wellle/targets.vim'
 Plug 'dkarter/bullets.vim'
-
+Plug 'AndrewRadev/linediff.vim'
 
 " Language support
 Plug 'lervag/vimtex'
@@ -51,6 +51,7 @@ Plug 'vim-pandoc/vim-pandoc'
 Plug 'fatih/vim-go'
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
+Plug 'dag/vim-fish'
 
 " Themes
 Plug 'junegunn/seoul256.vim'
@@ -142,7 +143,7 @@ set undofile
 set complete-=i
 set completeopt=menu,menuone,preview
 
-set shell=/usr/bin/zsh
+set shell=/usr/bin/fish
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
@@ -186,6 +187,7 @@ let g:go_fmt_command="goimports"
 let g:go_fmt_autosave=1
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
+let g:ale_python_mypy_options="--ignore-missing-imports"
 let g:slime_python_ipython = 1
 let g:rustfmt_autosave=1
 let g:vimtex_format_enabled=1
