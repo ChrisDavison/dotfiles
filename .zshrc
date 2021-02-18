@@ -57,6 +57,7 @@ zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate #enable approximate matches for completion
 
 autoload -Uz compinit;compinit -i
+autoload zmv
 
 # keybinds
 # up and down do history search
@@ -66,7 +67,6 @@ bindkey "^[[B" history-search-forward
 ########################################
 #####          ALIASES             #####
 ########################################
-
 alias bm="bookmarks"
 alias clip="xclip -sel clipboard"
 alias cp="cp -rv"    # Always recursively and verbosely copy
@@ -85,8 +85,6 @@ alias tmux="TERM=xterm-256color tmux -2"
 alias today="date +%F"
 alias ts="tagsearch"
 alias v="nvim"
-alias zc="ziputil choose"
-alias zv="ziputil view"
 
 # alias t="todo.sh"
 # alias tt="todo.sh due"
@@ -129,40 +127,6 @@ alias dlaq="dla -q"
 inpath() { # Check ifa file is in $PATH
     type "$1" >/dev/null 2>&1;
 }
-
-cdrepo(){
-    query=""
-    if [[ $# -gt 0 ]]; then
-        query="-q $@"
-    fi
-    chosen=`fd . -t d -d 1 $HOME/code | fzf --tac -1 -0 $query`
-    if [[ ! -z $chosen ]]; then
-        cd "$chosen"
-    fi
-}
-alias cdr="cdrepo"
-
-logbook() { # Open todays logbook in $EDITOR
-    $EDITOR $(date +%"$HOME/Dropbox/notes/logbook/%Y/%Y-%m-%d.md")
-}
-
-logbooks(){
-    a=${1:-1}
-    b=${2:-1}
-    fd . ~/Dropbox/notes/logbook -e md | sort -r | sed -n "$a","$b"p
-}
-
-logbook_recent() { # Display the last N logbooks (or from $1 to $2)
-    a=${1:-1}
-    b=${2:-10}
-    bat `logbooks $a $b` --style=header,grid
-}
-alias lbr="logbook_recent"
-
-logbook_search() { # Display logbooks with contents matching query
-    bat $(rg "$@" ~/Dropbox/notes/logbook -l | sort -r) --style=header,grid
-}
-alias lbs="logbook_search"
 
 nonascii() { # Ripgrep for non-ascii, greek, or "£"
     rg "[^\x00-\x7F£\p{Greek}]" -o --no-heading

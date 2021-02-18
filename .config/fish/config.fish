@@ -1,25 +1,25 @@
-set -Ux fish_greeting ""
-set -Ux EDITOR "vim"
+set -gx fish_greeting ""
+set -gx EDITOR "vim"
 
 # Export an env var to declare we are in WSL or not
 if not test (uname -r | grep -i -q 'microsoft-standard')
     # grep returns 0 if match is found, so invert result
-    set -Ux is_wsl 1
+    set -gx is_wsl 1
+    wsl_interop_setup
 else
-    set -Ux is_wsl 0
+    set -gx is_wsl 0
 end
 
-
-
-set -Ux GOPATH "$HOME"
-set -Ux GOBIN "$HOME/bin"
+set -gx GOPATH "$HOME"
+set -gx GOBIN "$HOME/bin"
 set -l CARGOBIN "$HOME/.cargo/bin"
-set -Ux WORKON_HOME "$HOME/.envs"
-set -Ux LESS FRSX
-set -Ux CODEDIR "$HOME/code/"
-set -Ux VIRTUAL_ENV_DISABLE_PROMPT 0
-set -Ux RUST_SRC_PATH "$HOME/.rust_src"
-set -Ux RANGER_LOAD_DEFAULT_RC 0
+set -gx WORKON_HOME "$HOME/.envs"
+set -gx LESS FRSX
+set -gx CODEDIR "$HOME/code/"
+set -gx VIRTUAL_ENV_DISABLE_PROMPT 0
+set -gx RUST_SRC_PATH "$HOME/.rust_src"
+set -gx RANGER_LOAD_DEFAULT_RC 0
+set -gx RE_UUID "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
 
 ############################################################
 for direc in $GOBIN $HOME/.bin $HOME/code/scripts $CARGOBIN /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin $HOME/.conda/bin /usr/local/zig
@@ -41,40 +41,39 @@ set -l hub_path (which hub)
 set -l starship_path (which starship)
 
 if test -x "$fd_path" -o -x "$fdfind_path"
-    set -Ux FZF_ALT_C_COMMAND 'fd -t d . $HOME'
-    set -Ux FZF_DEFAULT_COMMAND "fd -H -E ".git' -E '.keep' --type file --follow'
+    set -gx FZF_ALT_C_COMMAND 'fd -t d . $HOME'
+    set -gx FZF_DEFAULT_COMMAND "fd -H -E ".git' -E '.keep' --type file --follow'
 else if test -x "$rg_path"
-    set -Ux FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
+    set -gx FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 end
-
-
 
 ############################################################
-alias tmux="set TERM xterm-256color; tmux"
-alias c="clear"
+alias b="bat --tabs 2 --color=always --style=numbers,changes "
+alias bm="bookmarks"
+alias clip="xclip -sel clipboard"
 alias cp="cp -rv" # Always recursively and verbosely copy
-alias mv="mv -v" # Always explain move actions
-alias mkdir="mkdir -pv" # Always make parent directories, and explain what was done
-alias less='less -R' # Use color codes in 'less'
-alias rg='rg -S' # Make ripgrep use smart-case by default
-alias v="vim"
+alias df="df -x squashfs"
 alias ipython="ipython --pprint --no-banner"
+alias less='less -R' # Use color codes in 'less'
+alias mkdir="mkdir -pv" # Always make parent directories, and explain what was done
+alias mv="mv -v" # Always explain move actions
+alias rg='rg -S' # Make ripgrep use smart-case by default
+alias timestamp="date +'%F %H:%M:%S'"
+alias tmux="set TERM xterm-256color; tmux -2"
+alias today="date +%F"
+alias ts="tagsearch"
+alias l7w="last_work_week"
+alias l7j="last_journal_week"
+
+alias v="vim"
+if test -x "$HOME/.bin/nvim.appimage"
+    alias v="$HOME/.bin/nvim.appimage"
+end
+
+alias g="git"
 if test -x "$hub_path"
     alias g="hub"
-else
-    alias g="git"
 end
-alias today="date +%F"
-alias timestamp="date +'%F %H:%M:%S'"
-alias tmux="tmux -2"
-alias ts="tagsearch"
-alias bm="bookmarks"
-alias b="bat --tabs 2 --color=always --style=numbers,changes "
-alias n="echo '-  $argv' >> ~/code/knowledge/inbox.txt"
-alias nt="echo '-  [ ] $argv' >> ~/code/knowledge/inbox.txt"
-alias inbox="nvim ~/code/knowledge/inbox.txt"
-alias n="note.py"
-alias clip="xclip -sel clipboard"
 
 if test -x "$fdfind_path"
     alias fd="fdfind"
@@ -102,7 +101,6 @@ else
     echo "exa not installed. install from cargo"
 end
 
-
 if test -x "$ziputil_path"
     alias zc="ziputil choose"
     alias zv="ziputil view"
@@ -111,11 +109,12 @@ else
 end
 
 ############################################################
-test $is_wsl; and wsl_interop_setup
 
-test -x "$HOME/.envs/ml/bin/activate.fish"; and source "$HOME/.envs/ml/bin/activate.fish"
-test -x "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"
-test -x "$HOME/.cargo/env"; and source "$HOME/.cargo/env"
+set -l externals "$HOME/.envs/ml/bin/activate.fish" "$HOME/.envs/py/bin/activate.fish" "$HOME/.cargo/env"
+for external in $externals
+    test -x $external; and source $external
+end
+
 test -x "$starship_path"; and starship init fish | source
 
 
@@ -127,6 +126,10 @@ end
 
 cd ~
 
-set -gx WASMTIME_HOME "$HOME/.wasmtime"
-
+# WASM config
+set -l WASMTIME_HOME "$HOME/.wasmtime"
 string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
+
+if test -x (which zoxide)
+    zoxide init fish | source
+end
