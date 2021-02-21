@@ -49,3 +49,4 @@ nohup.out
 .cache/
 .vim/backups/
 .vim/swapfiles/
+__pycache__
