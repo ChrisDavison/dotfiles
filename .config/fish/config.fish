@@ -64,6 +64,8 @@ alias today="date +%F"
 alias ts="tagsearch"
 alias l7w="last_work_week"
 alias l7j="last_journal_week"
+alias dls="cat ~/.download"
+alias dlaq="dla -q"
 
 alias v="vim"
 if test -x "$HOME/.bin/nvim.appimage"
@@ -110,10 +112,8 @@ end
 
 ############################################################
 
-set -l externals "$HOME/.envs/ml/bin/activate.fish" "$HOME/.envs/py/bin/activate.fish" "$HOME/.cargo/env"
-for external in $externals
-    test -x $external; and source $external
-end
+source "$HOME/.envs/py/bin/activate.fish"
+source "$HOME/.cargo/env"
 
 test -x "$starship_path"; and starship init fish | source
 
