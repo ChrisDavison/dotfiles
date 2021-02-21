@@ -45,7 +45,6 @@ Plug 'AndrewRadev/linediff.vim'
 " Language support
 Plug 'lervag/vimtex'
 Plug 'vim-python/python-syntax'
-" Plug 'plasticboy/vim-markdown/'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'fatih/vim-go'
@@ -143,7 +142,7 @@ set undofile
 set complete-=i
 set completeopt=menu,menuone,preview
 
-set shell=/usr/bin/fish
+set shell=/usr/bin/zsh
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c
@@ -162,8 +161,8 @@ if !has('gui_running')
     set t_Co=256
 endif
 let g:rehash256 = 1
-let g:dark_scheme='edge'
-let g:light_scheme='edge'
+let g:dark_scheme='pencil'
+let g:light_scheme='pencil'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
 call colourtoggle#dark()
@@ -188,6 +187,7 @@ let g:go_fmt_autosave=1
 let g:go_version_warning=0
 let g:pymode_python = 'python3'
 let g:ale_python_mypy_options="--ignore-missing-imports"
+let g:ale_python_flake8_options="--max-line-length=120"
 let g:slime_python_ipython = 1
 let g:rustfmt_autosave=1
 let g:vimtex_format_enabled=1
@@ -397,6 +397,7 @@ function! s:filename_as_header()
     let filename=expand('%:t:r')
     call append(0, "# " . <sid>titlecase(l:filename))
 endfunction
+command! FilenameAsHeader call <sid>filename_as_header()
 
 " autocommands {{{1
 augroup vimrc
@@ -426,7 +427,7 @@ augroup vimrc
     " au InsertEnter * set norelativenumber
     " au InsertLeave * set relativenumber
     au BufEnter *.md let b:coc_suggest_disable=1
-    au BufNewFile *.md call <sid>filename_as_header()
+    " au BufNewFile *.md call <sid>filename_as_header()
     au User GoyoEnter nested call <sid>goyo_enter()
     au User GoyoLeave nested call <sid>goyo_leave()
     au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
