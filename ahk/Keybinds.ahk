@@ -1,12 +1,6 @@
-; DON'T DECLARE KEYBINDS IN ANY OTHER FILES.
-; All keybinds should be declared in here only, so it's easier
-; to modify, and prevent overlap,
-; 
-; Other scripts are only for function definitions.
-;###########################################################
 ;  +       SHIFT
 ;  ^ # !   CTRL WIN ALT
-;###########################################################
+;..........................................................
 SetCapsLockState, alwaysoff
 SendMode Input
 
@@ -16,33 +10,44 @@ CapsLock::F13
 ; Ctrl+F12 to reload this hotkey script
 ^F12::reload
 
-;  Text Insertion
-^#!XButton1::Send c.jr.davison@gmail.com
-^#!XButton2::Send christopher.davison@strath.ac.uk
-^!+1::Send **({!})**
-
 ; Media functionality
-CapsLock & s::Send {Volume_Down 5}
-CapsLock & w::Send {Volume_Up 5}
+CapsLock & s::Send {Volume_Down 1}
+CapsLock & w::Send {Volume_Up 1}
 CapsLock & a::Send {Media_Prev}
 CapsLock & d::Send {Media_Next}
 CapsLock & Space::Send  {Media_Play_Pause}
 
-CapsLock & v::
-Send ^a
-sleep, 50
-Send ^c
-sleep, 50
-Send ^!v
-return
+CapsLock & p::run python.exe "C:\ahk\dashboard.py"
 
-CapsLock & n::Send ^!n
+#Include, TodoistUtils.ahk
+^!a::TodoistAdd()
+^!t::TodoistActivate()
+^!s::TodoistSearch()
 
+#Include, AnkiUtils.ahk
+^+a::AnkiQuickAdd()
+
+CapsLock & n::WSLNvimJournal()
+WSLNvimJournal(){
+    run "C:\Users\davison\AppData\Local\wsltty\bin\mintty.exe" "--WSL=" "--configdir=C:\Users\davison\AppData\Roaming\wsltty" "-~"  "-e" "nvim" "-c" "NewJournal"
+    sleep, 300
+    Resize(1000, 1200)
+    Center()
+}
+
+#Include, PrintScreenToAnkiImageOcclusion.ahk
+#Include, CopyAndPasteAsPlaintext.ahk
+#Include, NextBookmarkInManager.ahk
+; CapsLock & v::nextBookmarkInManager(75)
+	
+; CapsLock & n::Send ^!n
+
+CapsLock & XButton1::WinActivate, ahk_id %beforeSpotify%
 CapsLock & XButton2::
 WinGet, beforeSpotify, , A
+Run, spotify.exe
 WinActivate, ahk_exe spotify.exe
 return
-CapsLock & XButton1::WinActivate, ahk_id %beforeSpotify%
 
 ; F9::
 ; WinGet, beforeSpotify, , A
