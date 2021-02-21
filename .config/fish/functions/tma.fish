@@ -3,10 +3,10 @@ function tma
         echo "ALREADY IN TMUX"
         return
     end
-    set chosen (tmux ls | cut -d':' -f1 | fzf -0 -1)
+    set chosen (command tmux ls | cut -d':' -f1 | fzf -0 -1)
     if string length -q "$chosen"
-        tmux attach -t "$chosen"
+        command tmux attach -t "$chosen"
     else
-        tmux
+        command tmux
     end
 end
