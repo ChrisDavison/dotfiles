@@ -59,7 +59,6 @@ alias mkdir="mkdir -pv" # Always make parent directories, and explain what was d
 alias mv="mv -v" # Always explain move actions
 alias rg='rg -S' # Make ripgrep use smart-case by default
 alias timestamp="date +'%F %H:%M:%S'"
-alias tmux="set TERM xterm-256color; tmux -2"
 alias today="date +%F"
 alias ts="tagsearch"
 alias l7w="last_work_week"
@@ -70,6 +69,7 @@ alias dlaq="dla -q"
 alias v="vim"
 if test -x "$HOME/.bin/nvim.appimage"
     alias v="$HOME/.bin/nvim.appimage"
+    set -gx EDITOR "$HOME/.bin/nvim.appimage"
 end
 
 alias g="git"
