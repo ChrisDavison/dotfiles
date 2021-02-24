@@ -40,12 +40,7 @@ set -l ziputil_path (which ziputil)
 set -l hub_path (which hub)
 set -l starship_path (which starship)
 
-if test -x "$fd_path" -o -x "$fdfind_path"
-    set -gx FZF_ALT_C_COMMAND 'fd -t d . $HOME'
-    set -gx FZF_DEFAULT_COMMAND "fd -H -E ".git' -E '.keep' --type file --follow'
-else if test -x "$rg_path"
-    set -gx FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
-end
+set -gx FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 
 ############################################################
 alias b="bat --tabs 2 --color=always --style=numbers,changes "

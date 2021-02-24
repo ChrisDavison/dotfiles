@@ -7,12 +7,7 @@ if [[ -x "$HOME/.bin/nvim.appimage" ]]; then
 fi
 export GOPATH="$HOME"
 export GOBIN="$HOME/.bin"
-if [[ -x $(which fd) ]] || [[ -x $(which fdfind) ]]; then
-    export FZF_DEFAULT_COMMAND="fd -H -E '.git' -E '.keep' --type file --follow"
-    export FZF_ALT_C_COMMAND='fd -t d . $HOME'
-else
-    export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
-fi
+export FZF_DEFAULT_COMMAND='rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
 export WORKON_HOME="$HOME/.envs"
 export LESS=FRSX
 export VIRTUAL_ENV_DISABLE_PROMPT=1

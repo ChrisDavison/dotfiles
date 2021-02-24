@@ -252,6 +252,7 @@ nnoremap <F9> :Goyo<CR>
 nnoremap <leader>p :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :GFiles<cr>
+nnoremap <leader>G :GFiles?<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
 
@@ -262,8 +263,6 @@ nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>j :NewJournal<CR>
 nnoremap <leader>l :NewLogbook<CR>
 nnoremap <leader>c :NewCalendar<CR>
-
-
 
 " Navigate :arglist
 nnoremap <right> :next<CR>
@@ -395,7 +394,13 @@ command! EditAHK :edit /mnt/c/ahk/Keybinds.ahk
 
 function! s:filename_as_header()
     let filename=expand('%:t:r')
-    call append(0, "# " . <sid>titlecase(l:filename))
+    if match(l:filename, "[0-9]\\\{4\}-[0-9]\\\{2\}-[0-9]\\\{2\}") >= 0
+        let date = l:filename[:9]
+        let filename_trimmed=l:filename[11:]
+        call append(0, "# " . l:date . " " . <sid>titlecase(l:filename_trimmed))
+    else
+        call append(0, "# " . <sid>titlecase(l:filename))
+    endif
 endfunction
 command! FilenameAsHeader call <sid>filename_as_header()
 
@@ -422,12 +427,11 @@ augroup vimrc
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
     au BufEnter *.rs,*.py,*.md Root
-    au VimLeave * call sessions#save_last()
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     " au InsertEnter * set norelativenumber
     " au InsertLeave * set relativenumber
     au BufEnter *.md let b:coc_suggest_disable=1
-    " au BufNewFile *.md call <sid>filename_as_header()
+    au BufNewFile *.md FilenameAsHeader
     au User GoyoEnter nested call <sid>goyo_enter()
     au User GoyoLeave nested call <sid>goyo_leave()
     au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown.pandoc
