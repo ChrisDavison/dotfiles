@@ -57,6 +57,8 @@ Plug 'junegunn/seoul256.vim'
 Plug 'sainnhe/sonokai'
 Plug 'reedes/vim-colors-pencil'
 Plug 'sainnhe/edge'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 
@@ -79,7 +81,7 @@ set autoread
 set tabstop=4 softtabstop=4 shiftround shiftwidth=4 expandtab
 set clipboard+=unnamedplus " Use system clipboard with vim clipboard
 set lazyredraw " Don't redraw while executing macros
-set foldlevelstart=99
+set foldlevelstart=1
 " set autochdir
 set cursorline
 set guioptions-=m
@@ -152,6 +154,10 @@ if has('nvim')
     set inccommand=nosplit  " Live-preview of :s commands
 endif
 
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
+endif
+
 let g:netrw_browsex_viewer="firefox --new-tab"
 " appearance {{{1
 set termguicolors
@@ -175,10 +181,8 @@ command! ColourTime call colourtoggle#time()
 " plugin configuration {{{1
 let g:is_bash=1
 let g:fzf_layout = {'down': '~40%'}
-let g:fzf_preview_window=''
-if executable('rg')
-    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ -g\ '!tags'
-endif
+let g:fzf_buffers_jump = 1
+let g:fzf_preview_window=["right:50%:hidden", "ctrl-/"]
 let g:non_git_roots=['~/Dropbox/notes', '/mnt/e/Dropbox/notes']
 let g:gutentags_project_root = ['tags']
 let g:gutentags_define_advanced_commands=1
@@ -209,6 +213,8 @@ let g:bullets_enabled_file_types = [
     \ 'markdown.pandoc',
     \ 'scratch'
     \]
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
 " keybinds {{{1 
 " Format the current paragraph
 nnoremap <silent> Q =ip
@@ -255,20 +261,22 @@ nnoremap <leader>g :GFiles<cr>
 nnoremap <leader>G :GFiles?<cr>
 nnoremap <leader>T :Tags<CR>
 nnoremap <leader>t :BTags<CR>
+nnoremap <leader>en :Files ~/code/knowledge<CR>
+nnoremap <leader><leader> :Files ~/code/knowledge<CR>
 
 " Navigate to specific files
 nnoremap <leader>s :e ~/.scratch<CR>
-nnoremap <leader>en :Files ~/code/knowledge/<CR>
 nnoremap <leader>ev :e ~/.vimrc<CR>
 nnoremap <leader>j :NewJournal<CR>
 nnoremap <leader>l :NewLogbook<CR>
 nnoremap <leader>c :NewCalendar<CR>
 
+
 " Navigate :arglist
 nnoremap <right> :next<CR>
 nnoremap <left> :prev<CR>
 
-nnoremap <leader>z :norm `z<CR>
+nnoremap <leader>z :norm `Z<CR>
 
 " coc.nvim
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -401,6 +409,7 @@ function! s:filename_as_header()
     else
         call append(0, "# " . <sid>titlecase(l:filename))
     endif
+    write
 endfunction
 command! FilenameAsHeader call <sid>filename_as_header()
 
@@ -426,7 +435,12 @@ augroup vimrc
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
+    
+    " Don't set Root for all files, as this somehow results in coc.nvim
+    " replacing the buffer contents, rather than using a preview pane.
     au BufEnter *.rs,*.py,*.md Root
+    " au BufEnter * Root
+    
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     " au InsertEnter * set norelativenumber
     " au InsertLeave * set relativenumber
