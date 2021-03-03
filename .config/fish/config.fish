@@ -1,14 +1,21 @@
 set -gx fish_greeting ""
 set -gx EDITOR "vim"
 
-# Export an env var to declare we are in WSL or not
-if not test (uname -r | grep -i -q 'microsoft-standard')
-    # grep returns 0 if match is found, so invert result
-    set -gx is_wsl 1
-    wsl_interop_setup
-else
-    set -gx is_wsl 0
-end
+# Update PATH
+# Do this first, so that I can check for binaries later
+# e.g. only alias stuff if rust tools like exa or rg exist
+not contains $HOME/.bin $PATH; and set PATH $HOME/.bin $PATH
+not contains $HOME/code/scripts $PATH; and set PATH $HOME/code/scripts $PATH
+not contains $CARGOBIN $PATH; and set PATH $CARGOBIN $PATH
+not contains $HOME/.local/bin $PATH; and set PATH $HOME/.local/bin $PATH
+not contains $HOME/.emacs.d/bin $PATH; and set PATH $HOME/.emacs.d/bin $PATH
+not contains $HOME/.npm-packages/bin $PATH; and set PATH $HOME/.npm-packages/bin $PATH
+not contains $HOME/.conda/bin $PATH; and set PATH $HOME/.conda/bin $PATH
+not contains "$HOME/.wasmtime/bin" $PATH; and set PATH "$HOME/.wasmtime/bin" $PATH
+not contains "$HOME/.cargo/bin" $PATH; and set PATH "$HOME/.cargo/bin" $PATH
+not contains /usr/local/go/bin $PATH; and set PATH /usr/local/go/bin $PATH
+not contains /usr/local/julia/bin $PATH; and set PATH /usr/local/julia/bin $PATH
+not contains /usr/local/zig $PATH; and set PATH /usr/local/zig $PATH
 
 set -gx GOPATH "$HOME"
 set -gx GOBIN "$HOME/bin"
@@ -20,27 +27,28 @@ set -gx VIRTUAL_ENV_DISABLE_PROMPT 0
 set -gx RUST_SRC_PATH "$HOME/.rust_src"
 set -gx RANGER_LOAD_DEFAULT_RC 0
 set -gx RE_UUID "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}"
+set -gx AIRFLOW_HOME "$HOME/.config/airflow"
 
-############################################################
-for direc in $GOBIN $HOME/.bin $HOME/code/scripts $CARGOBIN /usr/local/go/bin /usr/local/julia/bin $HOME/.local/bin $HOME/.emacs.d/bin $HOME/.npm-packages/bin $HOME/.conda/bin /usr/local/zig
-    if not contains $direc $PATH
-        set PATH $direc $PATH
+if not test -z (which fd)
+    set -gx FZF_DEFAULT_COMMAND 'fd --type file --hidden --no-ignore'
+else
+    if not test -z (which fdfind)
+        alias fd="fdfind"
+        set -gx FZF_DEFAULT_COMMAND 'fd --type file --hidden --no-ignore'
+    else
+        set -gx FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
     end
 end
 
-############################################################
+# color man
+set -x LESS_TERMCAP_md (printf "\e[01;31m")
+set -x LESS_TERMCAP_me (printf "\e[0m")
+set -x LESS_TERMCAP_se (printf "\e[0m")
+set -x LESS_TERMCAP_so (printf "\e[01;44;33m")
+set -x LESS_TERMCAP_ue (printf "\e[0m")
+set -x LESS_TERMCAP_us (printf "\e[01;32m")
 
-# some local vars for testing existance of tools
-set -l rg_path (which rg)
-set -l fd_path (which fd)
-set -l fdfind_path (which fdfind)
-set -l exa_path (which exa)
-set -l repoutil_path (which repoutil)
-set -l ziputil_path (which ziputil)
-set -l hub_path (which hub)
-set -l starship_path (which starship)
-
-set -gx FZF_DEFAULT_COMMAND 'rg --files -S --no-ignore --hidden --follow --glob "!.git/*"'
+set -x MANPAGER "less -R"
 
 ############################################################
 alias b="bat --tabs 2 --color=always --style=numbers,changes "
@@ -62,21 +70,19 @@ alias dls="cat ~/.download"
 alias dlaq="dla -q"
 
 alias v="vim"
+
+# some local vars for testing existance of tools
 if test -x "$HOME/.bin/nvim.appimage"
     alias v="$HOME/.bin/nvim.appimage"
     set -gx EDITOR "$HOME/.bin/nvim.appimage"
 end
 
 alias g="git"
-if test -x "$hub_path"
-    alias g="hub"
-end
+not test -z (which hub); and alias g="hub"
 
-if test -x "$fdfind_path"
-    alias fd="fdfind"
-end
+not test -z (which fdfind); and alias fd="fdfind"
 
-if test -x "$repoutil_path"
+if not test -z (which repoutil)
     alias ru="repoutil unclean"
     alias rs="repoutil stat"
     alias rl="repoutil list"
@@ -86,7 +92,7 @@ else
     echo "repoutil not installed"
 end
 
-if test -x "$exa_path"
+if not test -z (which exa)
     alias ls="exa --group-directories-first"
     alias lsa="exa --group-directories-first"
     alias ll="ls --long --group-directories-first"
@@ -98,33 +104,31 @@ else
     echo "exa not installed. install from cargo"
 end
 
-if test -x "$ziputil_path"
+if not test -z (which ziputil)
     alias zc="ziputil choose"
     alias zv="ziputil view"
 else
     echo "ziputil not installed"
 end
 
-############################################################
 
-source "$HOME/.envs/py/bin/activate.fish"
-source "$HOME/.cargo/env"
+# Source python environment
+test -f "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"
 
-test -x "$starship_path"; and starship init fish | source
+# Source cargo for rust
+test -f "$HOME/.cargo/env"; and source "$HOME/.cargo/env"
 
+# Source starship for a more informative
+test -f "$HOME/.cargo/bin/starship"; and starship init fish | source
 
-############################################################
-if not test -f "$HOME/.hushlogin"
-    touch "$HOME/.hushlogin"
-    echo "Future server MOTDs will be ignored"
-end
-
-cd ~
+# Ignore server login messages
+not test -f "$HOME/.hushlogin"; and touch "$HOME/.hushlogin"
 
 # WASM config
 set -l WASMTIME_HOME "$HOME/.wasmtime"
 string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
 
-if test -x (which zoxide)
-    zoxide init fish | source
-end
+; and zoxide init fish | source
+
+# Setup only for WSL (linux on windows)
+not test (uname -r | grep -i 'microsoft'); and wsl_interop_setup
