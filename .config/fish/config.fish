@@ -6,20 +6,19 @@ set -gx EDITOR "vim"
 # e.g. only alias stuff if rust tools like exa or rg exist
 not contains $HOME/.bin $PATH; and set PATH $HOME/.bin $PATH
 not contains $HOME/code/scripts $PATH; and set PATH $HOME/code/scripts $PATH
-not contains $CARGOBIN $PATH; and set PATH $CARGOBIN $PATH
+not contains $HOME/.cargo/bin $PATH; and set PATH $HOME/.cargo/bin $PATH
 not contains $HOME/.local/bin $PATH; and set PATH $HOME/.local/bin $PATH
 not contains $HOME/.emacs.d/bin $PATH; and set PATH $HOME/.emacs.d/bin $PATH
 not contains $HOME/.npm-packages/bin $PATH; and set PATH $HOME/.npm-packages/bin $PATH
 not contains $HOME/.conda/bin $PATH; and set PATH $HOME/.conda/bin $PATH
-not contains "$HOME/.wasmtime/bin" $PATH; and set PATH "$HOME/.wasmtime/bin" $PATH
-not contains "$HOME/.cargo/bin" $PATH; and set PATH "$HOME/.cargo/bin" $PATH
+not contains $HOME/.wasmtime/bin $PATH; and set PATH $HOME/.wasmtime/bin $PATH
+not contains $HOME/.cargo/bin $PATH; and set PATH $HOME/.cargo/bin $PATH
 not contains /usr/local/go/bin $PATH; and set PATH /usr/local/go/bin $PATH
 not contains /usr/local/julia/bin $PATH; and set PATH /usr/local/julia/bin $PATH
 not contains /usr/local/zig $PATH; and set PATH /usr/local/zig $PATH
 
 set -gx GOPATH "$HOME"
 set -gx GOBIN "$HOME/bin"
-set -l CARGOBIN "$HOME/.cargo/bin"
 set -gx WORKON_HOME "$HOME/.envs"
 set -gx LESS FRSX
 set -gx CODEDIR "$HOME/code/"
@@ -114,9 +113,6 @@ end
 
 # Source python environment
 test -f "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"
-
-# Source cargo for rust
-test -f "$HOME/.cargo/env"; and source "$HOME/.cargo/env"
 
 # Source starship for a more informative
 test -f "$HOME/.cargo/bin/starship"; and starship init fish | source
