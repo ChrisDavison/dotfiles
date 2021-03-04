@@ -144,7 +144,7 @@ set undofile
 set complete-=i
 set completeopt=menu,menuone,preview
 
-set shell=/usr/bin/zsh
+" set shell=/usr/bin/zsh
 if has('win32')
     set shell=cmd.exe
     set shellcmdflag=/c

@@ -1,4 +1,4 @@
-# Mod1 = alt, Mod4 = win, Mod3 = Hyper_L (rebound to caps)
+# Mod0 = alt, Mod4 = win, Mod3 = Hyper_L (rebound to caps)
 
 set $mod Mod3
 default_border pixel 2

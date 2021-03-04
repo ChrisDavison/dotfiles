@@ -59,7 +59,7 @@ tray-position = right
 tray-padding = 5
 tray-background = ${colors.dark}
 
-wm-restack = i3
+wm-restack = 
 ; bspwm
 ; or 'i3'
 

@@ -16,9 +16,10 @@ Config { font = "xft:mononoki:pixelsize=14:antialias=true:hinting=true"
                                "--normal","green","--high","red"] 30
                     , Run Memory ["-t","Mem: <usedratio>%"] 30
                     , Run Date "%F %a %R" "date" 60
+                    , Run Battery [] 60
                     , Run Alsa "default" "Master" []
                     , Run StdinReader]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " <fc=#f438ee>%date%</fc> ::: %StdinReader% }{ %alsa:default:Master%::: %cpu% ::: %memory% "
+       , template = " <fc=#f438ee>%date%</fc> ::: %StdinReader% }{ %alsa:default:Master%::: %battery% ::: %cpu% ::: %memory% "
        }

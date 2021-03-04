@@ -272,16 +272,16 @@ myManageHook = manageDocks <> composeAll
 ------------------------------------------------------------------------
 -- Startup hook
 myStartupHook = do
-  spawnOnce "redshift"
+  -- spawnOnce "redshift"
   spawnOnce "autorandr"
   spawnOnce "~/.fehbg"
   -- spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
-  spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
+  -- spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
   spawnOnce "nm-applet"
   spawnOnce
     "trayer --edge top --align center --widthtype request --padding 0 --SetDockType true --SetPartialStrut true --expand true --monitor 0 --transparent true --alpha 255 --height 21 &"
-  spawnOnce "dropbox start"
+  -- spawnOnce "dropbox start"
 
 ------------------------------------------------------------------------
 -- Configure workspace names in xmobar
