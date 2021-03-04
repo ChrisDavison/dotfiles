@@ -9,7 +9,7 @@ let md_equalprg .= md_wrap . md_standalone
 let &l:equalprg=md_equalprg
 
 let g:pandoc#keyboard#use_default_mappings=0
-let g:pandoc#formatting#mode='hA'
+let g:pandoc#formatting#mode='ha'
 let g:pandoc#formatting#smart_autoformat_on_cursormoved=0
 let g:pandoc#formatting#equalprg=md_equalprg
 let g:pandoc#formatting#extra_equalprg=''

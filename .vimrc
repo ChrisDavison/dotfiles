@@ -57,8 +57,6 @@ Plug 'junegunn/seoul256.vim'
 Plug 'sainnhe/sonokai'
 Plug 'reedes/vim-colors-pencil'
 Plug 'sainnhe/edge'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 
@@ -213,8 +211,6 @@ let g:bullets_enabled_file_types = [
     \ 'markdown.pandoc',
     \ 'scratch'
     \]
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
 " keybinds {{{1 
 " Format the current paragraph
 nnoremap <silent> Q =ip
