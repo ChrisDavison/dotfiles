@@ -17,7 +17,6 @@ def run_bash_after_command(cmd):
         subprocess.run(f"bash {temp.name} -y".split(), check=True)
 
 
-
 def install_rust():
     print()
     print("Installing rust & cargo, via rustup")
@@ -41,7 +40,10 @@ def install_rust_utils():
         ("fd (find)", "fd-find", "fd"),
         ("exa (better ls)", "exa", "exa"),
         ("bat (better cat)", "bat", "bat"),
-        ("rg (better grep)", "ripgrep", "rg")
+        ("rg (better grep)", "ripgrep", "rg"),
+        ("tagsearch", "tagsearch", "tagsearch"),
+        ("repoutil", "repoutil", "repoutil"),
+        ("seqname", "seqname", "seqname"),
     ]
     for desc, pkg, bin in description_and_pkg:
         target = HOMEDIR / ".cargo" / "bin" / bin
@@ -49,9 +51,11 @@ def install_rust_utils():
             print(f"...{bin} already installed")
             continue
         print(f"...installing {desc}")
-        subprocess.run([cargo, "install", "-q", pkg], check=True, capture_output=True)
+        subprocess.run([cargo, "install", "-q", pkg])
 
-    if (HOMEDIR / ".cargo" / "bin" / "zoxide").exists():
+    zoxide = HOMEDIR / ".cargo" / "bin" / "zoxide"
+    zoxide2 = Path("/usr/local/bin/zoxide")
+    if zoxide.exists() or zoxide2.exists():
         print("...zoxide already installed.")
         return
     run_bash_after_command("curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/master/install.sh")
@@ -61,10 +65,12 @@ def install_starship_prompt():
     print()
     print("Installing starship prompt")
     starship = HOMEDIR / ".cargo" / "bin" / "starship"
-    if starship.exists():
+    starship2 = Path("/usr/local/bin/starship")
+    if starship.exists() or starship2.exists():
         print("...Starship already installed.")
         return
     run_bash_after_command("curl -fsSL https://starship.rs/install.sh")
+
 
 def install_fzf():
     print()
@@ -96,9 +102,21 @@ def clone_dotfiles():
     subprocess.run(["git", "clone", "git@github.com:chrisdavison/dotfiles", str(target)], check=True)
 
 
-def clone_repos():
-    print()
-    print("UNIMPLEMENTED: clone_repos")
+# def clone_repos():
+#     print()
+#     repos = [
+#         "chrisdavison/animalhash",
+#         "chrisdavison/logbook",
+#         "chrisdavison/scripts",
+#     ]
+#     for repo in repos:
+#         parts = repo.split("/")
+#         print(" -- {parts[1]}")
+#         target = CODEDIR / parts[1]
+#         if target.exists():
+#             print("...{parts[1] already cloned.")
+#             return
+#         subprocess.run(["git", "clone", f"git@github.com:{repo}", str(target)], check=True)
 
 
 def symlink_files():
@@ -109,8 +127,8 @@ def symlink_files():
         target = HOMEDIR / file
         if target.exists():
             target.unlink()
-        print(f" -- {file} > {target}")
-        source.symlink_to(target)
+        print(f" -- {file} 	-> {target}")
+        target.symlink_to(source)
 
 
 def symlink_directories():
@@ -120,18 +138,25 @@ def symlink_directories():
         source = CODEDIR / "dotfiles" / direc
         target = HOMEDIR / direc
         if target.exists():
-            target.unlink()
-        print(f" -- {direc} > {target}")
-        source.symlink_to(target, target_is_directory=True)
+            if target.is_symlink() or target.is_file:
+                target.unlink()
+            else:
+                target.rmdir()
+        print(f" -- {str(target.relative_to(HOMEDIR)):20} -> {source.relative_to(HOMEDIR)}")
+        target.symlink_to(source)
 
-    print("Symlinking directories to .config/")
+    CFGDIR = HOMEDIR / ".config"
     for direc in (CODEDIR / "dotfiles" / ".config").glob("*"):
         if not direc.is_dir():
             continue
-        target = HOMEDIR / ".config" / direc
+        target = HOMEDIR / ".config" / direc.stem
         if target.exists():
-            target.unlink()
-        direc.symlink_to(target, target_is_directory=True)
+            if target.is_symlink() or target.is_file:
+                target.unlink()
+            else:
+                target.rmdir()
+        target.symlink_to(direc)
+        print(f" -- {str(target.relative_to(HOMEDIR)):30} -> {direc.relative_to(HOMEDIR)}")
 
 
 def symlink_binaries():
@@ -143,19 +168,19 @@ def symlink_binaries():
         target = BINDIR / bin.stem
         if target.exists():
             target.unlink()
-        print(f" -- {bin.stem} > {target}")
-        bin.symlink_to(target)
-        target.chmod(target.stat.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        print(f" -- {bin.stem} 	-> {target}")
+        target.symlink_to(bin)
+        target.chmod(target.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
 if __name__ == "__main__":
     clone_dotfiles()
-    # symlink_files()
-    # symlink_directories()
-    # symlink_binaries()
+    symlink_files()
+    symlink_directories()
+    symlink_binaries()
     install_rust()
     install_golang()
     install_fzf()
     install_starship_prompt()
     install_rust_utils()
-    clone_repos()
+    # clone_repos()
