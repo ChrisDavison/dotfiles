@@ -1,8 +1,15 @@
 function! markdown#filename_as_header()
     let filename=expand('%:t:r')
-    let as_header='# ' . substitute(l:filename, '-', ' ', 'g')
+    let as_header='# ' . <sid>titlecase(substitute(l:filename, '-', ' ', 'g'))
     exec "norm O" . as_header
 endfunction
+
+function! s:titlecase(str)
+    let words=split(a:str, '\W\+')
+    let titled=map(l:words, {_, word -> toupper(word[0]) . word[1:]})
+    return join(l:titled, ' ')
+endfunction
+
 
 function! markdown#goto_file(split)
     let fname=expand("<cfile>")

@@ -32,6 +32,8 @@ command! FilenameAsHeader call markdown#filename_as_header()
 command! HeaderDecrease call markdown#header_decrease()
 command! HeaderIncrease call markdown#header_increase()
 
+command! CheckboxForward s/\[ \]/**[»]**/
+
 vnoremap <buffer> <leader>w :call markdown#move_visual_selection_to_file()<CR>
 nnoremap <buffer> gf :call markdown#goto_file(0)<CR>
 nnoremap <buffer> gs :call markdown#goto_file(1)<CR>

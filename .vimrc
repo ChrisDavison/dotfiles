@@ -190,6 +190,7 @@ let g:go_version_warning=0
 let g:pymode_python = 'python3'
 let g:ale_python_mypy_options="--ignore-missing-imports"
 let g:ale_python_flake8_options="--max-line-length=120"
+let g:ale_root={}
 let g:slime_python_ipython = 1
 let g:rustfmt_autosave=1
 let g:vimtex_format_enabled=1
@@ -312,7 +313,7 @@ let g:fzf_action = {
             \ 'ctrl-i': 'InsertLinkToNote',
             \ 'ctrl-l': 'InsertLinkToNoteBelow'}
 
-command! -complete=file -nargs=1 InsertFilename call append(line("."), fnamemodify(<q-args>, ":~:."))
+command! -complete=file -nargs=1 InsertFilename call inserttext#AtPoint(fnamemodify(<q-args>, ":~:."))
 
 
 " abbreviations {{{1
@@ -391,7 +392,7 @@ endfunction
 command! LastJournal :exec "edit " . <sid>last_file_in_dir("~/code/knowledge/journal")
 command! LastLogbook :exec "edit " . <sid>last_file_in_dir(strftime("~/code/logbook/%Y"))
 command! NewJournal :DatedFile ~/code/knowledge/journal
-command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y/%Y-%m-%d-%A
+command! NewLogbook :DatedFileWithFmt ~/code/logbook %Y
 command! NewCalendar :DatedFileWithFmt ~/code/knowledge/calendar %Y-%m--%B
 
 command! EditAHK :edit /mnt/c/ahk/Keybinds.ahk
