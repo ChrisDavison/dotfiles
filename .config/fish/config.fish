@@ -110,6 +110,10 @@ else
     echo "ziputil not installed"
 end
 
+if not test -z (which gh)
+    gh completion -s fish | source
+end
+
 
 # Source python environment
 test -f "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"

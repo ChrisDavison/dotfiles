@@ -60,3 +60,5 @@
 	verbose = true
 [github]
     user=ChrisDavison
+[init]
+	defaultBranch = master
