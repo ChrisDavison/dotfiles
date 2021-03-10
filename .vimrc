@@ -54,9 +54,8 @@ Plug 'dag/vim-fish'
 
 " Themes
 Plug 'junegunn/seoul256.vim'
-Plug 'sainnhe/sonokai'
 Plug 'reedes/vim-colors-pencil'
-Plug 'sainnhe/edge'
+Plug 'arcticicestudio/nord-vim'
 
 call plug#end()
 
@@ -165,8 +164,8 @@ if !has('gui_running')
     set t_Co=256
 endif
 let g:rehash256 = 1
-let g:dark_scheme='pencil'
-let g:light_scheme='pencil'
+let g:dark_scheme='seoul256'
+let g:light_scheme='seoul256-light'
 
 " Use my colourtoggle functions, defined in ~/.vim/autoload/colourtoggle
 call colourtoggle#dark()
@@ -244,6 +243,9 @@ inoremap <C-c> <ESC>
 " word beginning with that character somewhere on screen
 nmap s <Plug>(easymotion-s)
 let g:EasyMotion_smartcase=1
+
+nnoremap <F7> :delm Z<BAR>mark Z<CR>
+nnoremap <F8> :norm `Z<CR>
 
 imap jk <ESC>
 imap kj <ESC>
@@ -330,7 +332,7 @@ cnoreabbrev Bd bd
 iabbrev <expr> DATE strftime("%Y-%m-%d")
 iabbrev <expr> DATEB strftime("**%Y-%m-%d**")
 iabbrev <expr> TIME strftime("%H:%M:%S")
-iabbrev <expr> TS strftime("«%H:%M»")
+iabbrev <expr> TS strftime("**(%H:%M)**")
 iabbrev <expr> DATEN strftime("%Y-%m-%d %A")
 
 " commands & functions {{{1
@@ -399,7 +401,7 @@ command! EditAHK :edit /mnt/c/ahk/Keybinds.ahk
 
 function! s:filename_as_header()
     let filename=expand('%:t:r')
-    if match(l:filename, "[0-9]\\\{4\}-[0-9]\\\{2\}-[0-9]\\\{2\}") >= 0
+    if match(l:filename, '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}') >= 0
         let date = l:filename[:9]
         let filename_trimmed=l:filename[11:]
         call append(0, "# " . l:date . " " . <sid>titlecase(l:filename_trimmed))

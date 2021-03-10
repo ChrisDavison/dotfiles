@@ -132,3 +132,7 @@ string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME
 
 # Setup only for WSL (linux on windows)
 not test (uname -r | grep -i 'microsoft'); and wsl_interop_setup
+
+# if not test -z $TMUX
+#     echo "TMUX prefix: "(rg prefix ~/.tmux.conf | head -n1 | cut -d' ' -f4)
+# end
