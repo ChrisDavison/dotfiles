@@ -18,7 +18,7 @@ not contains /usr/local/julia/bin $PATH; and set PATH /usr/local/julia/bin $PATH
 not contains /usr/local/zig $PATH; and set PATH /usr/local/zig $PATH
 
 set -gx GOPATH "$HOME"
-set -gx GOBIN "$HOME/bin"
+set -gx GOBIN "$HOME/.bin"
 set -gx WORKON_HOME "$HOME/.envs"
 set -gx LESS FRSX
 set -gx CODEDIR "$HOME/code/"
