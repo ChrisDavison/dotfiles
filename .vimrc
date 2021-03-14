@@ -128,7 +128,21 @@ set formatoptions-=a
 set signcolumn=yes
 set path=.,**
 set laststatus=2
-set statusline=\ %f\ %4l,%-3c\ %3p%%\ %{fugitive#statusline()}\ %m%r\ %y
+
+function! GitStatus()
+    let [a,m,r] = GitGutterGetHunkSummary()
+    let head=FugitiveHead()
+    return printf('[Git: %s +%d ~%d -%d]', head, a, m, r)
+endfunction
+
+function! ServerName()
+    let name=readfile(expand("~/.servername"))
+    if len(name) > 0
+        return '[@' . l:name[0] . ']'
+    endif
+endfunction
+
+set statusline=%<\%{ServerName()}\ %f%=%{GitStatus()}\ %m%r%=\ (%l,%c%V)\ %P\ 
 set ruler
 set encoding=utf-8
 
