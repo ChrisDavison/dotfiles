@@ -34,7 +34,9 @@ command! HeaderIncrease call markdown#header_increase()
 
 command! CheckboxForward s/\[ \]/**[»]**/
 
-vnoremap <buffer> <leader>w :call markdown#move_visual_selection_to_file()<CR>
+command! -range MoveVisualToFile call markdown#move_visual_selection_to_file(<line1>, <line2>)
+
+vnoremap <buffer> <leader>w :MoveVisualToFile<CR>
 nnoremap <buffer> gf :call markdown#goto_file(0)<CR>
 nnoremap <buffer> gs :call markdown#goto_file(1)<CR>
 nnoremap <leader>S :call markdown#new_section()<CR>

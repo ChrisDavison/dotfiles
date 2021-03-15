@@ -49,14 +49,12 @@ function! markdown#backlinks(use_grep)
     end
 endfunction
 
-function! markdown#move_visual_selection_to_file()
-    let start=line("'<")
-    let end=line("'>")
+function! markdown#move_visual_selection_to_file(start, end)
     let filename=input("Filename: ")
     let filename_nospace=substitute(l:filename, ' ', '-', 'g')
-    let linequery=l:start . "," . l:end
-    exec ":" . l:linequery . "w " . l:filename_nospace . ".md"
-    exec ":" . l:linequery . "d"
+    let linequery=a:start . "," . a:end
+    silent! exec ":" . l:linequery . "w " . l:filename_nospace . ".md"
+    silent! exec ":" . l:linequery . "d"
 endfunction
 
 function! markdown#new_section()
