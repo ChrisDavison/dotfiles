@@ -10,10 +10,14 @@ commands:
     status (stat|s)     fuzzy select from git status
 "
 
+is_in_git_repo() {
+    git rev-parse HEAD >/dev/null 2>&1
+}
+
 fshow(){ # fuzzy show commit {{{1
     local commit commits
     commits=$(git log --oneline) &&
-        commit=$(echo "$commits" | fzf --preview 'git show --abbrev-commit --stat --color=always $(echo {} | cut -d" " -f1)') &&
+        commit=$(echo "$commits" | fzf --preview 'git show --abbrev-commit --stat --color=always (echo {} | cut -d" " -f1)') &&
     git checkout $(echo "$branch" | cut -d' ' -f1)
 } 
 # }}}1

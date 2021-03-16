@@ -6,6 +6,7 @@ set -gx EDITOR "vim"
 # e.g. only alias stuff if rust tools like exa or rg exist
 not contains $HOME/.bin $PATH; and set PATH $HOME/.bin $PATH
 not contains $HOME/code/scripts $PATH; and set PATH $HOME/code/scripts $PATH
+not contains $HOME/code/dotfiles/bin $PATH; and set PATH $HOME/code/dotfiles/bin $PATH
 not contains $HOME/.cargo/bin $PATH; and set PATH $HOME/.cargo/bin $PATH
 not contains $HOME/.local/bin $PATH; and set PATH $HOME/.local/bin $PATH
 not contains $HOME/.emacs.d/bin $PATH; and set PATH $HOME/.emacs.d/bin $PATH
