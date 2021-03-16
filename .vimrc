@@ -241,8 +241,8 @@ nnoremap <BS>   <C-^>
 " Tab to toggle fold at point
 nnoremap <TAB>  za
 " S to quickly jump to a replace using the last searched pattern
-nnoremap S :%s///g<LEFT><LEFT>
-vnoremap S :s///g<LEFT><LEFT>
+nnoremap S :%s/\v//g<LEFT><LEFT>
+vnoremap S :s/\v//g<LEFT><LEFT>
 
 " Use esc to go to normal mode in vim's inbuilt terminal
 tnoremap <Esc> <C-\><C-n>
