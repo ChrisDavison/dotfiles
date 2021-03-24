@@ -142,7 +142,7 @@ function! ServerName()
     endif
 endfunction
 
-set statusline=%<\%{ServerName()}\ %f%=%{GitStatus()}\ %m%r%=\ (%l,%c%V)\ %P\ 
+set statusline=%<\%{ServerName()}\ %f%=%{GitStatus()}\ %m%r%=\ (%l,%c%V)\ %P\
 set ruler
 set encoding=utf-8
 
@@ -225,7 +225,7 @@ let g:bullets_enabled_file_types = [
     \ 'markdown.pandoc',
     \ 'scratch'
     \]
-" keybinds {{{1 
+" keybinds {{{1
 " Format the current paragraph
 nnoremap <silent> Q =ip
 
@@ -329,7 +329,7 @@ let g:fzf_action = {
             \ 'ctrl-i': 'InsertLinkToNote',
             \ 'ctrl-l': 'InsertLinkToNoteBelow'}
 
-command! -complete=file -nargs=1 InsertFilename call inserttext#AtPoint(fnamemodify(<q-args>, ":~:."))
+command! -complete=file -nargs=1 InsertFilename call inserttext#AtPoint("`" . fnamemodify(<q-args>, ":~:.") . "`")
 
 
 " abbreviations {{{1
@@ -444,16 +444,16 @@ augroup vimrc
     au Filetype tex set foldmethod=expr
                 \ foldexpr=vimtex#fold#level(v:lnum)
                 \ foldtext=vimtex#fold#text()
-                \ fillchars=fold:\  
+                \ fillchars=fold:\
                 \ formatoptions-=a
     au BufEnter .scratch setlocal filetype=markdown
     " Don't use autochdir when using 'Root'
-    
+
     " Don't set Root for all files, as this somehow results in coc.nvim
     " replacing the buffer contents, rather than using a preview pane.
     au BufEnter *.rs,*.py,*.md Root
     " au BufEnter * Root
-    
+
     au User CocJumpPlaceholder call CocActionSync('showSignatureHelp')
     " au InsertEnter * set norelativenumber
     " au InsertLeave * set relativenumber
