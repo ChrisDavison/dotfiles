@@ -1,8 +1,6 @@
 ;; ../code/dotfiles/.doom.d/autoload/orgutil.el -*- lexical-binding: t; -*-
 
-;;; ==========================
 ;;; GENERAL ORG SETTINGS
-;;; ==========================
 (setq org-directory (expand-file-name "~/code/knowledge/")
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
@@ -30,9 +28,7 @@
       org-id-track-globally t
       org-image-actual-width 600
 
-;;; ==========================
 ;;; AGENDA
-;;; ==========================
       org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
@@ -63,47 +59,45 @@
                                     (tags priority-down category-keep)
                                     (search category-keep))
 
-;;; ==========================
 ;;; JOURNAL
-;;; ==========================
       org-journal-file-type 'yearly
-      org-journal-file-format "logbook-%Y.org"
+      org-journal-file-format "%Y.org"
       org-journal-date-format "%F %A"
       org-journal-time-format ""
-      org-journal-dir org-directory
-;;; ==========================
+      ;; org-journal-dir org-directory
+      org-journal-dir (expand-file-name "~/code/logbook")
 ;;; DEFT
-;;; ==========================
       deft-directory org-directory
       deft-incremental-search nil
       deft-recursive t
+;;; org-roam
+      org-roam-directory org-directory
 )
 
 
-;;; ==========================
 ;;; CUSTOM CAPTURES
-;;; ==========================
 ;;; also have +literature_capture.el, which is unused
 (setq org-capture-templates
       (doct
-       `(("Todo"
-          :keys "t"
-          :template "* TODO %?"
-          :file "work.org"
-          :children (("Todo @personal" :keys "t" :file "todo.org")
-                     ("Work @general" :keys "w" :headline "Tasks")
-                     ("Work @glasdata" :keys "g" :headline "Tasks - IoF + GlasData")
-                     ("Work @pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
-                     ("Work @cybele" :keys "c" :headline "Tasks - Cybele")))
+       `(
+         ;; ("Todo"
+         ;;  :keys "t"
+         ;;  :template "* TODO %?"
+         ;;  :file "work.org"
+         ;;  :children (("Todo @personal" :keys "t" :file "todo.org")
+         ;;             ("Work @general" :keys "w" :headline "Tasks")
+         ;;             ("Work @glasdata" :keys "g" :headline "Tasks - IoF + GlasData")
+         ;;             ("Work @pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
+         ;;             ("Work @cybele" :keys "c" :headline "Tasks - Cybele")))
 
-         ("GAMING"
-          :keys "g"
-          :headline "Games to Buy"
-          :template "* TODO %^{Game}"
-          :immediate-finish t
-          :children (("PC" :keys "p" :file "pc-gaming.org")
-                     ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-                     ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
+         ;; ("GAMING"
+         ;;  :keys "g"
+         ;;  :headline "Games to Buy"
+         ;;  :template "* TODO %^{Game}"
+         ;;  :immediate-finish t
+         ;;  :children (("PC" :keys "p" :file "pc-gaming.org")
+         ;;             ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
+         ;;             ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
 
          ("MEDIA"
           :keys "m"
@@ -138,9 +132,7 @@
           :template "* TODO learn about: %^{learn}")
          )))
 
-;;; ==========================
 ;;; CUSTOM AGENDAS
-;;; ==========================
 (defun org-files-work ()
   (--map (concat org-directory it)
          '("work.org" "literature.org")))

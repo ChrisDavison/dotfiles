@@ -4,6 +4,8 @@
 (setq remote-machines
   `(("skye" . ,(list :username "cdavison" :ip "130.159.94.19"))
     ("uist" . ,(list :username "cdavison" :ip "130.159.95.176"))
+    ("bute" . ,(list :username "cdavison" :ip "130.159.94.204"))
+    ("jura" . ,(list :username "cdavison" :ip "130.159.94.214"))
     ("iona" . ,(list :username "cdavison" :ip "130.159.94.187"))))
 
 (defun connect-remote ()
@@ -15,6 +17,6 @@
          (username (plist-get machine-data :username))
          (ip-address (plist-get machine-data :ip)))
     (if (string= username "root")
-        (dired (concat "/ssh:" username "@" ip-address ":/"))
-      (dired (concat "/ssh:" username "@" ip-address ":/home/" username "/")))
+        (dired (concat "/sshx:" username "@" ip-address ":/"))
+      (dired (concat "/sshx:" username "@" ip-address ":/home/" username "/")))
     (message "Connected")))

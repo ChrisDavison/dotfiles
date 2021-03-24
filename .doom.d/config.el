@@ -21,7 +21,7 @@
       theme-preferences-light '(kaolin-breeze kaolin-light leuven apropospriate-light)
       theme-preferences-dark '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
 
-(setq doom-font "Cascadia Code-16")
+(setq doom-font "CamingoCode-14")
 (setq doom-variable-pitch-font "Montserrat-16")
 (setq doom-theme (nth 0 theme-preferences-dark))
 

@@ -1,5 +1,17 @@
 ;;; ../code/dotfiles/.doom.d/autoload.el -*- lexical-binding: t; -*-
 
+;; -------
+;; UTILITY
+;; -------
+
+;;;###autoload
+(defun insert-newline-if-not-at-start ()
+  (unless (= (point) (line-beginning-position))
+    (newline)))
+
+;; --------
+;; ORG MODE
+;; --------
 
 ;;;###autoload
 (defun org-file-from-subtree (filename)
@@ -71,14 +83,6 @@ otherwise use the subtree title."
     (setq org-link-frame-setup old-setup)))
 
 ;;;###autoload
-(defun my-refile (file headline &optional arg)
-  (let ((pos (save-excursion
-               (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
-    (org-refile arg nil (list headline file nil pos)))
-  (switch-to-buffer (current-buffer)))
-
-;;;###autoload
 (defun org-refile-to-file (&optional target)
   (interactive)
   (let ((filename (or target (read-file-name "Refile to: ")))
@@ -93,24 +97,10 @@ otherwise use the subtree title."
   (org-refile-to-file (buffer-name)))
 
 ;;;###autoload
-(defun rg-journal (search)
-  (interactive "Msearch string: ")
-  (rg search "org" org-journal-dir))
-
-;;;###autoload
-(defun rg-org (search)
-  (interactive "Msearch string: ")
-  (rg search "org" org-directory))
-
-;;;###autoload
 (defun org-change-state-and-archive ()
   (interactive)
   (org-todo)
   (org-archive-subtree-default))
-
-(defun insert-newline-if-not-at-start ()
-  (unless (= (point) (line-beginning-position))
-    (newline)))
 
 ;;;###autoload
 (defun org-paste-checkbox-list ()
@@ -161,68 +151,6 @@ otherwise use the subtree title."
     (message (concat "Copied URL: " url))))
 
 ;;;###autoload
-(defun new-journal ()
-  (let ((old-journal-file org-journal-file-format)
-        (temp-journal-file "journal-%Y.org"))
-    (setq org-journal-file-format temp-journal-file)
-    (org-journal-new-entry)
-    (setq org-journal-file-format old-journal-file)))
-
-;;;###autoload
-(defun new-logbook ()
-  (let ((old-journal-file org-journal-file-format)
-        (temp-journal-file "logbook-%Y.org"))
-    (setq org-journal-file-format temp-journal-file)
-    (org-journal-new-entry)
-    (setq org-journal-file-format old-journal-file)))
-
-(defun jump-to-journal (journal-prefix)
-  (let* ((time-string (concat journal-prefix "-%Y.org"))
-        (filename (format-time-string time-string))
-        (filepath (f-join org-directory filename))
-        (old-journal-format org-journal-file-format))
-    (find-file filepath)
-    (goto-char (point-min))
-    ;; if header doesn't exist, search-forward will return (point-min)
-    ;; so create a new journal entry
-    (when (not (search-forward (format-time-string "%F %A") nil t))
-      (setq org-journal-file-format filename)
-      (org-journal-new-entry nil)
-      (setq org-journal-file-format old-journal-format))))
-
-;;;###autoload
-(defun make-new-journal (journal-prefix)
-  (let* ((time-string (concat journal-prefix "-%Y.org"))
-        (filename (format-time-string time-string))
-        (filepath (f-join org-directory filename))
-        (old-journal-format org-journal-file-format))
-    (find-file filepath)
-    (setq org-journal-file-format filename)
-    (org-journal-new-entry nil)
-    (setq org-journal-file-format old-journal-format)))
-
-;;;###autoload
-(defun jump-to-todays-logbook ()
-  (interactive)
-  (jump-to-journal "logbook"))
-
-;;;###autoload
-(defun jump-to-new-logbook()
-  (interactive)
-  (make-new-journal "logbook"))
-
-;;;###autoload
-(defun jump-to-new-journal ()
-  (interactive)
-  (make-new-journal "journal"))
-
-;;;###autoload
-(defun jump-to-todays-journal ()
-  (interactive)
-  (jump-to-journal "journal"))
-
-
-;;;###autoload
 (defun org-fix-blank-lines (prefix)
   "Ensure that blank lines exist between headings and between headings and their contents.
 With prefix, operate on whole buffer. Ensures that blank lines
@@ -255,6 +183,131 @@ exist after each headings's drawers."
                    t (if prefix
                          nil
                        'tree)))
+
+;;;###autoload
+(defun my-refile (file headline &optional arg)
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile arg nil (list headline file nil pos)))
+  (switch-to-buffer (current-buffer)))
+
+
+
+;; -------------
+;; Ripgrep stuff
+;; -------------
+
+;;;###autoload
+(defun rg-journal (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-journal-dir))
+
+;;;###autoload
+(defun rg-org (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-directory))
+
+
+
+;; ------------------------------------
+;; Jump to journals and logbook entries
+;; ------------------------------------
+;;;###autoload
+(defun logbook ()
+  "Jump to the logbook entry for today, or create if it doesn't exist."
+  (interactive)
+  (let* ((old-journal-file org-journal-file-format)
+         (old-journal-dir org-journal-dir))
+    (setq org-journal-file-format "%Y.org")
+    (setq org-journal-dir "~/code/logbook")
+    (org-journal-new-entry nil)
+    (setq org-journal-file-format old-journal-file)
+    (setq org-journal-dir old-journal-dir)))
+
+
+;;;###autoload
+(defun new-journal ()
+  (let ((old-journal-file org-journal-file-format)
+        (temp-journal-file "journal-%Y.org"))
+    (setq org-journal-file-format temp-journal-file)
+    (org-journal-new-entry nil)
+    (setq org-journal-file-format old-journal-file)))
+
+
+
+;;;###autoload
+(defun make-new-journal (journal-prefix)
+  (let* ((time-string (concat journal-prefix "-%Y.org"))
+        (filename (format-time-string time-string))
+        (filepath (f-join org-directory filename))
+        (old-journal-format org-journal-file-format))
+    (find-file filepath)
+    (setq org-journal-file-format filename)
+    (org-journal-new-entry nil)
+    (setq org-journal-file-format old-journal-format)))
+
+
+
+(defun jump-to-journal (journal-prefix)
+  (let* ((time-string (concat journal-prefix "-%Y.org"))
+        (filename (format-time-string time-string))
+        (filepath (f-join org-directory filename))
+        (old-journal-format org-journal-file-format))
+    (find-file filepath)
+    (goto-char (point-min))
+    ;; if header doesn't exist, search-forward will return (point-min)
+    ;; so create a new journal entry
+    (when (not (search-forward (format-time-string "%F %A") nil t))
+      (setq org-journal-file-format filename)
+      (org-journal-new-entry nil)
+      (setq org-journal-file-format old-journal-format))))
+
+(defun jump-to-logbook ()
+  (interactive)
+  (let* ((filename (format-time-string "%Y.org"))
+        (filepath (f-join "~/code/logbook" filename))
+        (old-journal-format org-journal-file-format))
+    (find-file filepath)
+    (goto-char (point-min))
+    ;; if header doesn't exist, search-forward will return (point-min)
+    ;; so create a new journal entry
+    (when (not (search-forward (format-time-string "%F %A") nil t))
+      (setq org-journal-file-format filename)
+      (org-journal-new-entry nil)
+      (setq org-journal-file-format old-journal-format))
+    (evil-scroll-line-to-center)))
+
+
+;;;###autoload
+(defun jump-to-todays-logbook ()
+  (interactive)
+  (jump-to-journal ""))
+
+;;;###autoload
+(defun jump-to-last-journal ()
+  "Go to the last file in the journals folder"
+  (interactive)
+  (let* ((journals (f-files "~/code/knowledge/journal"))
+         (previous (nth (- (length journals) 1) journals)))
+        (find-file previous)))
+
+;;;###autoload
+(defun jump-to-new-logbook()
+  (interactive)
+  (make-new-journal "logbook"))
+
+;;;###autoload
+(defun jump-to-new-journal ()
+  (interactive)
+  (make-new-journal "journal"))
+
+;;;###autoload
+(defun jump-to-todays-journal ()
+  (interactive)
+  (jump-to-journal "journal"))
+
+
 
 ;;----------------------------------------------------------------------------
 ;;; Themes / appearance

@@ -5,9 +5,9 @@
 (map! :leader
       :desc "jump to here anchor" "j h" 'jump-to-here-anchor
       :desc "jump to todays journal" "j j" 'jump-to-todays-journal
-      :desc "jump to todays logbook" "j l" 'jump-to-todays-logbook
+      :desc "jump to logbook" "j l" 'logbook
       :desc "jump to new journal" "j J" 'jump-to-new-journal
-      :desc "jump to new logbook" "j L" 'jump-to-new-logbook)
+      )
 
 (map! :v
       "C-c C-c" 'wsl-copy
