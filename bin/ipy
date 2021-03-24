@@ -4,6 +4,6 @@ if docker ps -a | grep -q "ipython"; then
     docker start ipython
     docker attach ipython
 else
-    docker run -it -p 8889:8888 -v $(pwd):/home/jovyan --name=ipython gpu-jupyter-senprep:0.4.0 ipython
+    docker run -it -p 8889:8888 -v /home/davison:/home/jovyan --name=ipython cd-ipython:latest ipython
 fi
 
