@@ -1,13 +1,15 @@
 ;;; ../code/dotfiles/.doom.d/+keybinds.el -*- lexical-binding: t; -*-
 
 (map! "C-<" 'avy-goto-word-1) ;; C-S-,
+
 ;; (map! :leader "j" 'jump-to-register)
 (map! :leader
-      :desc "jump to here anchor" "j h" 'jump-to-here-anchor
-      :desc "jump to todays journal" "j j" 'jump-to-todays-journal
-      :desc "jump to logbook" "j l" 'logbook
-      :desc "jump to new journal" "j J" 'jump-to-new-journal
-      )
+      :desc "<<here>>" "j h" 'jump-to-here-anchor
+      :desc "journal" "j j" 'journal
+      :desc "last journal" "j J" 'jump-to-last-journal
+      :desc "logbook" "j l" 'logbook
+      :desc "last logbook" "j L" 'jump-to-last-logbook
+      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/.scratch")))
 
 (map! :v
       "C-c C-c" 'wsl-copy
@@ -19,9 +21,13 @@
         :desc "Status of all branches" "b" #'repoutil-branchstat
         :desc "Fetch all branches" "f" #'repoutil-fetch
         :desc "List all managed repos" "l" #'repoutil-list
-        :desc "List all unclean repos" "u" #'repoutil-unclean)))
+        :desc "List all unclean repos" "u" #'repoutil-unclean)
+       (:prefix ("g" . "ripgrep")
+        :desc "journal" "j" 'rg-journal
+        :desc "logbook" "l" 'rg-logbook))
+      )
 
-;; Test editing
+;; Text editing
 (map! :n "C-;" #'iedit-mode
       :n "C-:" #'iedit-mode-toggle-on-function)
 
@@ -32,7 +38,9 @@
 (map! "<f1>" 'org-capture
       "<f2>" 'org-agenda
       "<f3>" '(lambda () (interactive) (org-agenda nil "c1"))
-      "<f4>" '(lambda () (interactive) (org-agenda nil "cr")))
+      "<f4>" '(lambda () (interactive) (org-agenda nil "cr"))
+      "<f5>" #'find-next-file
+      "<f6>" #'find-previous-file)
 
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
@@ -41,15 +49,14 @@
       "o s" 'org-open-link-same-window
       "o o" 'org-open-at-point
       "Q" 'org-unfill-paragraph
-      "N" 'org-toggle-narrow-to-subtree)
+      "N" 'org-toggle-narrow-to-subtree
+      "m l u" 'org-copy-link-url)
+
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
       :v "C-x C-n" 'org-file-from-selection)
 
 (map! :map rust-mode-map :leader :n "c d" 'racer-find-definition)
-
-(map! "<f5>" #'find-next-file
-      "<f6>" #'find-previous-file)
 
 (map! :map dired-mode-map :n "/" 'dired-narrow)
 
@@ -58,16 +65,19 @@
 
 (map! :leader
       :prefix "w"
-      :desc "evil-window-split (follow)" "s" (lambda () (interactive)
-        (evil-window-split)
-        (evil-window-down 1))
-      :desc "evil-window-vsplit (follow)" "v" (lambda () (interactive)
-        (evil-window-vsplit)
-        (evil-window-right 1)))
+      :desc "evil-window-split (follow)" "s"
+      (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+      :desc "evil-window-vsplit (follow)" "v"
+      (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
-(map! :map org-mode-map :n "<SPC> m l u" 'org-copy-link-url)
+(after! key-chord
+  (key-chord-define-global "zo" '+fold/open)
+  (key-chord-define-global "zO" '+fold/open-all)
+  (key-chord-define-global "zc" '+fold/close)
+  (key-chord-define-global "zC" '+fold/close-all)
+  (key-chord-define-global "JJ" 'find-previous-file)
+  (key-chord-define-global "KK" 'find-next-file))
 
 (map! :after projectile
       :leader
-      :desc "Find Dropbox note" "<SPC>" #'(lambda () (interactive) (counsel-file-jump nil org-directory)))
-
+      :desc "Find Org-dir note" "<SPC>" #'(lambda () (interactive) (counsel-file-jump nil org-directory)))
