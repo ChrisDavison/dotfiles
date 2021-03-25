@@ -60,19 +60,22 @@
                                     (search category-keep))
 
 ;;; JOURNAL
-      org-journal-file-type 'yearly
-      org-journal-file-format "%Y.org"
-      org-journal-date-format "%F %A"
+      org-journal-file-type 'daily
+      org-journal-file-format "%Y/%Y-%m-%d-%A.org"
+      org-journal-date-format "%F %A" ; e.g. 2021-01-01 Monday
       org-journal-time-format ""
       ;; org-journal-dir org-directory
-      org-journal-dir (expand-file-name "~/code/logbook")
+      ;; cd/journal-dir (expand-file-name "~/code/knowledge/journal")
+      cd/logbook-dir (expand-file-name "~/code/logbook")
+      org-journal-dir cd/logbook-dir
 ;;; DEFT
       deft-directory org-directory
       deft-incremental-search nil
       deft-recursive t
 ;;; org-roam
       org-roam-directory org-directory
-)
+      +org-roam-open-buffer-on-find-file nil
+ )
 
 
 ;;; CUSTOM CAPTURES
