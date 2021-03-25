@@ -38,4 +38,6 @@
 (package! apropospriate-theme)
 (package! dracula-theme)
 (package! kaolin-themes)
+
+(package! org-roam-server)
 (package! key-chord)
