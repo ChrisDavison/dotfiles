@@ -29,6 +29,7 @@
 (package! yaml-mode)
 (package! ahk-mode)
 (package! zig-mode)
+(package! nim-mode)
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
