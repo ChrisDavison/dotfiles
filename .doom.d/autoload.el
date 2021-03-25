@@ -29,21 +29,8 @@ otherwise use the subtree title."
   (interactive "F")
   (let ((filename (concat "~/" (file-relative-name filename "~")))
         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename))))))
-    ;; (org-back-to-heading)
-
     ;; Copy current subtree into clipboard
     (org-cut-subtree)
-
-    ;; ;; Delete everything but the headline
-    ;; (org-mark-subtree)
-    ;; (org-next-visible-heading 1)
-    ;; (call-interactively 'delete-region)
-    ;; (org-previous-visible-heading 1)
-
-    ;; ;; Mark the current headline text
-    ;; (org-end-of-line)
-    ;; (call-interactively 'set-mark-command)
-    ;; (org-beginning-of-line)
 
     ;; Convert headline to a link of the to-be-created file
     (org-insert-link nil filename title)
@@ -201,7 +188,12 @@ exist after each headings's drawers."
 ;;;###autoload
 (defun rg-journal (search)
   (interactive "Msearch string: ")
-  (rg search "org" org-journal-dir))
+  (rg search "org" "~/code/knowledge/journal"))
+
+;;;###autoload
+(defun rg-logbook (search)
+  (interactive "Msearch string: ")
+  (rg search "org" "~/code/logbook/"))
 
 ;;;###autoload
 (defun rg-org (search)
@@ -217,38 +209,17 @@ exist after each headings's drawers."
 (defun logbook ()
   "Jump to the logbook entry for today, or create if it doesn't exist."
   (interactive)
-  (let* ((old-journal-file org-journal-file-format)
-         (old-journal-dir org-journal-dir))
-    (setq org-journal-file-format "%Y.org")
-    (setq org-journal-dir "~/code/logbook")
-    (org-journal-new-entry nil)
-    (setq org-journal-file-format old-journal-file)
-    (setq org-journal-dir old-journal-dir)))
-
+  (let ((org-journal-dir "~/code/logbook"))
+    (org-journal-new-entry nil)))
 
 ;;;###autoload
-(defun new-journal ()
-  (let ((old-journal-file org-journal-file-format)
-        (temp-journal-file "journal-%Y.org"))
-    (setq org-journal-file-format temp-journal-file)
-    (org-journal-new-entry nil)
-    (setq org-journal-file-format old-journal-file)))
-
-
+(defun journal ()
+  "Jump to the journal entry for today, or create if it doesn't exist."
+  (interactive)
+  (let ((org-journal-dir "~/code/knowledge/journal"))
+    (org-journal-new-entry nil)))
 
 ;;;###autoload
-(defun make-new-journal (journal-prefix)
-  (let* ((time-string (concat journal-prefix "-%Y.org"))
-        (filename (format-time-string time-string))
-        (filepath (f-join org-directory filename))
-        (old-journal-format org-journal-file-format))
-    (find-file filepath)
-    (setq org-journal-file-format filename)
-    (org-journal-new-entry nil)
-    (setq org-journal-file-format old-journal-format)))
-
-
-
 (defun jump-to-journal (journal-prefix)
   (let* ((time-string (concat journal-prefix "-%Y.org"))
         (filename (format-time-string time-string))
@@ -263,6 +234,7 @@ exist after each headings's drawers."
       (org-journal-new-entry nil)
       (setq org-journal-file-format old-journal-format))))
 
+;;;###autoload
 (defun jump-to-logbook ()
   (interactive)
   (let* ((filename (format-time-string "%Y.org"))
@@ -278,36 +250,21 @@ exist after each headings's drawers."
       (setq org-journal-file-format old-journal-format))
     (evil-scroll-line-to-center)))
 
-
-;;;###autoload
-(defun jump-to-todays-logbook ()
-  (interactive)
-  (jump-to-journal ""))
-
 ;;;###autoload
 (defun jump-to-last-journal ()
   "Go to the last file in the journals folder"
   (interactive)
-  (let* ((journals (f-files "~/code/knowledge/journal"))
+  (let* ((journals (f-files (format-time-string "~/code/knowledge/journal/%Y/")))
          (previous (nth (- (length journals) 1) journals)))
         (find-file previous)))
 
 ;;;###autoload
-(defun jump-to-new-logbook()
+(defun jump-to-last-logbook ()
+  "Go to the last file in the journals folder"
   (interactive)
-  (make-new-journal "logbook"))
-
-;;;###autoload
-(defun jump-to-new-journal ()
-  (interactive)
-  (make-new-journal "journal"))
-
-;;;###autoload
-(defun jump-to-todays-journal ()
-  (interactive)
-  (jump-to-journal "journal"))
-
-
+  (let* ((journals (f-files (format-time-string "~/code/logbook/%Y/")))
+         (previous (nth (- (length journals) 1) journals)))
+        (find-file previous)))
 
 ;;----------------------------------------------------------------------------
 ;;; Themes / appearance
