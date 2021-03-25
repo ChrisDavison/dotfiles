@@ -38,3 +38,4 @@
 (package! apropospriate-theme)
 (package! dracula-theme)
 (package! kaolin-themes)
+(package! key-chord)

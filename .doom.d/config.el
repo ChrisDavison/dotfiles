@@ -134,3 +134,4 @@ shell exits, the buffer is killed."
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 (setq shell-file-name "/usr/bin/zsh")
+(key-chord-mode 1)
