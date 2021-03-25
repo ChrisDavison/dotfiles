@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: daten
+# uuid: daten
+# key: DATEN
+# condition: t
+# --
+`(format-time-string "%Y-%m-%d %A")`

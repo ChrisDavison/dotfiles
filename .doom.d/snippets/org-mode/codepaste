@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: codepaste
+# key: <s*
+# condition: t
+# --
+#+BEGIN_SRC ${1:lang}
+`(current-kill 0)`
+#+END_SRC
