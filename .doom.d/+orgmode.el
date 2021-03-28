@@ -27,6 +27,7 @@
       org-startup-folded 'fold
       org-id-track-globally t
       org-image-actual-width 600
+      org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
 
 ;;; AGENDA
       org-agenda-window-setup 'current-window
@@ -100,7 +101,25 @@
          ;;  :immediate-finish t
          ;;  :children (("PC" :keys "p" :file "pc-gaming.org")
          ;;             ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-         ;;             ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "UNFILED")))
+         ;;             ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "
+         ("Journal"
+          :keys "j"
+          :type item
+          :file (lambda () (format-time-string "~/code/knowledge/journal/%Y/%Y-%m-%d-%A.org"))
+          :function find-todays-headline-or-create
+          )
+         ("Logbook"
+          :keys "l"
+          :type item
+          :file (lambda () (format-time-string "~/code/logbook/%Y/%Y-%m-%d-%A.org"))
+          :function find-todays-headline-or-create
+          )
+         ("Current work PROJECT"
+          :keys "p"
+          :type item
+          :file (lambda () (f-join "~/code/logbook/tasks/" cd/current-work-project))
+          :function find-todays-headline-or-create
+          )
 
          ("MEDIA"
           :keys "m"

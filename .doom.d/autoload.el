@@ -351,3 +351,13 @@ exist after each headings's drawers."
         ;; This would override `fill-column' if it's an integer.
         (emacs-lisp-docstring-fill-column t))
     (org-fill-paragraph nil region)))
+
+;;;###autoload
+(defun find-todays-headline-or-create ()
+  (interactive)
+  (let* ((today-str (format-time-string "%Y-%m-%d %A"))
+         (marker (org-find-exact-headline-in-buffer today-str)))
+    (if marker (org-goto-marker-or-bmk marker)
+        (progn (goto-char (point-max))
+        (org-insert-heading)
+        (insert (concat " " today-str))))))
