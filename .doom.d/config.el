@@ -135,3 +135,5 @@ shell exits, the buffer is killed."
 
 (setq shell-file-name "/usr/bin/zsh")
 (key-chord-mode 1)
+
+(setq lsp-lens-enable t)
