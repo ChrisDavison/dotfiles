@@ -19,6 +19,7 @@
 (package! rust-mode)
 (package! flymake-rust)
 (package! flycheck-rust)
+(package! rustic)
 (package! cargo)
 (package! racer)
 (package! dockerfile-mode)
