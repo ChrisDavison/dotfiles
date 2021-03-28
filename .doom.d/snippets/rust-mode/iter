@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Impl Iter
+# key: iter
+# condition: t
+# --
+impl std::iter::Iterator for ${1:Type} {
+    type Item = $1
+    fn next(&mut self) -> Option<Self::Item> {
+        ${2:code}
+        while ${3:condition} {
+            return Some(...);
+        }
+        None
+    }
+}

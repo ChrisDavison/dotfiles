@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Import X as Y
+# key: impa
+# condition: t
+# --
+import ${1:module} as ${2:alias}

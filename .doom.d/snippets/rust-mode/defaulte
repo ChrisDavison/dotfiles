@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Impl Default for Enum
+# key: defaulte
+# condition: t
+# --
+impl std::default::Default for ${1:Enum} {
+    fn default() -> Self {
+        ${1:Enum}::${2:Variant}
+    }
+}

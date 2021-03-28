@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Impl ToString
+# key: tostring
+# condition: t
+# --
+impl ToString for ${1:Type} {
+    fn to_string(&self) -> String {
+        ${2:code...}
+    }
+}

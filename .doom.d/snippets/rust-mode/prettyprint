@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Pretty Print (debug)
+# key: pp
+# condition: t
+# --
+println!("{:#?}", $1);

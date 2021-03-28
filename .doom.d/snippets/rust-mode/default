@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Impl Default
+# key: default
+# condition: t
+# --
+impl std::default::Default for ${1:Type} {
+    fn default() -> Self {
+        ${1:Type}{}
+    }
+}

@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: Impl FromStr
+# key: fromstr
+# condition: t
+# --
+impl std::str::FromStr for ${1:Type} {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        ${2}
+        Ok(${1:Type})
+    }
+}

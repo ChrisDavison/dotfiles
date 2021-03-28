@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Default derives
+# key: derives
+# condition: t
+# --
+#[derive(Debug, Clone, PartialEq${1})]
