@@ -78,6 +78,9 @@
   (key-chord-define-global "JJ" 'find-previous-file)
   (key-chord-define-global "KK" 'find-next-file))
 
+(map! "C-<left>" 'find-previous-file
+      "C-<right>" 'find-next-file)
+
 (map! :after projectile
       :leader
       :desc "Find Org-dir note" "<SPC>" #'(lambda () (interactive) (counsel-file-jump nil org-directory)))
