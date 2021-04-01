@@ -14,7 +14,7 @@ source $DOTFILES/shell/prompt.sh
 [[ "$IS_WSL" -eq 1 ]] && source $DOTFILES/wsl.sh
 
 # Other programs
-[[ -x $HOME/.envs/py/bin/activate ]] && $HOME/.envs/py/bin/activate
+[[ -f $HOME/.envs/py/bin/activate ]] && source $HOME/.envs/py/bin/activate
 [[ -x $HOME/.cargo/env ]] && $HOME/.cargo/env
 [[ -x $HOME/.fzf/shell/key-bindings.zsh ]] && $HOME/.fzf/shell/key-bindings.zsh
 [[ -x $HOME/.fzf.zsh ]] && $HOME/.fzf.zsh
