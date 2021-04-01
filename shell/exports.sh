@@ -16,4 +16,5 @@ export BROWSER="firefox"
 export LC_ALL=en_GB.UTF-8
 export WASMTIME_HOME="$HOME/.wasmtime"
 export PATH="$WASMTIME_HOME/bin:$PATH"
+export CCL_DEFAULT_DIRECTORY="$HOME/code/z-external/ccl-dev"
 
