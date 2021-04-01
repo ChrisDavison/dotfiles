@@ -35,7 +35,3 @@
       (setq authors (concat authors " and " input))))
   authors)
 
-(setq capture-template-literature
-      `("L" ,(emoji-heading 'all-the-icons-faicon "graduation-cap" "Literature")
-        entry (file+headline "literature.org" "REFILE")
-        "* TODO %(read-capitalized-title)\n\nAuthors: %(read-authors)\n\n#+BEGIN_SRC bibtex\n#+END_SRC"))

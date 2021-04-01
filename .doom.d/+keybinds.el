@@ -24,8 +24,7 @@
         :desc "List all unclean repos" "u" #'repoutil-unclean)
        (:prefix ("g" . "ripgrep")
         :desc "journal" "j" 'rg-journal
-        :desc "logbook" "l" 'rg-logbook))
-      )
+        :desc "logbook" "l" 'rg-logbook)))
 
 ;; Text editing
 (map! :n "C-;" #'iedit-mode
@@ -70,17 +69,12 @@
       :desc "evil-window-vsplit (follow)" "v"
       (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
-(after! key-chord
-  (key-chord-define-global "zo" '+fold/open)
-  (key-chord-define-global "zO" '+fold/open-all)
-  (key-chord-define-global "zc" '+fold/close)
-  (key-chord-define-global "zC" '+fold/close-all)
-  (key-chord-define-global "JJ" 'find-previous-file)
-  (key-chord-define-global "KK" 'find-next-file))
-
 (map! "C-<left>" 'find-previous-file
       "C-<right>" 'find-next-file)
 
 (map! :after projectile
       :leader
       :desc "Find Org-dir note" "<SPC>" #'(lambda () (interactive) (counsel-file-jump nil org-directory)))
+
+(map! :map haskell-mode-map
+      "C-x C-e" 'haskell-process-load-file)

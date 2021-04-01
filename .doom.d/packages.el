@@ -29,8 +29,11 @@
 (package! haskell-mode)
 (package! yaml-mode)
 (package! ahk-mode)
-(package! zig-mode)
-(package! nim-mode)
+(package! auctex)
+(package! clojure-mode)
+(package! slime)
+(package! julia-mode)
+(package! elpy)
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
@@ -42,4 +45,3 @@
 (package! kaolin-themes)
 
 (package! org-roam-server)
-(package! key-chord)

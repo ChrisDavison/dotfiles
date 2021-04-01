@@ -200,8 +200,6 @@ exist after each headings's drawers."
   (interactive "Msearch string: ")
   (rg search "org" org-directory))
 
-
-
 ;; ------------------------------------
 ;; Jump to journals and logbook entries
 ;; ------------------------------------
@@ -361,3 +359,12 @@ exist after each headings's drawers."
         (progn (goto-char (point-max))
         (org-insert-heading)
         (insert (concat " " today-str))))))
+
+;;;###autoload
+(defun run-julia ()
+  "Launch julia in a term buffer."
+  (interactive)
+  (set-buffer (make-term "julia" "julia"))
+  (term-mode)
+  (term-char-mode)
+  (switch-to-buffer "*julia*"))
