@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: bold
+# key: b
+# condition: t
+# --
+*$1*

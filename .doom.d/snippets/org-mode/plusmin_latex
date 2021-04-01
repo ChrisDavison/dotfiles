@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: A±b (latex math)
+# uuid: 
+# key: lpm
+# condition: t
+# --
+\$${1:A}±${2:b}${3}\$

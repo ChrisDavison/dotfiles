@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: italic
+# key: i
+# condition: t
+# --
+/$1/
