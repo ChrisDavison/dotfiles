@@ -34,6 +34,7 @@
 (package! slime)
 (package! julia-mode)
 (package! elpy)
+(package! racket-mode)
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
