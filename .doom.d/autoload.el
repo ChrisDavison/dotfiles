@@ -72,7 +72,7 @@ otherwise use the subtree title."
 ;;;###autoload
 (defun org-refile-to-file (&optional target)
   (interactive)
-  (let ((filename (or target (read-file-name "Refile to: ")))
+  (let ((filename (or target (ivy-read "Refile to: " (f-files default-directory nil t))))
         (old-refile-targets org-refile-targets))
     (progn (setq org-refile-targets `((,filename . (:maxlevel . 6))))
            (org-refile)
@@ -193,7 +193,7 @@ exist after each headings's drawers."
 ;;;###autoload
 (defun rg-logbook (search)
   (interactive "Msearch string: ")
-  (rg search "org" "~/code/logbook/"))
+  (rg search "org" "~/code/knowledge/logbook/"))
 
 ;;;###autoload
 (defun rg-org (search)
@@ -207,7 +207,7 @@ exist after each headings's drawers."
 (defun logbook ()
   "Jump to the logbook entry for today, or create if it doesn't exist."
   (interactive)
-  (let ((org-journal-dir "~/code/logbook"))
+  (let ((org-journal-dir "~/code/knowledge/logbook"))
     (org-journal-new-entry nil)))
 
 ;;;###autoload
@@ -236,7 +236,7 @@ exist after each headings's drawers."
 (defun jump-to-logbook ()
   (interactive)
   (let* ((filename (format-time-string "%Y.org"))
-        (filepath (f-join "~/code/logbook" filename))
+        (filepath (f-join "~/code/knowledge/logbook" filename))
         (old-journal-format org-journal-file-format))
     (find-file filepath)
     (goto-char (point-min))
@@ -260,7 +260,7 @@ exist after each headings's drawers."
 (defun jump-to-last-logbook ()
   "Go to the last file in the journals folder"
   (interactive)
-  (let* ((journals (f-files (format-time-string "~/code/logbook/%Y/")))
+  (let* ((journals (f-files (format-time-string "~/code/knowledge/logbook/%Y/")))
          (previous (nth (- (length journals) 1) journals)))
         (find-file previous)))
 
@@ -358,7 +358,7 @@ exist after each headings's drawers."
     (if marker (org-goto-marker-or-bmk marker)
         (progn (goto-char (point-max))
         (org-insert-heading)
-        (insert (concat " " today-str))))))
+        (insert " " today-str)))))
 
 ;;;###autoload
 (defun run-julia ()
