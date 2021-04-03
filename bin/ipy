@@ -4,6 +4,6 @@ if docker ps -a | grep -q "ipython"; then
     docker start ipython
     docker attach ipython
 else
-    docker run -it -p 8889:8888 -v /home/davison:/home/jovyan --name=ipython cd-ipython:latest ipython
+    docker run -it -p 8889:8888 -v /home/davison:/notebooks --workdir=/notebooks --name=ipython ml:latest jupyter console
 fi
 
