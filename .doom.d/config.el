@@ -1,6 +1,8 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 (require 'dash)
+(require 'f)
+(require 's)
 ;;; General settings
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com"
@@ -29,61 +31,34 @@
 (after! projectile
   (add-to-list 'projectile-project-root-files ".projectile-root"))
 
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-plus)))
+
 ;;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
-;;; vterm configuration
-(defun run-in-vterm-kill (process event)
-  "A process sentinel. Kills PROCESS's buffer if it is live."
-  (let ((b (process-buffer process)))
-    (and (buffer-live-p b)
-         (kill-buffer b))))
-
-(defun run-in-vterm (command)
-  "Execute string COMMAND in a new vterm.
-
-Interactively, prompt for COMMAND with the current buffer's file
-name supplied. When called from Dired, supply the name of the
-file at point.
-
-Like `async-shell-command`, but run in a vterm for full terminal features.
-
-The new vterm buffer is named in the form `*foo bar.baz*`, the
-command and its arguments in earmuffs.
-
-When the command terminates, the shell remains open, but when the
-shell exits, the buffer is killed."
-  (interactive
-   (list
-    (let* ((f (cond (buffer-file-name)
-                    ((eq major-mode 'dired-mode)
-                     (dired-get-filename nil t))))
-           (filename (concat " " (shell-quote-argument (and f (file-relative-name f))))))
-      (read-shell-command "Terminal command: "
-                          (cons filename 0)
-                          (cons 'shell-command-history 1)
-                          (list filename)))))
-  (with-current-buffer (vterm (concat "*" command "*"))
-    (set-process-sentinel vterm--process #'run-in-vterm-kill)
-    (vterm-send-string command)
-    (vterm-send-return)))
-
 ;;; APPEARANCE (font and theme)
-(setq theme-preferences-light '(kaolin-breeze kaolin-light leuven apropospriate-light)
-      theme-preferences-dark '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
+(defvar theme-preferences-light
+  '(kaolin-breeze kaolin-light leuven apropospriate-light)
+  "Light colour themes that I like")
+(defvar theme-preferences-dark
+  '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula)
+  "Dark colour themes that I like")
 (setq doom-font "Input-14")
 (setq doom-variable-pitch-font "Montserrat-16")
 (setq doom-theme (nth 3 theme-preferences-dark))
-(setq fullscreen-at-startup t)
+(defvar fullscreen-at-startup t "Should emacs fullscreen when launched")
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
-(setq cd-fonts (--filter (member it (font-family-list))
-                         '("Input" "Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
-                           "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
-                           "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
-                           "Liberation Mono" "Fira Code" "Iosevka Term")))
+(defvar cd-fonts
+  (--filter (member it (font-family-list))
+            '("Input" "Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
+              "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
+              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
+              "Liberation Mono" "Fira Code" "Iosevka Term"))
+  "Fonts that I like, filtered to only ones installed locally.")
 
-(defvar current-font-idx 0)
+(defvar current-font-idx 0 "Which of cd-fonts is currently active")
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
@@ -99,8 +74,6 @@ shell exits, the buffer is killed."
   (let ((next-font-name (nth current-font-idx cd-fonts)))
     (set-frame-font next-font-name 1)
     (message next-font-name)))
-
-
 
 ;;; GLOBAL MODES
 (global-visual-line-mode 1)
@@ -150,7 +123,7 @@ shell exits, the buffer is killed."
 
 (add-hook! 'pyvenv-post-activate-hooks
            '((lambda ()
-               (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/jupyter")))))
+               (setq python-shell-interpreter (f-join pyvenv-virtual-env "bin/jupyter")))))
 (add-hook! 'pyvenv-post-deactivate-hooks
            '((lambda ()
                (setq python-shell-interpreter "python3"))))
@@ -169,264 +142,280 @@ shell exits, the buffer is killed."
 ;;; Programming - Common Lisp
 (setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
 
+(defvar cd/notes-dir (expand-file-name "~/code/knowledge/") "Where my notes are stored")
+(defvar cd/journal-dir (f-join cd/notes-dir "journal/") "Where my journals are stored")
+(defvar cd/logbook-dir (f-join cd/notes-dir "logbook/") "Where my logbook is stored")
+
+;;; Programming - Lisp
+(defun eval-into-comment ()
+  (interactive)
+  (let ((sexp (elisp--preceding-sexp)))
+    (save-excursion
+      (goto-char (line-end-position))
+      (delete-horizontal-space)
+      (insert " ;; " (prin1-to-string (eval sexp))))))
 ;;; ORG MODE
-(setq org-directory (expand-file-name "~/code/knowledge/")
-      org-src-window-setup 'current-window
-      org-indent-indentation-per-level 1
-      org-adapt-indentation nil
-      org-tags-column -120
-      org-pretty-entities t
-      org-catch-invisible-edits 'show-and-error
-      org-imenu-depth 4
-      org-link-frame-setup '((file . find-file-other-window))
-      org-hide-emphasis-markers t
-      org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
-      org-cycle-separator-lines 0
-      org-list-indent-offset 2
-      ;; org-modules '(org-habit)
-      org-modules nil
-      org-treat-insert-todo-heading-as-state-change t
-      org-log-repeat nil
-      org-log-done 'time
-      org-log-done-with-time nil
-      org-log-into-drawer t
-      org-archive-location (format "%s::* From %%s" (concat org-directory "archive.org"))
-      org-refile-use-outline-path 't
-      org-refile-allow-creating-parent-nodes 'confirm
-      org-startup-folded 'fold
-      org-id-track-globally t
-      org-image-actual-width 600
-      org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
+(setq org-directory cd/notes-dir
+      org-roam-directory org-directory)
 
-;;;; AGENDA
-      org-agenda-window-setup 'current-window
-      org-agenda-restore-windows-after-quit t
-      org-agenda-inhibit-startup nil
-      org-agenda-files (--map (concat org-directory it)
-                                 '("projects" "journal"))
-      org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
-      org-agenda-skip-scheduled-if-deadline-is-shown t
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
-      org-agenda-skip-archived-trees nil
-      org-agenda-block-separator ""
-      org-agenda-compact-blocks nil
-      org-agenda-todo-ignore-scheduled 'future
-      org-agenda-sort-notime-is-late nil
-      org-agenda-remove-tags t
-      org-agenda-time-grid '((daily today require-timed remove-match)
-                             (900 1000 1100 1200 1300 1400 1500 1600 1700)
-                             "......"
-                             "")
-      org-agenda-use-time-grid nil
-      org-agenda-scheduled-leaders '("" "LATE x%d")
-      org-agenda-deadline-leaders '("" " in %dd")
-      org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
-      org-agenda-sorting-strategy '((agenda habit-up time-up category-up scheduled-up todo-state-up  priority-down)
-                                    (todo priority-down category-up todo-state-down )
-                                    (tags priority-down category-keep)
-                                    (search category-keep))
+(defun cd/org-mode-settings ()
+  (interactive)
+  (setq org-directory cd/notes-dir
+        ;; Make 'd' the default priority, so priorities sort properly (ABC then D is blank)
+        org-priority-default 68 ;; make 'D' the default priority, so ABC priorities sort
+        org-priority-lowest 68 ;; make 'D' the lowest priority
+        org-src-window-setup 'current-window
+        org-indent-indentation-per-level 1
+        org-adapt-indentation nil
+        org-tags-column -120
+        org-pretty-entities t
+        org-catch-invisible-edits 'show-and-error
+        org-imenu-depth 4
+        org-link-frame-setup '((file . find-file-other-window))
+        org-hide-emphasis-markers t
+        org-todo-keywords '((sequence "TODO(t)" "MAYB(m)" "NEXT(n)" "WAIT(W)" "BLCK(b)" "WIP(w)" "|" "DONE(d)" "KILL(k)"))
+        org-cycle-separator-lines 0
+        org-list-indent-offset 2
+        org-modules nil
+        org-treat-insert-todo-heading-as-state-change t
+        org-log-repeat nil
+        org-log-done 'time
+        org-log-done-with-time nil
+        org-log-into-drawer t
+        org-archive-location (format "%s::* From %%s" (f-join org-directory "archive.org"))
+        org-refile-use-outline-path 't
+        org-refile-allow-creating-parent-nodes 'confirm
+        org-startup-folded 'fold
+        org-id-track-globally t
+        org-image-actual-width 600
+        org-blank-before-new-entry '((heading . t) (plain-list-item . auto)))
 
-;;;; JOURNAL
-      org-journal-file-type 'daily
-      org-journal-file-format "%Y/%Y-%m-%d-%A.org"
-      org-journal-date-format "%F %A" ; e.g. 2021-01-01 Monday
-      org-journal-time-format ""
-      ;; org-journal-dir org-directory
-      ;; cd/journal-dir (expand-file-name "~/code/knowledge/journal")
-      cd/logbook-dir (expand-file-name "~/code/logbook")
-      org-journal-dir cd/logbook-dir
-;;;; DEFT
-      deft-directory org-directory
-      deft-incremental-search nil
-      deft-recursive t
-;;;; org-roam
-      org-roam-directory org-directory
-      +org-roam-open-buffer-on-find-file nil
- )
+;;; Org JOURNAL
+  (setq org-journal-file-type 'daily
+        org-journal-file-format "%Y/%Y-%m-%d-%A.org"
+        org-journal-date-format "%F %A" ; e.g. 2021-01-01 Monday
+        org-journal-time-format ""
+        org-journal-dir cd/logbook-dir)
 
-;;;; Org-capture
-;; (load! "+literature_capture")
-(setq org-capture-templates
-      (doct
-       `(
-         ;; ("Todo"
-         ;;  :keys "t"
-         ;;  :template "* TODO %?"
-         ;;  :file "work.org"
-         ;;  :children (("Todo @personal" :keys "t" :file "todo.org")
-         ;;             ("Work @general" :keys "w" :headline "Tasks")
-         ;;             ("Work @glasdata" :keys "g" :headline "Tasks - IoF + GlasData")
-         ;;             ("Work @pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
-         ;;             ("Work @cybele" :keys "c" :headline "Tasks - Cybele")))
+;;; Org DEFT
+  (setq deft-directory org-directory
+        deft-incremental-search nil
+        deft-recursive t)
 
-         ;; ("GAMING"
-         ;;  :keys "g"
-         ;;  :headline "Games to Buy"
-         ;;  :template "* TODO %^{Game}"
-         ;;  :immediate-finish t
-         ;;  :children (("PC" :keys "p" :file "pc-gaming.org")
-         ;;             ("Nintendo Switch" :keys "n" :file "nintendo-switch.org")
-         ;;             ("Tabletop" :keys "t" :file "tabletop-games.org" :headline "
-         ("Journal"
+;;; Org ROAM
+  (setq org-roam-directory org-directory
+        +org-roam-open-buffer-on-find-file nil)
+
+;;; Org CAPTURE
+  ;; (load! "+literature_capture")
+  (setq cd/capture-todos
+        '("Todo"
+         :keys "t"
+         :template "* TODO %?"
+         :file "work.org"
+         :children (("Todo @personal" :keys "t" :file "todo.org")
+                    ("Work @general" :keys "w" :headline "Tasks")
+                    ("Work @glasdata" :keys "g" :headline "Tasks - IoF + GlasData")
+                    ("Work @pitstop" :keys "p" :headline "Tasks - IoF + Pitstop")
+                    ("Work @cybele" :keys "c" :headline "Tasks - Cybele"))))
+  (setq cd/capture-gaming
+        '("GAMING"
+         :keys "g"
+         :headline "Games to Buy"
+         :template "* TODO %^{Game}"
+         :immediate-finish t
+         :children (("PC" :keys "p" :file "pc-gaming.org")
+                    ("Nintendo Switch" :keys "n" :file "nintendo-switch.org"))))
+  (setq cd/capture-journal
+        '("Journal"
           :keys "j"
-          :type item
-          :file (lambda () (format-time-string "~/code/knowledge/journal/%Y/%Y-%m-%d-%A.org"))
-          :function find-todays-headline-or-create
+          :file (lambda () (f-join cd/journal-dir (format-time-string "journal-%Y.org")))
+          :datetree t
           :children (("Journal note" :keys "j" :type item)
-                     ("Journal entry" :keys "J" :type entry)))
-         ("Logbook"
+                     ("Journal entry" :keys "J" :type entry :template "* %?"))))
+  (setq cd/capture-logbook
+        '("Logbook"
           :keys "l"
-          :file (lambda () (format-time-string "~/code/logbook/%Y/%Y-%m-%d-%A.org"))
-          :function find-todays-headline-or-create
+          :file (lambda () (f-join cd/logbook-dir (format-time-string "logbook-%Y.org")))
+          :datetree t
           :children (("Logbook note" :keys "l" :type item)
-                     ("Logbook entry" :keys "L" :type entry)))
-         ("Current work PROJECT"
+                     ("Logbook entry" :keys "L" :type entry :template "* %?"))))
+  (setq cd/capture-work-project
+        '("Current work PROJECT"
           :keys "p"
           :type item
-          :file (lambda () (f-join "~/code/logbook/tasks/" cd/current-work-project))
-          :function find-todays-headline-or-create
-          )
-
-         ("MEDIA"
+          :file (lambda () (f-join "~/code/knowledge/logbook/tasks/" cd/current-work-project))
+          :function find-todays-headline-or-create))
+  (setq cd/capture-media
+        '("MEDIA"
           :keys "m"
           :type entry
-          :children (("Watch" :keys "w" :file "watch.org" :template "* TODO %?")
-                     ("Music" :keys "m" :file "music.org"
+          :children (("Watch" :keys "w" :file "projects/stuff-to-watch.org"
+                      :headline "REFILE" :template "* TODO %?")
+                     ("Music" :keys "m" :file "projects/music.org"
+                      :headline "REFILE"
                       :template "* TODO /\"%^{Title}\",/ by %^{Artist}"
-                      :immediate-finish t)))
-
-         ("Guitar song to learn"
+                      :immediate-finish t))))
+  (setq cd/capture-guitar-song
+        '("Guitar song to learn"
           :keys "G"
-          :file "guitar.org" :headline "Songs to Learn"
+          :file "projects/guitar.org" :headline "Songs to Learn"
           :immediate-finish t
-          :template "* TODO %^{Artist} -- %^{Title}")
-
-         ("Books / reading"
+          :template "* TODO %^{Artist} - /%^{Title}/"))
+  (setq cd/capture-books
+        '("Books / reading"
           :keys "b"
-          :file "reading.org" :headline "REFILE"
+          :file "reading/reading.org" :headline "REFILE"
           :type item
-          :template "%^{Book name}")
-
-         ("Anki"
+          :template "%^{Book name}"))
+  (setq cd/capture-something-to-anki
+        '("Anki"
           :keys "a"
           :file "todo.org" :headline "anki"
           :immediate-finish t
-          :template "* TODO %^{To Anki}")
-
-        ("Learn"
+          :template "* TODO %^{To Anki}"))
+  (setq cd/capture-something-to-learn
+        '("Learn"
           :keys "l"
           :file "todo.org" :headline "Stuff to learn (refile to appropriate file)"
           :immediate-finish t
-          :template "* TODO learn about: %^{learn}")
-         )))
+          :template "* TODO learn about: %^{learn}"))
+  (setq org-capture-templates
+        (doct `(,cd/capture-journal ;; jj jJ
+                ,cd/capture-logbook ;; ll lL
+                ,cd/capture-work-project ;; p
+                ,cd/capture-media ;; m
+                ,cd/capture-guitar-song ;; G
+                ,cd/capture-books ;; b
+                ("Capture" :keys "c"
+                 :file "projects/todo.org" :type entry :template "* TODO %?")
+                ;; ,cd/capture-something-to-anki ;; a
+                ;; ,cd/capture-something-to-learn ;; L
+                ;; ,cd/capture-todos ;; t
+                ;; ,cd/capture-gaming ;; g
+                )))
 
-;;;; Org-agenda
-(defun org-files-work ()
-  (--map (concat org-directory it)
-         '("work.org" "literature.org")))
+;;; Org AGENDA
+  (setq cd/agenda-oneday
+        `("c1" "One day"
+           ;; HIDE blocked or stuff I've put on hold (BLCK WAIT)
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-agenda-start-day "-0d")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
+            ;; show a todo list of IN-PROGRESS
+            (todo "WIP" ((org-agenda-overriding-header "Work - In Progress")
+                         (org-agenda-files (org-files-work))
+                         (org-agenda-todo-ignore-scheduled t)))
+            ;; show a todo list of BLOCKED or WAITING
+            (todo "WIP" ((org-agenda-overriding-header "In Progress")
+                         (org-agenda-files (--filter (not (s-contains? "work.org" it)) (org-agenda-files)))
+                         (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
+                         (org-agenda-todo-ignore-scheduled t))))))
+  (setq cd/agenda-next-todos
+        '("cn" "NEXT" ((todo "NEXT" nil))))
+  (setq cd/agenda-review-last-week
+        '("cr" "Review the last week"
+           ((agenda "" ((org-agenda-start-day "-8d")
+                        (org-agenda-entry-types '(:timestamp))
+                        (org-agenda-archives-mode t)
+                        (org-agenda-later 1)
+                        (org-agenda_log-mode 16)
+                        (org-agenda-show-log t))))))
+  (setq cd/agenda-for-planning
+        '("cp" "Planning"
+           ;; kept as multiple todo commands so that grouping is done by todo state
+           ;; rather than by category (which is my default todo sorting preference)
+           ((todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
+                         (org-agenda-tag-filter-preset '("-readinglist"))))
+            (todo "NEXT" ((org-agenda-overriding-header "POSSIBLE NEXT TASKS")
+                          (org-agenda-tag-filter-preset '("-readinglist"))))
+            (todo "TODO" ((org-agenda-overriding-header "TODO")
+                          (org-agenda-tag-filter-preset '("-readinglist"))))
+            (todo "MAYB" ((org-agenda-overriding-header "UNSURE ABOUT")
+                          (org-agenda-tag-filter-preset '("-readinglist")))))))
+  (setq cd/agenda-work-only
+        `("cw" "Work"
+           ((todo "" ((org-agenda-files (quote ,(--filter (s-match "logbook" it) (org-agenda-files))))
+                      (org-agenda-overriding-header "Work"))))))
+  (setq cd/agenda-todos-no-books
+        '("ct" "Todos, no books"
+           ((todo "" ((org-agenda-tag-filter-preset '("-readinglist")))))))
+  (setq cd/agenda-reading
+        `("cR" "Reading -- in progress, and possible future books"
+           ((todo "WIP|NEXT|MAYB|TODO"
+                  ((org-agenda-files '(,(f-join org-directory "reading" "reading.org")))
+                   (org-agenda-overriding-header "Books in Progress"))))))
+  (setq cd/agenda-literature
+        `("cL" "Literature in progress, and next options"
+           ((todo "WIP|NEXT"
+                  ((org-agenda-files '(,(f-join org-directory "literature.org")))
+                   (org-agenda-overriding-header "Papers in Progress"))))))
+  (setq org-agenda-window-setup 'current-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-inhibit-startup nil
+        org-agenda-files `(,(f-join cd/notes-dir "projects")
+                           ,(f-join cd/logbook-dir "projects")
+                           ,(f-join cd/logbook-dir "tasks")
+                           ,(f-join cd/journal-dir (format-time-string "journal-%Y.org"))
+                           ,(f-join cd/logbook-dir (format-time-string "logbook-%Y.org")))
+        org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
+        org-agenda-skip-scheduled-if-deadline-is-shown t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+        org-agenda-skip-archived-trees nil
+        org-agenda-block-separator ""
+        org-agenda-compact-blocks nil
+        org-agenda-todo-ignore-scheduled 'future
+        org-agenda-sort-notime-is-late nil
+        org-agenda-remove-tags t
+        org-agenda-time-grid '((daily today require-timed remove-match)
+                               (900 1000 1100 1200 1300 1400 1500 1600 1700)
+                               "......"
+                               "")
+        org-agenda-use-time-grid nil
+        org-agenda-scheduled-leaders '("" "LATE x%d")
+        org-agenda-deadline-leaders '("" " in %dd")
+        org-overriding-columns-format "%TODO %3PRIORITY %DEADLINE %40ITEM %TAGS"
+        org-agenda-sorting-strategy '((agenda habit-up time-up category-up scheduled-up todo-state-up  priority-down)
+                                      (todo priority-down category-up todo-state-down )
+                                      (tags priority-down category-keep)
+                                      (search category-keep))
+        org-agenda-custom-commands `(("c" . "Custom agenda views")
+                                     ,cd/agenda-oneday ;; c1
+                                     ,cd/agenda-next-todos ;; cn
+                                     ,cd/agenda-review-last-week ;; cr
+                                     ,cd/agenda-for-planning ;; cp
+                                     ,cd/agenda-work-only ;; cw
+                                     ,cd/agenda-todos-no-books ;; ct
+                                     ,cd/agenda-reading ;; cR
+                                     ,cd/agenda-literature ;; cL
+                                     ))
 
-(defun org-files-non-work ()
-  (cl-set-difference
-   (org-agenda-files) (org-files-work)
-   :test 'equal))
+;;; Org-mode hooks
+  (add-hook! org-mode
+             'visual-line-mode
+             'org-indent-mode
+             'abbrev-mode
+             'mixed-pitch-mode
+             'undo-tree-mode
+             '(lambda () (set-face-italic 'italic t)))
+  (add-hook! 'auto-save-hook 'org-save-all-org-buffers))
 
-(setq org-agenda-custom-commands
-      '(("c" . "Custom agenda views")
-
-        ("cc" "'Clean' - today's agenda only"
-
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day "-0d")
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))))
-         ;; today's agenda, with overdue
-         ;; HIDE blocked or stuff I've put on hold (BLCK WAIT)
-         ;; show a todo list of IN-PROGRESS
-         ;; show a todo list of BLOCKED or WAITING
-         ;; show a todo list of POSSIBLE-NEXT-ITEMS
-        ("c1" "One day"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-agenda-start-day "-0d")
-                      (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
-          (todo "WIP" ((org-agenda-overriding-header "Work - In Progress")
-                       (org-agenda-files (org-files-work))
-                       (org-agenda-todo-ignore-scheduled t)))
-          (todo "WIP" ((org-agenda-overriding-header "In Progress")
-                       (org-agenda-files (--filter (not (s-contains? "work.org" it)) (org-agenda-files)))
-                       (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
-                       (org-agenda-todo-ignore-scheduled t)))
-          ))
-
-        ("cn" "NEXT" ((todo "NEXT" nil)))
-
-        ("cw" "Work" ((todo ""
-                            ((org-agenda-files '((concat org-directory "work.org")))
-                             (org-agenda-overriding-header "Work")))))
-
-        ("ct" "Todos, no books"
-         ((todo "" ((org-agenda-tag-filter-preset '("-readinglist"))))))
-
-        ("cr" "Review the last week"
-         ((agenda "" ((org-agenda-start-day "-8d")
-                      (org-agenda-entry-types '(:timestamp))
-                      (org-agenda-archives-mode t)
-                      (org-agenda-later 1)
-                      (org-agenda_log-mode 16)
-                      (org-agenda-show-log t)))))
-
-        ("cp" "Planning"
-         ;; kept as multiple todo commands so that grouping is done by todo state
-         ;; rather than by category (which is my default todo sorting preference)
-         ((todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
-                       (org-agenda-tag-filter-preset '("-readinglist"))))
-          (todo "NEXT" ((org-agenda-overriding-header "POSSIBLE NEXT TASKS")
-                        (org-agenda-tag-filter-preset '("-readinglist"))))
-          (todo "TODO" ((org-agenda-overriding-header "TODO")
-                        (org-agenda-tag-filter-preset '("-readinglist"))))
-          (todo "MAYB" ((org-agenda-overriding-header "UNSURE ABOUT")
-                        (org-agenda-tag-filter-preset '("-readinglist"))))))
-
-        ("cR" "Reading -- in progress, and possible future books"
-         ((todo "WIP|NEXT|MAYB|TODO"
-                ((org-agenda-files '((concat org-directory "reading.org")))
-                 (org-agenda-overriding-header "Books in Progress")))
-          ))
-
-        ("cL" "Literature in progress, and next options"
-         ((todo "WIP|NEXT"
-                ((org-agenda-files '((concat org-directory "literature.org")))
-                 (org-agenda-overriding-header "Papers in Progress")))))
-
-        ("ca" "Stuff to anki"
-         ((todo "" ((org-agenda-regexp-filter-preset '("+anki"))
-                    (org-agenda-sorting-strategy '((todo todo-state-down priority-down category-up))))))
-         )))
-
-;;;; Org-mode hooks
-(add-hook! org-mode
-           'visual-line-mode
-           'org-indent-mode
-           'abbrev-mode
-           'mixed-pitch-mode
-           'undo-tree-mode
-           '(lambda () (set-face-italic 'italic t)))
-(add-hook! 'auto-save-hook 'org-save-all-org-buffers)
+(after! org (cd/org-mode-settings))
 
 ;;; Latex
 ;; (setq org-latex-default-packages-alist )
 ;;; SSH (remote server connections)
-(setq remote-machines
-  '(("skye" :username "cdavison" :ip "130.159.94.19")
-    ("uist" :username "cdavison" :ip "130.159.95.176")
-    ("bute" :username "cdavison" :ip "130.159.94.204")
-    ("jura" :username "cdavison" :ip "130.159.94.214")
-    ("iona" :username "cdavison" :ip "130.159.94.187")))
-
 (defun connect-remote ()
   "Open dired buffer in selected remote machine"
   (interactive)
-  (let* ((machines (mapcar 'car remote-machines))
+  (let* ((remote-machines '(("skye" :username "cdavison" :ip "130.159.94.19")
+                            ("uist" :username "cdavison" :ip "130.159.95.176")
+                            ("bute" :username "cdavison" :ip "130.159.94.204")
+                            ("jura" :username "cdavison" :ip "130.159.94.214")
+                            ("iona" :username "cdavison" :ip "130.159.94.187")))
+         (machines (mapcar 'car remote-machines))
          (selected-machine (completing-read "Machine" machines nil t))
          (machine-data (cdr (assoc selected-machine remote-machines)))
          (username (plist-get machine-data :username))
