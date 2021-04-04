@@ -217,14 +217,16 @@
   (setq cd/capture-journal
         '("Journal"
           :keys "j"
-          :file (lambda () (f-join cd/journal-dir (format-time-string "journal-%Y.org")))
+          :empty-lines 1
+          :file (lambda () (f-join org-directory (format-time-string "journal-%Y.org")))
           :datetree t
           :children (("Journal note" :keys "j" :type item)
                      ("Journal entry" :keys "J" :type entry :template "* %?"))))
   (setq cd/capture-logbook
         '("Logbook"
           :keys "l"
-          :file (lambda () (f-join cd/logbook-dir (format-time-string "logbook-%Y.org")))
+          :empty-lines 1
+          :file (lambda () (f-join org-directory (format-time-string "logbook-%Y.org")))
           :datetree t
           :children (("Logbook note" :keys "l" :type item)
                      ("Logbook entry" :keys "L" :type entry :template "* %?"))))
@@ -232,7 +234,7 @@
         '("Current work PROJECT"
           :keys "p"
           :type item
-          :file (lambda () (f-join "~/code/knowledge/logbook/tasks/" cd/current-work-project))
+          :file (lambda () (f-join "~/code/knowledge/tasks/" cd/current-work-project))
           :function find-todays-headline-or-create))
   (setq cd/capture-media
         '("MEDIA"
@@ -284,6 +286,14 @@
                 )))
 
 ;;; Org AGENDA
+  (setq cd/work-projects '("beacon" "cybele" "engd-thesis" "iof-glasdata-collaboration"
+                           "iof-pitstop-collaboration" "viva-preparation"))
+  (setq cd/work-files
+        (append (--map (f-join org-directory "projects" (concat it ".org")) cd/work-projects)
+                `(,(f-join org-directory (format-time-string "logbook-%Y.org")))))
+  (setq cd/non-work-files
+        (cl-set-difference (org-agenda-files) cd/work-files
+                           :test 'equal))
   (setq cd/agenda-oneday
         `("c1" "One day"
            ;; HIDE blocked or stuff I've put on hold (BLCK WAIT)
@@ -292,11 +302,11 @@
                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("BLCK" "WAIT")))))
             ;; show a todo list of IN-PROGRESS
             (todo "WIP" ((org-agenda-overriding-header "Work - In Progress")
-                         (org-agenda-files (org-files-work))
+                         (org-agenda-files cd/work-files)
                          (org-agenda-todo-ignore-scheduled t)))
             ;; show a todo list of BLOCKED or WAITING
             (todo "WIP" ((org-agenda-overriding-header "In Progress")
-                         (org-agenda-files (--filter (not (s-contains? "work.org" it)) (org-agenda-files)))
+                         (org-agenda-files cd/non-work-files)
                          (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
                          (org-agenda-todo-ignore-scheduled t))))))
   (setq cd/agenda-next-todos
@@ -323,7 +333,7 @@
                           (org-agenda-tag-filter-preset '("-readinglist")))))))
   (setq cd/agenda-work-only
         `("cw" "Work"
-           ((todo "" ((org-agenda-files (quote ,(--filter (s-match "logbook" it) (org-agenda-files))))
+           ((todo "" ((org-agenda-files cd/work-files)
                       (org-agenda-overriding-header "Work"))))))
   (setq cd/agenda-todos-no-books
         '("ct" "Todos, no books"
@@ -341,11 +351,10 @@
   (setq org-agenda-window-setup 'current-window
         org-agenda-restore-windows-after-quit t
         org-agenda-inhibit-startup nil
-        org-agenda-files `(,(f-join cd/notes-dir "projects")
-                           ,(f-join cd/logbook-dir "projects")
-                           ,(f-join cd/logbook-dir "tasks")
-                           ,(f-join cd/journal-dir (format-time-string "journal-%Y.org"))
-                           ,(f-join cd/logbook-dir (format-time-string "logbook-%Y.org")))
+        org-agenda-files `(,(f-join org-directory "projects")
+                           ,(f-join org-directory "tasks")
+                           ,(f-join org-directory (format-time-string "journal-%Y.org"))
+                           ,(f-join org-directory (format-time-string "logbook-%Y.org")))
         org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
         org-agenda-skip-scheduled-if-deadline-is-shown t
         org-agenda-skip-scheduled-if-done t
