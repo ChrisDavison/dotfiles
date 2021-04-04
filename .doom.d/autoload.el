@@ -1,17 +1,9 @@
 ;;; ../code/dotfiles/.doom.d/autoload.el -*- lexical-binding: t; -*-
 
-;; -------
-;; UTILITY
-;; -------
-
 ;;;###autoload
 (defun insert-newline-if-not-at-start ()
   (unless (= (point) (line-beginning-position))
     (newline)))
-
-;; --------
-;; ORG MODE
-;; --------
 
 ;;;###autoload
 (defun org-file-from-subtree (filename)
@@ -179,94 +171,23 @@ exist after each headings's drawers."
     (org-refile arg nil (list headline file nil pos)))
   (switch-to-buffer (current-buffer)))
 
-
-
-;; -------------
-;; Ripgrep stuff
-;; -------------
-
 ;;;###autoload
 (defun rg-journal (search)
   (interactive "Msearch string: ")
-  (rg search "org" "~/code/knowledge/journal"))
+  (let ((filename (format-time-string "journal-%Y.org")))
+    (rg search filename "~/code/knowledge")))
 
 ;;;###autoload
 (defun rg-logbook (search)
   (interactive "Msearch string: ")
-  (rg search "org" "~/code/knowledge/logbook/"))
+  (let ((filename (format-time-string "logbook-%Y.org")))
+    (rg search filename "~/code/knowledge")))
 
 ;;;###autoload
 (defun rg-org (search)
   (interactive "Msearch string: ")
   (rg search "org" org-directory))
 
-;; ------------------------------------
-;; Jump to journals and logbook entries
-;; ------------------------------------
-;;;###autoload
-(defun logbook ()
-  "Jump to the logbook entry for today, or create if it doesn't exist."
-  (interactive)
-  (let ((org-journal-dir "~/code/knowledge/logbook"))
-    (org-journal-new-entry nil)))
-
-;;;###autoload
-(defun journal ()
-  "Jump to the journal entry for today, or create if it doesn't exist."
-  (interactive)
-  (let ((org-journal-dir "~/code/knowledge/journal"))
-    (org-journal-new-entry nil)))
-
-;;;###autoload
-(defun jump-to-journal (journal-prefix)
-  (let* ((time-string (concat journal-prefix "-%Y.org"))
-        (filename (format-time-string time-string))
-        (filepath (f-join org-directory filename))
-        (old-journal-format org-journal-file-format))
-    (find-file filepath)
-    (goto-char (point-min))
-    ;; if header doesn't exist, search-forward will return (point-min)
-    ;; so create a new journal entry
-    (when (not (search-forward (format-time-string "%F %A") nil t))
-      (setq org-journal-file-format filename)
-      (org-journal-new-entry nil)
-      (setq org-journal-file-format old-journal-format))))
-
-;;;###autoload
-(defun jump-to-logbook ()
-  (interactive)
-  (let* ((filename (format-time-string "%Y.org"))
-        (filepath (f-join "~/code/knowledge/logbook" filename))
-        (old-journal-format org-journal-file-format))
-    (find-file filepath)
-    (goto-char (point-min))
-    ;; if header doesn't exist, search-forward will return (point-min)
-    ;; so create a new journal entry
-    (when (not (search-forward (format-time-string "%F %A") nil t))
-      (setq org-journal-file-format filename)
-      (org-journal-new-entry nil)
-      (setq org-journal-file-format old-journal-format))
-    (evil-scroll-line-to-center)))
-
-;;;###autoload
-(defun jump-to-last-journal ()
-  "Go to the last file in the journals folder"
-  (interactive)
-  (let* ((journals (f-files (format-time-string "~/code/knowledge/journal/%Y/")))
-         (previous (nth (- (length journals) 1) journals)))
-        (find-file previous)))
-
-;;;###autoload
-(defun jump-to-last-logbook ()
-  "Go to the last file in the journals folder"
-  (interactive)
-  (let* ((journals (f-files (format-time-string "~/code/knowledge/logbook/%Y/")))
-         (previous (nth (- (length journals) 1) journals)))
-        (find-file previous)))
-
-;;----------------------------------------------------------------------------
-;;; Themes / appearance
-;;----------------------------------------------------------------------------
 ;;;###autoload
 (defun set-theme-dark ()
   (interactive)
@@ -289,9 +210,6 @@ exist after each headings's drawers."
   (interactive)
   (next-theme nil theme-preferences-light))
 
-;;----------------------------------------------------------------------------
-;;; Utility
-;;----------------------------------------------------------------------------
 ;;;###autoload
 (defun reload-config ()
 ;;;###autoload
@@ -331,7 +249,6 @@ exist after each headings's drawers."
   (search-forward "<<here>>"))
 
 ;;;###autoload
-;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
@@ -341,7 +258,6 @@ exist after each headings's drawers."
     (fill-paragraph nil region)))
 
 ;;;###autoload
-;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph
 (defun org-unfill-paragraph (&optional region)
   "Takes a multi-line paragraph and makes it into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
@@ -368,3 +284,38 @@ exist after each headings's drawers."
   (term-mode)
   (term-char-mode)
   (switch-to-buffer "*julia*"))
+
+;;;###autoload
+(defun connect-remote ()
+  (interactive)
+  (let* ((data (if (boundp 'my-remote-servers)
+                   ;; my-remote-servers should be a plist of (SERVER :username USER :ip IP)
+                   (let* ((selected (completing-read "Server: " (mapcar 'car my-remote-servers) nil t))
+                          (data (cdr (assoc selected my-remote-servers)))
+                          (username (plist-get data :username))
+                          (ip (plist-get data :ip)))
+                     `(,username ,ip))
+                 ;; otherwise, read a username and an ip
+                 (let ((username (read-string "Username: "))
+                       (ip (read-string "ip: ")))
+                   `(,username ,ip))))
+         (username (car data))
+         (folder (if (string= username "root") "/" (format "/home/%s/" username)))
+         (ip (car (cdr data)))
+         (conn (format "/sshx:%s@%s:%s" username ip folder)))
+    (dired conn)
+    (message "Connected")))
+
+;;;###autoload
+(defun get-asset-dir ()
+  (interactive)
+  (let ((maybe-asset-dir (f-join (projectile-project-root) "assets")))
+    (if (f-readable? maybe-asset-dir)
+        maybe-asset-dir
+      "./assets")))
+
+;;;###autoload
+(defun get-relative-asset-dir ()
+  (interactive)
+  (file-relative-name (get-asset-dir)
+                      (buffer-file-name)))

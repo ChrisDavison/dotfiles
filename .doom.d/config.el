@@ -3,6 +3,7 @@
 (require 'dash)
 (require 'f)
 (require 's)
+(require 'rx)
 ;;; General settings
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com"
@@ -129,12 +130,6 @@
            '((lambda ()
                (setq python-shell-interpreter "python3"))))
 
-(defun elpy-send-contiguous-block ()
-  (interactive)
-  (mark-paragraph)
-  (elpy-shell-send-region-or-buffer)
-  (evil-forward-paragraph))
-
 (map! :map python-mode-map "C-c r" 'elpy-send-contiguous-block)
 
 ;;; Programming - Haskell
@@ -147,14 +142,6 @@
 (defvar cd/journal-dir (f-join cd/notes-dir "journal/") "Where my journals are stored")
 (defvar cd/logbook-dir (f-join cd/notes-dir "logbook/") "Where my logbook is stored")
 
-;;; Programming - Lisp
-(defun eval-into-comment ()
-  (interactive)
-  (let ((sexp (elisp--preceding-sexp)))
-    (save-excursion
-      (goto-char (line-end-position))
-      (delete-horizontal-space)
-      (insert " ;; " (prin1-to-string (eval sexp))))))
 ;;; ORG MODE
 (setq org-directory cd/notes-dir
       org-roam-directory org-directory)
@@ -408,23 +395,12 @@
 ;;; Latex
 ;; (setq org-latex-default-packages-alist )
 ;;; SSH (remote server connections)
-(defun connect-remote ()
-  "Open dired buffer in selected remote machine"
-  (interactive)
-  (let* ((remote-machines '(("skye" :username "cdavison" :ip "130.159.94.19")
-                            ("uist" :username "cdavison" :ip "130.159.95.176")
-                            ("bute" :username "cdavison" :ip "130.159.94.204")
-                            ("jura" :username "cdavison" :ip "130.159.94.214")
-                            ("iona" :username "cdavison" :ip "130.159.94.187")))
-         (machines (mapcar 'car remote-machines))
-         (selected-machine (completing-read "Machine" machines nil t))
-         (machine-data (cdr (assoc selected-machine remote-machines)))
-         (username (plist-get machine-data :username))
-         (ip-address (plist-get machine-data :ip)))
-    (if (string= username "root")
-        (dired (concat "/sshx:" username "@" ip-address ":/"))
-      (dired (concat "/sshx:" username "@" ip-address ":/home/" username "/")))
-    (message "Connected")))
+(setq my-remote-servers
+      '(("skye" :username "cdavison" :ip "130.159.94.19")
+        ("uist" :username "cdavison" :ip "130.159.95.176")
+        ("bute" :username "cdavison" :ip "130.159.94.204")
+        ("jura" :username "cdavison" :ip "130.159.94.214")
+        ("iona" :username "cdavison" :ip "130.159.94.187")))
 
 ;;; WSL - Windows Subsystem for Linux
 ;; workaround to get the right WSL interop variable for clipboard usage
@@ -454,3 +430,13 @@
 ;; (load! "+literature_capture")
 (load! "+keybinds")
 (load! "+functions") ;; also remember autoload.el
+
+(setq-default org-download-method 'directory)
+;; (setq-default org-download-image-dir (f-join org-directory "assets"))
+(setq org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir)))
+
+;; (advice-add 'org-download-image :before
+;;             #'(lambda (orig &rest args) (interactive)
+;;                 (setq org-download-method 'directory
+;;                       org-download-image-dir (get-relative-asset-dir))
+;;                 (apply orig args)))
