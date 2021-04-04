@@ -17,6 +17,7 @@
       +format-with-lsp nil
       nov-text-width 80
       use-org-roam-on-startup nil
+      org-roam-rename-file-on-title-change nil
       first-org-reload-done nil)
 
 (setq ibuffer-formats
