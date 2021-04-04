@@ -5,10 +5,8 @@
 ;; (map! :leader "j" 'jump-to-register)
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "journal" "j j" 'journal
-      :desc "last journal" "j J" 'jump-to-last-journal
-      :desc "logbook" "j l" 'logbook
-      :desc "last logbook" "j L" 'jump-to-last-logbook
+      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "jJ"))
+      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "lL"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/.scratch")))
 
 (map! :v
