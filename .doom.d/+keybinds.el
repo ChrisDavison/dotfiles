@@ -53,7 +53,7 @@
       "C-x C-n" 'org-file-from-subtree
       :v "C-x C-n" 'org-file-from-selection)
 
-(map! :map rust-mode-map :leader :n "c d" 'racer-find-definition)
+;; (map! :map rust-mode-map :leader :n "c d" 'racer-find-definition)
 
 (map! :map dired-mode-map :n "/" 'dired-narrow)
 
