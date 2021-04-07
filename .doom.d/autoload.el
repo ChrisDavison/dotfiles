@@ -319,3 +319,18 @@ exist after each headings's drawers."
   (interactive)
   (file-relative-name (get-asset-dir)
                       (buffer-file-name)))
+
+
+;;;###autoload
+(defun files-matching-tagsearch (directory tags)
+    (interactive)
+    (let* ((direc (f-join org-directory "projects"))
+           (cmd (format "tagsearch %s" tags))
+           (fullcmd (format "cd %s && %s" directory cmd))
+           (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
+      (--map (f-join directory it) output)))
+
+;;;###autoload
+(defun jump-to-work-project ()
+  (interactive)
+  (org-roam-find-file "@work "))
