@@ -23,18 +23,12 @@
 (package! cargo)
 (package! racer)
 (package! dockerfile-mode)
-(package! fish-mode)
 (package! nov)
 (package! graphviz-dot-mode)
-(package! haskell-mode)
-(package! yaml-mode)
 (package! ahk-mode)
 (package! auctex)
-(package! clojure-mode)
 (package! slime)
-(package! julia-mode)
 (package! elpy)
-(package! racket-mode)
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
