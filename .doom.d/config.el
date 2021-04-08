@@ -140,10 +140,10 @@
 ;;; SSH (remote server connections)
 (setq my-remote-servers
       '(("skye" :username "cdavison" :ip "130.159.94.19")
-        ("uist" :username "cdavison" :ip "130.159.95.176")
-        ("bute" :username "cdavison" :ip "130.159.94.204")
-        ("jura" :username "cdavison" :ip "130.159.94.214")
-        ("iona" :username "cdavison" :ip "130.159.94.187")))
+        ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
+        ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
+        ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
+        ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
 
 
 
