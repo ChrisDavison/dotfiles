@@ -32,8 +32,6 @@
 (after! projectile
   (add-to-list 'projectile-project-root-files ".projectile-root"))
 
-(setq ivy-re-builders-alist '((t . ivy--regex-plus)))
-
 ;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
@@ -130,6 +128,9 @@
                (setq python-shell-interpreter "python3"))))
 
 (map! :map python-mode-map "C-c r" 'elpy-send-contiguous-block)
+
+(setq lsp-imenu-index-symbol-kinds
+  '(Class Method Property Field Constructor Enum Interface Function Struct Namespace))
 
 ;;; Programming - Haskell
 (setq haskell-process-type 'stack-ghci)
