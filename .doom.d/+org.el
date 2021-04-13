@@ -35,6 +35,7 @@
         org-roam-directory org-directory
         +org-roam-open-buffer-on-find-file nil
         org-roam-rename-file-on-title-change nil
+        org-superstar-headline-bullets-list '("✠" "✙" "✚" "✜" "✛" "✢" "✣" "✤")
         ))
 
 ;;; Org CAPTURE
@@ -122,7 +123,9 @@
                 ,cd/capture-guitar-song ;; G
                 ,cd/capture-books ;; b
                 ("Capture" :keys "c"
-                 :file "projects/todo.org" :type entry :template "* TODO %?")
+                 :file "projects/todo.org"
+                 :type entry
+                 :template "* TODO %?")
                 ;; ,cd/capture-something-to-anki ;; a
                 ;; ,cd/capture-something-to-learn ;; L
                 ;; ,cd/capture-todos ;; t
