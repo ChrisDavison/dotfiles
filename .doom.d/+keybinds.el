@@ -7,7 +7,7 @@
       :desc "<<here>>" "j h" 'jump-to-here-anchor
       :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "jJ"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "lL"))
-      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/.scratch")))
+      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
 
 (map! :v
       "C-c C-c" 'wsl-copy
