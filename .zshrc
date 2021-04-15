@@ -15,9 +15,9 @@ source $DOTFILES/shell/prompt.sh
 
 # Other programs
 [[ -f $HOME/.envs/py/bin/activate ]] && source $HOME/.envs/py/bin/activate
-[[ -x $HOME/.cargo/env ]] && $HOME/.cargo/env
-[[ -x $HOME/.fzf/shell/key-bindings.zsh ]] && $HOME/.fzf/shell/key-bindings.zsh
-[[ -x $HOME/.fzf.zsh ]] && $HOME/.fzf.zsh
+[[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
+[[ -f $HOME/.fzf/shell/key-bindings.zsh ]] && source $HOME/.fzf/shell/key-bindings.zsh
+[[ -f $HOME/.fzf.zsh ]] && source $HOME/.fzf.zsh
 
 # Hide server welcome messages
 if [[ ! -f "$HOME/.hushlogin" ]]; then
