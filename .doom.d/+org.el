@@ -35,7 +35,8 @@
         org-roam-directory org-directory
         +org-roam-open-buffer-on-find-file nil
         org-roam-rename-file-on-title-change nil
-        org-superstar-headline-bullets-list '("✠" "✙" "✚" "✜" "✛" "✢" "✣" "✤")
+        org-superstar-headline-bullets-list '("▶" "▷" "▸" "▹" "◆" "◇" "◈")
+        ;; '("✠" "✙" "✚" "✜" "✛" "✢" "✣" "✤")
         ))
 
 ;;; Org CAPTURE
@@ -196,6 +197,10 @@
             (todo "WIP|NEXT|MAYB|TODO" ((org-agenda-overriding-header "REFILE / Inbox")
                          (org-agenda-files `(,(cd/org-project "todo.org")))
                          (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
+                         (org-agenda-todo-ignore-scheduled t)))
+            (todo "WIP|NEXT|MAYB|TODO" ((org-agenda-overriding-header "REFILE / Work")
+                         (org-agenda-files `(,(cd/org-project "work.org")))
+                         (org-agenda-sorting-strategy '((todo category-up todo-state-down priority-down)))
                          (org-agenda-todo-ignore-scheduled t)))))
 
           ("cn" "NEXT" ((todo "NEXT" nil)))
@@ -294,3 +299,5 @@ With prefix arg, find the previous file."
 (defun set-file-as-main-work-project ()
   (interactive)
   (setq cd/current-work-project (file-name-nondirectory (buffer-file-name))))
+
+(setq org-babel-python-command "~/.envs/py/bin/python3")
