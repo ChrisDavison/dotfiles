@@ -5,6 +5,7 @@
 ;; (map! :leader "j" 'jump-to-register)
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
+      :desc "journal" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/projects/todo.org"))
       :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "jJ"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "lL"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
