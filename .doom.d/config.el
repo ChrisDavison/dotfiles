@@ -1,11 +1,15 @@
+;; -----------------------------------------------------------------------------
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;; -----------------------------------------------------------------------------
 
 (require 'dash)
 (require 'f)
 (require 's)
 (require 'rx)
 
+;; -----------------------------------------------------------------------------
 ;;; General settings
+;; -----------------------------------------------------------------------------
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com"
       auto-save-default t
@@ -36,16 +40,20 @@
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 
+;; -----------------------------------------------------------------------------
 ;;; APPEARANCE (font and theme)
+;; -----------------------------------------------------------------------------
 (defvar theme-preferences-light
   '(kaolin-breeze kaolin-light leuven apropospriate-light)
   "Light colour themes that I like")
 (defvar theme-preferences-dark
   '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula)
   "Dark colour themes that I like")
-(setq doom-font "Input-14")
-(setq doom-variable-pitch-font "Montserrat-16")
-(setq doom-theme (nth 3 theme-preferences-dark))
+(setq doom-theme (nth 0 theme-preferences-light))
+
+(setq doom-font "CamingoCode-14")
+(setq doom-variable-pitch-font "Montserrat-14")
+
 (defvar fullscreen-at-startup t "Should emacs fullscreen when launched")
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
@@ -74,7 +82,9 @@
     (set-frame-font next-font-name 1)
     (message next-font-name)))
 
+;; -----------------------------------------------------------------------------
 ;;; GLOBAL MODES
+;; -----------------------------------------------------------------------------
 (global-visual-line-mode 1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -83,7 +93,9 @@
 (global-undo-tree-mode 1)
 (global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
 
+;; -----------------------------------------------------------------------------
 ;;; Hooks
+;; -----------------------------------------------------------------------------
 (setq fill-column 120)
 
 (add-hook 'prog-mode-hook #'undo-tree-mode)
@@ -91,7 +103,9 @@
 (setq lsp-lens-enable t)
 (setq shell-file-name "/usr/bin/zsh")
 
+;; -----------------------------------------------------------------------------
 ;;; Programming - Rust
+;; -----------------------------------------------------------------------------
 (add-hook! rust-mode
            '(company-mode
              flycheck-rust-setup
@@ -101,7 +115,9 @@
 (add-hook! racer-mode '(company-mode eldoc-mode))
 (add-to-list 'auto-mode-alist '("\\.rs" . rust-mode))
 
+;; -----------------------------------------------------------------------------
 ;;; Programming - Golang
+;; -----------------------------------------------------------------------------
 ;; (add-to-list 'exec-path (concat (file-name-as-directory (getenv "GOPATH")) "bin") t)
 ;; (add-to-list 'load-path (concat (file-name-as-directory (getenv "GOPATH")) "src/github.com/dougm/goflymake"))
 ;; (require 'go-flymake)
@@ -115,7 +131,9 @@
                                         ; call Gofmt before saving
              (add-hook 'before-save-hook 'gofmt-before-save)))
 
+;; -----------------------------------------------------------------------------
 ;;; Programming - Python
+;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
       python-shell-interpreter-args "console --simple-prompt"
       elpy-rpc-python-command "~/.envs/py/bin/python")
@@ -132,13 +150,19 @@
 (setq lsp-imenu-index-symbol-kinds
   '(Class Method Property Field Constructor Enum Interface Function Struct Namespace))
 
+;; -----------------------------------------------------------------------------
 ;;; Programming - Haskell
+;; -----------------------------------------------------------------------------
 (setq haskell-process-type 'stack-ghci)
 
+;; -----------------------------------------------------------------------------
 ;;; Programming - Common Lisp
+;; -----------------------------------------------------------------------------
 (setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
 
+;; -----------------------------------------------------------------------------
 ;;; SSH (remote server connections)
+;; -----------------------------------------------------------------------------
 (setq my-remote-servers
       '(("skye" :username "cdavison" :ip "130.159.94.19")
         ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
@@ -148,7 +172,9 @@
 
 
 
+;; -----------------------------------------------------------------------------
 ;;; Load external custom modules
+;; -----------------------------------------------------------------------------
 (load! "+keybinds")
 (load! "+functions") ;; also remember autoload.el
 (load! "+wsl")
