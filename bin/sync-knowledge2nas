@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 src="$HOME/code/knowledge/" 
-ignores="--exclude .git/ --exclude .gitignore --exclude todo.txt.bak"
+ignores="--exclude .git/"
+ignores+=" --exclude .gitignore"
+ignores+=" --exclude todo.txt.bak"
+ignores+=" --exclude .cache/"
+ignores+=" --exclude .ipython/"
+ignores+=" --exclude .vscode/"
+ignores+=" --exclude .github/"
 # rsync -r -v $ignores --delete-delay "$src" ~/Dropbox/notes/ 
 rsync -r -v $ignores --delete-delay "$src" /media/nas/notes/
 
