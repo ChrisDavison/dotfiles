@@ -311,11 +311,11 @@ exist after each headings's drawers."
          (hopdata (if hop (cd/extract-ssh-connection hop) nil))
          (hopstr (if hopdata (format "sshx:%s@%s|"
                                  (car hopdata)
-                                 (car (cdr hopdata)))))
+                                 (car (cdr hopdata)))
+                   ""))
          (connstr (format "sshx:%s@%s" username ip))
          (conn (format "/%s%s:%s" hopstr connstr folder)))
-    (dired conn)
-    ))
+    (dired conn)))
 
 ;;;###autoload
 (defun get-asset-dir ()
