@@ -11,6 +11,7 @@
     ff=false
 [rebase]
     autosquash=true
+    autostash=true
 [help]
     autocorrect=5
 [status]
@@ -28,6 +29,7 @@
     branch-name=rev-parse --abbrev-ref HEAD
     branches=branch -a
     bd=branch -D
+    fat=fetch --all --tags --prune
     tags=tag
     stashes=stash list
     sshow=stash show --text
