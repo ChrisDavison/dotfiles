@@ -121,6 +121,7 @@ test -f "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activ
 
 # Source starship for a more informative
 test -f "$HOME/.cargo/bin/starship"; and starship init fish | source
+test -f "/usr/local/bin/starship"; and starship init fish | source
 
 # Ignore server login messages
 not test -f "$HOME/.hushlogin"; and touch "$HOME/.hushlogin"
@@ -133,7 +134,3 @@ string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME
 
 # Setup only for WSL (linux on windows)
 not test (uname -r | grep -i 'microsoft'); and wsl_interop_setup
-
-# if not test -z $TMUX
-#     echo "TMUX prefix: "(rg prefix ~/.tmux.conf | head -n1 | cut -d' ' -f4)
-# end

@@ -78,11 +78,7 @@ common_bg_jobs() {
   echo -n $bg_status
 }
 
-case "$TERM" in
-  "dumb")
-    PS1="> "
-    ;;
-  xterm*|rxvt*|eterm*|screen*)
+fancy_prompt() {
     p_at='%(!.%F{red}%B#%b%f.@)'
     p_host='%F{yellow}%m%f'
     p_path='%F{yellow}%~%f'
@@ -90,15 +86,13 @@ case "$TERM" in
 
     PS1="$p_at$p_host $p_path$p_pr "
     unset p_at p_host p_path p_pr
-    ;;
-  *)
-    PS1="> "
-    ;;
-esac
 
+    # Left Prompt
+    # PROMPT="$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)"
 
-# Left Prompt
-# PROMPT="$(common_host)$(common_current_dir)$(common_bg_jobs)$(common_return_status)"
+    # Right Prompt
+    RPROMPT=""
+}
 
-# Right Prompt
-RPROMPT=""
+fancy_prompt
+

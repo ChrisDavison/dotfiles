@@ -142,7 +142,7 @@ function! ServerName()
     endif
 endfunction
 
-set statusline=%<\%{ServerName()}\ %f%=%{GitStatus()}\ %m%r%=\ (%l,%c%V)\ %P\
+set statusline=%<\%{ServerName()}\ %f%=%{GitStatus()}\ %m%r%=\ (%l,%c%V)\ %P\ 
 set ruler
 set encoding=utf-8
 

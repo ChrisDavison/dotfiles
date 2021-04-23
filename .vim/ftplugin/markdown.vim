@@ -4,7 +4,7 @@ let md_reflinks=' --reference-links'
 let md_reflinks=' --reference-links --reference-location=section'
 let md_standalone=" --standalone"
 let md_equalprg="pandoc --to markdown+smart-simple_tables+pipe_tables --markdown-headings=atx"
-let md_equalprg .= md_wrap . md_standalone
+let md_equalprg .= md_nowrap . md_standalone
 
 let &l:equalprg=md_equalprg
 
