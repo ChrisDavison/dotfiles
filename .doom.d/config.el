@@ -41,31 +41,29 @@
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 
 ;; -----------------------------------------------------------------------------
+
 ;;; APPEARANCE (font and theme)
 ;; -----------------------------------------------------------------------------
-(defvar theme-preferences-light
-  '(kaolin-breeze kaolin-light leuven apropospriate-light)
-  "Light colour themes that I like")
-(defvar theme-preferences-dark
-  '(doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula)
-  "Dark colour themes that I like")
+(setq theme-preferences-light
+  '(doom-solarized-light kaolin-breeze kaolin-light leuven apropospriate-light))
+(setq theme-preferences-dark
+  '(doom-solarized-dark doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
 (setq doom-theme (nth 0 theme-preferences-light))
 
-(setq doom-font "CamingoCode-14")
+(setq doom-font "Fantasque Sans Mono-12")
 (setq doom-variable-pitch-font "Montserrat-14")
 
-(defvar fullscreen-at-startup t "Should emacs fullscreen when launched")
+(setq fullscreen-at-startup t "Should emacs fullscreen when launched")
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
-(defvar cd-fonts
+(setq cd-fonts
   (--filter (member it (font-family-list))
             '("Input" "Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
               "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
-              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono"
-              "Liberation Mono" "Fira Code" "Iosevka Term"))
-  "Fonts that I like, filtered to only ones installed locally.")
+              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Monoid"
+              "Liberation Mono" "Fira Code" "Iosevka Term")))
 
-(defvar current-font-idx 0 "Which of cd-fonts is currently active")
+(setq current-font-idx 0 "Which of cd-fonts is currently active")
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
