@@ -163,6 +163,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; SSH (remote server connections)
 ;; -----------------------------------------------------------------------------
+(setq tramp-default-method "sshx")
 (setq my-remote-servers
       '(("skye" :username "cdavison" :ip "130.159.94.19")
         ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
