@@ -4,16 +4,14 @@
 # key: weeklyreview
 # condition: t                                      
 # --
-Weekly Review
+_Personal_
 
-*Good*
+- Guitar :: $1
+- Fitness :: $2
+- Reading :: $3
+- Thoughts :: $4
 
--
+_Work_
 
-*Bad*
-
--
-
-*Next*
-
--
+- Thesis :: $5
+- Work :: $6
