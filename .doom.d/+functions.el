@@ -40,6 +40,7 @@ When optional TAGS is a string, show only files matching those tags"
 (defun repoutil (command)
   (let ((cmd (format "repoutil %s" command)))
     (get-buffer-create "*repoutil*")
+    (message (format "Running: repoutil %s" command))
     (shell-command cmd "*repoutil*")
     (switch-to-buffer-other-window "*repoutil*")
     (special-mode)
@@ -50,7 +51,7 @@ When optional TAGS is a string, show only files matching those tags"
 
 (defun repoutil-list () (interactive) (repoutil "list"))
 
-(defun repoutil-fetch () (interactive) (repoutil "fetch"))
+(defun repoutil-fetch () (interactive) (repoutil "fetch") (quit-window))
 
 (defun repoutil-unclean () (interactive) (repoutil "unclean"))
 
