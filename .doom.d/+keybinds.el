@@ -6,6 +6,7 @@
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
       :desc "journal" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/projects/todo.org"))
+      :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
       :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "jJ"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "lL"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
@@ -22,6 +23,7 @@
         :desc "List all managed repos" "l" #'repoutil-list
         :desc "List all unclean repos" "u" #'repoutil-unclean)
        (:prefix ("g" . "ripgrep")
+        :desc "org notes" "o" 'rg-org
         :desc "journal" "j" 'rg-journal
         :desc "logbook" "l" 'rg-logbook)))
 
@@ -43,9 +45,13 @@
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
       "m r A" 'org-archive-to-archive-sibling
+      "m r A" 'org-archive-to-archive-sibling
+      "m r t" 'org-refile-to-this-file
+      "m r T" 'org-refile-to-this-file-level1
       "m d i" 'org-time-stamp-inactive
       "o s" 'org-open-link-same-window
       "o o" 'org-open-at-point
+      "o S" 'org-sidebar-toggle
       "Q" 'org-unfill-paragraph
       "N" 'org-toggle-narrow-to-subtree
       "m l u" 'org-copy-link-url)
