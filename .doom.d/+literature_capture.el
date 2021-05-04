@@ -26,12 +26,11 @@
       (s-concat ("\n")))))
 
 (defun read-authors ()
-  (setq authors (read-author)
-        running t)
-  (while running
-    (setq input (read-author))
-    (if (s-equals? input nil)
-        (setq running nil)
-      (setq authors (concat authors " and " input))))
-  authors)
-
+  (let ((authors (read-author))
+        (running t))
+    (while running
+      (let ((input (read-author)))
+        (if (s-equals? input nil)
+            (setq running nil)
+          (setq authors (concat authors " and " input)))))
+    authors))
