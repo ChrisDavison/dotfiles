@@ -5,6 +5,33 @@
   (unless (= (point) (line-beginning-position))
     (newline)))
 
+(defun cd/point-of-first-header ()
+  "Return the point of first org-mode-header, or nil if it doesn't exist."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^\*" nil t)))
+
+(defun cd/goto-end-of-toplevel-list ()
+  "Find the first top-level list, or insert one if it doesn't exist."
+  (interactive)
+  (goto-char (point-min))
+  (if (re-search-forward "^-" (cd/point-of-first-header) t)
+      (progn (org-forward-paragraph) t)
+    (progn
+      (+evil/insert-newline-below 2)
+      (evil-next-visual-line 2)
+      nil
+      )))
+
+(defun cd/insert-in-toplevel-list (thing)
+  (interactive)
+  (save-excursion
+    (if (cd/goto-end-of-toplevel-list)
+        (+org/insert-item-below 1)
+      (insert "-"))
+    (evil-normal-state)
+    (insert " " thing)))
+
 ;;;###autoload
 (defun org-file-from-subtree (filename)
   "Take the current subtree and create a new file from
@@ -20,12 +47,15 @@ If called with the universal argument, prompt for new filename,
 otherwise use the subtree title."
   (interactive "F")
   (let ((filename (concat "~/" (file-relative-name filename "~")))
+        (link (file-relative-name filename (file-name-directory (buffer-file-name))))
         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename))))))
     ;; Copy current subtree into clipboard
     (org-cut-subtree)
 
     ;; Convert headline to a link of the to-be-created file
-    (org-insert-link nil filename title)
+    (save-excursion
+      (cd/insert-in-toplevel-list (format "[[file:%s][%s]]" link title)))
+    ;; (newline)
 
     (with-temp-file filename
       (org-mode)
@@ -47,7 +77,9 @@ otherwise use the subtree title."
                            (file-name-directory (expand-file-name filename))))
            (title (read-from-minibuffer "Title: ")))
       (call-interactively' kill-region)
-      (insert (format "[[file:%s][%s]]" file-relative title))
+      (save-excursion
+        (cd/insert-in-toplevel-list (format "[[file:%s][%s]]" link title)))
+      ;; (newline)
       (with-temp-file filename
         (org-mode)
         (insert (concat "#+TITLE: " title "\n\n"))
@@ -56,24 +88,25 @@ otherwise use the subtree title."
 ;;;###autoload
 (defun org-open-link-same-window ()
   (interactive)
-  (let ((old-setup org-link-frame-setup))
-    (setq org-link-frame-setup '((file . find-file)))
-    (org-open-at-point)
-    (setq org-link-frame-setup old-setup)))
+  (let ((org-link-frame-setup '((file . find-file))))
+    (org-open-at-point)))
 
 ;;;###autoload
-(defun org-refile-to-file (&optional target)
+(defun org-refile-to-file (&optional target level)
   (interactive)
-  (let ((filename (or target (ivy-read "Refile to: " (f-files default-directory nil t))))
-        (old-refile-targets org-refile-targets))
-    (progn (setq org-refile-targets `((,filename . (:maxlevel . 6))))
-           (org-refile)
-           (setq org-refile-targets old-refile-targets))))
+  (let* ((filename (or target (ivy-read "Refile to: " (f-files default-directory nil t))))
+         (org-refile-targets `((,filename . (:maxlevel . ,(or level 6))))))
+    (org-refile)))
 
 ;;;###autoload
 (defun org-refile-to-this-file ()
   (interactive)
   (org-refile-to-file (buffer-name)))
+
+;;;###autoload
+(defun org-refile-to-this-file-level1 ()
+  (interactive)
+  (org-refile-to-file (buffer-name) 1))
 
 ;;;###autoload
 (defun org-change-state-and-archive ()
@@ -334,12 +367,13 @@ exist after each headings's drawers."
 
 ;;;###autoload
 (defun files-matching-tagsearch (directory tags)
-    (interactive)
-    (let* ((direc (f-join org-directory "projects"))
-           (cmd (format "tagsearch %s" tags))
-           (fullcmd (format "cd %s && %s" directory cmd))
-           (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
-      (--map (f-join directory it) output)))
+  (interactive)
+  (let* ((direc (f-join org-directory "projects"))
+         (cmd (format "tagsearch %s" tags))
+         (fullcmd (format "cd %s && %s" directory cmd))
+         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
+    (--map (f-join directory it) output)))
+
 
 ;;;###autoload
 (defun jump-to-work-project ()
