@@ -62,9 +62,9 @@
                  :type entry
                  :template "* TODO %?"
                  :children (("Calendar [PERSONAL]" :keys "c"
-                             :file (lambda () (f-join org-directory (format-time-string "journal-%Y.org"))))
+                             :file (lambda () (f-join org-directory (format-time-string "projects/journal-%Y.org"))))
                             ("Calendar [WORK]" :keys "w"
-                             :file (lambda () (f-join org-directory (format-time-string "logbook-%Y.org"))))))
+                             :file (lambda () (f-join org-directory (format-time-string "projects/logbook-%Y.org"))))))
 
                 ;; ("Calendar [WORK]" :keys "a"
                 ;;  :empty-lines 1
@@ -87,14 +87,14 @@
 
                 ("Journal" :keys "j"
                  :empty-lines 1
-                 :file (lambda () (f-join org-directory (format-time-string "journal-%Y.org")))
+                 :file (lambda () (f-join org-directory (format-time-string "projects/journal-%Y.org")))
                  :datetree t
                  :type entry
                  :template "* %?")
 
                 ("Logbook" :keys "l"
                  :empty-lines 1
-                 :file (lambda () (f-join org-directory (format-time-string "logbook-%Y.org")))
+                 :file (lambda () (f-join org-directory (format-time-string "projects/logbook-%Y.org")))
                  :datetree t
                  :type entry
                  :template "* %?")
@@ -160,8 +160,8 @@
                            ,(f-join org-directory (format-time-string "logbook-%Y.org")))
         org-refile-targets `((org-agenda-files . (:maxlevel . 3)))
         org-agenda-skip-scheduled-if-deadline-is-shown t
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done nil
+        org-agenda-skip-deadline-if-done nil
         org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
         org-agenda-skip-archived-trees nil
         org-agenda-block-separator ""
@@ -182,7 +182,7 @@
                                       (tags priority-down category-keep)
                                       (search category-keep)))
 
-  (setq cd/work-and-engd-files (append `(,(f-join org-directory (format-time-string "logbook-%Y.org")))
+  (setq cd/work-and-engd-files (append `(,(f-join org-directory (format-time-string "projects/logbook-%Y.org")))
                                        (files-matching-tagsearch (f-join org-directory "projects") "work"))
         cd/engd-files (files-matching-tagsearch (f-join org-directory "projects") "engd")
         cd/work-files (cl-set-difference cd/work-and-engd-files cd/engd-files :test 'equal)
@@ -193,10 +193,11 @@
     (setq org-agenda-custom-commands
           `(("c" . "Custom agenda views")
 
-            ("c1" "One day"
-             ((agenda "" ((org-agenda-span 'day)
+            ("co" "Overview Agenda"
+             ((agenda "" ((org-agenda-span 2)
                           (org-agenda-use-time-grid t)
-                          (org-agenda-start-day "-0d")))
+                          (org-agenda-start-day "-0d")
+                          ))
 
               ;; show a todo list of IN-PROGRESS
               (todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
@@ -221,36 +222,34 @@
                           (org-agenda_log-mode 16)
                           (org-agenda-show-log t)))))
 
-            ("cp" "Planning"
-             ;; kept as multiple todo commands so that grouping is done by todo state
-             ;; rather than by category (which is my default todo sorting preference)
-             ((todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
-                           (org-agenda-tag-filter-preset '("-readinglist"))))
-              (todo "NEXT" ((org-agenda-overriding-header "POSSIBLE NEXT TASKS")
-                            (org-agenda-tag-filter-preset '("-readinglist"))))
-              (todo "TODO" ((org-agenda-overriding-header "TODO")
-                            (org-agenda-tag-filter-preset '("-readinglist"))))
-              (todo "MAYB" ((org-agenda-overriding-header "UNSURE ABOUT")
-                            (org-agenda-tag-filter-preset '("-readinglist"))))))
+            ;; ("cp" "Planning"
+            ;;  ;; kept as multiple todo commands so that grouping is done by todo state
+            ;;  ;; rather than by category (which is my default todo sorting preference)
+            ;;  ((todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
+            ;;                (org-agenda-tag-filter-preset '("-readinglist"))))
+            ;;   (todo "NEXT" ((org-agenda-overriding-header "POSSIBLE NEXT TASKS")
+            ;;                 (org-agenda-tag-filter-preset '("-readinglist"))))
+            ;;   (todo "TODO" ((org-agenda-overriding-header "TODO")
+            ;;                 (org-agenda-tag-filter-preset '("-readinglist"))))
+            ;;   (todo "MAYB" ((org-agenda-overriding-header "UNSURE ABOUT")
+            ;;                 (org-agenda-tag-filter-preset '("-readinglist"))))))
 
             ("cw" "Work"
-             ((todo "" ((org-agenda-files cd/work-files)
-                        (org-agenda-overriding-header "Work")))
-              (todo "" ((org-agenda-files cd/engd-files)
-                        (org-agenda-overriding-header "EngD")))))
+             ((todo "" ((org-agenda-files cd/work-and-engd-files)
+                        (org-agenda-overriding-header "Work")))))
 
             ("ct" "Todos, no books"
              ((todo "" ((org-agenda-tag-filter-preset '("-readinglist"))))))
 
-            ("cR" "Reading -- in progress, and possible future books"
-             ((todo "WIP|NEXT|MAYB|TODO"
-                    ((org-agenda-files '(,(f-join org-directory "reading")))
-                     (org-agenda-overriding-header "Books in Progress")))))
+            ;; ("cR" "Reading -- in progress, and possible future books"
+            ;;  ((todo "WIP|NEXT|MAYB|TODO"
+            ;;         ((org-agenda-files '(,(f-join org-directory "reading")))
+            ;;          (org-agenda-overriding-header "Books in Progress")))))
 
-            ("cL" "Literature in progress, and next options"
-             ((todo "WIP|NEXT"
-                    ((org-agenda-files '(,(f-join org-directory "literature.org")))
-                     (org-agenda-overriding-header "Papers in Progress")))))
+            ;; ("cL" "Literature in progress, and next options"
+            ;;  ((todo "WIP|NEXT"
+            ;;         ((org-agenda-files '(,(f-join org-directory "literature.org")))
+            ;;          (org-agenda-overriding-header "Papers in Progress")))))
 
             ))))
 
@@ -308,7 +307,6 @@ With prefix arg, find the previous file."
   (setq cd/current-work-project (file-name-nondirectory (buffer-file-name))))
 
 (setq org-babel-python-command "~/.envs/py/bin/python3")
-(org-recent-headings-mode)
 
 
 (add-to-list 'org-structure-template-alist '("p" . "src python"))
