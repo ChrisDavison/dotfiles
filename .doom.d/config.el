@@ -15,7 +15,7 @@
       auto-save-default t
       auto-save-timeout 5
       avy-all-windows t
-      vterm-shell "/usr/bin/zsh"
+      vterm-shell "/usr/bin/fish"
       recentf-auto-cleanup 60
       global-auto-revert-mode t
       projectile-project-search-path `(,(expand-file-name "~/code"))
@@ -47,23 +47,21 @@
 (setq theme-preferences-light
   '(doom-solarized-light kaolin-breeze kaolin-light leuven apropospriate-light))
 (setq theme-preferences-dark
-  '(doom-solarized-dark doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
-(setq doom-theme (nth 0 theme-preferences-light))
+  '(gruvbox-dark-hard doom-solarized-dark doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
+(setq doom-theme (nth 0 theme-preferences-dark))
 
-(setq doom-font "Fantasque Sans Mono-12")
+(setq doom-font "CamingoCode-14")
 (setq doom-variable-pitch-font "Montserrat-14")
 
-(setq fullscreen-at-startup t "Should emacs fullscreen when launched")
+(setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 (setq cd-fonts
   (--filter (member it (font-family-list))
-            '("Input" "Dank Mono" "Hack" "Rec Mono Casual" "Rec Mono Linear" "Rec Mono SemiCasual"
-              "Inconsolata" "JetBrains Mono" "Source Code Pro" "Cascadia Code" "mononoki"
-              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono" "Ubuntu Mono" "Monoid"
-              "Liberation Mono" "Fira Code" "Iosevka Term")))
-
-(setq current-font-idx 0 "Which of cd-fonts is currently active")
+            '("Hack" "Rec Mono Linear" "Rec Mono SemiCasual"
+              "Inconsolata" "Source Code Pro"
+              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono"
+              "Liberation Mono"  "Iosevka Term")))
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
@@ -73,11 +71,11 @@
 
 (defun next-font ()
   (interactive)
-  (setq current-font-idx
-        (% (+ 1 current-font-idx)
-           (length cd-fonts)))
-  (let ((next-font-name (nth current-font-idx cd-fonts)))
+  (let* ((pos (cl-position (car (s-split "-" doom-font)) cd-fonts :test 's-equals?))
+         (next-pos (% (+ 1 pos) (length cd-fonts)))
+         (next-font-name (nth next-pos cd-fonts)))
     (set-frame-font next-font-name 1)
+    (setq doom-font (concat next-font-name "-14"))
     (message next-font-name)))
 
 ;; -----------------------------------------------------------------------------
