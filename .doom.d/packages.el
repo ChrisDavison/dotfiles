@@ -33,10 +33,15 @@
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
 (package! anki-editor)
+(package! org-sidebar)
+(package! org-roam-bibtex)
+(package! org-roam-server)
 
 ;;; Themes
 (package! apropospriate-theme)
 (package! dracula-theme)
 (package! kaolin-themes)
+(package! monokai-theme)
+(package! material-theme)
+(package! gruvbox-theme)
 
-(package! org-roam-server)
