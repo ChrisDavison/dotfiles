@@ -5,10 +5,11 @@
 ;; (map! :leader "j" 'jump-to-register)
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "journal" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/projects/todo.org"))
+      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/projects/todo.org"))
+      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/projects/work.org"))
       :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
-      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "jJ"))
-      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "lL"))
+      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
+      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
 
 (map! :v
@@ -37,8 +38,8 @@
 ;; Emacs capture and org-mode
 (map! "<f1>" 'org-capture
       "<f2>" 'org-agenda
-      "<f3>" '(lambda () (interactive) (org-agenda nil "c1"))
-      "<f4>" '(lambda () (interactive) (org-agenda nil "cr"))
+      "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
+      "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min)))
       "<f5>" #'find-next-file
       "<f6>" #'find-previous-file)
 
@@ -49,6 +50,7 @@
       "m r t" 'org-refile-to-this-file
       "m r T" 'org-refile-to-this-file-level1
       "m d i" 'org-time-stamp-inactive
+      "m F" #'(lambda () (interactive) (let ((org-footnote-section nil)) (org-footnote-new)))
       "o s" 'org-open-link-same-window
       "o o" 'org-open-at-point
       "o S" 'org-sidebar-toggle
