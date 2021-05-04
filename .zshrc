@@ -26,3 +26,5 @@ fi
 
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
