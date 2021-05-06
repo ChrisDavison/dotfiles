@@ -17,6 +17,7 @@
 
 ;;; Languages
 (package! rust-mode)
+(package! fish-mode)
 (package! flymake-rust)
 (package! flycheck-rust)
 (package! rustic)
