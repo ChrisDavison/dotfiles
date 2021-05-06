@@ -20,7 +20,7 @@
         org-list-indent-offset 2
         org-modules nil
         org-treat-insert-todo-heading-as-state-change t
-        org-log-repeat nil
+        org-log-repeat 'time
         org-log-done 'time
         org-log-done-with-time nil
         org-log-into-drawer t
@@ -219,7 +219,8 @@
                           (org-agenda-entry-types '(:timestamp))
                           (org-agenda-archives-mode t)
                           (org-agenda-later 1)
-                          (org-agenda_log-mode 16)
+                          (org-agenda-log-mode 16)
+                          (org-agenda-log-mode-items '(closed clock state))
                           (org-agenda-show-log t)))))
 
             ;; ("cp" "Planning"
