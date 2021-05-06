@@ -41,7 +41,8 @@
       "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
       "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min)))
       "<f5>" #'find-next-file
-      "<f6>" #'find-previous-file)
+      "<f6>" #'find-previous-file
+      "<f7>" #'org-roam-capture)
 
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
