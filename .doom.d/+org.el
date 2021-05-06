@@ -170,7 +170,7 @@
         org-agenda-sort-notime-is-late nil
         org-agenda-remove-tags t
         org-agenda-time-grid '((daily today require-timed remove-match)
-                               (900 1000 1100 1200 1300 1400 1500 1600 1700)
+                               (800 1000 1200 1400 1600 1800 2000)
                                "......"
                                "")
         org-agenda-use-time-grid t
@@ -194,10 +194,9 @@
           `(("c" . "Custom agenda views")
 
             ("co" "Overview Agenda"
-             ((agenda "" ((org-agenda-span 2)
+             ((agenda "" ((org-agenda-span 1)
                           (org-agenda-use-time-grid t)
-                          (org-agenda-start-day "-0d")
-                          ))
+                          (org-agenda-start-day "-0d")))
 
               ;; show a todo list of IN-PROGRESS
               (todo "WIP" ((org-agenda-overriding-header "IN PROGRESS")
