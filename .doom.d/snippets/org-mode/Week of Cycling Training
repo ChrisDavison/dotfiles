@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Week of Cycling Training
+# uuid: trainingweek
+# key: trainingweek
+# condition: t
+# --
+** `(format-time-string "%Y W%W")`
+
+|       Date | Name                              | Time (m) | TSS |  IF |
+|------------+-----------------------------------+----------+-----+-----|
+| $1         | $2                                | $4       | $5  | $6  |
+
+Summary:
+
+- Total Training Stress Score :: xxx

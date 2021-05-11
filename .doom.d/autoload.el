@@ -20,8 +20,7 @@
     (progn
       (+evil/insert-newline-below 2)
       (evil-next-visual-line 2)
-      nil
-      )))
+      nil)))
 
 (defun cd/insert-in-toplevel-list (thing)
   (interactive)
@@ -33,7 +32,7 @@
     (insert " " thing)))
 
 ;;;###autoload
-(defun org-file-from-subtree (filename)
+(defun org-file-from-subtree (filename &optional clipboard-only)
   "Take the current subtree and create a new file from
   it. Replace the current subtree with its main heading (i.e.,
   delete all of its childen), and make the heading into a link
@@ -46,16 +45,17 @@ In the new file, promote all direct children of the original
 If called with the universal argument, prompt for new filename,
 otherwise use the subtree title."
   (interactive "F")
-  (let ((filename (concat "~/" (file-relative-name filename "~")))
-        (link (file-relative-name filename (file-name-directory (buffer-file-name))))
-        (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename))))))
+  (let* ((filename (concat "~/" (file-relative-name filename "~")))
+         (link (file-relative-name filename (file-name-directory (buffer-file-name))))
+         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename)))))
+         (link-text (format "[[file:%s][%s]]" link title)))
     ;; Copy current subtree into clipboard
     (org-cut-subtree)
 
     ;; Convert headline to a link of the to-be-created file
-    (save-excursion
-      (cd/insert-in-toplevel-list (format "[[file:%s][%s]]" link title)))
-    ;; (newline)
+    (if clipboard-only
+        (kill-new link-text)
+      (save-excursion (cd/insert-in-toplevel-list link-text)))
 
     (with-temp-file filename
       (org-mode)
@@ -63,7 +63,7 @@ otherwise use the subtree title."
       (org-paste-subtree))))
 
 ;;;###autoload
-(defun org-file-from-selection ()
+(defun org-file-from-selection (&optional clipboard-only)
   "Create a new file from current selection, inserting a link.
 
   Prompt for a filename, and create. Prompt for an org-mode
@@ -75,10 +75,12 @@ otherwise use the subtree title."
            (file-relative (file-relative-name
                            filename
                            (file-name-directory (expand-file-name filename))))
-           (title (read-from-minibuffer "Title: ")))
+           (title (read-from-minibuffer "Title: "))
+           (link-text (format "[[file:%s][%s]]" link title)))
       (call-interactively' kill-region)
-      (save-excursion
-        (cd/insert-in-toplevel-list (format "[[file:%s][%s]]" link title)))
+      (if clipboard-only
+        (kill-new link-text)
+      (save-excursion (cd/insert-in-toplevel-list link-text)))
       ;; (newline)
       (with-temp-file filename
         (org-mode)
@@ -94,7 +96,7 @@ otherwise use the subtree title."
 ;;;###autoload
 (defun org-refile-to-file (&optional target level)
   (interactive)
-  (let* ((filename (or target (ivy-read "Refile to: " (f-files default-directory nil t))))
+  (let* ((filename (or target (ivy-read "Refile to: " (f-entries default-directory nil t))))
          (org-refile-targets `((,filename . (:maxlevel . ,(or level 6))))))
     (org-refile)))
 
@@ -144,12 +146,8 @@ otherwise use the subtree title."
   (interactive)
   (save-excursion
     (goto-char 1)
-    (org-archive-all-done)))
-
-;;;###autoload
-(defun org-archive-done-under-subtree ()
-  (interactive)
-  (org-archive-all-done))
+    (+org/close-all-folds)
+    (org-map-entries 'org-archive-subtree "/DONE" 'file)))
 
 ;;;###autoload
 (defun org-copy-link-url (&optional arg)
@@ -195,6 +193,15 @@ exist after each headings's drawers."
                    t (if prefix
                          nil
                        'tree)))
+
+;;;###autoload
+(defun org-archive-file ()
+  "Move current file into my org archive dir."
+  (interactive)
+  (let* ((archive-dir (f-join org-directory "archive"))
+         (fname (file-name-nondirectory (buffer-file-name)))
+         (new-fname (f-join archive-dir fname)))
+    (rename-file (buffer-file-name) new-fname)))
 
 ;;;###autoload
 (defun my-refile (file headline &optional arg)
@@ -379,3 +386,4 @@ exist after each headings's drawers."
 (defun jump-to-work-project ()
   (interactive)
   (org-roam-find-file "@work "))
+

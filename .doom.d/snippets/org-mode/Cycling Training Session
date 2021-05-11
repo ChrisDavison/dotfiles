@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Cycling Training Session
+# uuid: cyclesession
+# key: cyclesession
+# condition: t
+# --
+|         $1 |                                $2 |           $3 |       $4 |  $5 |  $6 |

@@ -1,0 +1,332 @@
+#+TITLE: Org-mode Literate Config
+#+PROPERTY: header-args :tangle "+org.el" :results silent
+
+* Requirements
+
+#+BEGIN_SRC emacs-lisp
+(load-library "find-lisp")
+#+END_SRC
+
+* Custom Functions
+
+#+BEGIN_SRC emacs-lisp
+(defun remove-org-mode-properties ()
+  (interactive)
+  (goto-char (point-min))
+  (query-replace-regexp
+   (rx bol (* " ") ":" (+ (any alnum "_")) ":" (* (seq " " (+ nonl))) "\n")
+   ""))
+
+(defun find-next-md-org-pair (&optional backward)
+  "Find the next file (by name) in the current directory.
+
+With prefix arg, find the previous file."
+  (interactive "P")
+  (when buffer-file-name
+    (let* ((file (if (s-equals? "md" (file-name-extension buffer-file-name))
+                     buffer-file-name
+                   (substring buffer-file-name 0 -4)))
+           (files (files-in-curdir-with-ext "md"))
+           (direction (if backward -1 1))
+           (pos (mod (+ (cl-position file files :test 'equal) direction)
+                     (length files))))
+      (delete-other-windows)
+      (find-file (nth pos files))
+      (find-file-other-window (s-concat (buffer-file-name (find-file (nth pos files))) ".org")))))
+#+END_SRC
+
+A simple helper function to get a nice header for my agendas. Basically gives something like:
+=-------- MSG -------=
+#+BEGIN_SRC emacs-lisp
+(defun cd/text-header (msg &optional char)
+  (let* ((char (if char char "-"))
+         (n-tokens (/ (- 80 1 (length msg)) 2))
+         (token-str (s-repeat n-tokens char)))
+    (format "%s %s %s" token-str msg token-str)))
+#+END_SRC
+
+* General settings
+
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/code/knowledge/"
+      org-src-window-setup 'current-window
+      org-indent-indentation-per-level 1
+      org-adapt-indentation nil
+      org-tags-column -77
+      org-pretty-entities t
+      org-catch-invisible-edits 'show-and-error
+      org-imenu-depth 4
+      org-link-frame-setup '((file . find-file-other-window))
+      org-hide-emphasis-markers t
+      org-todo-keywords '((sequence "TODO(t)"
+                                    "NEXT(n)" ; PRIORITISED todo
+                                    "BLCK(b)" ; CANNOT DO JUST NOW
+                                    "WIP(w)"
+                                    "|"
+                                    "DONE(d)"
+                                    "KILL(k)" ; WON'T DO
+                                    ))
+      org-cycle-separator-lines 0
+      org-list-indent-offset 2
+      org-modules nil
+      org-treat-insert-todo-heading-as-state-change t
+      org-log-repeat 'time
+      org-log-done 'time
+      org-log-done-with-time nil
+      org-log-into-drawer t
+      org-archive-location (format "%s::* From %%s" (f-join org-directory "archive.org"))
+      org-refile-use-outline-path 't
+      org-refile-allow-creating-parent-nodes 'confirm
+      org-startup-folded 'fold
+      org-id-track-globally t
+      org-image-actual-width 600
+      org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
+;;; Org DOWNLOAD (+dragndrop)
+      org-download-method 'directory
+      org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir))
+;;; Org BABEL
+      org-babel-python-command "~/.envs/py/bin/python3"
+      )
+#+END_SRC
+
+* Org-Roam
+
+First, I don't want =org-roam= to prepend a filename with the date when I'm creating a new file, so I need to change the function used to create the file 'slug'. This function is basically a clone of the normal =org-roam--title-to-slug= function, but I've changed the separator char from =_= to =-= and I've removed the date.
+#+BEGIN_SRC emacs-lisp
+(defun cd/org-roam--title-to-slug (title)
+  "Convert TITLE to a filename-suitable slug."
+  (cl-flet* ((nonspacing-mark-p (char)
+                                (eq 'Mn (get-char-code-property char 'general-category)))
+             (strip-nonspacing-marks (s)
+                                     (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                 (ucs-normalize-NFD-string s))))
+             (cl-replace (title pair)
+                         (replace-regexp-in-string (car pair) (cdr pair) title)))
+    (let* ((pairs `(("[^[:alnum:][:digit:]/]" . "-")  ;; convert anything not alphanumeric
+                    ("\-\-*" . "-")  ;; remove sequential underscores
+                    ("^\-" . "")  ;; remove starting underscore
+                    ("\-$" . "")))  ;; remove ending underscore
+           (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+      (downcase slug))))
+#+END_SRC
+
+Now, update org-roam settings, and use the new 'slugger'.
+#+BEGIN_SRC emacs-lisp
+(setq ;;; Org ROAM
+      org-roam-directory org-directory
+      +org-roam-open-buffer-on-find-file nil
+      org-roam-rename-file-on-title-change nil
+      org-roam-title-to-slug-function 'cd/org-roam--title-to-slug
+      org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
+                                    :file-name "${slug}"
+                                    :head "#+title: ${title}\n"
+                                    :unnarrowed t)))
+#+END_SRC
+
+* Capture
+
+A helper function to easily add an icon:
+#+BEGIN_SRC emacs-lisp
+(defun emoji-heading (fontfunc fonticon headingname)
+  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-purple :v-adjust 0.01)))
+    (format "%s %s" icon headingname)))
+
+(defun faicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-faicon icon msg))
+
+(defun octicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-octicon icon msg))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;;; Org CAPTURE
+(load! "+literature_capture")
+
+(setq org-capture-templates
+      (doct `((,(faicon-heading "sticky-note" "TODO") :keys "t"
+               :file "todo.org"
+               :type entry :template "* TODO %?")
+
+              (,(faicon-heading "sticky-note" "TODO [WORK]") :keys "w"
+               :file "work/work.org"
+               :type entry :template "* TODO %?")
+
+              (,(octicon-heading "inbox" "Note") :keys "n"
+               :file "inbox.org"
+               :type item :headline "NOTES")
+
+              (,(octicon-heading "inbox" "Note ENTRY") :keys "N"
+               :file "inbox.org"
+               :type entry
+               :template "* %?")
+
+              (,(octicon-heading "bookmark" "URL from Clipboard") :keys "u"
+               :file "work/todo.org"
+               :type entry
+               :immediate-finish t
+               :template "* TODO [[%c][%^{URL Title}]]")
+
+              (,(faicon-heading "comment" "Logbook") :keys "l"
+               :empty-lines 1
+               :file (lambda () (f-join org-directory (format-time-string "work/logbook-%Y.org")))
+               :datetree t
+               :type entry
+               :template "* %?")
+
+              (,(octicon-heading "book" "Literature") :keys "L"
+               :empty-lines 1
+               :file "work/literature.org" :headline "REFILE"
+               :type entry
+               :immediate-finish t
+               :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
+              )))
+#+END_SRC
+
+
+* Agenda
+
+** Agenda Settings
+
+#+BEGIN_SRC emacs-lisp
+;;; Org AGENDA
+(setq org-agenda-window-setup 'only-window
+      org-agenda-restore-windows-after-quit t
+      org-agenda-inhibit-startup nil
+      org-agenda-show-all-dates nil ; nil hides days in agenda if no tasks on that day
+      org-agenda-files (--filter (not (s-matches? "archive\\|recipes\\|reference" it))
+                                 (find-lisp-find-files org-directory "\.org$"))
+      org-refile-targets `((org-agenda-files . (:maxlevel . 2)))
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-skip-archived-trees nil
+      org-agenda-block-separator ""
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
+      org-agenda-time-grid '((daily today require-timed remove-match)
+                             (800 1000 1200 1400 1600 1800 2000)
+                             "......"
+                             "")
+      org-agenda-use-time-grid nil
+      org-agenda-prefix-format '((agenda . "%-20c%?-12t%8s")
+                                 (timeline . "% s")
+                                 (todo . "%-20c")
+                                 (tags . "%-20c")
+                                 (search . "%-20c"))
+      org-agenda-deadline-leaders '("!!! " "D%-2d " "D-%-2d ")
+      org-agenda-scheduled-leaders '("" "S-%-2d ")
+      org-agenda-sorting-strategy '((agenda habit-up time-up category-up todo-state-up scheduled-down priority-down)
+                                    (todo category-up todo-state-down priority-down)
+                                    (tags priority-down category-keep)
+                                    (search category-keep))
+      )
+#+END_SRC
+
+** Subsets of files
+
+#+BEGIN_SRC emacs-lisp
+(setq cd/work-files (find-lisp-find-files (f-join org-directory "work") "\.org$")
+      cd/non-work-files (cl-set-difference (org-agenda-files) cd/work-files :test 'equal)
+      cd/reading-files (append (find-lisp-find-files (f-join org-directory "books") "\.org$")
+                               (--filter (s-matches? "booklist\\|book-list" it) (org-agenda-files))
+                               `(,(f-join org-directory "reading.org")))
+      cd/literature-files (append (find-lisp-find-files (f-join org-directory "literature") "\.org$")
+                                          (f-join org-directory "work/literature.org"))
+      cd/non-reading-files (--filter (not (s-matches? "reading\\|literature" it))
+                                     (org-agenda-files)))
+#+END_SRC
+
+
+** Agenda templates
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+      `(("c" . "Custom agenda views")
+
+        ("co" "Overview Agenda"
+         ((agenda "" ((org-agenda-overriding-header (cd/text-header "Today"))
+                      (org-agenda-span 1)
+                      (org-agenda-use-time-grid t)
+                      (org-agenda-start-day "-0d")))
+
+          ;; show a todo list of IN-PROGRESS
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work]"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files cd/work-files)))
+          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "Blocked [Work]"))
+                        (org-agenda-todo-ignore-scheduled t)
+                        (org-agenda-files cd/work-files)))
+          (todo "WIP|NEXT|BLCK" ((org-agenda-overriding-header (cd/text-header "In Progress [Personal]"))
+                                 (org-agenda-todo-ignore-scheduled t)
+                                 (org-agenda-files (cl-set-difference cd/non-work-files
+                                                                      cd/reading-files
+                                                                      :test 'equal))))
+          (todo "" ((org-agenda-overriding-header (cd/text-header "Unfiled [WORK]"))
+                    (org-agenda-files `(,(f-join org-directory "work" "work.org")))
+                    (org-agenda-todo-ignore-scheduled t)))
+          (todo "WIP|NEXT"
+                ((org-agenda-files cd/reading-files)
+                 (org-agenda-overriding-header (cd/text-header "Books in Progress"))))
+          ))
+
+        ("cn" "NEXT" ((todo "NEXT" nil)))
+
+        ("cr" "Review the last week"
+         ((agenda "" ((org-agenda-start-day "-8d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-archives-mode t)
+                      (org-agenda-later 1)
+                      (org-agenda-log-mode 16)
+                      (org-agenda-log-mode-items '(closed clock state))
+                      (org-agenda-show-log t)))))
+
+        ("cw" "Work"
+         ((todo "" ((org-agenda-files `(,(f-join org-directory "work")))
+                    (org-agenda-overriding-header (cd/text-header "Work"))))))
+
+        ("cR" "Reading -- in progress, and possible future books"
+         ((todo ""
+                ((org-agenda-files cd/reading-files)
+                 (org-agenda-overriding-header (cd/text-header "Books in Progress"))))
+          (todo ""
+                ((org-agenda-files cd/literature-files)
+                 (org-agenda-overriding-header (cd/text-header "Literature in Progress"))))))
+        ))
+#+END_SRC
+
+* Hooks
+
+#+BEGIN_SRC emacs-lisp
+;;; Org HOOKS
+(add-hook! org-mode
+           'visual-line-mode
+           '(lambda () (interactive) (setq fill-column 120))
+           #'visual-fill-column-mode
+           'org-indent-mode
+           'abbrev-mode
+           ;; 'mixed-pitch-mode
+           'undo-tree-mode
+           '(lambda () (set-face-italic 'italic t)))
+(add-hook! 'auto-save-hook 'org-save-all-org-buffers)
+#+END_SRC
+
+* UNFILED
+
+Create a python src block using =<p <TAB>=
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-structure-template-alist '("p" . "src python"))
+#+END_SRC
+
+Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
+#+BEGIN_SRC emacs-lisp
+(defadvice! +refresh-wsl-interop (orig-fn &rest args)
+  "Ensure that we can open urls from WSL"
+  :before #'org-open-at-point
+  (progn (wsl_interop)
+         (if args (apply orig-fn args)
+           orig-fn)))
+#+END_SRC
+

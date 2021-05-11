@@ -4,6 +4,7 @@
 
 (require 'dash)
 (require 'f)
+
 (require 's)
 (require 'rx)
 
@@ -18,9 +19,13 @@
       vterm-shell "/usr/bin/fish"
       recentf-auto-cleanup 60
       global-auto-revert-mode t
-      projectile-project-search-path `(,(expand-file-name "~/code"))
+      projectile-project-search-path `(
+                                       ,(expand-file-name "~/code")
+                                       ,(expand-file-name "~/work"))
       display-line-numbers-type t
       +format-with-lsp nil
+      ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
+      search-invisible t
       nov-text-width 80)
 (setq-default org-roam-directory "~/code/knowledge")
 
@@ -41,44 +46,6 @@
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 
 ;; -----------------------------------------------------------------------------
-
-;;; APPEARANCE (font and theme)
-;; -----------------------------------------------------------------------------
-(setq theme-preferences-light
-  '(doom-solarized-light kaolin-breeze kaolin-light leuven apropospriate-light))
-(setq theme-preferences-dark
-  '(gruvbox-dark-hard doom-solarized-dark doom-one kaolin-bubblegum kaolin-eclipse kaolin-temple dracula))
-(setq doom-theme (nth 0 theme-preferences-dark))
-
-(setq doom-font "CamingoCode-14")
-(setq doom-variable-pitch-font "Montserrat-14")
-
-(setq fullscreen-at-startup t)
-(when fullscreen-at-startup
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
-(setq cd-fonts
-  (--filter (member it (font-family-list))
-            '("Hack" "Rec Mono Linear" "Rec Mono SemiCasual"
-              "Inconsolata" "Source Code Pro"
-              "Fantasque Sans Mono" "CamingoCode" "Roboto Mono"
-              "Liberation Mono"  "Iosevka Term")))
-
-(defun set-pretty-font ()
-  "Set a font from one of the available fonts that I like"
-  (interactive)
-  (setq doom-font (ivy-read "Pick font:" cd-fonts))
-  (doom/reload-font))
-
-(defun next-font ()
-  (interactive)
-  (let* ((pos (cl-position (car (s-split "-" doom-font)) cd-fonts :test 's-equals?))
-         (next-pos (% (+ 1 pos) (length cd-fonts)))
-         (next-font-name (nth next-pos cd-fonts)))
-    (set-frame-font next-font-name 1)
-    (setq doom-font (concat next-font-name "-14"))
-    (message next-font-name)))
-
-;; -----------------------------------------------------------------------------
 ;;; GLOBAL MODES
 ;; -----------------------------------------------------------------------------
 (global-visual-line-mode 1)
@@ -97,7 +64,7 @@
 (add-hook 'prog-mode-hook #'undo-tree-mode)
 (add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
 (setq lsp-lens-enable t)
-(setq shell-file-name "/usr/bin/zsh")
+(setq shell-file-name "/usr/bin/fish")
 
 ;; -----------------------------------------------------------------------------
 ;;; Programming - Rust
@@ -144,7 +111,7 @@
 (map! :map python-mode-map "C-c r" 'elpy-send-contiguous-block)
 
 (setq lsp-imenu-index-symbol-kinds
-  '(Class Method Property Field Constructor Enum Interface Function Struct Namespace))
+      '(Class Method Property Field Constructor Enum Interface Function Struct Namespace))
 
 ;; -----------------------------------------------------------------------------
 ;;; Programming - Haskell
@@ -175,4 +142,10 @@
 (load! "+keybinds")
 (load! "+functions") ;; also remember autoload.el
 (load! "+wsl")
-(load! "+org")
+(load! "+appearance")
+
+(after! org
+
+  (org-babel-load-file (car (org-babel-tangle-file "+org.org")))
+  ;; (load! "+org")
+  )

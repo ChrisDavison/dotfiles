@@ -14,6 +14,7 @@
 (package! dired-narrow)
 (package! undo-tree)
 (package! visual-fill-column)
+(package! imenu-list)
 
 ;;; Languages
 (package! rust-mode)

@@ -5,10 +5,10 @@
 ;; (map! :leader "j" 'jump-to-register)
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/projects/todo.org"))
-      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/projects/work.org"))
+      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
+      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work/work.org"))
       :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
-      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
+      :desc "inbox" "j i" '(lambda () (interactive) (org-capture-goto-target "n"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
 
@@ -26,7 +26,9 @@
        (:prefix ("g" . "ripgrep")
         :desc "org notes" "o" 'rg-org
         :desc "journal" "j" 'rg-journal
-        :desc "logbook" "l" 'rg-logbook)))
+        :desc "logbook" "l" 'rg-logbook)
+       ("n" 'new-in-git)
+       ))
 
 ;; Text editing
 (map! :n "C-;" #'iedit-mode
@@ -52,6 +54,7 @@
       "m r T" 'org-refile-to-this-file-level1
       "m d i" 'org-time-stamp-inactive
       "m F" #'(lambda () (interactive) (let ((org-footnote-section nil)) (org-footnote-new)))
+      "m h" #'headercount
       "o s" 'org-open-link-same-window
       "o o" 'org-open-at-point
       "o S" 'org-sidebar-toggle
@@ -84,7 +87,13 @@
 
 (map! :after projectile
       :leader
-      :desc "Find Org-dir note" "<SPC>" #'(lambda () (interactive) (counsel-file-jump nil org-directory)))
+      :desc "Find Org-dir note" "<SPC>"
+      ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
+      #'org-roam-find-file
+      :desc "Find Org-dir project" "S-<SPC>"
+      ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
+      #'(lambda () (interactive) (org-roam-find-file "@project "))
+      )
 
 (map! :map haskell-mode-map
       "C-x C-e" 'haskell-process-load-file)

@@ -55,6 +55,14 @@ When optional TAGS is a string, show only files matching those tags"
 
 (defun repoutil-unclean () (interactive) (repoutil "unclean"))
 
+(defun new-in-git ()
+  (interactive)
+  (get-buffer-create "*new-in-repo*")
+  (shell-command "new_in_git 1" "*new-in-repo*")
+  (switch-to-buffer-other-window "*new-in-repo*")
+  (special-mode))
+(set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
+
 ;;; File utilities
 
 (defun read-file-to-string (filePath)
@@ -176,3 +184,14 @@ With prefix arg, find the previous file."
       (goto-char (line-end-position))
       (delete-horizontal-space)
       (insert " ;; " (prin1-to-string (eval sexp))))))
+
+;;; Count headers in an org-mode file
+(defun headercount (&optional level)
+  (interactive)
+  (save-excursion
+    (let* ((stars (if level (s-repeat level "\*") "\*+"))
+           (reg (concat "^" stars " "))
+           (n-headers (count-matches reg (point-min) (point-max)))
+           (level-str (if level (format " level ≤%d" level) ""))
+           (msg (format "%d%s headers" n-headers level-str "headers")))
+      (message msg))))

@@ -24,3 +24,4 @@ setup_wsl_interop(){
 }
 
 setup_wsl_interop
+$HOME/.emacs.d/bin/doom env >/dev/null 2>&1
