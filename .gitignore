@@ -50,3 +50,4 @@ nohup.out
 .vim/backups/
 .vim/swapfiles/
 __pycache__
+.doom.d/+org.el

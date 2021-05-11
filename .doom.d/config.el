@@ -145,7 +145,4 @@
 (load! "+appearance")
 
 (after! org
-
-  (org-babel-load-file (car (org-babel-tangle-file "+org.org")))
-  ;; (load! "+org")
-  )
+  (org-babel-load-file (car (org-babel-tangle-file "+org.org"))))
