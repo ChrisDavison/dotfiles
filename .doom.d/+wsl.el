@@ -4,6 +4,7 @@
 ;; workaround to get the right WSL interop variable for clipboard usage
 ;; used in combination with a shell alias to export $WSL_INTEROP to a file
 ;; before calling emacs
+
 (defun wsl-copy (start end)
   (interactive "r")
   (shell-command-on-region start end "win32yank.exe -i")
@@ -26,3 +27,6 @@
           x-selection-timeout 10)
     ;; (message (concat "WSL Interop setup: " (getenv "WSL_INTEROP")))
     ))
+
+(shell-command "wsl_interop_setup")
+(wsl_interop)

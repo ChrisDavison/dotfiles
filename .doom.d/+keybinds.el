@@ -9,6 +9,7 @@
       :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work/work.org"))
       :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
       :desc "inbox" "j i" '(lambda () (interactive) (org-capture-goto-target "n"))
+      :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
 
@@ -27,6 +28,9 @@
         :desc "org notes" "o" 'rg-org
         :desc "journal" "j" 'rg-journal
         :desc "logbook" "l" 'rg-logbook)
+       (:prefix ("d" . "downloader")
+        :desc "quick add" "q" 'nas/quick-add-download
+        :desc "list" "l" 'nas/list-downloads)
        ("n" 'new-in-git)
        ))
 
@@ -91,8 +95,10 @@
       ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
       #'org-roam-find-file
       :desc "Find Org-dir project" "S-<SPC>"
-      ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
       #'(lambda () (interactive) (org-roam-find-file "@project "))
+      :desc "Find Org-dir WORK project" "M-<SPC>"
+      ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
+      #'(lambda () (interactive) (org-roam-find-file "@work "))
       )
 
 (map! :map haskell-mode-map

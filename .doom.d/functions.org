@@ -1,0 +1,335 @@
+#+TITLE: Custom Functions
+#+PROPERTY: header-args :tangle "functions.el" :results silent
+
+* Timestamp helpers
+
+#+BEGIN_SRC emacs-lisp
+(defun insert-formatted-time (format)
+  "Insert a timestamp matching a specific format"
+  (insert (format-time-string format (current-time))))
+
+(defun insert-timestamp-long ()
+  "Insert a LONG timestamp"
+  (interactive)
+  (insert-formatted-time "%a %b %d %H:%M:%S %Z %Y"))
+
+(defun insert-timestamp-date ()
+  "Insert a plain date"
+  (interactive)
+  (insert-formatted-time "%Y-%m-%d"))
+
+(defun insert-timestamp-time ()
+  "Insert a plain timestamp"
+  (interactive)
+  (insert-formatted-time "%H:%M:%S"))
+#+END_SRC
+
+
+* Repoutil
+
+Wrapper around my =repoutil= git managing utility.
+#+BEGIN_SRC emacs-lisp
+(defun repoutil (command)
+  (let ((cmd (format "repoutil %s" command)))
+    (get-buffer-create "*repoutil*")
+    (message (format "Running: repoutil %s" command))
+    (shell-command cmd "*repoutil*")
+    (switch-to-buffer-other-window "*repoutil*")
+    (special-mode)
+    (evil-insert 1)))
+(set-popup-rule! "^\\*repoutil\\*" :side 'bottom :size 0.30 :select t :ttl 1)
+
+(defun repoutil-branchstat () (interactive) (repoutil "branchstat"))
+
+(defun repoutil-list () (interactive) (repoutil "list"))
+
+(defun repoutil-fetch () (interactive) (repoutil "fetch") (quit-window))
+
+(defun repoutil-unclean () (interactive) (repoutil "unclean"))
+#+END_SRC
+
+* Tagsearch
+
+** List tags for all files under the current directory
+#+BEGIN_SRC emacs-lisp
+(defun tagsearch-list (&optional tags)
+  "List tags under the current directory.
+
+When optional TAGS is a string, show only files matching those tags"
+  (interactive)
+  (let ((cmd (concat "tagsearch " (or tags "")))
+        (temp-buf-name "*tagsearch*"))
+    (get-buffer-create temp-buf-name)
+    (shell-command cmd temp-buf-name)
+    (switch-to-buffer-other-window temp-buf-name)
+    (special-mode)
+    (evil-insert 1)))
+#+END_SRC
+
+Also, make tagsearch only take up the bottom 30% of the screen in a special doom popup window.
+#+BEGIN_SRC emacs-lisp
+(set-popup-rule! "^\\*tagsearch" :side 'bottom :size 0.30 :select t :ttl 1)
+#+END_SRC
+
+** Find files in directory that contain a tag
+#+BEGIN_SRC emacs-lisp
+(defun files-matching-tagsearch (directory tags)
+  (interactive)
+  (let* ((direc (f-join org-directory "projects"))
+         (cmd (format "tagsearch %s" tags))
+         (fullcmd (format "cd %s && %s" directory cmd))
+         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
+    (--map (f-join directory it) output)))
+#+END_SRC
+* Ripgrep (=rg=) in specific locations
+
+#+BEGIN_SRC emacs-lisp
+(defun rg-journal (search)
+  (interactive "Msearch string: ")
+  (let ((filename (format-time-string "journal-%Y.org")))
+    (rg search filename "~/code/knowledge")))
+
+(defun rg-logbook (search)
+  (interactive "Msearch string: ")
+  (let ((filename (format-time-string "logbook-%Y.org")))
+    (rg search filename "~/code/knowledge")))
+
+(defun rg-org (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-directory))
+#+END_SRC
+
+* Git
+
+** List files that have been updated/created in last N days
+
+#+BEGIN_SRC emacs-lisp
+(defun new-in-git ()
+  (interactive)
+  (get-buffer-create "*new-in-repo*")
+  (shell-command "new_in_git 1" "*new-in-repo*")
+  (switch-to-buffer-other-window "*new-in-repo*")
+  (special-mode))
+(set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
+#+END_SRC
+
+* Easier SSH to work servers
+
+#+BEGIN_SRC emacs-lisp
+(defun cd/extract-ssh-connection (&optional name)
+  (if (boundp 'my-remote-servers)
+      ;; my-remote-servers should be a plist of (SERVER :username USER :ip IP)
+      (let* ((selected (if name name (completing-read "Server: " (mapcar 'car my-remote-servers) nil t)))
+             (data (cdr (assoc selected my-remote-servers)))
+             (username (plist-get data :username))
+             (ip (plist-get data :ip))
+             (hop (plist-get data :hop)))
+        `(,username ,ip ,hop))
+    ;; otherwise, read a username and an ip
+    (let ((username (read-string "Username: "))
+          (ip (read-string "ip: "))
+          (hop nil))
+      `(,username ,ip ,hop))))
+
+(defun connect-remote ()
+  (interactive)
+  (let* ((data (cd/extract-ssh-connection))
+         (username (car data))
+         (folder (if (string= username "root") "/" (format "/home/%s/" username)))
+         (ip (car (cdr data)))
+         (hop (car (cdr (cdr data))))
+         (hopdata (if hop (cd/extract-ssh-connection hop) nil))
+         (hopstr (if hopdata (format "sshx:%s@%s|"
+                                     (car hopdata)
+                                     (car (cdr hopdata)))
+                   ""))
+         (connstr (format "sshx:%s@%s" username ip))
+         (conn (format "/%s%s:%s" hopstr connstr folder)))
+    (dired conn)))
+#+END_SRC
+
+* NAS helper scripts
+
+
+Add the current clip to the download list. Will parse a url if it is like an org-mode link.
+#+BEGIN_SRC emacs-lisp
+(defun nas/quick-add-download ()
+  "Add contents of clipboard to nas' to-download file."
+  (interactive)
+  (let* ((path "/media/nas/to-download.txt")
+         (clip (s-trim (current-kill 0)))
+         (re-org-url "\\[\\[\\(.*\\)\\]\\[.*\\]\\]")
+         (matches (s-match re-org-url clip))
+         (url (if matches (cadr matches) clip))
+         (url-tidy (if (s-matches? "youtube\\|youtu\.be" url)
+                       (car (s-split "&" url))
+                     url))
+         (contents (s-split "\n" (read-file-to-string path))))
+    (pushnew! contents url-tidy)
+    (delete-dups contents)
+    (write-region (s-join "\n" contents) nil path)
+    (message (concat "Added to downloads: " url-tidy))))
+
+
+#+END_SRC
+
+List the downloads that haven't been pulled yet.
+#+BEGIN_SRC emacs-lisp
+(defun nas/list-downloads ()
+  "List contents of NAS 'to-download' list."
+  (interactive)
+  (let* ((path "/media/nas/to-download.txt")
+         (temp-buf-name "*nas-downloads*"))
+    (get-buffer-create temp-buf-name)
+    (switch-to-buffer-other-window temp-buf-name)
+    (insert "NAS DOWNLOADS\n=============\n")
+    (insert-file-contents path)
+    (special-mode)
+    (evil-insert 1)))
+(set-popup-rule! "^\\*nas-downloads*" :side 'bottom :size 0.30 :select t :ttl 1)
+#+END_SRC
+* Narrows
+
+#+BEGIN_SRC emacs-lisp
+;;; Navigate narrows
+(defun change-narrow (direction)
+  (interactive)
+  (progn
+    (beginning-of-buffer)
+    (widen)
+    (if (eq direction 'prev)
+        (outline-previous-heading)
+      (outline-next-heading))
+    (org-narrow-to-subtree)))
+
+(defun move-to-previous-narrow ()
+  (interactive)
+  (change-narrow 'prev))
+
+(defun move-to-next-narrow ()
+  (interactive)
+  (change-narrow 'next))
+#+END_SRC
+* Iterate files in a directory
+
+#+BEGIN_SRC emacs-lisp
+(defun find-next-file (&optional backward)
+  "Find the next file (by name) in the current directory.
+
+With prefix arg, find the previous file."
+  (interactive "P")
+  (when buffer-file-name
+    (let* ((file (expand-file-name buffer-file-name))
+           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+           (direction (if backward -1 1))
+           (pos (mod (+ (cl-position file files :test 'equal) direction)
+                     (length files))))
+      (find-file (nth pos files)))))
+
+(defun find-previous-file ()
+  "Find the next file (by name) in the current directory."
+  (interactive)
+  (find-next-file t))
+
+(defun files-in-curdir-with-ext (ext)
+  (let* ((curdir (expand-file-name default-directory))
+         (files (directory-files curdir)))
+    (seq-filter
+     (lambda (filename)
+       (s-equals? ext (file-name-extension filename)))
+     (-map (lambda (file) (s-concat curdir file)) files))))
+#+END_SRC
+* Handle 'asset' directories
+
+Asset directories are a single location within a repo (typically my =org-directory=) that contain stuff like images I want inlined in my notes.
+#+BEGIN_SRC emacs-lisp
+(defun get-asset-dir ()
+  (interactive)
+  (let ((maybe-asset-dir (f-join (projectile-project-root) "assets")))
+    (if (f-readable? maybe-asset-dir)
+        maybe-asset-dir
+      "./assets")))
+
+(defun get-relative-asset-dir ()
+  (interactive)
+  (file-relative-name (get-asset-dir)
+                      (buffer-file-name)))
+#+END_SRC
+
+* UNFILED
+
+#+BEGIN_SRC emacs-lisp
+(defun read-file-to-string (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
+(defun erase-all-matches-from-start (regex)
+  (replace-regexp regex "" nil (point-min) (point-max)))
+
+(defun zen-biblio ()
+  "A function to read and insert a zen-guitar style bibliography."
+  (interactive)
+  (let ((author (read-string "Authors: "))
+        (title (read-string "Title: "))
+        (city (read-string "City: "))
+        (publisher (read-string "Publisher: "))
+        (year (read-string "Year: ")))
+    (insert (format "%s. /%s/. %s: %s, %s.\n\n" author title city publisher year))))
+
+;;; Tags (like tagsearch or roam)
+(defun tagify (str)
+  (interactive "M")
+  (s-join " " (--map (format "@%s" it) (s-split " " str))))
+
+(defun roam-tagify (str)
+  (interactive "Mtags: ")
+  (evil-open-below 1)
+  (insert (format "#+ROAM_TAGS: %s\n\n" str))
+  (insert (tagify str))
+  (evil-force-normal-state)
+  (save-buffer))
+
+(defun roam-tagify-toplevel (str)
+  (interactive "Mtags: ")
+  (evil-goto-first-line)
+  (evil-insert-line 1)
+  (insert (s-concat "#+ROAM_TAGS: " (tagify str) "\n\n"))
+  (evil-force-normal-state)
+  (save-buffer))
+
+;;; Lists and checkboxes
+(defun make-into-list ()
+  "Basically equivalent to org-ctrl-c-minus."
+  (interactive)
+  (replace-regexp "^" "- " nil (region-beginning) (region-end)))
+
+(defun make-into-checkbox-list ()
+  "Convert selection to list (only at root level) of checkboxes."
+  (interactive)
+  (let ((re (rx bol (zero-or-one "-") (one-or-more space))))
+    (replace-regexp re "- [ ] " nil (region-beginning) (region-end))))
+
+
+;;; UNORGANISED
+(defun zsh ()
+  (interactive)
+  (term "/usr/bin/zsh"))
+
+(defun elpy-send-contiguous-block ()
+  (interactive)
+  (mark-paragraph)
+  (elpy-shell-send-region-or-buffer)
+  (evil-forward-paragraph))
+
+;;; Emacs lisp
+(defun eval-into-comment ()
+  (interactive)
+  (let ((sexp (elisp--preceding-sexp)))
+    (save-excursion
+      (goto-char (line-end-position))
+      (delete-horizontal-space)
+      (insert " ;; " (prin1-to-string (eval sexp))))))
+#+END_SRC

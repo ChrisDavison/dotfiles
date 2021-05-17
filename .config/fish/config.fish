@@ -120,17 +120,19 @@ end
 test -f "$HOME/.envs/py/bin/activate.fish"; and source "$HOME/.envs/py/bin/activate.fish"
 
 # Source starship for a more informative
-test -f "$HOME/.cargo/bin/starship"; and starship init fish | source
-test -f "/usr/local/bin/starship"; and starship init fish | source
+# starship is a bit buggy within emacs (term, rather than vterm)
+# so commenting out for now
+# test -f "$HOME/.cargo/bin/starship"; and starship init fish | source
+# test -f "/usr/local/bin/starship"; and starship init fish | source
 
 # Ignore server login messages
 not test -f "$HOME/.hushlogin"; and touch "$HOME/.hushlogin"
 
 # WASM config
 set -l WASMTIME_HOME "$HOME/.wasmtime"
-string match -r ".wasmtime" "$PATH" > /dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
+string match -r ".wasmtime" "$PATH" >/dev/null; or set -gx PATH "$WASMTIME_HOME/bin" $PATH
 
-; and zoxide init fish | source
+and zoxide init fish | source
 
 # Setup only for WSL (linux on windows)
 not test (uname -r | grep -i 'microsoft'); and wsl_interop_setup

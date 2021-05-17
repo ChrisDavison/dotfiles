@@ -4,7 +4,7 @@
 # key: trainingweek
 # condition: t
 # --
-** `(format-time-string "%Y W%W")`
+`(format-time-string "%Y W%W")`
 
 |       Date | Name                              | Time (m) | TSS |  IF |
 |------------+-----------------------------------+----------+-----+-----|

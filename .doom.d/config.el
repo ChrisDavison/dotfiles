@@ -29,10 +29,19 @@
       nov-text-width 80)
 (setq-default org-roam-directory "~/code/knowledge")
 
+(define-ibuffer-column cd/file-name-directory () '(lambda (buf) (file-name-directory)))
 (setq ibuffer-formats
-      `((mark modified read-only vc-status-mini " "
+      `((mark vc-status-mini " "
+              (name 50 50 :left :elide) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
+              )
+        (mark vc-status-mini " "
               (name 30 30 :left :elide) " "
-              (mode 10 10 :left) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
               vc-relative-file)))
 
 (add-to-list 'auth-sources "~/.authinfo")
@@ -98,6 +107,7 @@
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
+      python-shell-interpreter "ipython"
       python-shell-interpreter-args "console --simple-prompt"
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
@@ -140,9 +150,24 @@
 ;;; Load external custom modules
 ;; -----------------------------------------------------------------------------
 (load! "+keybinds")
-(load! "+functions") ;; also remember autoload.el
-(load! "+wsl")
-(load! "+appearance")
+;; (load! "+functions") ;; also remember autoload.el
+;; (load! "+appearance")
+
+(require 'org)
+(defvar cd/literate-configs
+  (--map (f-join "~/.doom.d" it)
+         '("functions.org" "org-mode.org" "appearance.org"))
+  "Configuration which I have done in org-mode literate style.
+
+Files in this list will be tangled and loaded during startup."
+  )
 
 (after! org
-  (org-babel-load-file (car (org-babel-tangle-file "+org.org"))))
+  (--each cd/literate-configs (org-babel-load-file it)))
+
+(add-hook! dired-mode #'dired-hide-dotfiles-mode)
+(setq pdf-info-epdfinfo-program "/usr/bin/epdfinfo")
+
+(load! "+wsl")
+(when is-wsl?
+  (cd "~/code/knowledge"))

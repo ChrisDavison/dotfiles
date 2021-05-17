@@ -51,3 +51,7 @@ nohup.out
 .vim/swapfiles/
 __pycache__
 .doom.d/+org.el
+/.doom.d/appearance.el
+/.doom.d/functions.el
+/.doom.d/org-mode.el
+/.config/fish/functions/fish_prompt.fish
