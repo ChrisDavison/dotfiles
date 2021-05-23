@@ -70,6 +70,11 @@
       "m l u" 'org-copy-link-url
       "m l C" 'cd/org-copy-next-link)
 
+(map! :map evil-org-agenda-mode-map
+      "d D" 'cd/do-and-archive
+      "d K" 'cd/kill-and-archive
+      )
+
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
       :v "C-x C-n" 'org-file-from-selection
