@@ -6,6 +6,7 @@
 (package! s)
 (package! f)
 (package! rg)
+(package! ts)
 (package! deadgrep)
 (package! anzu)
 (package! string-inflection)
@@ -37,7 +38,3 @@
 (package! doct)  ; org-capture, decleratively
 
 ;;; Themes
-(package! apropospriate-theme)
-(package! dracula-theme)
-(package! kaolin-themes)
-
