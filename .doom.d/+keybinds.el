@@ -58,6 +58,7 @@
       "m r A" 'org-archive-to-archive-sibling
       "m r t" 'org-refile-to-this-file
       "m r T" 'org-refile-to-this-file-level1
+      "m r F" 'cd/refile-to-top-level
       "m d i" 'org-time-stamp-inactive
       "m F" #'(lambda () (interactive) (let ((org-footnote-section nil)) (org-footnote-new)))
       "m h" #'headercount
