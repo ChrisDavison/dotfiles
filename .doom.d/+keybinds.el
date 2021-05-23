@@ -105,7 +105,7 @@
       #'org-roam-find-file
       :desc "Find Org-dir project" "S-<SPC>"
       #'(lambda () (interactive) (org-roam-find-file "@project "))
-      :desc "Find Org-dir WORK project" "M-<SPC>"
+      :desc "Find Org-dir WORK project" "C-S-<SPC>"
       ;; #'(lambda () (interactive) (counsel-file-jump nil org-directory))
       #'(lambda () (interactive) (org-roam-find-file "@work "))
       )
