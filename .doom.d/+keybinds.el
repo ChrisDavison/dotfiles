@@ -2,13 +2,15 @@
 
 (map! "C-<" 'avy-goto-word-1) ;; C-S-,
 
+(map! :leader
+      :desc "imenu sidebar" "s I" 'imenu-list-smart-toggle)
 ;; (map! :leader "j" 'jump-to-register)
+
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
       :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
       :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work/work.org"))
       :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
-      :desc "inbox" "j i" '(lambda () (interactive) (org-capture-goto-target "n"))
       :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u"))
       :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org")))
