@@ -165,7 +165,7 @@ otherwise use the subtree title."
 (defun org-refile-to-file (&optional target level)
   (interactive)
   (let* ((filename (or target (ivy-read "Refile to: " (f-entries default-directory nil t))))
-         (org-refile-targets `((,filename . (:maxlevel . ,(or level 6))))))
+         (org-refile-targets `((,filename . (:maxlevel . ,(or level 3))))))
     (org-refile)))
 
 
@@ -338,11 +338,15 @@ exist after each headings's drawers."
       org-id-track-globally t
       org-image-actual-width 600
       org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
+      org-superstar-headline-bullets-list '("➤" "⇒" "⇛" "⤍" "⤏" "⤑")
 ;;; Org DOWNLOAD (+dragndrop)
       org-download-method 'directory
       org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir))
 ;;; Org BABEL
       org-babel-python-command "~/.envs/py/bin/python3"
+;;; DEFT
+      deft-directory org-directory
+      deft-recursive t
       )
 #+END_SRC
 
@@ -382,6 +386,7 @@ Now, update org-roam settings, and use the new 'slugger'.
 
 * Capture
 
+** Helper functions
 A helper function to easily add an icon:
 #+BEGIN_SRC emacs-lisp
 (defun emoji-heading (fontfunc fonticon headingname)
@@ -406,41 +411,50 @@ A helper function to easily add an icon:
 
 (defun cd/current-thought ()
   (let* ((dir (f-join org-directory "thoughts"))
-         (files (find-lisp-find-files dir "\.org$"))
-         (last-file (nth (- (length files) 1) files)))
-    last-file))
+         (files (sort (find-lisp-find-files dir "\.org$") 's-less?)))
+    (car (last files))))
 
 (defun cd/find-current-thought ()
   (interactive)
   (find-file (cd/current-thought)))
 
 (defun cd/next-thought ()
-  (let* ((last-file (cd/current-thought))
-         (current (string-to-number (if last-file (file-name-base last-file) "0")))
-         (next (number-to-string (+ 1 current)))
-         (next-fname (f-join org-directory "thoughts" (s-concat next ".org"))))
-    next-fname
-  ))
+  (let* ((current (cd/current-thought))
+         (parts (s-split "--" (file-name-base current)))
+         (ymd-current (nth 0 parts))
+         (ymd-today (format-time-string "%Y-%m-%d"))
+         (num (if (s-equals? ymd-current ymd-today)
+                  (format "%03d" (+ 1 (string-to-number (nth 1 parts))))
+                "001"))
+         (filename (format "%s--%s.org" ymd-today num))
+         (next-fname (f-join org-directory "thoughts" filename)))
+    next-fname))
 
 (defun cd/new-thought ()
   (interactive)
   (find-file (cd/next-thought)))
 
+
+#+END_SRC
+
+** Capture Templates
+
+#+begin_src emacs-lisp
 (setq org-capture-templates
       (doct `((,(faicon-heading "sticky-note" "TODO") :keys "t"
                :file "todo.org"
                :type entry :template "* TODO %?")
 
               (,(faicon-heading "sticky-note" "TODO [WORK]") :keys "w"
-               :file "work.org"
+               :file "work.org" :headline "TASKS"
                :type entry :template "* TODO %?")
 
-              (,(octicon-heading "inbox" "Note") :keys "n"
-               :file "inbox.org"
-               :type item :headline "NOTES")
+              (,(faicon-heading "sticky-note" "RESEARCH") :keys "r"
+               :file "todo.org" :headline "RESEARCH"
+               :type entry :template "* TODO %?")
 
-              (,(octicon-heading "inbox" "Note ENTRY") :keys "N"
-               :file "inbox.org"
+              (,(octicon-heading "comment" "NOTE") :keys "n"
+               :file cd/next-thought
                :type entry
                :template "* %?")
 
@@ -456,7 +470,7 @@ A helper function to easily add an icon:
                :type entry
                :template "* TODO %c\n\nWhy did this interest me? %?")
 
-              (,(faicon-heading "comment" "Logbook") :keys "l"
+              (,(octicon-heading "comment" "Logbook") :keys "l"
                :file cd/todays-logbook
                :datetree t
                :type entry
@@ -468,15 +482,13 @@ A helper function to easily add an icon:
                :immediate-finish t
                :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
 
-                (,(octicon-heading "comment" "THOUGHT") :keys "T"
-                 ;; Use my numerically ascending, or just timestamp?
-                 ;; :file cd/next-thought
-               :file (lambda () (interactive)
-                       (f-join org-directory "thoughts" (format-time-string "%Y%m%d-%H%M%S.org")))
+              (,(octicon-heading "book" "Korean") :keys "k"
+               :file "korean.org" :headline "Vocabulary"
                :type entry
-               :template "* %?")
+               :immediate-finish t
+               :template "* TODO %^{Word}")
               )))
-#+END_SRC
+#+end_src
 
 * Agenda
 
@@ -487,11 +499,11 @@ A helper function to easily add an icon:
 (setq org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
       org-agenda-inhibit-startup nil
-      org-agenda-show-all-dates nil ; nil hides days in agenda if no tasks on that day
-      org-agenda-files (--filter (not (s-matches? "archive\\/\\|books\\|recipes" it))
+      org-agenda-show-all-dates t ; nil hides days in agenda if no tasks on that day
+      org-agenda-files (--filter (not (s-matches? "archive\\|recipes" it))
                                  (find-lisp-find-files org-directory "\.org$"))
       org-refile-targets `((org-agenda-files . (:maxlevel . 2)))
-      org-agenda-span 'day
+      org-agenda-span 'week
       org-agenda-start-day nil
       org-agenda-skip-scheduled-if-deadline-is-shown t
       org-agenda-skip-scheduled-if-done nil
@@ -508,7 +520,7 @@ A helper function to easily add an icon:
                              "......"
                              "")
       org-agenda-use-time-grid nil
-      org-agenda-prefix-format '((agenda . "%-20c%?-12t%8s")
+      org-agenda-prefix-format '((agenda . "%-20c%-12t%6s")
                                  (timeline . "% s")
                                  (todo . "%-20c")
                                  (tags . "%-20c")
@@ -583,16 +595,20 @@ A helper function to easily add an icon:
                       (org-agenda-log-mode-items '(closed clock state))
                       (org-agenda-show-log t)))
 
+          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
+
           ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT|BLCK" ((org-agenda-overriding-header (cd/text-header "In Progress [Work]"))
-                                 (org-agenda-files (cl-set-difference (cd/work-files)
-                                                                      (cd/literature-files)
-                                                                      :test 'equal))))
-          (todo "WIP|NEXT|BLCK" ((org-agenda-overriding-header (cd/text-header "In Progress [Personal]"))
-                                 (org-agenda-todo-ignore-scheduled t)
-                                 (org-agenda-files (cl-set-difference (cd/non-work-files)
-                                                                      (cd/reading-files)
-                                                                      :test 'equal))))))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work]"))
+                            (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Personal]"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files (cl-set-difference (cd/non-work-files)
+                                                                 (cd/reading-files)
+                                                                 :test 'equal))))
+          (todo "" ((org-agenda-files (cd/reading-files))
+                    (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -619,7 +635,7 @@ A helper function to easily add an icon:
 (defun cd/refile-to-top-level ()
   (interactive)
   (let ((org-refile-use-outline-path 'file)
-        (org-refile-targets `((org-agenda-files . (:maxlevel . 1)))))
+        (org-refile-targets `((org-agenda-files . (:level . 0)))))
     (org-refile)))
 #+END_SRC
 
@@ -633,11 +649,57 @@ A helper function to easily add an icon:
            #'visual-fill-column-mode
            'org-indent-mode
            'abbrev-mode
-           ;; 'mixed-pitch-mode
+           'mixed-pitch-mode
            'undo-tree-mode
            '(lambda () (set-face-italic 'italic t)))
 (add-hook! 'auto-save-hook 'org-save-all-org-buffers)
 #+END_SRC
+* FUNC - Copy Link
+#+begin_src emacs-lisp
+(defun org-copy-link (&optional arg)
+  "Copy org-mode links from anywhere within."
+  (interactive "P")
+  (let* ((link (org-element-lineage (org-element-context) '(link) t))
+         (raw-link (org-element-property :search-option link))
+         (tidy (string-trim-left raw-link "\*")))
+    (kill-new tidy)
+    (message (concat "Copied Link: " tidy))))
+#+end_src
+* FUNC -  Archive and change state
+
+#+begin_src emacs-lisp
+(defun cd/do-and-archive ()
+  (interactive)
+  (org-todo 'done)
+  (org-archive-subtree))
+
+(defun cd/kill-and-archive ()
+  (interactive)
+  (org-todo 'kill)
+  (org-archive-subtree))
+#+end_src
+
+* FUNC - Refile to this file, matching regexp
+Refile to a regexp in current dir, matching target
+#+begin_src emacs-lisp :tangle no
+(defun cd/refile-here-with-regexp (&optional RE)
+  (interactive)
+  (let* ((RE (if RE RE (read-string "Regexp: ")))
+         (org-refile-targets `((,(buffer-file-name) . (:regexp . ,RE)))))
+    (org-refile)))
+#+end_src
+* FUNC - Copy next org-mode link
+Find the next link, copy it to the kill ring, and leave the curser at the end.
+#+begin_src emacs-lisp
+(defun cd/org-copy-next-link ()
+  "Find the next link, copy it to the kill ring, and leave the curser at the end."
+  (interactive)
+  (let* ((start (- (re-search-forward "\\[\\[") 2))
+         (end (re-search-forward "\\]\\]")))
+    (kill-ring-save start end)
+    (goto-char end)))
+#+end_src
+
 
 * UNFILED
 
@@ -647,7 +709,7 @@ Create a python src block using =<p <TAB>=
 #+END_SRC
 
 Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defadvice! +refresh-wsl-interop (orig-fn &rest args)
   "Ensure that we can open urls from WSL"
   :before #'org-open-at-point
@@ -655,3 +717,4 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
          (if args (apply orig-fn args)
            orig-fn)))
 #+END_SRC
+
