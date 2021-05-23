@@ -67,7 +67,8 @@
       "o S" 'org-sidebar-toggle
       "Q" 'org-unfill-paragraph
       "N" 'org-toggle-narrow-to-subtree
-      "m l u" 'org-copy-link-url)
+      "m l u" 'org-copy-link-url
+      "m l C" 'cd/org-copy-next-link)
 
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
