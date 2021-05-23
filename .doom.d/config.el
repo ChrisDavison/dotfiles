@@ -171,3 +171,7 @@ Files in this list will be tangled and loaded during startup."
 (load! "+wsl")
 (when is-wsl?
   (cd "~/code/knowledge"))
+
+(rg-enable-menu)
+
+(setq calendar-week-start-day 1)
