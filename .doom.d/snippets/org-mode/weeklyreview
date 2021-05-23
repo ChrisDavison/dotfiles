@@ -4,16 +4,30 @@
 # key: weeklyreview
 # condition: t                                      
 # --
-_Personal_
+`(format-time-string "<%Y-%m-%d %a>")` Weekly Review
+
+`(cd/text-header "Review")`
+
+- [ ] =(cd/notes-from-last-n-days)=
+- [ ] =(org-agenda nil "a")=
+- [ ] Cycling weekly training log
+- [ ] Pocket notebook exercises
+
+`(cd/text-header "Personal")`
 
 - Guitar :: $1
 - Fitness :: $2
 - Reading :: $3
-- Thoughts :: $4
 
-_Work_
+`(cd/text-header "Thoughts")`
+
+- $4
+
+`(cd/text-header "Work")`
 
 - Thesis :: $5
 - Work :: $6
 
-_Focus_
+`(cd/text-header "Focus")`
+
+*$7*
