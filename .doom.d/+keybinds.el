@@ -7,8 +7,12 @@
 ;; (map! :leader "j" 'jump-to-register)
 
 (map! :leader
+      :desc "M-x CD" "C" '(lambda () (interactive) (counsel-M-x "^cd/"))
       :desc "<<here>>" "j h" 'jump-to-here-anchor
       :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
+      :desc "journal" "j j" '(lambda () (interactive)
+                               (find-file
+                                (f-join org-directory "journal" (format-time-string "%Y-%m-%d.org"))))
       :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work/work.org"))
       :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
       :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u"))
@@ -31,8 +35,8 @@
         :desc "journal" "j" 'rg-journal
         :desc "logbook" "l" 'rg-logbook)
        (:prefix ("d" . "downloader")
-        :desc "quick add" "q" 'nas/quick-add-download
-        :desc "list" "l" 'nas/list-downloads)
+        :desc "quick add" "q" 'cd/nas/quick-add-download
+        :desc "list" "l" 'cd/nas/list-downloads)
        ("n" 'new-in-git)
        ))
 
@@ -55,7 +59,8 @@
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
       "m r A" 'org-archive-to-archive-sibling
-      "m r A" 'org-archive-to-archive-sibling
+      :desc "Do and archive" "m r D" 'cd/do-and-archive
+      :desc "Kill and archive" "m r K" 'cd/kill-and-archive
       "m r t" 'org-refile-to-this-file
       "m r T" 'org-refile-to-this-file-level1
       "m r F" 'cd/refile-to-top-level
