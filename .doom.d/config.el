@@ -53,6 +53,7 @@
 ;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 
 ;; -----------------------------------------------------------------------------
 ;;; GLOBAL MODES
