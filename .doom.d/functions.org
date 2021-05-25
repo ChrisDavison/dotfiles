@@ -173,7 +173,7 @@ Also, make tagsearch only take up the bottom 30% of the screen in a special doom
 
 Add the current clip to the download list. Will parse a url if it is like an org-mode link.
 #+BEGIN_SRC emacs-lisp
-(defun nas/quick-add-download ()
+(defun cd/nas/quick-add-download ()
   "Add contents of clipboard to nas' to-download file."
   (interactive)
   (let* ((path "/media/nas/to-download.txt")
@@ -195,7 +195,7 @@ Add the current clip to the download list. Will parse a url if it is like an org
 
 List the downloads that haven't been pulled yet.
 #+BEGIN_SRC emacs-lisp
-(defun nas/list-downloads ()
+(defun cd/nas/list-downloads ()
   "List contents of NAS 'to-download' list."
   (interactive)
   (let* ((path "/media/nas/to-download.txt")
