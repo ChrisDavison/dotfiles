@@ -406,8 +406,12 @@ A helper function to easily add an icon:
 
 (defun cd/todays-logbook ()
   (interactive)
-  (let ((fname (format-time-string "logbook-%Y.org")))
-    (f-join org-directory fname)))
+  (let ((fname (format-time-string "%Y-%m-%d.org")))
+    (f-join org-directory "logbook" fname)))
+
+(defun cd/find-todays-logbook ()
+  (interactive)
+  (find-file (cd/todays-logbook)))
 
 (defun cd/current-thought ()
   (let* ((dir (f-join org-directory "thoughts"))
@@ -440,53 +444,65 @@ A helper function to easily add an icon:
 ** Capture Templates
 
 #+begin_src emacs-lisp
+(defun cd/org-file-today (subdir)
+  (f-join org-directory subdir (format-time-string "%Y-%m-%d.org")))
+
+(defun cd/org-file-future (subdir)
+  (let* ((future (org-read-date)))
+    (setq cd/last-future-date future)
+    (f-join org-directory subdir (concat future ".org"))))
+
 (setq org-capture-templates
-      (doct `((,(faicon-heading "sticky-note" "TODO") :keys "t"
-               :file "todo.org"
-               :type entry :template "* TODO %?")
+      (doct `(
+              ("TODO" :keys "t"
+               :type entry :template "* TODO %?"
+               :children (("TODO [Personal]" :keys "t" :file "todo.org")
+                          ("TODO [Work]" :keys "w" :file "work.org" :headline "TASKS")))
 
-              (,(faicon-heading "sticky-note" "TODO [WORK]") :keys "w"
-               :file "work.org" :headline "TASKS"
-               :type entry :template "* TODO %?")
-
-              (,(faicon-heading "sticky-note" "RESEARCH") :keys "r"
+              ("RESEARCH" :keys "r"
                :file "todo.org" :headline "RESEARCH"
                :type entry :template "* TODO %?")
 
-              (,(octicon-heading "comment" "NOTE") :keys "n"
-               :file cd/next-thought
+              ("JOURNAL" :keys "j"
+               :file (lambda () (interactive) (cd/org-file-today "journal"))
                :type entry
-               :template "* %?")
+               :children (("Journal [Today]" :keys "j"
+                           :file (lambda () (interactive) (cd/org-file-today "journal"))
+                           :template "* %t %?")
+                          ("Journal [Future]" :keys "J"
+                           :file (lambda () (interactive) (cd/org-file-future "journal"))
+                           :template "* %(concat \"<\" cd/last-future-date \"> \") %^{Title}\n:PROPERTIES:\n:CATEGORY: Journal\n:END:\n\n%?")))
 
-              (,(octicon-heading "bookmark" "URL from Clipboard (title?)") :keys "u"
+              ("LOGBOOK" :keys "l"
+               :file (lambda () (interactive) (cd/org-file-today "logbook"))
+               :type entry
+               :children (("Logbook [Today]" :keys "l"
+                           :file (lambda () (interactive) (cd/org-file-today "logbook"))
+                           :template "* %t %?")
+                          ("Logbook [Future]" :keys "L"
+                           :file (lambda () (interactive) (cd/org-file-future "logbook"))
+                           :template "* %(concat \"<\" cd/last-future-date \"> \") %^{Title}\n:PROPERTIES:\n:CATEGORY: Logbook\n:END:\n\n%?")))
+
+              ("URL" :keys "u"
                :file "todo.org"
                :headline "Bookmarks"
                :type entry
-               :template "* TODO [[%c][%^{URL Title}]]\n\nWhy did this interest me? %?")
+               :children (("URL from clipboard" :keys "u"
+                           :template "* TODO [[%c][%^{URL Title}]]\n\nWhy did this interest me? %?")
+                          ("Org-link from clipboard" :keys "o"
+                           :template "* TODO %c\n\nWhy did this interest me? %?")))
 
-              (,(octicon-heading "bookmark" "URL from Clipboard (paste!)") :keys "p"
-               :file "todo.org"
-               :headline "Bookmarks"
-               :type entry
-               :template "* TODO %c\n\nWhy did this interest me? %?")
+              ;; ("Literature" :keys "L"
+              ;;  :file "literature.org" :headline "REFILE"
+              ;;  :type entry
+              ;;  :immediate-finish t
+              ;;  :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
 
-              (,(octicon-heading "comment" "Logbook") :keys "l"
-               :file cd/todays-logbook
-               :datetree t
-               :type entry
-               :template "* %?")
-
-              (,(octicon-heading "book" "Literature") :keys "L"
-               :file "literature.org" :headline "REFILE"
-               :type entry
-               :immediate-finish t
-               :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
-
-              (,(octicon-heading "book" "Korean") :keys "k"
-               :file "korean.org" :headline "Vocabulary"
-               :type entry
-               :immediate-finish t
-               :template "* TODO %^{Word}")
+              ;; ("Korean" :keys "k"
+              ;;  :file "korean.org" :headline "Vocabulary"
+              ;;  :type entry
+              ;;  :immediate-finish t
+              ;;  :template "* TODO %^{Word}")
               )))
 #+end_src
 
