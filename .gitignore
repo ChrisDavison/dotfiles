@@ -55,3 +55,4 @@ __pycache__
 /.doom.d/functions.el
 /.doom.d/org-mode.el
 /.config/fish/functions/fish_prompt.fish
+/.doom.d/keybinds.el

@@ -1,4 +1,5 @@
 #+TITLE: Org-mode Literate Config
+
 #+PROPERTY: header-args :tangle "org-mode.el" :results silent
 
 * Requirements
@@ -7,7 +8,7 @@
 (load-library "find-lisp")
 #+END_SRC
 
-* Custom Functions
+* Functions and Advice
 
 ** Remove all property drawers
 #+BEGIN_SRC emacs-lisp
@@ -302,8 +303,74 @@ exist after each headings's drawers."
   (org-update-checkbox-count t))
 #+END_SRC
 
-* General settings
+** Copy Link
+#+begin_src emacs-lisp
+(defun org-copy-link (&optional arg)
+  "Copy org-mode links from anywhere within."
+  (interactive "P")
+  (let* ((link (org-element-lineage (org-element-context) '(link) t))
+         (raw-link (org-element-property :search-option link))
+         (tidy (string-trim-left raw-link "\*")))
+    (kill-new tidy)
+    (message (concat "Copied Link: " tidy))))
+#+end_src
+** Copy next org-mode link
+Find the next link, copy it to the kill ring, and leave the curser at the end.
+#+begin_src emacs-lisp
+(defun cd/org-copy-next-link ()
+  "Find the next link, copy it to the kill ring, and leave the curser at the end."
+  (interactive)
+  (let* ((start (- (re-search-forward "\\[\\[") 2))
+         (end (re-search-forward "\\]\\]")))
+    (kill-ring-save start end)
+    (goto-char end)))
+#+end_src
 
+** Find all org files under a directory
+
+#+begin_src emacs-lisp
+(defun cd/org-files-under-dir (dir)
+  (if (f-dir? dir)
+      (find-lisp-find-files dir "\.org$")
+    (find-lisp-find-files (f-join org-directory dir) "\.org$")))
+#+end_src
+** Archive and change state
+
+#+begin_src emacs-lisp
+(defun cd/do-and-archive ()
+  (interactive)
+  (org-todo 'done)
+  (org-archive-subtree))
+
+(defun cd/kill-and-archive ()
+  (interactive)
+  (org-todo 'kill)
+  (org-archive-subtree))
+#+end_src
+
+** Refile to this file, matching regexp
+Refile to a regexp in current dir, matching target
+#+begin_src emacs-lisp :tangle no
+(defun cd/refile-here-with-regexp (&optional RE)
+  (interactive)
+  (let* ((RE (if RE RE (read-string "Regexp: ")))
+         (org-refile-targets `((,(buffer-file-name) . (:regexp . ,RE)))))
+    (org-refile)))
+#+end_src
+** ADVICE - Refresh WSL before opening org links                                          :disabled:
+
+Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
+#+BEGIN_SRC emacs-lisp :tangle no
+(defadvice! +refresh-wsl-interop (orig-fn &rest args)
+  "Ensure that we can open urls from WSL"
+  :before #'org-open-at-point
+  (progn (wsl_interop)
+         (if args (apply orig-fn args)
+           orig-fn)))
+#+END_SRC
+
+* Settings
+** General
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/code/knowledge/"
       org-src-window-setup 'current-window
@@ -339,16 +406,24 @@ exist after each headings's drawers."
       org-image-actual-width 600
       org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
       org-superstar-headline-bullets-list '("➤" "⇒" "⇛" "⤍" "⤏" "⤑")
-;;; Org DOWNLOAD (+dragndrop)
-      org-download-method 'directory
-      org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir))
-;;; Org BABEL
-      org-babel-python-command "~/.envs/py/bin/python3"
-;;; DEFT
-      deft-directory org-directory
-      deft-recursive t
-      )
 #+END_SRC
+
+** Org download (+dragndrop)
+#+begin_src emacs-lisp
+(setq org-download-method 'directory)
+(setq org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir)))
+#+end_src
+
+** Babel
+#+begin_src emacs-lisp
+(setq org-babel-python-command "~/.envs/py/bin/python3")
+#+end_src
+
+** Deft
+#+begin_src emacs-lisp
+(setq deft-directory org-directory)
+(setq deft-recursive t)
+#+end_src
 
 * Org-Roam
 
@@ -385,23 +460,11 @@ Now, update org-roam settings, and use the new 'slugger'.
                                     :unnarrowed t)))
 #+END_SRC
 
-* Capture
+* Org Capture
 
-** Helper functions
-A helper function to easily add an icon:
-#+BEGIN_SRC emacs-lisp
-(defun emoji-heading (fontfunc fonticon headingname)
-  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-purple :v-adjust 0.01)))
-    (format "%s %s" icon headingname)))
+** FUNC - Logbook/file per day, and enumerated thoughts                                   :disabled:
 
-(defun faicon-heading (icon msg)
-  (emoji-heading 'all-the-icons-faicon icon msg))
-
-(defun octicon-heading (icon msg)
-  (emoji-heading 'all-the-icons-octicon icon msg))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 ;;; Org CAPTURE
 (load! "+literature_capture")
 
@@ -442,6 +505,20 @@ A helper function to easily add an icon:
 
 #+END_SRC
 
+** FUNC - Heading with an emoji
+
+A helper function to easily add an icon:
+#+BEGIN_SRC emacs-lisp
+(defun emoji-heading (fontfunc fonticon headingname)
+  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-purple :v-adjust 0.01)))
+    (format "%s %s" icon headingname)))
+
+(defun faicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-faicon icon msg))
+
+(defun octicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-octicon icon msg))
+#+END_SRC
 
 ** FUNC - Find or create a header for a date
 
@@ -550,9 +627,8 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
               )))
 #+end_src
 
-* Agenda
-
-** Agenda Settings
+* Org Agenda
+** Settings
 
 #+BEGIN_SRC emacs-lisp
 ;;; Org AGENDA
@@ -644,7 +720,7 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
             (org-agenda-files)))
 #+END_SRC
 
-** Agenda templates
+** Templates
 
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-custom-commands
@@ -739,75 +815,9 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 ;; (remove-hook! org-agenda-mode '(lambda () (interactive) (goto-char (point-min))))
 (add-hook! 'auto-save-hook 'org-save-all-org-buffers)
 #+END_SRC
-* FUNC - Copy Link
-#+begin_src emacs-lisp
-(defun org-copy-link (&optional arg)
-  "Copy org-mode links from anywhere within."
-  (interactive "P")
-  (let* ((link (org-element-lineage (org-element-context) '(link) t))
-         (raw-link (org-element-property :search-option link))
-         (tidy (string-trim-left raw-link "\*")))
-    (kill-new tidy)
-    (message (concat "Copied Link: " tidy))))
-#+end_src
-* FUNC - Find all org files under a directory
-
-#+begin_src emacs-lisp
-(defun cd/org-files-under-dir (dir)
-  (if (f-dir? dir)
-      (find-lisp-find-files dir "\.org$")
-    (find-lisp-find-files (f-join org-directory dir) "\.org$")))
-#+end_src
-* FUNC -  Archive and change state
-
-#+begin_src emacs-lisp
-(defun cd/do-and-archive ()
-  (interactive)
-  (org-todo 'done)
-  (org-archive-subtree))
-
-(defun cd/kill-and-archive ()
-  (interactive)
-  (org-todo 'kill)
-  (org-archive-subtree))
-#+end_src
-
-* FUNC - Refile to this file, matching regexp
-Refile to a regexp in current dir, matching target
-#+begin_src emacs-lisp :tangle no
-(defun cd/refile-here-with-regexp (&optional RE)
-  (interactive)
-  (let* ((RE (if RE RE (read-string "Regexp: ")))
-         (org-refile-targets `((,(buffer-file-name) . (:regexp . ,RE)))))
-    (org-refile)))
-#+end_src
-* FUNC - Copy next org-mode link
-Find the next link, copy it to the kill ring, and leave the curser at the end.
-#+begin_src emacs-lisp
-(defun cd/org-copy-next-link ()
-  "Find the next link, copy it to the kill ring, and leave the curser at the end."
-  (interactive)
-  (let* ((start (- (re-search-forward "\\[\\[") 2))
-         (end (re-search-forward "\\]\\]")))
-    (kill-ring-save start end)
-    (goto-char end)))
-#+end_src
-
 * Structure templates
 Create a python src block using =<p <TAB>=
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-structure-template-alist '("p" . "src python"))
-#+END_SRC
-
-* UNFILED
-
-Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
-#+BEGIN_SRC emacs-lisp :tangle no
-(defadvice! +refresh-wsl-interop (orig-fn &rest args)
-  "Ensure that we can open urls from WSL"
-  :before #'org-open-at-point
-  (progn (wsl_interop)
-         (if args (apply orig-fn args)
-           orig-fn)))
 #+END_SRC
 
