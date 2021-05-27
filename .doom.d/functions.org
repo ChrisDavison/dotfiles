@@ -271,11 +271,11 @@ Basically, =cat= the contents of each 'thought', and also add in all files in my
   (interactive)
   (require 'ts)
   (let* ((n (if n n 7))
-         (files (find-lisp-find-files (f-join org-directory "thoughts") "\.org$"))
+         (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
          (date-n-ago (ts-format "%F" (ts-adjust 'day (- 0 n) (ts-now))))
          (files-last-n (--filter (string-greaterp (car (s-split "--" (file-name-base it))) date-n-ago)
                                  files))
-         (sorted-files (sort files-last-n 'string-lessp))
+         (sorted-files (sort files-last-n 'string-greaterp))
          (bufname "*recent-notes*"))
     (get-buffer-create bufname)
     (switch-to-buffer-other-window bufname)
@@ -287,7 +287,8 @@ Basically, =cat= the contents of each 'thought', and also add in all files in my
       (insert (shell-command-to-string (format "new_in_git %d" n)))
       (cd curdir))
     (insert "\n")
-    (--each sorted-files (insert-file it))))
+    (--each sorted-files (insert-file it))
+    (+org/close-all-folds)))
 
 (defun cd/notes-from-last-week ()
   (interactive)
@@ -386,6 +387,15 @@ Asset directories are a single location within a repo (typically my =org-directo
   (insert contents)
   (special-mode)
   (evil-insert 1))
+#+end_src
+* Time a function call
+
+#+begin_src emacs-lisp
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
 #+end_src
 
 * UNFILED

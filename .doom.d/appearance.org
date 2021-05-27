@@ -6,11 +6,14 @@
 ** Set theme
 #+BEGIN_SRC emacs-lisp
 (setq theme-preferences-light '(
+                                doom-opera-light
                                 doom-solarized-light
                                 doom-plain
                                 ))
 
 (setq theme-preferences-dark '(
+                                doom-dracula
+                                doom-monokai-classic
                                doom-horizon
                                doom-plain-dark
                                ))
@@ -77,19 +80,19 @@
 (setq cd-fonts (--filter (member it (font-family-list))
                          '(
                            "Monego"
-                           "Ubuntu Mono"
-                           "Anonymous Pro"
-                           "Iosevka Term"
-                           "Fira Mono"
-                           "Rec Mono Linear"
-                           "Rec Mono SemiCasual"
+                           ;; "Ubuntu Mono"
+                           ;; "Anonymous Pro"
+                           ;; "Iosevka Term"
+                           ;; "Fira Mono"
+                           ;; "Rec Mono Linear"
+                           ;; "Rec Mono SemiCasual"
                            "Hack"
                            "Inconsolata"
                            "Source Code Pro"
-                           "Fantasque Sans Mono"
-                           "CamingoCode"
+                           ;; "Fantasque Sans Mono"
+                           ;; "CamingoCode"
                            "Roboto Mono"
-                           "Liberation Mono"
+                           ;; "Liberation Mono"
                            )))
 
 (setq cd-mixed-pitch-fonts (--filter (member it (font-family-list))
@@ -128,7 +131,7 @@
 * Fullscreen at startup
 
 #+BEGIN_SRC emacs-lisp
-(setq fullscreen-at-startup t)
+(setq fullscreen-at-startup nil)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 #+END_SRC

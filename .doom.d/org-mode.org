@@ -309,7 +309,7 @@ exist after each headings's drawers."
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column -77
+      org-tags-column -100
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -377,6 +377,7 @@ Now, update org-roam settings, and use the new 'slugger'.
       org-roam-directory org-directory
       +org-roam-open-buffer-on-find-file nil
       org-roam-rename-file-on-title-change nil
+      org-roam-tag-sources '(prop all-directories)
       org-roam-title-to-slug-function 'cd/org-roam--title-to-slug
       org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                     :file-name "${slug}"
@@ -441,6 +442,48 @@ A helper function to easily add an icon:
 
 #+END_SRC
 
+
+** FUNC - Find or create a header for a date
+
+This function finds a header of the form =* 2021-05-26 Wed=, with the intention of a 'flat' datetree.
+Used in conjunction with simple =journal= and =logbook= captures to get something like:
+
+#+begin_example
+ * 2021-05-26 Wed
+ ** Heading 1
+ ** Heading 2
+#+end_example
+
+
+#+begin_src emacs-lisp
+(defun cd/org-datetree-find-dayonly-create ()
+  (goto-char (point-min))
+  (let* ((date (org-read-date nil t))
+         (yyyy (format-time-string "%Y" date))
+         (mm (format-time-string "%m" date))
+         (dd (format-time-string "%d" date))
+         (re (format "^\\* %s-%s-\\([0123][0-9]\\) \\w+$" yyyy mm))
+         (datestr (format-time-string "\n* %Y-%m-%d %a" date)))
+    (while (and (setq match (re-search-forward re nil t))
+                (goto-char (match-beginning 1))
+                (< (string-to-number (match-string 1)) (string-to-number dd))))
+    (cond
+     ((not match)
+      (org-next-visible-heading 1)
+      (or (bolp)
+          (progn (previous-line) (newline)))
+      (insert datestr "\n")
+      (previous-line))
+     ((= (string-to-number (match-string 1)) (string-to-number dd))
+      (goto-char (point-at-bol)))
+     (t
+      (beginning-of-line 1)
+      (insert datestr "\n")
+      (previous-line))
+     )
+    ))
+#+end_src
+
 ** Capture Templates
 
 #+begin_src emacs-lisp
@@ -452,45 +495,48 @@ A helper function to easily add an icon:
     (setq cd/last-future-date future)
     (f-join org-directory subdir (concat future ".org"))))
 
+(defun cd/insert-or-make-org-link ()
+  "If the clipboard is a url, ask for a title. Otherwise, assume an org-link."
+  (let ((clip (current-kill 0)))
+    (if (s-starts-with? "http" clip)
+        (concat "[[" clip "][" (read-string "Title: ") "]]")
+      clip)))
+
 (setq org-capture-templates
-      (doct `(
-              ("TODO" :keys "t"
-               :type entry :template "* TODO %?"
-               :children (("TODO [Personal]" :keys "t" :file "todo.org")
-                          ("TODO [Work]" :keys "w" :file "work.org" :headline "TASKS")))
+      (doct `(("todo" :keys "t"
+               :file "todo.org" :template "* TODO %?")
 
-              ("RESEARCH" :keys "r"
+              ("todo [WORK]" :keys "w"
+               :file "work.org" :template "* TODO %?")
+
+              ("todo [CYBELE]" :keys "c"
+               :file "work.org" :olp ("CYBELE" "Tasks")
+               :template "* TODO %?")
+
+              ("research" :keys "r"
                :file "todo.org" :headline "RESEARCH"
-               :type entry :template "* TODO %?")
+               :template "* TODO %?")
 
-              ("JOURNAL" :keys "j"
-               :file (lambda () (interactive) (cd/org-file-today "journal"))
-               :type entry
-               :children (("Journal [Today]" :keys "j"
-                           :file (lambda () (interactive) (cd/org-file-today "journal"))
-                           :template "* %t %?")
-                          ("Journal [Future]" :keys "J"
-                           :file (lambda () (interactive) (cd/org-file-future "journal"))
-                           :template "* %(concat \"<\" cd/last-future-date \"> \") %^{Title}\n:PROPERTIES:\n:CATEGORY: Journal\n:END:\n\n%?")))
+              ("journal" :keys "j"
+               :file "journal.org" :function cd/org-datetree-find-dayonly-create
+               :template "* %?")
 
-              ("LOGBOOK" :keys "l"
-               :file (lambda () (interactive) (cd/org-file-today "logbook"))
-               :type entry
-               :children (("Logbook [Today]" :keys "l"
-                           :file (lambda () (interactive) (cd/org-file-today "logbook"))
-                           :template "* %t %?")
-                          ("Logbook [Future]" :keys "L"
-                           :file (lambda () (interactive) (cd/org-file-future "logbook"))
-                           :template "* %(concat \"<\" cd/last-future-date \"> \") %^{Title}\n:PROPERTIES:\n:CATEGORY: Logbook\n:END:\n\n%?")))
+              ;; ("journal TODO" :keys "J"
+              ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* TODO %?")
+
+              ("logbook" :keys "l"
+               :file "logbook.org" :function cd/org-datetree-find-dayonly-create
+               :template "* %?")
+
+              ;; ("logbook TODO" :keys "L"
+              ;;  :file "logbook.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* TODO %?")
 
               ("URL" :keys "u"
-               :file "todo.org"
-               :headline "Bookmarks"
-               :type entry
-               :children (("URL from clipboard" :keys "u"
-                           :template "* TODO [[%c][%^{URL Title}]]\n\nWhy did this interest me? %?")
-                          ("Org-link from clipboard" :keys "o"
-                           :template "* TODO %c\n\nWhy did this interest me? %?")))
+               :file "todo.org" :headline "Bookmarks"
+               :immediate-finish t
+               :template "* TODO %(cd/insert-or-make-org-link)")
 
               ;; ("Literature" :keys "L"
               ;;  :file "literature.org" :headline "REFILE"
@@ -498,11 +544,9 @@ A helper function to easily add an icon:
               ;;  :immediate-finish t
               ;;  :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
 
-              ;; ("Korean" :keys "k"
-              ;;  :file "korean.org" :headline "Vocabulary"
-              ;;  :type entry
-              ;;  :immediate-finish t
-              ;;  :template "* TODO %^{Word}")
+              ("Korean" :keys "k"
+               :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
+               :type checkitem :template "[ ] %?")
               )))
 #+end_src
 
@@ -514,7 +558,13 @@ A helper function to easily add an icon:
 ;;; Org AGENDA
 (setq org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
-      org-agenda-inhibit-startup nil
+      ;; inhibit-startup nil means that if we want files to start 'folded', then agenda
+      ;; will respect this
+      ;; inhibit-startup t means 'just unfold', and can greatly speed up agenda
+      ;; if there are many folded headings
+      org-agenda-inhibit-startup t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-ignore-drawer-properties '(effort appt)
       org-agenda-show-all-dates t ; nil hides days in agenda if no tasks on that day
       ;; org-agenda-files (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
       ;;                            (find-lisp-find-files org-directory "\.org$"))
@@ -523,7 +573,8 @@ A helper function to easily add an icon:
                                ;; ...and any non-dotted directory underneath it
                                (--filter (and (f-directory-p (f-join org-directory it))
                                               (not (s-matches? (rx bol (+ ".")) it))
-                                              (not (s-matches? "archive" it)))
+                                              (not (s-matches? "archive" it))
+                                              (not (s-matches? "book-notes" it)))
                                          (directory-files org-directory)))
       ;; (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
       ;;                            (find-lisp-find-files org-directory "\.org$"))
@@ -545,7 +596,7 @@ A helper function to easily add an icon:
                              (800 1000 1200 1400 1600 1800 2000)
                              "......"
                              "")
-      org-agenda-use-time-grid nil
+      org-agenda-use-time-grid t
       org-agenda-prefix-format '((agenda . "%-20c%-12t%6s")
                                  (timeline . "% s")
                                  (todo . "%-20c")
@@ -562,32 +613,31 @@ A helper function to easily add an icon:
 
 ** Subsets of files
 
-
 #+BEGIN_SRC emacs-lisp
-(defvar cd/agenda/work-filenames
-  '("work.org" "thesis.org" "logbook" "literature.org")
-  "Agenda files for work, in the root of my org-directory.")
-
-(defun cd/org-files-under-dir (dir)
-  (if (f-dir? dir)
-      (find-lisp-find-files dir "\.org$")
-    (find-lisp-find-files (f-join org-directory dir) "\.org$")))
+(defun f-org (filename)
+  "Filename relative to my org directory."
+  (f-join org-directory filename))
 
 (defun cd/work-files ()
-  (append '("work.org" "thesis.org" "engd.org")
-          (cd/org-files-under-dir "logbook")
-          (--map (f-join org-directory it) cd/agenda/work-filenames)))
+  (-map 'f-org
+        '("work.org" "logbook.org" "literature.org" ;; "thesis.org"
+          )))
 
-(defun cd/non-work-files ()
-  (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal))
+(defun cd/engd-files ()
+  (-map 'f-org '("thesis.org")))
 
 (defun cd/reading-files ()
   (append (cd/org-files-under-dir "book-notes")
-          `(,(f-join org-directory "reading.org"))))
+          `(,(f-org "reading.org"))))
+
+(defun cd/non-work-files ()
+  (let* ((non-work (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal))
+         (non-work (cl-set-difference non-work (cd/reading-files) :test 'equal))
+         (non-work (cl-set-difference non-work (cd/engd-files) :test 'equal)))
+    non-work))
 
 (defun cd/literature-files ()
-  (append (cd/org-files-under-dir "literature")
-          `(,(f-join org-directory "literature.org"))))
+  `(,(f-org "literature.org")))
 
 (defun cd/non-reading-files ()
   (--filter (not (s-matches? "reading\\|literature" it))
@@ -600,11 +650,6 @@ A helper function to easily add an icon:
 (setq org-agenda-custom-commands
       `(("c" . "Custom agenda views")
 
-        ("c1" "Overview Agenda"
-         ((agenda "" ((org-agenda-overriding-header (cd/text-header "TODAY"))
-                      (org-agenda-span 1)
-                      (org-agenda-start-day "-0d")))))
-
         ("co" "Overview Agenda"
          ((agenda "" ((org-agenda-overriding-header (cd/text-header "TODAY"))
                       (org-agenda-span 1)
@@ -615,6 +660,7 @@ A helper function to easily add an icon:
                       (org-agenda-span 1)
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-archives-mode t)
+                      (org-agenda-use-time-grid nil)
                       (org-agenda-later 1)
                       (org-agenda-log-mode 16)
                       (org-agenda-log-mode-items '(closed clock state))
@@ -623,7 +669,8 @@ A helper function to easily add an icon:
           (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
 
           ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work]"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work, no thesis]"))
+                            (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-files (cl-set-difference (cd/work-files)
                                                                  (cd/literature-files)
                                                                  :test 'equal))))
@@ -634,6 +681,18 @@ A helper function to easily add an icon:
                                                                  :test 'equal))))
           (todo "" ((org-agenda-files (cd/reading-files))
                     (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
+
+        ("cw" "Work tasks [NO THESIS]"
+         ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+                        (org-agenda-category-filter-preset '("+Work"))))
+
+          ;; show a todo list of IN-PROGRESS
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-category-filter-preset '("+Work"))))
+          (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+                        (org-agenda-todo-ignore-scheduled t)
+                        (org-agenda-category-filter-preset '("+Work"))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -674,9 +733,10 @@ A helper function to easily add an icon:
            #'visual-fill-column-mode
            'org-indent-mode
            'abbrev-mode
-           'mixed-pitch-mode
+           ;; 'mixed-pitch-mode
            'undo-tree-mode
            '(lambda () (set-face-italic 'italic t)))
+;; (remove-hook! org-agenda-mode '(lambda () (interactive) (goto-char (point-min))))
 (add-hook! 'auto-save-hook 'org-save-all-org-buffers)
 #+END_SRC
 * FUNC - Copy Link
@@ -689,6 +749,14 @@ A helper function to easily add an icon:
          (tidy (string-trim-left raw-link "\*")))
     (kill-new tidy)
     (message (concat "Copied Link: " tidy))))
+#+end_src
+* FUNC - Find all org files under a directory
+
+#+begin_src emacs-lisp
+(defun cd/org-files-under-dir (dir)
+  (if (f-dir? dir)
+      (find-lisp-find-files dir "\.org$")
+    (find-lisp-find-files (f-join org-directory dir) "\.org$")))
 #+end_src
 * FUNC -  Archive and change state
 
@@ -724,7 +792,6 @@ Find the next link, copy it to the kill ring, and leave the curser at the end.
     (kill-ring-save start end)
     (goto-char end)))
 #+end_src
-
 
 * Structure templates
 Create a python src block using =<p <TAB>=

@@ -150,21 +150,14 @@
 ;; -----------------------------------------------------------------------------
 ;;; Load external custom modules
 ;; -----------------------------------------------------------------------------
-(load! "+keybinds")
+;; (load! "+keybinds")
 ;; (load! "+functions") ;; also remember autoload.el
 ;; (load! "+appearance")
 
 (require 'org)
-(defvar cd/literate-configs
-  (--map (f-join "~/.doom.d" it)
-         '("functions.org" "org-mode.org" "appearance.org"))
-  "Configuration which I have done in org-mode literate style.
-
-Files in this list will be tangled and loaded during startup."
-  )
-
 (after! org
-  (--each cd/literate-configs (org-babel-load-file it)))
+  (--each '("functions.org" "org-mode.org" "appearance.org" "keybinds.org")
+    (org-babel-load-file (f-join "~/.doom.d" it))))
 
 (add-hook! dired-mode #'dired-hide-dotfiles-mode)
 (setq pdf-info-epdfinfo-program "/usr/bin/epdfinfo")
