@@ -56,3 +56,4 @@ __pycache__
 /.doom.d/org-mode.el
 /.config/fish/functions/fish_prompt.fish
 /.doom.d/keybinds.el
+/.doom.d/literate-config.el
