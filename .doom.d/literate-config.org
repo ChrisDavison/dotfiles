@@ -19,16 +19,11 @@ In order to run this, need something like the following inside doom's =config.el
       auto-save-default t
       auto-save-timeout 5
       avy-all-windows t
-      vterm-shell "/usr/bin/fish"
       recentf-auto-cleanup 60
       global-auto-revert-mode t
-      projectile-project-search-path `(
-                                       ,(expand-file-name "~/code")
-                                       ,(expand-file-name "~/work"))
+      projectile-project-search-path `(,(expand-file-name "~/code"))
       display-line-numbers-type t
-      +format-with-lsp nil
-      ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
-      search-invisible t
+      search-invisible t  ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
       nov-text-width 80)
 
 (setq-default org-roam-directory "~/code/knowledge")
@@ -54,12 +49,46 @@ In order to run this, need something like the following inside doom's =config.el
 ;;; Hooks
 ;; -----------------------------------------------------------------------------
 (setq fill-column 120)
-
 (add-hook 'prog-mode-hook #'undo-tree-mode)
+
+;; LSP
 (add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
 (setq lsp-lens-enable t)
-(setq shell-file-name "/usr/bin/fish")
+(setq +format-with-lsp nil)
 
+(setq vterm-shell "/usr/bin/fish")
+(setq shell-file-name "/usr/bin/fish")
+#+end_src
+** Assign extensions to filetypes
+
+#+begin_src emacs-lisp
+;; Nov.el - read epubs in emacs
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+#+end_src
+
+** Ibuffer Formats
+
+#+begin_src emacs-lisp
+(setq ibuffer-formats
+      `((mark vc-status-mini " "
+              (name 50 50 :left :elide) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
+              )
+        (mark vc-status-mini " "
+              (name 30 30 :left :elide) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
+              vc-relative-file)))
+#+end_src
+
+* Programming Languages
+
+#+begin_src emacs-lisp
 ;; -----------------------------------------------------------------------------
 ;;; Programming - Rust
 ;; -----------------------------------------------------------------------------
@@ -117,69 +146,6 @@ In order to run this, need something like the following inside doom's =config.el
 ;;; Programming - Common Lisp
 ;; -----------------------------------------------------------------------------
 (setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
-
-;; -----------------------------------------------------------------------------
-;;; SSH (remote server connections)
-;; -----------------------------------------------------------------------------
-(setq tramp-default-method "sshx")
-(setq my-remote-servers
-      '(("skye" :username "cdavison" :ip "130.159.94.19")
-        ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
-        ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
-        ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
-        ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
-
-
-
-;; ;; -----------------------------------------------------------------------------
-;; ;;; Load external custom modules
-;; ;; -----------------------------------------------------------------------------
-;; ;; (load! "+keybinds")
-;; ;; (load! "+functions") ;; also remember autoload.el
-;; ;; (load! "+appearance")
-
-;; (require 'org)
-;; (after! org
-;;   (--each '("functions.org" "org-mode.org" "appearance.org" "keybinds.org")
-;;     (org-babel-load-file (f-join "~/.doom.d" it))))
-
-(add-hook! dired-mode #'dired-hide-dotfiles-mode)
-(setq pdf-info-epdfinfo-program "/usr/bin/epdfinfo")
-
-(load! "+wsl")
-(when is-wsl?
-  (cd "~/code/knowledge"))
-
-(rg-enable-menu)
-
-(setq calendar-week-start-day 1)
-
-#+end_src
-** Assign extensions to filetypes
-
-#+begin_src emacs-lisp
-;; Nov.el - read epubs in emacs
-(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-(add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
-(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
-#+end_src
-
-** Ibuffer Formats
-
-#+begin_src emacs-lisp
-(setq ibuffer-formats
-      `((mark vc-status-mini " "
-              (name 50 50 :left :elide) " "
-              (size 9 -1 :right)
-              " "
-              (mode 10 -1 :left) " "
-              )
-        (mark vc-status-mini " "
-              (name 30 30 :left :elide) " "
-              (size 9 -1 :right)
-              " "
-              (mode 10 -1 :left) " "
-              vc-relative-file)))
 #+end_src
 
 * Functions
@@ -312,41 +278,6 @@ Also, make tagsearch only take up the bottom 30% of the screen in a special doom
   (switch-to-buffer-other-window "*new-in-repo*")
   (special-mode))
 (set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
-#+END_SRC
-
-** Easier SSH to work servers
-
-#+BEGIN_SRC emacs-lisp
-(defun cd/extract-ssh-connection (&optional name)
-  (if (boundp 'my-remote-servers)
-      ;; my-remote-servers should be a plist of (SERVER :username USER :ip IP)
-      (let* ((selected (if name name (completing-read "Server: " (mapcar 'car my-remote-servers) nil t)))
-             (data (cdr (assoc selected my-remote-servers)))
-             (username (plist-get data :username))
-             (ip (plist-get data :ip))
-             (hop (plist-get data :hop)))
-        `(,username ,ip ,hop))
-    ;; otherwise, read a username and an ip
-    (let ((username (read-string "Username: "))
-          (ip (read-string "ip: "))
-          (hop nil))
-      `(,username ,ip ,hop))))
-
-(defun connect-remote ()
-  (interactive)
-  (let* ((data (cd/extract-ssh-connection))
-         (username (car data))
-         (folder (if (string= username "root") "/" (format "/home/%s/" username)))
-         (ip (car (cdr data)))
-         (hop (car (cdr (cdr data))))
-         (hopdata (if hop (cd/extract-ssh-connection hop) nil))
-         (hopstr (if hopdata (format "sshx:%s@%s|"
-                                     (car hopdata)
-                                     (car (cdr hopdata)))
-                   ""))
-         (connstr (format "sshx:%s@%s" username ip))
-         (conn (format "/%s%s:%s" hopstr connstr folder)))
-    (dired conn)))
 #+END_SRC
 
 ** NAS helper scripts
@@ -1525,6 +1456,50 @@ Create a python src block using =<p <TAB>=
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-structure-template-alist '("p" . "src python"))
 #+END_SRC
+* SSH Connections and helper functions
+
+#+BEGIN_SRC emacs-lisp
+(setq tramp-default-method "sshx")
+(setq my-remote-servers
+      '(("skye" :username "cdavison" :ip "130.159.94.19")
+        ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
+        ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
+        ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
+        ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
+
+
+(defun cd/extract-ssh-connection (&optional name)
+  (if (boundp 'my-remote-servers)
+      ;; my-remote-servers should be a plist of (SERVER :username USER :ip IP)
+      (let* ((selected (if name name (completing-read "Server: " (mapcar 'car my-remote-servers) nil t)))
+             (data (cdr (assoc selected my-remote-servers)))
+             (username (plist-get data :username))
+             (ip (plist-get data :ip))
+             (hop (plist-get data :hop)))
+        `(,username ,ip ,hop))
+    ;; otherwise, read a username and an ip
+    (let ((username (read-string "Username: "))
+          (ip (read-string "ip: "))
+          (hop nil))
+      `(,username ,ip ,hop))))
+
+(defun connect-remote ()
+  (interactive)
+  (let* ((data (cd/extract-ssh-connection))
+         (username (car data))
+         (folder (if (string= username "root") "/" (format "/home/%s/" username)))
+         (ip (car (cdr data)))
+         (hop (car (cdr (cdr data))))
+         (hopdata (if hop (cd/extract-ssh-connection hop) nil))
+         (hopstr (if hopdata (format "sshx:%s@%s|"
+                                     (car hopdata)
+                                     (car (cdr hopdata)))
+                   ""))
+         (connstr (format "sshx:%s@%s" username ip))
+         (conn (format "/%s%s:%s" hopstr connstr folder)))
+    (dired conn)))
+#+END_SRC
+
 * Appearance
 
 
