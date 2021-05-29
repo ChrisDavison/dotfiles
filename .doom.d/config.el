@@ -1,12 +1,1425 @@
-;; -----------------------------------------------------------------------------
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-;; -----------------------------------------------------------------------------
-
 (require 'dash)  ;; Stuff like map, each, filter
 (require 'f)  ;; Filepath functions
 (require 's)  ;; String functions
 (require 'rx) ;; Literate regular expressions
+(require 'org)  ;; Load this early so that my setting updates work
 
-(require 'org)
+;; -----------------------------------------------------------------------------
+;;; General settings
+;; -----------------------------------------------------------------------------
+(setq user-full-name "Chris Davison"
+      user-mail-address "c.jr.davison@gmail.com"
+      auto-save-default t
+      auto-save-timeout 5
+      avy-all-windows t
+      recentf-auto-cleanup 60
+      global-auto-revert-mode t
+      projectile-project-search-path `(,(expand-file-name "~/code"))
+      display-line-numbers-type t
+      search-invisible t  ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
+      nov-text-width 80)
+
+(setq-default org-roam-directory "~/code/knowledge")
+
+(add-to-list 'auth-sources "~/.authinfo")
+(add-hook! dired-mode 'dired-hide-details-mode)
+
+(after! projectile
+  (add-to-list 'projectile-project-root-files ".projectile-root"))
+
+;; -----------------------------------------------------------------------------
+;;; GLOBAL MODES
+;; -----------------------------------------------------------------------------
+(global-visual-line-mode 1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(delete-selection-mode 1)
+(global-undo-tree-mode 1)
+(global-anzu-mode 1) ;; Live preview of search and replace (C-M-@)
+
+;; -----------------------------------------------------------------------------
+;;; Hooks
+;; -----------------------------------------------------------------------------
+(setq fill-column 120)
+(add-hook 'prog-mode-hook #'undo-tree-mode)
+
+;; LSP
+(add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+(setq lsp-lens-enable t)
+(setq +format-with-lsp nil)
+
+(setq vterm-shell "/usr/bin/fish")
+(setq shell-file-name "/usr/bin/fish")
+
+;; Nov.el - read epubs in emacs
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
+
+(setq ibuffer-formats
+      `((mark vc-status-mini " "
+              (name 50 50 :left :elide) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
+              )
+        (mark vc-status-mini " "
+              (name 30 30 :left :elide) " "
+              (size 9 -1 :right)
+              " "
+              (mode 10 -1 :left) " "
+              vc-relative-file)))
+
+;; -----------------------------------------------------------------------------
+;;; Programming - Rust
+;; -----------------------------------------------------------------------------
+(add-hook! rust-mode
+           '(company-mode
+             flycheck-rust-setup
+             cargo-minor-mode
+             racer-mode
+             ))
+(add-hook! racer-mode '(company-mode eldoc-mode))
+(add-to-list 'auto-mode-alist '("\\.rs" . rust-mode))
+
+;; -----------------------------------------------------------------------------
+;;; Programming - Golang
+;; -----------------------------------------------------------------------------
+;; (add-to-list 'exec-path (concat (file-name-as-directory (getenv "GOPATH")) "bin") t)
+;; (add-to-list 'load-path (concat (file-name-as-directory (getenv "GOPATH")) "src/github.com/dougm/goflymake"))
+;; (require 'go-flymake)
+                                        ; Use goimports instead of go-fmt for formatting with intelligent package addition/removal
+(setq gofmt-command "goimports")
+(add-hook 'go-mode-hook
+          '(lambda ()
+             (set (make-local-variable 'company-backends) '(company-go))
+             (local-set-key (kbd "M-.") 'godef-jump)
+             (go-eldoc-setup)
+                                        ; call Gofmt before saving
+             (add-hook 'before-save-hook 'gofmt-before-save)))
+
+;; -----------------------------------------------------------------------------
+;;; Programming - Python
+;; -----------------------------------------------------------------------------
+(setq python-environment-directory "~/.envs/py"
+      python-shell-interpreter "python"
+      python-shell-interpreter-args "console --simple-prompt"
+      elpy-rpc-python-command "~/.envs/py/bin/python")
+
+(add-hook! 'pyvenv-post-activate-hooks
+           '((lambda ()
+               (setq python-shell-interpreter (f-join pyvenv-virtual-env "bin/jupyter")))))
+(add-hook! 'pyvenv-post-deactivate-hooks
+           '((lambda ()
+               (setq python-shell-interpreter "python3"))))
+
+(map! :map python-mode-map "C-c r" 'elpy-send-contiguous-block)
+
+(setq lsp-imenu-index-symbol-kinds
+      '(Class Method Property Field Constructor Enum Interface Function Struct Namespace))
+
+;; -----------------------------------------------------------------------------
+;;; Programming - Haskell
+;; -----------------------------------------------------------------------------
+(setq haskell-process-type 'stack-ghci)
+
+;; -----------------------------------------------------------------------------
+;;; Programming - Common Lisp
+;; -----------------------------------------------------------------------------
+(setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
+
+(defun insert-formatted-time (format)
+  "Insert a timestamp matching a specific format"
+  (insert (format-time-string format (current-time))))
+
+(defun insert-timestamp-long ()
+  "Insert a LONG timestamp"
+  (interactive)
+  (insert-formatted-time "%a %b %d %H:%M:%S %Z %Y"))
+
+(defun insert-timestamp-date ()
+  "Insert a plain date"
+  (interactive)
+  (insert-formatted-time "%Y-%m-%d"))
+
+(defun insert-timestamp-time ()
+  "Insert a plain timestamp"
+  (interactive)
+  (insert-formatted-time "%H:%M:%S"))
+
+(defun repoutil (command)
+  (cd/shell-command-to-special-buf
+   (format "repoutil %s" command)
+   "*repoutil*"))
+(set-popup-rule! "^\\*repoutil\\*" :side 'bottom :size 0.30 :select t :ttl 1)
+
+(defun cd/shell-command-to-special-buf (command bufname)
+  (get-buffer-create bufname)
+  (message (format "Running: %s" command))
+  (shell-command command bufname)
+  (switch-to-buffer-other-window bufname)
+  (special-mode)
+  (evil-insert 1))
+
+(defun repoutil-branchstat () (interactive) (repoutil "branchstat"))
+
+(defun repoutil-list () (interactive) (repoutil "list"))
+
+(defun repoutil-fetch () (interactive) (repoutil "fetch") (quit-window))
+
+(defun repoutil-unclean () (interactive) (repoutil "unclean"))
+
+(defun tagsearch-list (&optional tags)
+  "List tags under the current directory.
+
+When optional TAGS is a string, show only files matching those tags"
+  (interactive)
+  (let ((cmd (concat "tagsearch " (or tags "")))
+        (temp-buf-name "*tagsearch*"))
+    (get-buffer-create temp-buf-name)
+    (shell-command cmd temp-buf-name)
+    (switch-to-buffer-other-window temp-buf-name)
+    (special-mode)
+    (evil-insert 1)))
+
+(set-popup-rule! "^\\*tagsearch" :side 'bottom :size 0.30 :select t :ttl 1)
+
+(defun files-matching-tagsearch (&optional tags directory)
+  (interactive)
+  (let* ((directory (if directory directory (read-directory-name "DIR: ")))
+         (cmd (format "tagsearch %s" (if tags tags (read-string "Tags: "))))
+         (fullcmd (format "cd %s && %s" directory cmd))
+         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
+    (--map (f-join directory it) output)))
+
+(defun files-matching-tagsearch (&optional tags directory)
+  (interactive)
+  (let* ((directory (if directory directory (read-directory-name "DIR: ")))
+         (cmd (format "tagsearch %s | grep -v archive" (if tags tags (read-string "Tags: "))))
+         (fullcmd (format "cd %s && %s" directory cmd))
+         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
+
+    (get-buffer-create "*tagsearch*")
+    (shell-command fullcmd "*tagsearch*")
+    (switch-to-buffer-other-window "*tagsearch*")
+    (special-mode)
+    (evil-insert 1)))
+
+(defun rg-journal (search)
+  (interactive "Msearch string: ")
+  (rg search "journal.org" "~/code/knowledge"))
+
+(defun rg-logbook (search)
+  (interactive "Msearch string: ")
+  (rg search "logbook.org" "~/code/knowledge"))
+
+(defun rg-org (search)
+  (interactive "Msearch string: ")
+  (rg search "org" org-directory))
+
+(defun new-in-git ()
+  (interactive)
+  (get-buffer-create "*new-in-repo*")
+  (shell-command "new_in_git 1" "*new-in-repo*")
+  (switch-to-buffer-other-window "*new-in-repo*")
+  (special-mode))
+(set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
+
+(defun cd/nas/quick-add-download ()
+  "Add contents of clipboard to nas' to-download file."
+  (interactive)
+  (let* ((path "/media/nas/to-download.txt")
+         (clip (s-trim (current-kill 0)))
+         (re-org-url "\\[\\[\\(.*\\)\\]\\[.*\\]\\]")
+         (matches (s-match re-org-url clip))
+         (url (if matches (cadr matches) clip))
+         (url-tidy (if (s-matches? "youtube\\|youtu\.be" url)
+                       (car (s-split "&" url))
+                     url))
+         (contents (s-split "\n" (read-file-to-string path))))
+    (pushnew! contents url-tidy)
+    (delete-dups contents)
+    (write-region (s-join "\n" contents) nil path)
+    (message (concat "Added to downloads: " url-tidy))))
+
+(defun cd/nas/list-downloads ()
+  "List contents of NAS 'to-download' list."
+  (interactive)
+  (let* ((path "/media/nas/to-download.txt")
+         (temp-buf-name "*nas-downloads*"))
+    (get-buffer-create temp-buf-name)
+    (switch-to-buffer-other-window temp-buf-name)
+    (insert "NAS DOWNLOADS\n=============\n")
+    (insert-file-contents path)
+    (special-mode)
+    (evil-insert 1)))
+(set-popup-rule! "^\\*nas-downloads*" :side 'bottom :size 0.30 :select t :ttl 1)
+
+;;; Navigate narrows
+(defun change-narrow (direction)
+  (interactive)
+  (progn
+    (beginning-of-buffer)
+    (widen)
+    (if (eq direction 'prev)
+        (outline-previous-heading)
+      (outline-next-heading))
+    (org-narrow-to-subtree)))
+
+(defun move-to-previous-narrow ()
+  (interactive)
+  (change-narrow 'prev))
+
+(defun move-to-next-narrow ()
+  (interactive)
+  (change-narrow 'next))
+
+(defun find-next-file (&optional backward)
+  "Find the next file (by name) in the current directory.
+
+With prefix arg, find the previous file."
+  (interactive "P")
+  (when buffer-file-name
+    (let* ((file (expand-file-name buffer-file-name))
+           (files (cl-remove-if (lambda (file) (cl-first (file-attributes file)))
+                                (sort (directory-files (file-name-directory file) t nil t) 'string<)))
+           (direction (if backward -1 1))
+           (pos (mod (+ (cl-position file files :test 'equal) direction)
+                     (length files))))
+      (find-file (nth pos files)))))
+
+(defun find-previous-file ()
+  "Find the next file (by name) in the current directory."
+  (interactive)
+  (find-next-file t))
+
+(defun files-in-curdir-with-ext (ext)
+  (let* ((curdir (expand-file-name default-directory))
+         (files (directory-files curdir)))
+    (seq-filter
+     (lambda (filename)
+       (s-equals? ext (file-name-extension filename)))
+     (-map (lambda (file) (s-concat curdir file)) files))))
+
+(defun cd/notes-from-last-n-days (&optional n)
+  (interactive)
+  (require 'ts)
+  (let* ((n (if n n 7))
+         (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
+         (date-n-ago (ts-format "%F" (ts-adjust 'day (- 0 n) (ts-now))))
+         (files-last-n (--filter (string-greaterp (car (s-split "--" (file-name-base it))) date-n-ago)
+                                 files))
+         (sorted-files (sort files-last-n 'string-greaterp))
+         (bufname "*recent-notes*"))
+    (get-buffer-create bufname)
+    (switch-to-buffer-other-window bufname)
+    (erase-buffer)
+    (org-mode)
+    (insert "* Git Additions\n\n")
+    (let ((curdir default-directory))
+      (cd org-directory)
+      (insert (shell-command-to-string (format "new_in_git %d" n)))
+      (cd curdir))
+    (insert "\n")
+    (--each sorted-files (insert-file it))
+    (+org/close-all-folds)))
+
+(defun cd/notes-from-last-week ()
+  (interactive)
+  (cd/notes-from-last-n-days 7))
+
+(defun cd/notes-from-yesterday ()
+  (interactive)
+  (cd/notes-from-last-n-days 1))
+
+;;; Tags (like tagsearch or roam)
+(defun tagify (str)
+  (interactive "M")
+  (s-join " " (--map (format "@%s" it) (s-split " " str))))
+
+(defun roam-tagify (str)
+  (interactive "Mtags: ")
+  (evil-open-below 1)
+  (insert (format "#+ROAM_TAGS: %s\n\n" str))
+  (insert (tagify str))
+  (evil-force-normal-state)
+  (save-buffer))
+
+(defun roam-tagify-toplevel (str)
+  (interactive "Mtags: ")
+  (evil-goto-first-line)
+  (evil-insert-line 1)
+  (insert (s-concat "#+ROAM_TAGS: " (tagify str) "\n\n"))
+  (evil-force-normal-state)
+  (save-buffer))
+
+(defun get-asset-dir ()
+  (interactive)
+  (let ((maybe-asset-dir (f-join (projectile-project-root) "assets")))
+    (if (f-readable? maybe-asset-dir)
+        maybe-asset-dir
+      "./assets")))
+
+(defun get-relative-asset-dir ()
+  (interactive)
+  (file-relative-name (get-asset-dir)
+                      (buffer-file-name)))
+
+;;; Lists and checkboxes
+(defun make-into-list ()
+  "Basically equivalent to org-ctrl-c-minus."
+  (interactive)
+  (replace-regexp "^" "- " nil (region-beginning) (region-end)))
+
+(defun make-into-checkbox-list ()
+  "Convert selection to list (only at root level) of checkboxes."
+  (interactive)
+  (let ((re (rx bol (zero-or-one "-") (one-or-more space))))
+    (replace-regexp re "- [ ] " nil (region-beginning) (region-end))))
+
+(defun cd/cycling-tss-summary ()
+  (interactive)
+  (let* ((fname (f-join org-directory "cycling.org"))
+         (contents (s-split "\n" (read-file-to-string fname)))
+         (matching (--filter (or (s-matches? "[0-9]+ W[0-9]+" it)
+                                 (s-matches? "Total.*stress" it))
+                             contents))
+         (pairs (map-pairs matching))
+         (tidied (--map `(,(s-replace-regexp "^\*+ +" "" (car it))
+                          ,(s-replace-regexp ".*:: +" "" (cdr it)))
+                        pairs))
+         (strings (--map (format "%s -- TSS %s" (car it) (cadr it))
+                         tidied))
+         (joined (s-join "\n" strings))
+         (header "Cycling -- TSS per week (from cycling.org)")
+         (underline (s-repeat (length header) "=")))
+    (cd/string-to-special-buffer (s-join "\n" `(,header ,underline ,joined)) "*cycling-tss*")))
+
+(defun cd/string-to-special-buffer (contents bufname)
+  (interactive)
+  (when (get-buffer-process "*cycling-tss*")
+   (kill-buffer bufname))
+  (get-buffer-create bufname)
+  (switch-to-buffer-other-window bufname)
+  (kill-region (point-min) (point-max))
+  (insert contents)
+  (special-mode)
+  (evil-insert 1))
+
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
+
+(defun read-file-to-string (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
+
+(defun erase-all-matches-from-start (regex)
+  (replace-regexp regex "" nil (point-min) (point-max)))
+
+;;; UNORGANISED
+(defun zsh ()
+  (interactive)
+  (term "/usr/bin/zsh"))
+
+(defun elpy-send-contiguous-block ()
+  (interactive)
+  (mark-paragraph)
+  (elpy-shell-send-region-or-buffer)
+  (evil-forward-paragraph))
+
+;;; Emacs lisp
+(defun eval-into-comment ()
+  (interactive)
+  (let ((sexp (elisp--preceding-sexp)))
+    (save-excursion
+      (goto-char (line-end-position))
+      (delete-horizontal-space)
+      (insert " ;; " (prin1-to-string (eval sexp))))))
+
+(defun cd/heirarchical-category-drawer ()
+  (interactive)
+  (org-set-property "CATEGORY" (s-join "/" (s-split " " (read-string "Words: ")))))
+
+(defun my-mark-as-project ()
+  "This function makes sure that the current heading has
+(1) the tag :project:
+(2) has property COOKIE_DATA set to \"todo recursive\"
+(3) has any TODO keyword and
+(4) a leading progress indicator"
+  (interactive)
+  (org-set-property "COOKIE_DATA" "todo recursive")
+  (org-back-to-heading t)
+  (let* ((title (nth 4 (org-heading-components)))
+         (keyword (nth 2 (org-heading-components))))
+    (when (and (bound-and-true-p keyword) (string-prefix-p "[" title))
+      (message "TODO keyword and progress indicator found"))
+    (when (and (not (bound-and-true-p keyword)) (string-prefix-p "[" title))
+      (message "no TODO keyword but progress indicator found")
+      (forward-whitespace 1)
+      (insert "TODO "))
+    (when (and (not (bound-and-true-p keyword)) (not (string-prefix-p "[" title)))
+      (message "no TODO keyword and no progress indicator found")
+      (forward-whitespace 1)
+      (insert "TODO [/] "))
+    (when (and (bound-and-true-p keyword) (not (string-prefix-p "[" title)))
+      (message "TODO keyword but no progress indicator found")
+      (forward-whitespace 2)
+      (insert "[/] ")))
+  (org-toggle-tag "project" 'on))
+
+(load-library "find-lisp")
+
+(defun remove-org-mode-properties ()
+  (interactive)
+  (goto-char (point-min))
+  (query-replace-regexp
+   (rx bol (* " ") ":" (+ (any alnum "_")) ":" (* (seq " " (+ nonl))) "\n")
+   ""))
+
+(defun cd/text-header (msg &optional char)
+  (let* ((shades '("░" "▒" "▓"))
+         (char "╌");;(if char char (nth 0 shades)))
+         (n-tokens (/ (- 78 1 (length msg)) 2))
+         (token-str (s-repeat n-tokens char))
+         (extra (if (eq 0 (mod n-tokens 2)) "" char)))
+    (format "%s%s  %s  %s" token-str extra msg token-str)))
+
+(defun headercount (&optional level)
+  (interactive)
+  (save-excursion
+    (let* ((stars (if level (s-repeat level "\*") "\*+"))
+           (reg (concat "^" stars " "))
+           (n-headers (count-matches reg (point-min) (point-max)))
+           (level-str (if level (format " level ≤%d" level) ""))
+           (msg (format "%d%s headers" n-headers level-str "headers")))
+      (message msg))))
+
+(defun insert-newline-if-not-at-start ()
+  (unless (= (point) (line-beginning-position))
+    (newline)))
+
+(defun cd/point-of-first-header ()
+  "Return the point of first org-mode-header, or nil if it doesn't exist."
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^\*" nil t)))
+
+(defun cd/goto-end-of-toplevel-list ()
+  "Find the first top-level list, or insert one if it doesn't exist."
+  (interactive)
+  (goto-char (point-min))
+  (if (re-search-forward "^-" (cd/point-of-first-header) t)
+      (progn (org-forward-paragraph) t)
+    (progn
+      (+evil/insert-newline-below 2)
+      (evil-next-visual-line 2)
+      nil)))
+
+(defun cd/insert-in-toplevel-list (thing)
+  (interactive)
+  (save-excursion
+    (if (cd/goto-end-of-toplevel-list)
+        (+org/insert-item-below 1)
+      (insert "-"))
+    (evil-normal-state)
+    (insert " " thing)))
+
+(defun org-file-from-subtree (filename &optional clipboard-only)
+  "Take the current subtree and create a new file from
+  it. Replace the current subtree with its main heading (i.e.,
+  delete all of its childen), and make the heading into a link
+  to the newly created file,
+
+In the new file, promote all direct children of the original
+  subtree to be level 1-headings, and transform the original
+  heading into the '#+TITLE' parameter.
+
+If called with the universal argument, prompt for new filename,
+otherwise use the subtree title."
+  (interactive "F")
+  (let* ((filename (concat "~/" (file-relative-name filename "~")))
+         (link (file-relative-name filename (file-name-directory (buffer-file-name))))
+         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename)))))
+         (link-text (format "[[file:%s][%s]]" link title)))
+    ;; Copy current subtree into clipboard
+    (org-cut-subtree)
+
+    ;; Convert headline to a link of the to-be-created file
+    (if clipboard-only
+        (kill-new link-text)
+      (save-excursion (cd/insert-in-toplevel-list link-text)))
+
+    (with-temp-file filename
+      (org-mode)
+      (insert "#+TITLE: " title "\n\n")
+      (org-paste-subtree))))
+
+
+(defun org-file-from-selection (&optional clipboard-only)
+  "Create a new file from current selection, inserting a link.
+
+  Prompt for a filename, and create. Prompt for an org-mode
+  TITLE, and insert. Insert the cut region. Then, insert the link
+  into the source document, using TITLE as description"
+  (interactive)
+  (when (region-active-p)
+    (let* ((filename (read-file-name "New filename: " org-directory))
+           (file-relative (file-relative-name
+                           filename
+                           (file-name-directory (expand-file-name filename))))
+           (title (read-from-minibuffer "Title: "))
+           (link-text (format "[[file:%s][%s]]" link title)))
+      (call-interactively' kill-region)
+      (if clipboard-only
+          (kill-new link-text)
+        (save-excursion (cd/insert-in-toplevel-list link-text)))
+      ;; (newline)
+      (with-temp-file filename
+        (org-mode)
+        (insert (concat "#+TITLE: " title "\n\n"))
+        (evil-paste-after 1)))))
+
+
+(defun org-open-link-same-window ()
+  (interactive)
+  (let ((org-link-frame-setup '((file . find-file))))
+    (org-open-at-point)))
+
+
+(defun org-refile-to-file (&optional target level)
+  (interactive)
+  (let* ((filename (or target (ivy-read "Refile to: " (f-entries default-directory nil t))))
+         (org-refile-targets `((,filename . (:maxlevel . ,(or level 3))))))
+    (org-refile)))
+
+
+(defun org-refile-to-this-file ()
+  (interactive)
+  (org-refile-to-file (buffer-name)))
+
+
+(defun org-refile-to-this-file-level1 ()
+  (interactive)
+  (org-refile-to-file (buffer-name) 1))
+
+
+(defun org-change-state-and-archive ()
+  (interactive)
+  (org-todo)
+  (org-archive-subtree-default))
+
+
+(defun org-paste-checkbox-list ()
+  (interactive)
+  (insert-newline-if-not-at-start)
+  (insert (replace-regexp-in-string "^" "- [ ] " (current-kill 0))))
+
+
+(defun org-paste-todo-header-list (&optional level)
+  (interactive)
+  (let* ((level (or level 1))
+         (stars (s-repeat level "*"))
+         (todo (s-concat stars " TODO ")))
+    (insert-newline-if-not-at-start)
+    (insert (replace-regexp-in-string "^" todo (current-kill 0)))))
+
+
+(defun org-paste-todo-header-list-l2 ()
+  (interactive)
+  (org-paste-todo-header-list 2))
+
+
+(defun org-paste-todo-header-list-l3 ()
+  (interactive)
+  (org-paste-todo-header-list 3))
+
+
+(defun org-archive-level1-done ()
+  (interactive)
+  (save-excursion
+    (goto-char 1)
+    (+org/close-all-folds)
+    (org-map-entries 'org-archive-subtree "/DONE" 'file)))
+
+
+(defun org-copy-link-url (&optional arg)
+  "Extract URL from org-mode link and add it to kill ring."
+  (interactive "P")
+  (let* ((link (org-element-lineage (org-element-context) '(link) t))
+         (type (org-element-property :type link))
+         (url (org-element-property :path link))
+         (url (concat type ":" url)))
+    (kill-new url)
+    (message (concat "Copied URL: " url))))
+
+
+(defun org-fix-blank-lines (prefix)
+  "Ensure that blank lines exist between headings and between headings and their contents.
+With prefix, operate on whole buffer. Ensures that blank lines
+exist after each headings's drawers."
+  (interactive "P")
+  (org-map-entries (lambda ()
+                     (org-with-wide-buffer
+                      ;; `org-map-entries' narrows the buffer, which prevents us from seeing
+                      ;; newlines before the current heading, so we do this part widened.
+                      (while (not (looking-back "\n\n" nil))
+                        ;; Insert blank lines before heading.
+                        (insert "\n")))
+                     (let ((end (org-entry-end-position)))
+                       ;; Insert blank lines before entry content
+                       (forward-line)
+                       (while (and (org-at-planning-p)
+                                   (< (point) (point-max)))
+                         ;; Skip planning lines
+                         (forward-line))
+                       (while (re-search-forward org-drawer-regexp end t)
+                         ;; Skip drawers. You might think that `org-at-drawer-p' would suffice, but
+                         ;; for some reason it doesn't work correctly when operating on hidden text.
+                         ;; This works, taken from `org-agenda-get-some-entry-text'.
+                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
+                         (goto-char (match-end 0)))
+                       (unless (or (= (point) (point-max))
+                                   (org-at-heading-p)
+                                   (looking-at-p "\n"))
+                         (insert "\n"))))
+                   t (if prefix
+                         nil
+                       'tree)))
+
+
+(defun org-archive-file ()
+  "Move current file into my org archive dir."
+  (interactive)
+  (let* ((archive-dir (f-join org-directory "archive"))
+         (fname (file-name-nondirectory (buffer-file-name)))
+         (new-fname (f-join archive-dir fname)))
+    (rename-file (buffer-file-name) new-fname)))
+
+
+(defun my-refile (file headline &optional arg)
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile arg nil (list headline file nil pos)))
+  (switch-to-buffer (current-buffer)))
+
+(defun org-unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max))
+        ;; This would override `fill-column' if it's an integer.
+        (emacs-lisp-docstring-fill-column t))
+    (org-fill-paragraph nil region)))
+
+(defun find-todays-headline-or-create ()
+  (interactive)
+  (let* ((today-str (format-time-string "%Y-%m-%d %A"))
+         (marker (org-find-exact-headline-in-buffer today-str)))
+    (if marker (org-goto-marker-or-bmk marker)
+      (progn (goto-char (point-max))
+             (org-insert-heading)
+             (insert " " today-str)))))
+
+
+(defun org-update-all-checkbox-counts ()
+  (interactive)
+  (org-update-checkbox-count t))
+
+(defun org-copy-link (&optional arg)
+  "Copy org-mode links from anywhere within."
+  (interactive "P")
+  (let* ((link (org-element-lineage (org-element-context) '(link) t))
+         (raw-link (org-element-property :search-option link))
+         (tidy (string-trim-left raw-link "\*")))
+    (kill-new tidy)
+    (message (concat "Copied Link: " tidy))))
+
+(defun cd/org-copy-next-link ()
+  "Find the next link, copy it to the kill ring, and leave the curser at the end."
+  (interactive)
+  (let* ((start (- (re-search-forward "\\[\\[") 2))
+         (end (re-search-forward "\\]\\]")))
+    (kill-ring-save start end)
+    (goto-char end)))
+
+(defun cd/org-files-under-dir (dir)
+  (if (f-dir? dir)
+      (find-lisp-find-files dir "\.org$")
+    (find-lisp-find-files (f-join org-directory dir) "\.org$")))
+
+(defun cd/do-and-archive ()
+  (interactive)
+  (org-todo 'done)
+  (org-archive-subtree))
+
+(defun cd/kill-and-archive ()
+  (interactive)
+  (org-todo 'kill)
+  (org-archive-subtree))
+
+(setq org-directory "~/code/knowledge/"
+      org-src-window-setup 'current-window
+      org-indent-indentation-per-level 1
+      org-adapt-indentation nil
+      org-tags-column -100
+      org-pretty-entities t
+      org-catch-invisible-edits 'show-and-error
+      org-imenu-depth 4
+      org-link-frame-setup '((file . find-file-other-window))
+      org-hide-emphasis-markers t
+      org-todo-keywords '((sequence "TODO(t)"
+                                    "NEXT(n)" ; PRIORITISED todo
+                                    "BLCK(b)" ; CANNOT DO JUST NOW
+                                    "WIP(w)"
+                                    "|"
+                                    "DONE(d)"
+                                    "KILL(k)" ; WON'T DO
+                                    ))
+      org-cycle-separator-lines 0
+      org-list-indent-offset 2
+      org-modules nil
+      org-treat-insert-todo-heading-as-state-change t
+      org-log-repeat 'time
+      org-log-done 'time
+      org-log-done-with-time nil
+      org-log-into-drawer t
+      org-archive-location (f-join org-directory "archive/%s_archive::")
+      org-refile-use-outline-path 't
+      org-refile-allow-creating-parent-nodes 'confirm
+      org-startup-folded 'fold
+      org-id-track-globally t
+      org-image-actual-width 600
+      org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
+      org-superstar-headline-bullets-list '("➤" "⇒" "⇛" "⤍" "⤏" "⤑"))
+
+(setq org-download-method 'directory)
+(setq org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir)))
+
+(setq org-babel-python-command "~/.envs/py/bin/python3")
+
+(setq deft-directory org-directory)
+(setq deft-recursive t)
+
+(defun cd/org-roam--title-to-slug (title)
+  "Convert TITLE to a filename-suitable slug."
+  (cl-flet* ((nonspacing-mark-p (char)
+                                (eq 'Mn (get-char-code-property char 'general-category)))
+             (strip-nonspacing-marks (s)
+                                     (apply #'string (seq-remove #'nonspacing-mark-p
+                                                                 (ucs-normalize-NFD-string s))))
+             (cl-replace (title pair)
+                         (replace-regexp-in-string (car pair) (cdr pair) title)))
+    (let* ((pairs `(("[^[:alnum:][:digit:]/]" . "-")  ;; convert anything not alphanumeric
+                    ("\-\-*" . "-")  ;; remove sequential underscores
+                    ("^\-" . "")  ;; remove starting underscore
+                    ("\-$" . "")))  ;; remove ending underscore
+           (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
+      (downcase slug))))
+
+(setq org-roam-directory org-directory)
+(setq +org-roam-open-buffer-on-find-file nil)
+(setq org-roam-rename-file-on-title-change nil)
+(setq org-roam-tag-sources '(prop all-directories))
+(setq org-roam-title-to-slug-function 'cd/org-roam--title-to-slug)
+(setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
+                                    :file-name "${slug}"
+                                    :head "#+title: ${title}\n"
+                                    :unnarrowed t)))
+
+(map! "<f1>" 'org-capture)
+
+;;; org-capture for literature
+(defun read-capitalized-title ()
+  (s-titleize (read-string "Title: ")))
+
+(defun read-author ()
+  (let ((name (read-string "Author: " "" nil nil)))
+    (if (s-equals? name "")
+        nil
+      (format-author-name name))))
+
+(defun format-author-name (author)
+  (concat (seq-mapcat
+           (lambda (author-part)
+             (if (> (length author-part) 1)
+                 (s-concat " " (s-capitalize author-part))
+               (s-concat (s-capitalize author-part) ".")))
+           (s-split " " author))))
+
+(defun maybe-get-bibtex ()
+  "Maybe get a DOI number for a reference"
+  (let ((doi (read-string "DOI: " "" nil nil)))
+    (if (s-equals? doi "")
+        nil
+      (s-concat ("\n")))))
+
+(defun read-authors ()
+  (let ((authors (read-author))
+        (running t))
+    (while running
+      (let ((input (read-author)))
+        (if (s-equals? input nil)
+            (setq running nil)
+          (setq authors (concat authors " and " input)))))
+    authors))
+
+(defun emoji-heading (fontfunc fonticon headingname)
+  (let ((icon (funcall fontfunc fonticon :face 'all-the-icons-purple :v-adjust 0.01)))
+    (format "%s %s" icon headingname)))
+
+(defun faicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-faicon icon msg))
+
+(defun octicon-heading (icon msg)
+  (emoji-heading 'all-the-icons-octicon icon msg))
+
+(defun cd/org-datetree-find-dayonly-create ()
+  (goto-char (point-min))
+  (let* ((date (org-read-date nil t))
+         (yyyy (format-time-string "%Y" date))
+         (mm (format-time-string "%m" date))
+         (dd (format-time-string "%d" date))
+         (ddnum (string-to-number dd))
+         (re (format "^\\* %s-%s-\\([0123][0-9]\\) \\w+$" yyyy mm))
+         (datestr (format-time-string "%Y-%m-%d %a" date)))
+
+    ;; Search for the same year-month, while we're still finding dates
+    ;; within this month that are earlier than our target date.
+    (while (and (setq match (re-search-forward re nil t))
+                (goto-char (match-beginning 1))
+                (< (string-to-number (match-string 1)) ddnum)))
+
+    (cond
+     (;; 
+      (not match)
+      (+org/insert-item-below 1)
+      (insert datestr "\n")
+      (previous-line)
+      (evil-normal-state))
+     (;; We've found a headline with the same date
+      (= (string-to-number (match-string 1)) (string-to-number dd))
+      (goto-char (point-at-bol))
+      )
+     )
+    ))
+
+(defun cd/org-file-today (subdir)
+  (f-join org-directory subdir (format-time-string "%Y-%m-%d.org")))
+
+(defun cd/org-file-future (subdir)
+  (let* ((future (org-read-date)))
+    (setq cd/last-future-date future)
+    (f-join org-directory subdir (concat future ".org"))))
+
+(defun cd/insert-or-make-org-link ()
+  "If the clipboard is a url, ask for a title. Otherwise, assume an org-link."
+  (let ((clip (current-kill 0)))
+    (if (s-starts-with? "http" clip)
+        (concat "[[" clip "][" (read-string "Title: ") "]]")
+      clip)))
+
+(setq org-capture-templates
+      (doct `(("todo" :keys "t"
+               :file "todo.org" :template "* TODO %?")
+
+              ("todo [WORK]" :keys "w"
+               :file "work.org" :headline "Admin" :template "* TODO %?")
+
+              ("todo [CYBELE]" :keys "c"
+               :file "work.org" :olp ("CYBELE" "Tasks")
+               :template "* TODO %?")
+
+              ("research" :keys "r"
+               :file "todo.org" :headline "RESEARCH"
+               :template "* TODO %?")
+
+              ("journal" :keys "j"
+               :file "journal.org" :function cd/org-datetree-find-dayonly-create
+               :template "* %?")
+
+              ;; ("journal TODO" :keys "J"
+              ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* TODO %?")
+
+              ("logbook" :keys "l"
+               :file "logbook.org" :function cd/org-datetree-find-dayonly-create
+               :template "* %?")
+
+              ;; ("logbook TODO" :keys "L"
+              ;;  :file "logbook.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* TODO %?")
+
+              ("URL" :keys "u"
+               :file "todo.org" :headline "Bookmarks"
+               :immediate-finish t
+               :template "* TODO %(cd/insert-or-make-org-link)")
+
+              ;; ("Literature" :keys "L"
+              ;;  :file "literature.org" :headline "REFILE"
+              ;;  :type entry
+              ;;  :immediate-finish t
+              ;;  :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
+
+              ("Korean" :keys "k"
+               :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
+               :type checkitem :template "[ ] %?")
+              )))
+
+(map! "<f2>" 'org-agenda
+      "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
+      "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min))))
+
+;;; Org AGENDA
+(setq org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t
+      ;; inhibit-startup nil means that if we want files to start 'folded', then agenda
+      ;; will respect this
+      ;; inhibit-startup t means 'just unfold', and can greatly speed up agenda
+      ;; if there are many folded headings
+      org-agenda-inhibit-startup t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-ignore-drawer-properties '(effort appt)
+      org-agenda-show-all-dates t ; nil hides days in agenda if no tasks on that day
+      ;; org-agenda-files (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      ;; All the files in the root of org directory
+      org-agenda-files (append `(,org-directory)
+                               ;; ...and any non-dotted directory underneath it
+                               (--filter (and (f-directory-p (f-join org-directory it))
+                                              (not (s-matches? (rx bol (+ ".")) it))
+                                              (not (s-matches? "archive" it))
+                                              (not (s-matches? "book-notes" it)))
+                                         (directory-files org-directory)))
+      ;; (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      org-agenda-file-regexp "\\`[^.].*\\.org\\'"
+      org-refile-targets `((org-agenda-files . (:maxlevel . 2)))
+      org-agenda-span 'week
+      org-agenda-start-day nil
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-skip-archived-trees nil
+      org-agenda-block-separator ""
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
+      org-agenda-time-grid '((daily today require-timed remove-match)
+                             (800 1000 1200 1400 1600 1800 2000)
+                             "......"
+                             "")
+      org-agenda-use-time-grid t
+      org-agenda-prefix-format '((agenda . "%-20c%-12t%6s")
+                                 (timeline . "% s")
+                                 (todo . "%-20c")
+                                 (tags . "%-20c")
+                                 (search . "%-20c"))
+      org-agenda-deadline-leaders '("!!! " "D%-2d " "D-%-2d ")
+      org-agenda-scheduled-leaders '("" "S-%-2d ")
+      org-agenda-sorting-strategy '((agenda time-up todo-state-up  category-up  scheduled-down priority-down)
+                                    (todo todo-state-down category-up priority-down)
+                                    (tags priority-down category-keep)
+                                    (search category-keep))
+      )
+
+(defun f-org (filename)
+  "Filename relative to my org directory."
+  (f-join org-directory filename))
+
+(defun cd/work-files ()
+  (-map 'f-org '("work.org" "logbook.org" "literature.org")))
+
+(defun cd/reading-files ()
+  (append (cd/org-files-under-dir "book-notes")
+          `(,(f-org "reading.org"))))
+
+(defun cd/non-work-files ()
+  (let* ((non-work (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal))
+         (non-work (cl-set-difference non-work (cd/reading-files) :test 'equal)))
+    non-work))
+
+(defun cd/literature-files ()
+  `(,(f-org "literature.org")))
+
+(defun cd/non-reading-files ()
+  (--filter (not (s-matches? "reading\\|literature" it))
+            (org-agenda-files)))
+
+(setq org-agenda-custom-commands
+      `(("c" . "Custom agenda views")
+
+        ("co" "Overview Agenda"
+         ((agenda "" ((org-agenda-overriding-header (cd/text-header "TODAY"))
+                      (org-agenda-span 1)
+                      (org-agenda-skip-function-global '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-start-day "-0d")))
+          (agenda "" ((org-agenda-start-day "-0d")
+                      (org-agenda-overriding-header (cd/text-header "DONE TODAY"))
+                      (org-agenda-span 1)
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-archives-mode t)
+                      (org-agenda-use-time-grid nil)
+                      (org-agenda-later 1)
+                      (org-agenda-log-mode 16)
+                      (org-agenda-log-mode-items '(closed clock state))
+                      (org-agenda-show-log t)))
+
+          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
+
+          ;; show a todo list of IN-PROGRESS
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work, no thesis]"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Personal]"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files (cl-set-difference (cd/non-work-files)
+                                                                 (cd/reading-files)
+                                                                 :test 'equal))))
+          (todo "" ((org-agenda-files (cd/reading-files))
+                    (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
+
+        ;; ("cw" "Work tasks [NO THESIS]"
+        ;;  ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+        ;;                 (org-agenda-category-filter-preset '("+Work"))))
+
+        ;;   ;; show a todo list of IN-PROGRESS
+        ;;   (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+        ;;                     (org-agenda-todo-ignore-scheduled t)
+        ;;                     (org-agenda-category-filter-preset '("+Work"))))
+        ;;   (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+        ;;                 (org-agenda-todo-ignore-scheduled t)
+        ;;                 (org-agenda-category-filter-preset '("+Work"))))))
+
+        ("cr" "Review the last week"
+         ((agenda "" ((org-agenda-start-day "-7d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-archives-mode t)
+                      (org-agenda-later 1)
+                      (org-agenda-log-mode 16)
+                      (org-agenda-log-mode-items '(closed clock state))
+                      (org-agenda-show-log t)))))
+
+        ("cR" "Reading -- in progress, and possible future books"
+         ((todo ""
+                ((org-agenda-files (cd/reading-files))
+                 (org-agenda-overriding-header (cd/text-header "Books in Progress"))))
+          (todo ""
+                ((org-agenda-files (cd/literature-files))
+                 (org-agenda-overriding-header (cd/text-header "Literature in Progress"))))))
+        ))
+
+(defun cd/refile-to-top-level ()
+  (interactive)
+  (let ((org-refile-use-outline-path 'file)
+        (org-refile-targets `((org-agenda-files . (:level . 0)))))
+    (org-refile)))
+
+;;; Org HOOKS
+(add-hook! org-mode
+           'visual-line-mode
+           '(lambda () (interactive) (setq fill-column 120))
+           #'visual-fill-column-mode
+           'org-indent-mode
+           'abbrev-mode
+           ;; 'mixed-pitch-mode
+           'undo-tree-mode
+           '(lambda () (set-face-italic 'italic t)))
+;; (remove-hook! org-agenda-mode '(lambda () (interactive) (goto-char (point-min))))
+(add-hook! 'auto-save-hook 'org-save-all-org-buffers)
+
 (after! org
-  (org-babel-load-file (f-join "~/.doom.d" "literate-config.org")))
+  (add-to-list 'org-structure-template-alist '("p" . "src python")))
+
+(setq tramp-default-method "sshx")
+(setq my-remote-servers
+      '(("skye" :username "cdavison" :ip "130.159.94.19")
+        ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
+        ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
+        ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
+        ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
+
+
+(defun cd/extract-ssh-connection (&optional name)
+  (if (boundp 'my-remote-servers)
+      ;; my-remote-servers should be a plist of (SERVER :username USER :ip IP)
+      (let* ((selected (if name name (completing-read "Server: " (mapcar 'car my-remote-servers) nil t)))
+             (data (cdr (assoc selected my-remote-servers)))
+             (username (plist-get data :username))
+             (ip (plist-get data :ip))
+             (hop (plist-get data :hop)))
+        `(,username ,ip ,hop))
+    ;; otherwise, read a username and an ip
+    (let ((username (read-string "Username: "))
+          (ip (read-string "ip: "))
+          (hop nil))
+      `(,username ,ip ,hop))))
+
+(defun connect-remote ()
+  (interactive)
+  (let* ((data (cd/extract-ssh-connection))
+         (username (car data))
+         (folder (if (string= username "root") "/" (format "/home/%s/" username)))
+         (ip (car (cdr data)))
+         (hop (car (cdr (cdr data))))
+         (hopdata (if hop (cd/extract-ssh-connection hop) nil))
+         (hopstr (if hopdata (format "sshx:%s@%s|"
+                                     (car hopdata)
+                                     (car (cdr hopdata)))
+                   ""))
+         (connstr (format "sshx:%s@%s" username ip))
+         (conn (format "/%s%s:%s" hopstr connstr folder)))
+    (dired conn)))
+
+(setq theme-preferences-light '(
+                                doom-opera-light
+                                doom-solarized-light
+                                doom-plain
+                                ))
+
+(setq theme-preferences-dark '(
+                                doom-dracula
+                                doom-monokai-classic
+                               doom-horizon
+                               doom-plain-dark
+                               ))
+
+(setq doom-theme (nth 0 theme-preferences-dark))
+
+(defun set-theme-dark ()
+  (interactive)
+  (setq doom-theme (nth 0 theme-preferences-dark))
+  (doom/reload-theme))
+
+(defun set-theme-light ()
+  (interactive)
+  (setq doom-theme (nth 0 theme-preferences-light))
+  (doom/reload-theme))
+
+(defun choose-pretty-theme (&optional subset)
+  "Set a theme from one of the available fonts that I like"
+  (interactive)
+  (let* ((themes (pcase subset
+                   ('light theme-preferences-light)
+                   ('dark theme-preferences-dark)
+                   (_ (append theme-preferences-light theme-preferences-dark))))
+         (choice (ivy-read "Pick theme:" themes)))
+    (setq doom-theme (intern choice))
+    (doom/reload-theme)))
+
+(defun choose-pretty-light-theme ()
+  (interactive)
+  (choose-pretty-theme 'light))
+
+(defun choose-pretty-dark-theme ()
+  (interactive)
+  (choose-pretty-theme 'dark))
+
+
+(defun next-theme (&optional backward alternate-theme-list)
+  (interactive)
+  (let* ((themes (if alternate-theme-list alternate-theme-list (custom-available-themes)))
+         (idx-current (cl-position doom-theme themes))
+         (idx-next (next-circular-index (if idx-current idx-current 0) (length themes) (if backward t nil)))
+         (next (nth idx-next themes)))
+    (setq doom-theme next)
+    (doom/reload-theme)
+    (message "%s" next)
+    ))
+
+(defun next-theme-dark ()
+  (interactive)
+  (next-theme nil theme-preferences-dark))
+
+(defun next-theme-light ()
+  (interactive)
+  (next-theme nil theme-preferences-light))
+
+(setq cd-fonts (--filter (member it (font-family-list))
+                         '(
+                           "Monego"
+                           ;; "Ubuntu Mono"
+                           ;; "Anonymous Pro"
+                           ;; "Iosevka Term"
+                           ;; "Fira Mono"
+                           ;; "Rec Mono Linear"
+                           ;; "Rec Mono SemiCasual"
+                           "Hack"
+                           "Inconsolata"
+                           "Source Code Pro"
+                           ;; "Fantasque Sans Mono"
+                           ;; "CamingoCode"
+                           "Roboto Mono"
+                           ;; "Liberation Mono"
+                           )))
+
+(setq cd-mixed-pitch-fonts (--filter (member it (font-family-list))
+                                     '(
+                                       "Karla"
+                                       "Lato"
+                                       "Ubuntu"
+                                       "Helvetica"
+                                       "Monaco"
+                                       "Montserrat"
+                                       )))
+
+(setq cd/font-size "-14"
+      doom-font (concat (nth 0 cd-fonts) cd/font-size)
+      doom-variable-pitch-font (concat (nth 0 cd-mixed-pitch-fonts) cd/font-size))
+
+(defun set-pretty-font ()
+  "Set a font from one of the available fonts that I like"
+  (interactive)
+  (setq doom-font (ivy-read "Pick font:" cd-fonts))
+  (doom/reload-font))
+
+(defun next-font ()
+  (interactive)
+  (let* ((pos (cl-position (car (s-split "-" doom-font)) cd-fonts :test 's-equals?))
+         (next-pos (% (+ 1 pos) (length cd-fonts)))
+         (next-font-name (nth next-pos cd-fonts)))
+    (set-frame-font next-font-name 1)
+    (setq doom-font (concat next-font-name "-14"))
+    (message next-font-name)))
+
+(setq fullscreen-at-startup nil)
+(when fullscreen-at-startup
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
+
+(setq split-width-threshold 150)
+
+(map! "C-<" 'avy-goto-word-1) ;; C-S-,
+
+(map! :n "C-;" 'iedit-mode
+      :n "C-:" 'iedit-mode-toggle-on-function)
+
+(map! "M-%" 'anzu-query-replace
+      "C-M-%" 'anzu-query-replace-regexp)
+
+(map! :leader
+      :desc "<<here>>" "j h" 'jump-to-here-anchor
+      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
+      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
+      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
+      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
+      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
+      :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
+      :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u")))
+
+(map! :leader
+      (:prefix-map ("a" . "applications")
+       (:prefix ("r" . "repoutil")
+        :desc "Status of all branches" "b" #'repoutil-branchstat
+        :desc "Fetch all branches" "f" #'repoutil-fetch
+        :desc "List all managed repos" "l" #'repoutil-list
+        :desc "List all unclean repos" "u" #'repoutil-unclean)
+       (:prefix ("g" . "ripgrep")
+        :desc "org notes" "o" 'rg-org
+        :desc "journal" "j" 'rg-journal
+        :desc "logbook" "l" 'rg-logbook)
+       (:prefix ("d" . "downloader")
+        :desc "quick add" "q" 'cd/nas/quick-add-download
+        :desc "list" "l" 'cd/nas/list-downloads)
+       ("n" 'new-in-git)
+       ))
+
+(map! "<f5>" 'find-previous-file
+      "<f6>" 'find-next-file
+      "C-<left>" 'find-previous-file
+      "C-<right>" 'find-next-file)
+
+(map! "<f7>" 'move-to-next-narrow
+      "<f8>" 'move-to-previous-narrow)
+
+(map! "<f9>" 'er/expand-region)
+
+;; Emacs capture and org-mode
+(map! :map org-mode-map :leader :n
+      "m r a" 'org-change-state-and-archive
+      "m r A" 'org-archive-to-archive-sibling
+      "m r D" 'cd/do-and-archive
+      "m r K" 'cd/kill-and-archive
+      "m r t" 'org-refile-to-this-file
+      "m r T" 'org-refile-to-this-file-level1
+      "m r F" 'cd/refile-to-top-level
+      "m d i" 'org-time-stamp-inactive
+      "m h" 'headercount
+      "o s" 'org-open-link-same-window
+      "o o" 'org-open-at-point
+      "o S" 'org-sidebar-toggle
+      "Q" 'org-unfill-paragraph
+      "N" 'org-toggle-narrow-to-subtree
+      "n R" 'helm-org-rifle
+      "m l u" 'org-copy-link-url
+      "m l C" 'cd/org-copy-next-link)
+
+(map! :map org-mode-map :n
+      "C-x C-n" 'org-file-from-subtree
+      :v "C-x C-n" 'org-file-from-selection)
+
+(map! :map dired-mode-map :n "/" 'dired-narrow)
+
+(map! :nv "j" 'evil-next-visual-line
+      :nv "k" 'evil-previous-visual-line)
+
+(map! :leader
+      :prefix "w"
+      :desc "evil-window-split (follow)" "s"
+      (lambda () (interactive) (evil-window-split) (evil-window-down 1))
+      :desc "evil-window-vsplit (follow)" "v"
+      (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
+
+(map! :after projectile :leader
+      :desc "Find Org-dir note" "<SPC>" 'org-roam-find-file
+      :desc "Find Org-dir project" "S-<SPC>"
+      '(lambda () (interactive) (org-roam-find-file "@project "))
+      :desc "Find Org-dir WORK project" "C-S-<SPC>"
+      '(lambda () (interactive) (org-roam-find-file "@work "))
+      )
+
+(map! :map haskell-mode-map
+      "C-x C-e" 'haskell-process-load-file)
+
+(defun wsl-copy (start end)
+  (interactive "r")
+  (shell-command-on-region start end "win32yank.exe -i")
+  (deactivate-mark))
+
+(defun wsl-paste ()
+  (interactive)
+  (let ((clipboard
+         (shell-command-to-string "win32yank.exe -o")))
+    (insert (substring (replace-regexp-in-string "\r" "" clipboard) 0 -1))))
+
+(defun wsl_interop ()
+  (interactive)
+  (setq is-wsl? nil)
+  (when (string-match ".*microsoft.*" (shell-command-to-string "uname -a"))
+    (setenv "WSL_INTEROP" (string-trim (shell-command-to-string "cat ~/.wsl_interop")))
+    (setq is-wsl? t
+          browse-url-generic-program "/mnt/c/Windows/System32/cmd.exe"
+          browse-url-generic-args '("/c" "start")
+          browse-url-browser-function #'browse-url-generic
+          x-selection-timeout 10)))
+
+(shell-command "wsl_interop_setup")
+(wsl_interop)
+
+(when is-wsl?
+  (cd "~/code/knowledge"))
+
+(add-hook! dired-mode #'dired-hide-dotfiles-mode)
+(setq pdf-info-epdfinfo-program "/usr/bin/epdfinfo")
+
+(rg-enable-menu)
+
+(setq calendar-week-start-day 1)

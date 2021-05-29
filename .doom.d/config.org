@@ -1,14 +1,19 @@
 #+TITLE: Config
-#+PROPERTY: header-args :tangle "literate-config.el" :results silent
-
-In order to run this, need something like the following inside doom's =config.el= (or a standard emacs =init.el=)
-#+begin_src emacs-lisp :tangle no
-(require 'org)
-(after! org
-  (org-babel-load-file (f-join "~/.doom.d" "literate-config.org")))
-#+end_src
+#+PROPERTY: header-args :results silent
 
 * UNFILED
+
+** Useful general-purpose libs
+
+#+begin_src emacs-lisp
+(require 'dash)  ;; Stuff like map, each, filter
+(require 'f)  ;; Filepath functions
+(require 's)  ;; String functions
+(require 'rx) ;; Literate regular expressions
+(require 'org)  ;; Load this early so that my setting updates work
+#+end_src
+
+** Settings
 
 #+begin_src emacs-lisp
 ;; -----------------------------------------------------------------------------
@@ -121,7 +126,7 @@ In order to run this, need something like the following inside doom's =config.el
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
-      python-shell-interpreter "ipython"
+      python-shell-interpreter "python"
       python-shell-interpreter-args "console --simple-prompt"
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
@@ -556,7 +561,7 @@ This currently doesn't work in my WSL setup.
 #+begin_src emacs-lisp
 (defun cd/heirarchical-category-drawer ()
   (interactive)
-  (org-set-property "CATEGORY" (s-join "∘" (s-split " " (read-string "Words: ")))))
+  (org-set-property "CATEGORY" (s-join "/" (s-split " " (read-string "Words: ")))))
 #+end_src
 
 
@@ -1165,26 +1170,26 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
          (yyyy (format-time-string "%Y" date))
          (mm (format-time-string "%m" date))
          (dd (format-time-string "%d" date))
+         (ddnum (string-to-number dd))
          (re (format "^\\* %s-%s-\\([0123][0-9]\\) \\w+$" yyyy mm))
-         (datestr (format-time-string "\n* %Y-%m-%d %a" date)))
+         (datestr (format-time-string "%Y-%m-%d %a" date)))
+
+    ;; Search for the same year-month, while we're still finding dates
+    ;; within this month that are earlier than our target date.
     (while (and (setq match (re-search-forward re nil t))
                 (goto-char (match-beginning 1))
-                (< (string-to-number (match-string 1)) (string-to-number dd))))
+                (< (string-to-number (match-string 1)) ddnum)))
+
     (cond
-     ((not match)
-      (org-next-visible-heading 1)
-      (or (bolp)
-          (progn (previous-line) (newline)))
+     (;; 
+      (not match)
+      (+org/insert-item-below 1)
       (insert datestr "\n")
-      (previous-line))
-     ((= (string-to-number (match-string 1)) (string-to-number dd))
-      (goto-char (point-at-bol)))
-     (t
-      (beginning-of-line 1)
-      (insert datestr "\n")
-      ;; not sure if this is what causes new logbooks
-      ;; taking a subheading from the previous header
-      ;; (previous-line)
+      (previous-line)
+      (evil-normal-state))
+     (;; We've found a headline with the same date
+      (= (string-to-number (match-string 1)) (string-to-number dd))
+      (goto-char (point-at-bol))
       )
      )
     ))
@@ -1331,12 +1336,7 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
   (f-join org-directory filename))
 
 (defun cd/work-files ()
-  (-map 'f-org
-        '("work.org" "logbook.org" "literature.org" ;; "thesis.org"
-          )))
-
-(defun cd/engd-files ()
-  (-map 'f-org '("thesis.org")))
+  (-map 'f-org '("work.org" "logbook.org" "literature.org")))
 
 (defun cd/reading-files ()
   (append (cd/org-files-under-dir "book-notes")
@@ -1344,8 +1344,7 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 
 (defun cd/non-work-files ()
   (let* ((non-work (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal))
-         (non-work (cl-set-difference non-work (cd/reading-files) :test 'equal))
-         (non-work (cl-set-difference non-work (cd/engd-files) :test 'equal)))
+         (non-work (cl-set-difference non-work (cd/reading-files) :test 'equal)))
     non-work))
 
 (defun cd/literature-files ()
@@ -1394,17 +1393,17 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
           (todo "" ((org-agenda-files (cd/reading-files))
                     (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
 
-        ("cw" "Work tasks [NO THESIS]"
-         ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
-                        (org-agenda-category-filter-preset '("+Work"))))
+        ;; ("cw" "Work tasks [NO THESIS]"
+        ;;  ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+        ;;                 (org-agenda-category-filter-preset '("+Work"))))
 
-          ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
-                            (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-category-filter-preset '("+Work"))))
-          (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
-                        (org-agenda-todo-ignore-scheduled t)
-                        (org-agenda-category-filter-preset '("+Work"))))))
+        ;;   ;; show a todo list of IN-PROGRESS
+        ;;   (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+        ;;                     (org-agenda-todo-ignore-scheduled t)
+        ;;                     (org-agenda-category-filter-preset '("+Work"))))
+        ;;   (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+        ;;                 (org-agenda-todo-ignore-scheduled t)
+        ;;                 (org-agenda-category-filter-preset '("+Work"))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -1454,7 +1453,8 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 ** Structure templates
 Create a python src block using =<p <TAB>=
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'org-structure-template-alist '("p" . "src python"))
+(after! org
+  (add-to-list 'org-structure-template-alist '("p" . "src python")))
 #+END_SRC
 * SSH Connections and helper functions
 
