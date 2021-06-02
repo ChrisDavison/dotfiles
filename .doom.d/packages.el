@@ -37,5 +37,6 @@
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
 (package! helm-org-rifle)
+(package! toc-org)
 
 ;;; Themes
