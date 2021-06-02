@@ -276,12 +276,15 @@ Also, make tagsearch only take up the bottom 30% of the screen in a special doom
 *** List files that have been updated/created in last N days
 
 #+BEGIN_SRC emacs-lisp
-(defun new-in-git ()
+(defun new-in-git (&optional n)
   (interactive)
-  (get-buffer-create "*new-in-repo*")
-  (shell-command "new_in_git 1" "*new-in-repo*")
-  (switch-to-buffer-other-window "*new-in-repo*")
-  (special-mode))
+  (let* ((bufname "*new-in-repo*")
+         (n (if n n 7))
+         (cmd (format "new_in_git %s" n)))
+    (get-buffer-create bufname)
+    (shell-command cmd bufname)
+    (switch-to-buffer-other-window bufname)
+    (special-mode)))
 (set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
 #+END_SRC
 
@@ -388,7 +391,7 @@ Basically, =cat= the contents of each 'thought', and also add in all files in my
   (interactive)
   (require 'ts)
   (let* ((n (if n n 7))
-         (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
+         ;; (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
          (date-n-ago (ts-format "%F" (ts-adjust 'day (- 0 n) (ts-now))))
          (files-last-n (--filter (string-greaterp (car (s-split "--" (file-name-base it))) date-n-ago)
                                  files))
@@ -476,7 +479,7 @@ Asset directories are a single location within a repo (typically my =org-directo
 #+begin_src emacs-lisp
 (defun cd/cycling-tss-summary ()
   (interactive)
-  (let* ((fname (f-join org-directory "cycling.org"))
+  (let* ((fname (f-join org-directory "health-fitness-nutrition.org"))
          (contents (s-split "\n" (read-file-to-string fname)))
          (matching (--filter (or (s-matches? "[0-9]+ W[0-9]+" it)
                                  (s-matches? "Total.*stress" it))
@@ -962,7 +965,8 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
 #+END_SRC
 
 ** Settings
-*** General
+
+#+NAME: org-settings
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/code/knowledge/"
       org-src-window-setup 'current-window
@@ -998,24 +1002,19 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
       org-image-actual-width 600
       org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
       org-superstar-headline-bullets-list '("➤" "⇒" "⇛" "⤍" "⤏" "⤑"))
-#+END_SRC
 
-*** Org download (+dragndrop)
-#+begin_src emacs-lisp
+;; Org download (+dragndrop)
 (setq org-download-method 'directory)
 (setq org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir)))
-#+end_src
 
-*** Babel
-#+begin_src emacs-lisp
+;; Babel
 (setq org-babel-python-command "~/.envs/py/bin/python3")
-#+end_src
 
-*** Deft
-#+begin_src emacs-lisp
+;; Deft
 (setq deft-directory org-directory)
 (setq deft-recursive t)
-#+end_src
+
+#+END_SRC
 
 ** Org-Roam
 
@@ -1043,7 +1042,8 @@ Now, update org-roam settings, and use the new 'slugger'.
 (setq org-roam-directory org-directory)
 (setq +org-roam-open-buffer-on-find-file nil)
 (setq org-roam-rename-file-on-title-change nil)
-(setq org-roam-tag-sources '(prop all-directories))
+;; (setq org-roam-tag-sources '(prop all-directories))
+(setq org-roam-tag-sources '(prop))
 (setq org-roam-title-to-slug-function 'cd/org-roam--title-to-slug)
 (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                     :file-name "${slug}"
@@ -1271,6 +1271,7 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 
 *** Settings
 
+#+NAME: org-agenda-settings
 #+BEGIN_SRC emacs-lisp
 ;;; Org AGENDA
 (setq org-agenda-window-setup 'current-window
@@ -1330,7 +1331,8 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 
 *** Subsets of files
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :noweb yes
+<<org-agenda-settings>>
 (defun f-org (filename)
   "Filename relative to my org directory."
   (f-join org-directory filename))
@@ -1357,7 +1359,8 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
 
 *** Templates
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :noweb yes
+<<org-agenda-settings>>
 (setq org-agenda-custom-commands
       `(("c" . "Custom agenda views")
 
@@ -1393,17 +1396,23 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
           (todo "" ((org-agenda-files (cd/reading-files))
                     (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
 
-        ;; ("cw" "Work tasks [NO THESIS]"
-        ;;  ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
-        ;;                 (org-agenda-category-filter-preset '("+Work"))))
+        ("cw" "Work tasks [NO THESIS]"
+         ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+                        (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
 
-        ;;   ;; show a todo list of IN-PROGRESS
-        ;;   (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
-        ;;                     (org-agenda-todo-ignore-scheduled t)
-        ;;                     (org-agenda-category-filter-preset '("+Work"))))
-        ;;   (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
-        ;;                 (org-agenda-todo-ignore-scheduled t)
-        ;;                 (org-agenda-category-filter-preset '("+Work"))))))
+          ;; show a todo list of IN-PROGRESS
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
+          (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+                        (org-agenda-todo-ignore-scheduled t)
+                        (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -1514,6 +1523,7 @@ Create a python src block using =<p <TAB>=
                                 ))
 
 (setq theme-preferences-dark '(
+                               doom-monokai-pro
                                 doom-dracula
                                 doom-monokai-classic
                                doom-horizon
@@ -1527,6 +1537,12 @@ Create a python src block using =<p <TAB>=
 *** Functions to set or rotate theme
 
 #+BEGIN_SRC emacs-lisp
+(defun theme-toggle-light-dark ()
+  (interactive)
+  (if (cl-position doom-theme theme-preferences-light)
+      (set-theme-dark)
+    (set-theme-light)))
+
 (defun set-theme-dark ()
   (interactive)
   (setq doom-theme (nth 0 theme-preferences-dark))
@@ -1633,7 +1649,7 @@ Create a python src block using =<p <TAB>=
 ** Fullscreen at startup
 
 #+BEGIN_SRC emacs-lisp
-(setq fullscreen-at-startup nil)
+(setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 #+END_SRC
@@ -1661,18 +1677,19 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
 (map! "M-%" 'anzu-query-replace
       "C-M-%" 'anzu-query-replace-regexp)
 #+end_src
-** Jump to specific locations/files
+** JUMP - Jump to specific locations/files
 
 #+begin_src emacs-lisp
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
-      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
-      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
-      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
-      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
-      :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
-      :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u")))
+      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
+      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
+      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
+      :desc "[j]ournal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
+      :desc "[l]ogbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
+      :desc "last [c]apture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
+      :desc "todays [C]ycling" "j C" 'cd/goto-todays-cycling
+      :desc "[b]ookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u")))
 #+end_src
 ** My applications submenu
 
@@ -1747,7 +1764,8 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
       (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
 (map! :after projectile :leader
-      :desc "Find Org-dir note" "<SPC>" 'org-roam-find-file
+      :desc "Find Org-dir note" "<SPC>" '(lambda () (interactive)
+                                           (projectile-find-file-in-directory org-directory))
       :desc "Find Org-dir project" "S-<SPC>"
       '(lambda () (interactive) (org-roam-find-file "@project "))
       :desc "Find Org-dir WORK project" "C-S-<SPC>"
