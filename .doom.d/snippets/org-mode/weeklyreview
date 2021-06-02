@@ -8,8 +8,8 @@
 
 `(cd/text-header "Review")`
 
-- [ ] =(cd/notes-from-last-n-days)=
-- [ ] =(org-agenda nil "a")=
+- [ ] RECENT NOTES -- =new_in_git= and =journal.org=
+- [ ] UPCOMING TASKS -- =(org-agenda nil "a")=
 - [ ] Cycling weekly training log
 - [ ] Pocket notebook exercises
 
