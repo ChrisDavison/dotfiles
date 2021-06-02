@@ -13,6 +13,7 @@
 (require 'org)  ;; Load this early so that my setting updates work
 #+end_src
 
+
 ** Settings
 
 #+begin_src emacs-lisp
@@ -1007,6 +1008,15 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
            orig-fn)))
 #+END_SRC
 
+*** Pre-load org-mode files
+
+#+begin_src emacs-lisp
+;; Visit every org file when emacs starts
+(setq cd/preload-org-files nil)
+(when cd/preload-org-files
+  (dolist (it (org-agenda-files))
+    (find-file-noselect it)))
+#+end_src
 ** Settings
 
 #+NAME: org-settings
