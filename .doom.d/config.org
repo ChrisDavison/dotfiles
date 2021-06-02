@@ -613,6 +613,32 @@ This currently doesn't work in my WSL setup.
     (previous-line)
     (org-narrow-to-subtree)))
 #+end_src
+** Get the title of an org-mode file
+
+#+begin_src emacs-lisp
+(defun cd/get-keyword-key-value (kwd)
+  (let ((data (cadr kwd)))
+    (list (plist-get data :key)
+          (plist-get data :value))))
+
+(defun cd/org-current-buffer-get-title ()
+  (cd/org-current-buffer-get-keyword-value "TITLE"))
+
+(defun cd/org-current-buffer-get-keyword-value (keyword)
+  (nth 1
+       (assoc keyword
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'cd/get-keyword-key-value))))
+
+(defun cd/org-file-get-keyword-value (file keyword)
+  (with-current-buffer (find-file-noselect file)
+    (cd/org-current-buffer-get-keyword-value keyword)))
+
+
+(defun cd/org-file-get-title (file)
+  (cd/org-file-get-keyword-value file "TITLE"))
+#+end_src
 * Org-Mode
 ** Requirements
 
