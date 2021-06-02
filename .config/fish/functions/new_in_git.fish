@@ -5,6 +5,12 @@ function new_in_git
         set n_days $argv[1]
     end
     echo "New files since $n_days days ago"
+    echo "(excluding deleted files)"
     echo "--------------------------------"
-    git log --oneline --name-only --diff-filter=A --pretty="" --since="$n_days days" | sort -n
+    set -l files (git log --oneline --name-status --pretty="" --since="$n_days days" | sort -n | awk '/^[AM]/{print $2}' | uniq)
+    for f in $files
+        if test -f $f
+            echo $f
+        end
+    end
 end
