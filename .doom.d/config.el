@@ -218,12 +218,15 @@ When optional TAGS is a string, show only files matching those tags"
   (interactive "Msearch string: ")
   (rg search "org" org-directory))
 
-(defun new-in-git ()
+(defun new-in-git (&optional n)
   (interactive)
-  (get-buffer-create "*new-in-repo*")
-  (shell-command "new_in_git 1" "*new-in-repo*")
-  (switch-to-buffer-other-window "*new-in-repo*")
-  (special-mode))
+  (let* ((bufname "*new-in-repo*")
+         (n (if n n 7))
+         (cmd (format "new_in_git %s" n)))
+    (get-buffer-create bufname)
+    (shell-command cmd bufname)
+    (switch-to-buffer-other-window bufname)
+    (special-mode)))
 (set-popup-rule! "^\\*new-in-repo\\*" :side 'bottom :size 0.30 :select t :ttl 1)
 
 (defun cd/nas/quick-add-download ()
@@ -306,7 +309,7 @@ With prefix arg, find the previous file."
   (interactive)
   (require 'ts)
   (let* ((n (if n n 7))
-         (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
+         ;; (files (find-lisp-find-files (f-join org-directory "journal") "\.org$"))
          (date-n-ago (ts-format "%F" (ts-adjust 'day (- 0 n) (ts-now))))
          (files-last-n (--filter (string-greaterp (car (s-split "--" (file-name-base it))) date-n-ago)
                                  files))
@@ -380,7 +383,7 @@ With prefix arg, find the previous file."
 
 (defun cd/cycling-tss-summary ()
   (interactive)
-  (let* ((fname (f-join org-directory "cycling.org"))
+  (let* ((fname (f-join org-directory "health-fitness-nutrition.org"))
          (contents (s-split "\n" (read-file-to-string fname)))
          (matching (--filter (or (s-matches? "[0-9]+ W[0-9]+" it)
                                  (s-matches? "Total.*stress" it))
@@ -472,6 +475,44 @@ With prefix arg, find the previous file."
       (forward-whitespace 2)
       (insert "[/] ")))
   (org-toggle-tag "project" 'on))
+
+(defun cd/goto-todays-cycling ()
+  (interactive)
+  (let* ((path (f-join org-directory "health-fitness-nutrition.org"))
+         (header (format-time-string "%Y W%W")))
+    (find-file path)
+    (+org/open-all-folds)
+    (goto-char (point-min))
+    (re-search-forward header)
+    (re-search-forward "^|") ;; Go to start of table
+    (evil-beginning-of-line)
+    (while  (s-matches? "^|" (thing-at-point 'line t)) ;; test first char on line == |
+      (move-beginning-of-line 2))
+    (previous-line)
+    (org-narrow-to-subtree)))
+
+(defun cd/get-keyword-key-value (kwd)
+  (let ((data (cadr kwd)))
+    (list (plist-get data :key)
+          (plist-get data :value))))
+
+(defun cd/org-current-buffer-get-title ()
+  (cd/org-current-buffer-get-keyword-value "TITLE"))
+
+(defun cd/org-current-buffer-get-keyword-value (keyword)
+  (nth 1
+       (assoc keyword
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'cd/get-keyword-key-value))))
+
+(defun cd/org-file-get-keyword-value (file keyword)
+  (with-current-buffer (find-file-noselect file)
+    (cd/org-current-buffer-get-keyword-value keyword)))
+
+
+(defun cd/org-file-get-title (file)
+  (cd/org-file-get-keyword-value file "TITLE"))
 
 (load-library "find-lisp")
 
@@ -763,6 +804,12 @@ exist after each headings's drawers."
   (org-todo 'kill)
   (org-archive-subtree))
 
+;; Visit every org file when emacs starts
+(setq cd/preload-org-files nil)
+(when cd/preload-org-files
+  (dolist (it (org-agenda-files))
+    (find-file-noselect it)))
+
 (setq org-directory "~/code/knowledge/"
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
@@ -798,11 +845,14 @@ exist after each headings's drawers."
       org-blank-before-new-entry '((heading . t) (plain-list-item . auto))
       org-superstar-headline-bullets-list '("➤" "⇒" "⇛" "⤍" "⤏" "⤑"))
 
+;; Org download (+dragndrop)
 (setq org-download-method 'directory)
 (setq org-download-image-dir '(lambda () (interactive) (get-relative-asset-dir)))
 
+;; Babel
 (setq org-babel-python-command "~/.envs/py/bin/python3")
 
+;; Deft
 (setq deft-directory org-directory)
 (setq deft-recursive t)
 
@@ -825,7 +875,8 @@ exist after each headings's drawers."
 (setq org-roam-directory org-directory)
 (setq +org-roam-open-buffer-on-find-file nil)
 (setq org-roam-rename-file-on-title-change nil)
-(setq org-roam-tag-sources '(prop all-directories))
+;; (setq org-roam-tag-sources '(prop all-directories))
+(setq org-roam-tag-sources '(prop))
 (setq org-roam-title-to-slug-function 'cd/org-roam--title-to-slug)
 (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                     :file-name "${slug}"
@@ -1030,6 +1081,60 @@ exist after each headings's drawers."
                                     (search category-keep))
       )
 
+;;; Org AGENDA
+(setq org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t
+      ;; inhibit-startup nil means that if we want files to start 'folded', then agenda
+      ;; will respect this
+      ;; inhibit-startup t means 'just unfold', and can greatly speed up agenda
+      ;; if there are many folded headings
+      org-agenda-inhibit-startup t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-ignore-drawer-properties '(effort appt)
+      org-agenda-show-all-dates t ; nil hides days in agenda if no tasks on that day
+      ;; org-agenda-files (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      ;; All the files in the root of org directory
+      org-agenda-files (append `(,org-directory)
+                               ;; ...and any non-dotted directory underneath it
+                               (--filter (and (f-directory-p (f-join org-directory it))
+                                              (not (s-matches? (rx bol (+ ".")) it))
+                                              (not (s-matches? "archive" it))
+                                              (not (s-matches? "book-notes" it)))
+                                         (directory-files org-directory)))
+      ;; (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      org-agenda-file-regexp "\\`[^.].*\\.org\\'"
+      org-refile-targets `((org-agenda-files . (:maxlevel . 2)))
+      org-agenda-span 'week
+      org-agenda-start-day nil
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-skip-archived-trees nil
+      org-agenda-block-separator ""
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
+      org-agenda-time-grid '((daily today require-timed remove-match)
+                             (800 1000 1200 1400 1600 1800 2000)
+                             "......"
+                             "")
+      org-agenda-use-time-grid t
+      org-agenda-prefix-format '((agenda . "%-20c%-12t%6s")
+                                 (timeline . "% s")
+                                 (todo . "%-20c")
+                                 (tags . "%-20c")
+                                 (search . "%-20c"))
+      org-agenda-deadline-leaders '("!!! " "D%-2d " "D-%-2d ")
+      org-agenda-scheduled-leaders '("" "S-%-2d ")
+      org-agenda-sorting-strategy '((agenda time-up todo-state-up  category-up  scheduled-down priority-down)
+                                    (todo todo-state-down category-up priority-down)
+                                    (tags priority-down category-keep)
+                                    (search category-keep))
+      )
 (defun f-org (filename)
   "Filename relative to my org directory."
   (f-join org-directory filename))
@@ -1053,6 +1158,60 @@ exist after each headings's drawers."
   (--filter (not (s-matches? "reading\\|literature" it))
             (org-agenda-files)))
 
+;;; Org AGENDA
+(setq org-agenda-window-setup 'current-window
+      org-agenda-restore-windows-after-quit t
+      ;; inhibit-startup nil means that if we want files to start 'folded', then agenda
+      ;; will respect this
+      ;; inhibit-startup t means 'just unfold', and can greatly speed up agenda
+      ;; if there are many folded headings
+      org-agenda-inhibit-startup t
+      org-agenda-dim-blocked-tasks nil
+      org-agenda-ignore-drawer-properties '(effort appt)
+      org-agenda-show-all-dates t ; nil hides days in agenda if no tasks on that day
+      ;; org-agenda-files (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      ;; All the files in the root of org directory
+      org-agenda-files (append `(,org-directory)
+                               ;; ...and any non-dotted directory underneath it
+                               (--filter (and (f-directory-p (f-join org-directory it))
+                                              (not (s-matches? (rx bol (+ ".")) it))
+                                              (not (s-matches? "archive" it))
+                                              (not (s-matches? "book-notes" it)))
+                                         (directory-files org-directory)))
+      ;; (--filter (not (s-matches? "archive\\|recipes\\|thought" it))
+      ;;                            (find-lisp-find-files org-directory "\.org$"))
+      org-agenda-file-regexp "\\`[^.].*\\.org\\'"
+      org-refile-targets `((org-agenda-files . (:maxlevel . 2)))
+      org-agenda-span 'week
+      org-agenda-start-day nil
+      org-agenda-skip-scheduled-if-deadline-is-shown t
+      org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled
+      org-agenda-skip-archived-trees nil
+      org-agenda-block-separator ""
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-scheduled 'future
+      org-agenda-sort-notime-is-late nil
+      org-agenda-remove-tags t
+      org-agenda-time-grid '((daily today require-timed remove-match)
+                             (800 1000 1200 1400 1600 1800 2000)
+                             "......"
+                             "")
+      org-agenda-use-time-grid t
+      org-agenda-prefix-format '((agenda . "%-20c%-12t%6s")
+                                 (timeline . "% s")
+                                 (todo . "%-20c")
+                                 (tags . "%-20c")
+                                 (search . "%-20c"))
+      org-agenda-deadline-leaders '("!!! " "D%-2d " "D-%-2d ")
+      org-agenda-scheduled-leaders '("" "S-%-2d ")
+      org-agenda-sorting-strategy '((agenda time-up todo-state-up  category-up  scheduled-down priority-down)
+                                    (todo todo-state-down category-up priority-down)
+                                    (tags priority-down category-keep)
+                                    (search category-keep))
+      )
 (setq org-agenda-custom-commands
       `(("c" . "Custom agenda views")
 
@@ -1088,17 +1247,23 @@ exist after each headings's drawers."
           (todo "" ((org-agenda-files (cd/reading-files))
                     (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
 
-        ;; ("cw" "Work tasks [NO THESIS]"
-        ;;  ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
-        ;;                 (org-agenda-category-filter-preset '("+Work"))))
+        ("cw" "Work tasks [NO THESIS]"
+         ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+                        (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
 
-        ;;   ;; show a todo list of IN-PROGRESS
-        ;;   (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
-        ;;                     (org-agenda-todo-ignore-scheduled t)
-        ;;                     (org-agenda-category-filter-preset '("+Work"))))
-        ;;   (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
-        ;;                 (org-agenda-todo-ignore-scheduled t)
-        ;;                 (org-agenda-category-filter-preset '("+Work"))))))
+          ;; show a todo list of IN-PROGRESS
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))
+          (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+                        (org-agenda-todo-ignore-scheduled t)
+                        (org-agenda-files (cl-set-difference (cd/work-files)
+                                                                 (cd/literature-files)
+                                                                 :test 'equal))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -1187,6 +1352,7 @@ exist after each headings's drawers."
                                 ))
 
 (setq theme-preferences-dark '(
+                               doom-monokai-pro
                                 doom-dracula
                                 doom-monokai-classic
                                doom-horizon
@@ -1194,6 +1360,12 @@ exist after each headings's drawers."
                                ))
 
 (setq doom-theme (nth 0 theme-preferences-dark))
+
+(defun theme-toggle-light-dark ()
+  (interactive)
+  (if (cl-position doom-theme theme-preferences-light)
+      (set-theme-dark)
+    (set-theme-light)))
 
 (defun set-theme-dark ()
   (interactive)
@@ -1291,7 +1463,7 @@ exist after each headings's drawers."
     (setq doom-font (concat next-font-name "-14"))
     (message next-font-name)))
 
-(setq fullscreen-at-startup nil)
+(setq fullscreen-at-startup t)
 (when fullscreen-at-startup
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
@@ -1307,13 +1479,14 @@ exist after each headings's drawers."
 
 (map! :leader
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "todos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
-      :desc "work" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
-      :desc "scratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
-      :desc "journal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
-      :desc "logbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
-      :desc "last capture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
-      :desc "bookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u")))
+      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
+      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
+      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
+      :desc "[j]ournal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
+      :desc "[l]ogbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
+      :desc "last [c]apture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
+      :desc "todays [C]ycling" "j C" 'cd/goto-todays-cycling
+      :desc "[b]ookmarks" "j b" '(lambda () (interactive) (org-capture-goto-target "u")))
 
 (map! :leader
       (:prefix-map ("a" . "applications")
@@ -1379,7 +1552,8 @@ exist after each headings's drawers."
       (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
 (map! :after projectile :leader
-      :desc "Find Org-dir note" "<SPC>" 'org-roam-find-file
+      :desc "Find Org-dir note" "<SPC>" '(lambda () (interactive)
+                                           (projectile-find-file-in-directory org-directory))
       :desc "Find Org-dir project" "S-<SPC>"
       '(lambda () (interactive) (org-roam-find-file "@project "))
       :desc "Find Org-dir WORK project" "C-S-<SPC>"

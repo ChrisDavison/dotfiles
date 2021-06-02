@@ -596,6 +596,23 @@ This currently doesn't work in my WSL setup.
       (insert "[/] ")))
   (org-toggle-tag "project" 'on))
 #+end_src
+** Cycling
+#+begin_src emacs-lisp
+(defun cd/goto-todays-cycling ()
+  (interactive)
+  (let* ((path (f-join org-directory "health-fitness-nutrition.org"))
+         (header (format-time-string "%Y W%W")))
+    (find-file path)
+    (+org/open-all-folds)
+    (goto-char (point-min))
+    (re-search-forward header)
+    (re-search-forward "^|") ;; Go to start of table
+    (evil-beginning-of-line)
+    (while  (s-matches? "^|" (thing-at-point 'line t)) ;; test first char on line == |
+      (move-beginning-of-line 2))
+    (previous-line)
+    (org-narrow-to-subtree)))
+#+end_src
 * Org-Mode
 ** Requirements
 
