@@ -1161,8 +1161,7 @@ exist after each headings's drawers."
           `(,(f-org "reading.org"))))
 
 (defun cd/non-work-files ()
-  (let* ((non-work (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal))
-         (non-work (cl-set-difference non-work (cd/reading-files) :test 'equal)))
+  (let* ((non-work (cl-set-difference (org-agenda-files) (cd/work-files) :test 'equal)))
     non-work))
 
 (defun cd/literature-files ()
@@ -1234,32 +1233,19 @@ exist after each headings's drawers."
                       (org-agenda-span 1)
                       (org-agenda-skip-function-global '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-start-day "-0d")))
-          (agenda "" ((org-agenda-start-day "-0d")
-                      (org-agenda-overriding-header (cd/text-header "DONE TODAY"))
-                      (org-agenda-span 1)
-                      (org-agenda-entry-types '(:timestamp))
-                      (org-agenda-archives-mode t)
-                      (org-agenda-use-time-grid nil)
-                      (org-agenda-later 1)
-                      (org-agenda-log-mode 16)
-                      (org-agenda-log-mode-items '(closed clock state))
-                      (org-agenda-show-log t)))
-
-          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
 
           ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Work, no thesis]"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress -- Work"))
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-files (cl-set-difference (cd/work-files)
                                                                  (cd/literature-files)
                                                                  :test 'equal))))
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress [Personal]"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress -- Personal"))
                             (org-agenda-todo-ignore-scheduled t)
-                            (org-agenda-files (cl-set-difference (cd/non-work-files)
-                                                                 (cd/reading-files)
-                                                                 :test 'equal))))
-          (todo "" ((org-agenda-files (cd/reading-files))
-                    (org-agenda-overriding-header (cd/text-header "Books in Progress"))))))
+                            (org-agenda-files (cd/non-work-files))))
+
+          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
+                ))
 
         ("cw" "Work tasks [NO THESIS]"
          ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
@@ -1613,11 +1599,5 @@ exist after each headings's drawers."
 (rg-enable-menu)
 
 (setq calendar-week-start-day 1)
-
-(defun find-file-filtered (&optional dir filters)
-  (interactive)
-  (let* ((options (project--files-in-directory dir filters))
-         (selection (completing-read "Files: " options)))
-    (find-file selection)))
 
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
