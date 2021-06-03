@@ -1478,6 +1478,7 @@ exist after each headings's drawers."
       "C-M-%" 'anzu-query-replace-regexp)
 
 (map! :leader
+      :desc "Toggle light/dark theme" "t t" 'theme-toggle-light-dark
       :desc "<<here>>" "j h" 'jump-to-here-anchor
       :desc "[t]odos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
       :desc "[w]ork" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
