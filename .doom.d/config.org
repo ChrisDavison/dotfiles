@@ -1257,6 +1257,13 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
       (= (string-to-number (match-string 1)) (string-to-number dd))
       (goto-char (point-at-bol))
       )
+     (t
+      (beginning-of-line)
+      (+org/insert-item-above 1)
+      (insert datestr "\n")
+      (previous-line)
+      (evil-normal-state)
+      )
      )
     ))
 #+end_src
