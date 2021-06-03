@@ -1893,3 +1893,6 @@ Workaround to get the right WSL interop variable for clipboard usage used in com
 (setq calendar-week-start-day 1)
 #+end_src
 
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+#+end_src

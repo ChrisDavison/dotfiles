@@ -964,6 +964,13 @@ exist after each headings's drawers."
       (= (string-to-number (match-string 1)) (string-to-number dd))
       (goto-char (point-at-bol))
       )
+     (t
+      (beginning-of-line)
+      (+org/insert-item-above 1)
+      (insert datestr "\n")
+      (previous-line)
+      (evil-normal-state)
+      )
      )
     ))
 
@@ -1559,13 +1566,14 @@ exist after each headings's drawers."
       :desc "evil-window-vsplit (follow)" "v"
       (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
+
+
 (map! :after projectile :leader
-      :desc "Find Org-dir note" "<SPC>" '(lambda () (interactive)
-                                           (projectile-find-file-in-directory org-directory))
-      :desc "Find Org-dir project" "S-<SPC>"
-      '(lambda () (interactive) (org-roam-find-file "@project "))
-      :desc "Find Org-dir WORK project" "C-S-<SPC>"
-      '(lambda () (interactive) (org-roam-find-file "@work "))
+      :desc "Find Org-dir file (no archive)" "<SPC>"
+      '(lambda () (interactive) (find-file-filtered org-directory
+                                               '("archive" ".git" ".gitignore" "assets")))
+      :desc "Find Org-dir file" "S-<SPC>"
+      '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
       )
 
 (map! :map haskell-mode-map
@@ -1605,3 +1613,11 @@ exist after each headings's drawers."
 (rg-enable-menu)
 
 (setq calendar-week-start-day 1)
+
+(defun find-file-filtered (&optional dir filters)
+  (interactive)
+  (let* ((options (project--files-in-directory dir filters))
+         (selection (completing-read "Files: " options)))
+    (find-file selection)))
+
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
