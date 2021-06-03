@@ -1837,13 +1837,14 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
       :desc "evil-window-vsplit (follow)" "v"
       (lambda () (interactive) (evil-window-vsplit) (evil-window-right 1)))
 
+
+
 (map! :after projectile :leader
-      :desc "Find Org-dir note" "<SPC>" '(lambda () (interactive)
-                                           (projectile-find-file-in-directory org-directory))
-      :desc "Find Org-dir project" "S-<SPC>"
-      '(lambda () (interactive) (org-roam-find-file "@project "))
-      :desc "Find Org-dir WORK project" "C-S-<SPC>"
-      '(lambda () (interactive) (org-roam-find-file "@work "))
+      :desc "Find Org-dir file (no archive)" "<SPC>"
+      '(lambda () (interactive) (find-file-filtered org-directory
+                                               '("archive" ".git" ".gitignore" "assets")))
+      :desc "Find Org-dir file" "S-<SPC>"
+      '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
       )
 
 (map! :map haskell-mode-map
