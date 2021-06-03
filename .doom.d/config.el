@@ -514,6 +514,13 @@ With prefix arg, find the previous file."
 (defun cd/org-file-get-title (file)
   (cd/org-file-get-keyword-value file "TITLE"))
 
+(defun cd/projectile-magit-status ()
+  "Jump to magit-status in a known projectile project."
+  (interactive)
+  (let ((project (completing-read "Project: "
+                                  projectile-known-projects-on-file)))
+    (magit-status project)))
+
 (load-library "find-lisp")
 
 (defun remove-org-mode-properties ()
