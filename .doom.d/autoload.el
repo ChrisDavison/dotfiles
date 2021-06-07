@@ -11,10 +11,19 @@
   (term "/usr/bin/fish"))
 
 ;;;###autoload
+(defun place-here-anchor ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (replace-regexp "<<here>>" ""))
+  (insert "<<here>>"))
+
+;;;###autoload
 (defun jump-to-here-anchor ()
   (interactive)
   (goto-char (point-min))
-  (search-forward "<<here>>"))
+  (search-forward "<<here>>")
+  (evil-scroll-line-to-center nil))
 
 ;;;###autoload
 (defun unfill-paragraph (&optional region)

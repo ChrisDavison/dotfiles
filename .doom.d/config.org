@@ -128,7 +128,7 @@
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
-      python-shell-interpreter "python"
+      python-shell-interpreter "ipython"
       python-shell-interpreter-args "console --simple-prompt"
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
@@ -1024,13 +1024,14 @@ Refile to a regexp in current dir, matching target
 *** ADVICE - Refresh WSL before opening org links                                         :disabled:
 
 Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
+
 #+BEGIN_SRC emacs-lisp :tangle no
-(defadvice! +refresh-wsl-interop (orig-fn &rest args)
-  "Ensure that we can open urls from WSL"
-  :before #'org-open-at-point
-  (progn (wsl_interop)
-         (if args (apply orig-fn args)
-           orig-fn)))
+;; (defadvice! +refresh-wsl-interop (orig-fn &rest args)
+;;   "Ensure that we can open urls from WSL"
+;;   :before #'org-open-at-point
+;;   (progn (wsl_interop)
+;;          (if args (apply orig-fn args)
+;;            orig-fn)))
 #+END_SRC
 
 *** Pre-load org-mode files
