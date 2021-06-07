@@ -1286,7 +1286,7 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
                :file "todo.org" :template "* TODO %?")
 
               ("todo [WORK]" :keys "w"
-               :file "work.org" :headline "Admin" :template "* TODO %?")
+               :file "work.org" :olp ("Admin") :template "* TODO %?")
 
               ("todo [CYBELE]" :keys "c"
                :file "work.org" :olp ("CYBELE" "Tasks")
