@@ -1254,7 +1254,7 @@ exist after each headings's drawers."
           (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
                 ))
 
-        ("cw" "Work tasks [NO THESIS]"
+        ("cw" "Work tasks"
          ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
                         (org-agenda-files (cl-set-difference (cd/work-files)
                                                                  (cd/literature-files)
