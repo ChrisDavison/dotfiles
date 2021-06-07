@@ -647,6 +647,23 @@ Jump to magit-status for a DIFFERENT project.
                                   projectile-known-projects-on-file)))
     (magit-status project)))
 #+end_src
+** Sum org-mode table column
+
+#+begin_src emacs-lisp
+(defun cd/org-table-sum-column (col)
+  (interactive)
+  (org-table-goto-line 2)
+  (let ((total 0))
+    (while (org-table-p)
+      (setq total (+ total (let ((val (org-table-get nil col)))
+                             (if val (string-to-number val) 0))))
+      (next-line))
+    total))
+
+(defun cd/org-table-cycling-tss-sum ()
+  (interactive)
+  (message "Total TSS: %d" (cd/org-table-sum-column 4)))
+#+end_src
 
 * Org-Mode
 ** Requirements
