@@ -27,10 +27,11 @@
 (package! cargo)
 (package! racer)
 (package! dockerfile-mode)
-(package! nov)
+(package! fish-mode)
+(package! nov) ;; read epub from emacs
 (package! graphviz-dot-mode)
-(package! ahk-mode)
-(package! auctex)
+(package! ahk-mode) ;; auto hotkey
+(package! auctex)  ;; better latex
 (package! slime)
 (package! elpy)
 
