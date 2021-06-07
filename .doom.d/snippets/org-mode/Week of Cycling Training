@@ -13,4 +13,5 @@ DEADLINE: `(let ((seven-days (seconds-to-time (* 6 24 60 60))))
 
 Summary:
 
-- Total Training Stress Score :: xxx
+- Total Training Stress Score :: (+ ...)
+- Total Training Stress Score :: (+ ...)
