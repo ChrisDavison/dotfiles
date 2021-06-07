@@ -48,3 +48,12 @@
   (interactive)
   (org-roam-find-file "@work "))
 
+;;;###autoload
+(defun find-file-filtered (dir ignores)
+  (let* ((files (find-lisp-find-files org-directory ".\.org$"))
+         (tidy-ignores (s-join "|" ignores))
+         (filtered (--filter (not (s-matches? it tidy-ignores)) files))
+         (shortened (--map (f-relative it org-directory) filtered))
+         (choice (completing-read "File: "
+                                  (sort shortened 'string-lessp))))
+    (find-file (f-join org-directory choice))))

@@ -104,7 +104,7 @@
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
-      python-shell-interpreter "python"
+      python-shell-interpreter "ipython"
       python-shell-interpreter-args "console --simple-prompt"
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
@@ -185,14 +185,6 @@ When optional TAGS is a string, show only files matching those tags"
     (evil-insert 1)))
 
 (set-popup-rule! "^\\*tagsearch" :side 'bottom :size 0.30 :select t :ttl 1)
-
-(defun files-matching-tagsearch (&optional tags directory)
-  (interactive)
-  (let* ((directory (if directory directory (read-directory-name "DIR: ")))
-         (cmd (format "tagsearch %s" (if tags tags (read-string "Tags: "))))
-         (fullcmd (format "cd %s && %s" directory cmd))
-         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
-    (--map (f-join directory it) output)))
 
 (defun files-matching-tagsearch (&optional tags directory)
   (interactive)
@@ -521,6 +513,20 @@ With prefix arg, find the previous file."
   (let ((project (completing-read "Project: "
                                   projectile-known-projects-on-file)))
     (magit-status project)))
+
+(defun cd/org-table-sum-column (col)
+  (interactive)
+  (org-table-goto-line 2)
+  (let ((total 0))
+    (while (org-table-p)
+      (setq total (+ total (let ((val (org-table-get nil col)))
+                             (if val (string-to-number val) 0))))
+      (next-line))
+    total))
+
+(defun cd/org-table-cycling-tss-sum ()
+  (interactive)
+  (message "Total TSS: %d" (cd/org-table-sum-column 4)))
 
 (load-library "find-lisp")
 
@@ -995,7 +1001,7 @@ exist after each headings's drawers."
                :file "todo.org" :template "* TODO %?")
 
               ("todo [WORK]" :keys "w"
-               :file "work.org" :headline "Admin" :template "* TODO %?")
+               :file "work.org" :olp ("Admin") :template "* TODO %?")
 
               ("todo [CYBELE]" :keys "c"
                :file "work.org" :olp ("CYBELE" "Tasks")
@@ -1505,6 +1511,19 @@ exist after each headings's drawers."
         :desc "quick add" "q" 'cd/nas/quick-add-download
         :desc "list" "l" 'cd/nas/list-downloads)
        ("n" 'new-in-git)
+
+       )
+      (:prefix-map ("T" . "tagsearch")
+       :desc "List tags in this dir" "l" 'tagsearch-list
+       :desc "Files with specific tags" "f" '(lambda () (interactive)
+                                               (files-matching-tagsearch
+                                                (read-string "Tags: ")
+                                                default-directory))
+       :desc "ORG Files with specific tags" "o" '(lambda () (interactive)
+                                               (files-matching-tagsearch
+                                                (read-string "Tags: ")
+                                                org-directory))
+
        ))
 
 (map! "<f5>" 'find-previous-file
@@ -1559,8 +1578,7 @@ exist after each headings's drawers."
       :desc "Find Org-dir file (no archive)" "<SPC>"
       '(lambda () (interactive) (find-file-filtered org-directory
                                                '("archive" ".git" ".gitignore" "assets")))
-      :desc "Find Org-dir file" "S-<SPC>"
-      '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
+      :desc "Search org-directory" "S-<SPC>" 'rg-org
       )
 
 (map! :map haskell-mode-map
