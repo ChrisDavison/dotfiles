@@ -70,6 +70,7 @@
 #+begin_src emacs-lisp
 ;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 #+end_src
@@ -209,7 +210,12 @@ Wrapper around my =repoutil= git managing utility.
 
 ** Tagsearch
 
+This is all functions related to my =rust= /tagsearch/ utility, which does various operations based on tags like =@tag= in plaintext files (searches =.md= and =.org=)
+
+[[https://github.com/chrisdavison/tagsearch][ChrisDavison/tagsearch: Utility to search and summarise tags (`@keyword`) in plaintext files]]
+
 *** List tags for all files under the current directory
+
 #+BEGIN_SRC emacs-lisp
 (defun tagsearch-list (&optional tags)
   "List tags under the current directory.
@@ -228,17 +234,6 @@ When optional TAGS is a string, show only files matching those tags"
 Also, make tagsearch only take up the bottom 30% of the screen in a special doom popup window.
 #+BEGIN_SRC emacs-lisp
 (set-popup-rule! "^\\*tagsearch" :side 'bottom :size 0.30 :select t :ttl 1)
-#+END_SRC
-
-*** Find files in directory that contain a tag
-#+BEGIN_SRC emacs-lisp
-(defun files-matching-tagsearch (&optional tags directory)
-  (interactive)
-  (let* ((directory (if directory directory (read-directory-name "DIR: ")))
-         (cmd (format "tagsearch %s" (if tags tags (read-string "Tags: "))))
-         (fullcmd (format "cd %s && %s" directory cmd))
-         (output (s-split "\n" (s-trim (shell-command-to-string fullcmd)))))
-    (--map (f-join directory it) output)))
 #+END_SRC
 
 *** Find files in directory that contain a tag, and show
@@ -1769,6 +1764,19 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
         :desc "quick add" "q" 'cd/nas/quick-add-download
         :desc "list" "l" 'cd/nas/list-downloads)
        ("n" 'new-in-git)
+
+       )
+      (:prefix-map ("T" . "tagsearch")
+       :desc "List tags in this dir" "l" 'tagsearch-list
+       :desc "Files with specific tags" "f" '(lambda () (interactive)
+                                               (files-matching-tagsearch
+                                                (read-string "Tags: ")
+                                                default-directory))
+       :desc "ORG Files with specific tags" "o" '(lambda () (interactive)
+                                               (files-matching-tagsearch
+                                                (read-string "Tags: ")
+                                                org-directory))
+
        ))
 #+end_src
 ** Move between narrows or files
