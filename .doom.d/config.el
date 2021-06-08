@@ -1578,8 +1578,9 @@ exist after each headings's drawers."
       :desc "Find Org-dir file (no archive)" "<SPC>"
       '(lambda () (interactive) (find-file-filtered org-directory
                                                '("archive" ".git" ".gitignore" "assets")))
-      :desc "Search org-directory" "S-<SPC>" 'rg-org
-      )
+      :desc "Find Org-dir file" "S-<SPC>"
+      '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
+      ))
 
 (map! :map haskell-mode-map
       "C-x C-e" 'haskell-process-load-file)
