@@ -172,10 +172,10 @@ myKeys conf = makeKeybinds $
   , K HyperShift xK_Home                  (doMic "up")
   , K HyperShift xK_End                   (doMic "down")
                                                                            -- Brightness
-  , K None       xF86XK_KbdBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
-  , K None       xF86XK_MonBrightnessUp   (spawn "$HOME/.bin/bright.sh up")
-  , K None       xF86XK_KbdBrightnessDown (spawn "$HOME/.bin/bright.sh down")
-  , K None       xF86XK_MonBrightnessDown (spawn "$HOME/.bin/bright.sh down")
+  , K None       xF86XK_KbdBrightnessUp   (spawn $ brightness "up")
+  , K None       xF86XK_MonBrightnessUp   (spawn $ brightness "up")
+  , K None       xF86XK_KbdBrightnessDown (spawn $ brightness "down")
+  , K None       xF86XK_MonBrightnessDown (spawn $ brightness "down")
                                                                            -- KEYCHORD - H-d {e,a} -- open ebooks or literature
   , K Hyper      xK_d                     (makeSubmap [
                         K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
@@ -202,9 +202,10 @@ myKeys conf = makeKeybinds $
    , K None xK_b (runOrRaise "bitwarden" (className =? "Bitwarden"))
    , K None xK_p (runOrRaise "pavucontrol" (className =? "Pavucontrol"))
    , K None xK_a (spawn "anki")]
+  brightness action = "$HOME/.bin/laptop-brightness" ++ " " ++ action
 
 doVolume :: String -> X()
-doVolume cmd = spawn $ "$HOME/.bin/volume.sh --" ++ cmd
+doVolume cmd = spawn $ "$HOME/.bin/laptop-volume --" ++ cmd
 
 doMic :: String -> X()
 doMic cmd = spawn $ "$HOME/.bin/micgain.sh --" ++ cmd
@@ -272,12 +273,12 @@ myManageHook = manageDocks <> composeAll
 ------------------------------------------------------------------------
 -- Startup hook
 myStartupHook = do
-  spawnOnce "redshift"
+  -- spawnOnce "redshift"
   spawnOnce "autorandr"
   spawnOnce "~/.fehbg"
   spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
-  -- spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
+  spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
   spawnOnce "nm-applet"
   spawnOnce
     "trayer --edge top --align center --widthtype request --padding 0 --SetDockType true --SetPartialStrut true --expand true --monitor 0 --transparent true --alpha 255 --height 21 &"
