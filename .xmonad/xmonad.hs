@@ -123,9 +123,9 @@ myKeys conf = makeKeybinds $
   , K HyperShift xK_space        (setLayout $ XMonad.layoutHook conf)             -- reset to default layout
   , K Hyper      xK_f            (toggleFullscreen)               -- toggle fullscreen on focused window
   , K HyperShift xK_f            (toggleBar)                      -- toggle fullscreen on focused window
-  , K HyperAlt   xK_f            (windows copyToAll)              -- toggle fullscreen on focused window
-  , K HyperAltShift xK_f         (killAllOtherCopies)     -- toggle fullscreen on focused window
-  , K Hyper      xK_t            (withFocused $ windows . W.sink) -- make float tiled again
+  , K HyperAlt   xK_f            (windows copyToAll)              --
+  , K HyperAltShift xK_f         (killAllOtherCopies)     --
+  , K Hyper      xK_t            (withFocused $ toggleFloat) -- make float tiled again
   --- LAUNCHERS
   , K Hyper      xK_g            (windowPromptGoto myXPConfig)
   , K HyperShift xK_g            (bringMenuConfig myBringConfig)
@@ -145,18 +145,35 @@ myKeys conf = makeKeybinds $
   , K Hyper      xK_F7           (raiseNext (title =?? "ASMR") <> delay 100000 <> spawn "xdotool key N")
   , K Hyper      xK_F11          (spawn "$HOME/.bin/dmenu_asmr.py")
   , K Hyper      xK_F12          (S.promptSearch myXPConfig S.duckduckgo)
+    , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
+  ]
+
+  ++ keybindsAudioAndMusic
+  ++ keybindsBrightness
+  ++ keybindsEmacsAndOrg
+  ++ [ K Hyper      key (pullWs ws)           | (key, ws) <- keyWsPairs ]     -- mod-[1..9]       :: view workspace on current monitor
+  ++ [ K HyperShift key (moveWinToWs ws)      | (key, ws) <- keyWsPairs ]     -- mod-shift-[1..9] :: move window to workspace
+  ++ [ K Win        key (viewWsOnMon ws 0)    | (key, ws) <- keyWsPairs ]     -- win-[1..9]       :: view workspace on main monitor
+  ++ [ K Alt        key (viewWsOnMon ws 1)    | (key, ws) <- keyWsPairs ]     -- alt-[1..9]       :: view workspace on second monitor
+                                                                           
+  ++ [ K Hyper      key (focusMonitor sc)     | (key, sc) <- keyScreenPairs ] -- mod-{a,s}        :: view main or second monitor
+  ++ [ K HyperShift key (moveWinToMonitor sc) | (key, sc) <- keyScreenPairs ] -- mod-{A,S}        :: move window to workspace on main or second monitor
+
+keybindsEmacsAndOrg :: [SimpleKeybind]
+keybindsEmacsAndOrg = [
   --- LAUNCHERS EMACS
-  , K Hyper      xK_F1           (focusMonitor 0 <> raiseEmacsAndRun "(org-capture)") 
-  , K Hyper      xK_F2           (focusMonitor 0 <> orgAgenda "c1") 
-  , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)") 
+    K Hyper      xK_F1           (focusMonitor 0 <> raiseEmacsAndRun "(org-capture)")
+  , K Hyper      xK_F2           (focusMonitor 0 <> orgAgenda "c1")
+  , K Hyper      xK_F3           (focusMonitor 0 <> raiseEmacsAndRun "(org-agenda)")
   -- Keybinds for specific captures - note, note entry, todo, and work todo
   , K Hyper      xK_c            (makeSubmap [ K None  xK_t (orgCapture "t")
                                              , K None  xK_n (orgCapture "j")
                                              , K Shift xK_n (orgCapture "J")
-                                             ])
-  , K HyperCtrl  xK_c            (cycleFirefoxNotMatching (title =?? "ASMR"))
-  --- AUDIO / MUSIC
-  , K Hyper      xK_Home                  (doVolume "up")
+                                             ])]
+
+keybindsAudioAndMusic :: [SimpleKeybind]
+keybindsAudioAndMusic =
+  [K Hyper      xK_Home                  (doVolume "up")
   , K Hyper      xK_End                   (doVolume "down")
   , K Hyper      xK_v                     (doVolume "up")
   , K HyperShift xK_v                     (doVolume "down")
@@ -170,39 +187,40 @@ myKeys conf = makeKeybinds $
   , K None       xF86XK_AudioNext         (doSpotify "next")
   , K None       xF86XK_AudioPlay         (doSpotify "play-pause")
   , K HyperShift xK_Home                  (doMic "up")
-  , K HyperShift xK_End                   (doMic "down")
-                                                                           -- Brightness
-  , K None       xF86XK_KbdBrightnessUp   (spawn $ brightness "up")
-  , K None       xF86XK_MonBrightnessUp   (spawn $ brightness "up")
-  , K None       xF86XK_KbdBrightnessDown (spawn $ brightness "down")
-  , K None       xF86XK_MonBrightnessDown (spawn $ brightness "down")
-                                                                           -- KEYCHORD - H-d {e,a} -- open ebooks or literature
-  , K Hyper      xK_d                     (makeSubmap [
-                        K None xK_e (spawn "$HOME/.bin/dmenu_ebooks.sh")
-                      , K None xK_a (spawn "$HOME/.bin/dmenu_articles.sh")])
+  , K HyperShift xK_End                   (doMic "down")]
+
+keyWsPairs :: [(KeySym, [Char])]
+keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
+
+keyScreenPairs :: [(KeySym, ScreenId)]
+keyScreenPairs = zip [xK_a, xK_s] [0 ..]
+
+appSpawnerSubmap :: X()
+appSpawnerSubmap = makeSubmap [
+    K None xK_r (spawn $ myTerminal ++ " -e ranger")
+  , K None xK_c (spawn $ myTerminal ++ " -e eva")
+  , K None xK_f (spawn "firefox")
+  , K None xK_l (spawn $ myTerminal ++ " -e $HOME/.bin/lyricsearch.sh")
+  , K None xK_e (runOrRaise "emacsclient -c" (className =? "Emacs"))
+  , K None xK_z (spawn "zoom")
+  , K None xK_b (runOrRaise "bitwarden" (className =? "Bitwarden"))
+  , K None xK_p (runOrRaise "pavucontrol" (className =? "Pavucontrol"))
+  , K None xK_a (spawn "anki")]
+
+keybindsBrightness :: [SimpleKeybind]
+keybindsBrightness = [
+    K None       xF86XK_KbdBrightnessUp   (doBrightness "up")
+  , K None       xF86XK_MonBrightnessUp   (doBrightness "up")
+  , K None       xF86XK_KbdBrightnessDown (doBrightness "down")
+  , K None       xF86XK_MonBrightnessDown (doBrightness "down")
   ]
-                                                                           
-  ++ [ K Hyper      key (pullWs ws)           | (key, ws) <- keyWsPairs ]     -- mod-[1..9]       :: view workspace on current monitor
-  ++ [ K HyperShift key (moveWinToWs ws)      | (key, ws) <- keyWsPairs ]     -- mod-shift-[1..9] :: move window to workspace
-  ++ [ K Win        key (viewWsOnMon ws 0)    | (key, ws) <- keyWsPairs ]     -- win-[1..9]       :: view workspace on main monitor
-  ++ [ K Alt        key (viewWsOnMon ws 1)    | (key, ws) <- keyWsPairs ]     -- alt-[1..9]       :: view workspace on second monitor
-                                                                           
-  ++ [ K Hyper      key (focusMonitor sc)     | (key, sc) <- keyScreenPairs ] -- mod-{a,s}        :: view main or second monitor
-  ++ [ K HyperShift key (moveWinToMonitor sc) | (key, sc) <- keyScreenPairs ] -- mod-{A,S}        :: move window to workspace on main or second monitor
- where
-  keyWsPairs     = zip [xK_1 .. xK_9] myWorkspaces
-  keyScreenPairs = zip [xK_a, xK_s] [0 ..]
-  appSpawnerSubmap = makeSubmap [
-     K None xK_r (spawn $ myTerminal ++ " -e ranger")
-   , K None xK_c (spawn $ myTerminal ++ " -e eva")
-   , K None xK_f (spawn "firefox")
-   , K None xK_l (spawn $ myTerminal ++ " -e $HOME/.bin/lyricsearch.sh")
-   , K None xK_e (runOrRaise "emacsclient -c" (className =? "Emacs"))
-   , K None xK_z (spawn "zoom")
-   , K None xK_b (runOrRaise "bitwarden" (className =? "Bitwarden"))
-   , K None xK_p (runOrRaise "pavucontrol" (className =? "Pavucontrol"))
-   , K None xK_a (spawn "anki")]
-  brightness action = "$HOME/.bin/laptop-brightness" ++ " " ++ action
+  where
+    doBrightness action = spawn $ "$HOME/.bin/laptop-brightness" ++ " " ++ action
+
+toggleFloat :: Window -> X()
+toggleFloat w = windows (\s -> if M.member w (W.floating s)
+                            then W.sink w s
+                            else (W.float w (W.RationalRect (3/4) (3/4) (1/4) (1/4)) s))
 
 doVolume :: String -> X()
 doVolume cmd = spawn $ "$HOME/.bin/laptop-volume --" ++ cmd
