@@ -253,23 +253,13 @@ When optional TAGS is a string, show only files matching those tags"
 (set-popup-rule! "^\\*nas-downloads*" :side 'bottom :size 0.30 :select t :ttl 1)
 
 ;;; Navigate narrows
-(defun change-narrow (direction)
+(defun next-narrow (&optional backwards)
   (interactive)
   (progn
     (beginning-of-buffer)
     (widen)
-    (if (eq direction 'prev)
-        (outline-previous-heading)
-      (outline-next-heading))
+    (if backwards (outline-previous-heading) (outline-next-heading))
     (org-narrow-to-subtree)))
-
-(defun move-to-previous-narrow ()
-  (interactive)
-  (change-narrow 'prev))
-
-(defun move-to-next-narrow ()
-  (interactive)
-  (change-narrow 'next))
 
 (defun find-next-file (&optional backward)
   "Find the next file (by name) in the current directory.
@@ -1316,6 +1306,7 @@ exist after each headings's drawers."
 (setq my-remote-servers
       '(("skye" :username "cdavison" :ip "130.159.94.19")
         ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
+        ("cava" :username "cdavison" :ip "130.159.94.251" :hop "skye")
         ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
         ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
         ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
@@ -1531,8 +1522,8 @@ exist after each headings's drawers."
       "C-<left>" 'find-previous-file
       "C-<right>" 'find-next-file)
 
-(map! "<f7>" 'move-to-next-narrow
-      "<f8>" 'move-to-previous-narrow)
+(map! "<f7>" 'next-narrow
+      "<f8>" '(lambda () (interactive) (next-narrow 'back)))
 
 (map! "<f9>" 'er/expand-region)
 

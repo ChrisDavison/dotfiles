@@ -328,23 +328,13 @@ List the downloads that haven't been pulled yet.
 
 #+BEGIN_SRC emacs-lisp
 ;;; Navigate narrows
-(defun change-narrow (direction)
+(defun next-narrow (&optional backwards)
   (interactive)
   (progn
     (beginning-of-buffer)
     (widen)
-    (if (eq direction 'prev)
-        (outline-previous-heading)
-      (outline-next-heading))
+    (if backwards (outline-previous-heading) (outline-next-heading))
     (org-narrow-to-subtree)))
-
-(defun move-to-previous-narrow ()
-  (interactive)
-  (change-narrow 'prev))
-
-(defun move-to-next-narrow ()
-  (interactive)
-  (change-narrow 'next))
 #+END_SRC
 ** Iterate files in a directory
 
@@ -1544,6 +1534,7 @@ Create a python src block using =<p <TAB>=
 (setq my-remote-servers
       '(("skye" :username "cdavison" :ip "130.159.94.19")
         ("uist" :username "cdavison" :ip "130.159.95.176" :hop "skye")
+        ("cava" :username "cdavison" :ip "130.159.94.251" :hop "skye")
         ("bute" :username "cdavison" :ip "130.159.94.204" :hop "skye")
         ("jura" :username "cdavison" :ip "130.159.94.214" :hop "skye")
         ("iona" :username "cdavison" :ip "130.159.94.187" :hop "skye")))
@@ -1805,8 +1796,8 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
       "C-<left>" 'find-previous-file
       "C-<right>" 'find-next-file)
 
-(map! "<f7>" 'move-to-next-narrow
-      "<f8>" 'move-to-previous-narrow)
+(map! "<f7>" 'next-narrow
+      "<f8>" '(lambda () (interactive) (next-narrow 'back)))
 #+end_src
 ** REFILE
 
