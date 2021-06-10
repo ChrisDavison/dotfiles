@@ -294,7 +294,7 @@ myStartupHook = do
   -- spawnOnce "redshift"
   spawnOnce "autorandr"
   spawnOnce "~/.fehbg"
-  spawnOnce "compton &"
+  -- spawnOnce "compton &"
   spawnOnce "/opt/Mullvad VPN/mullvad-vpn"
   spawnOnce "nvidia-settings --assign CurrentMetaMode=\"nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }\""
   spawnOnce "nm-applet"
