@@ -1041,7 +1041,7 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column -100
+      org-tags-column -60
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -1686,9 +1686,12 @@ Create a python src block using =<p <TAB>=
                                        "Montserrat"
                                        )))
 
-(setq cd/font-size "-14"
-      doom-font (concat (nth 0 cd-fonts) cd/font-size)
-      doom-variable-pitch-font (concat (nth 0 cd-mixed-pitch-fonts) cd/font-size))
+(setq cd/font-size "-14")
+(when cd-fonts
+  (setq doom-font (concat (nth 0 cd-fonts) cd/font-size)))
+
+(when cd-mixed-pitch-fonts
+  (setq doom-variable-pitch-font (concat (nth 0 cd-mixed-pitch-fonts) cd/font-size)))
 #+END_SRC
 
 *** Function to iterate through fonts

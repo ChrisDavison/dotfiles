@@ -818,7 +818,7 @@ exist after each headings's drawers."
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
-      org-tags-column -100
+      org-tags-column -60
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
@@ -1442,9 +1442,12 @@ exist after each headings's drawers."
                                        "Montserrat"
                                        )))
 
-(setq cd/font-size "-14"
-      doom-font (concat (nth 0 cd-fonts) cd/font-size)
-      doom-variable-pitch-font (concat (nth 0 cd-mixed-pitch-fonts) cd/font-size))
+(setq cd/font-size "-14")
+(when cd-fonts
+  (setq doom-font (concat (nth 0 cd-fonts) cd/font-size)))
+
+(when cd-mixed-pitch-fonts
+  (setq doom-variable-pitch-font (concat (nth 0 cd-mixed-pitch-fonts) cd/font-size)))
 
 (defun set-pretty-font ()
   "Set a font from one of the available fonts that I like"
