@@ -6,13 +6,6 @@
 # --
 `(format-time-string "<%Y-%m-%d %a>")` Weekly Review
 
-`(cd/text-header "Review")`
-
-- [ ] RECENT NOTES -- =new_in_git= and =journal.org=
-- [ ] UPCOMING TASKS -- =(org-agenda nil "a")=
-- [ ] Cycling weekly training log
-- [ ] Pocket notebook exercises
-
 `(cd/text-header "Personal")`
 
 - Guitar :: $1
@@ -28,6 +21,6 @@
 - Thesis :: $5
 - Work :: $6
 
-`(cd/text-header "Focus")`
+`(cd/text-header "Next Focus...")`
 
 *$7*

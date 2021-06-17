@@ -55,6 +55,7 @@
 ;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
+(add-to-list 'auto-mode-alist '("docker.*" . dockerfile-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 
@@ -461,12 +462,20 @@ With prefix arg, find the previous file."
 
 (defun cd/goto-todays-cycling ()
   (interactive)
-  (let* ((path (f-join org-directory "health-fitness-nutrition.org"))
-         (header (format-time-string "%Y W%W")))
+  (let* ((path (f-join org-directory "health-and-fitness" "cycling.org"))
+         (thisyear (string-to-number (format-time-string "%Y")))
+         (thisweek (string-to-number (format-time-string "%W")))
+         (lastweek (if (eq thisweek 1) 52 (- thisweek 1)))
+         (last-weeks-year (if (eq lastweek 52) (- thisyear 1) thisyear))
+         (header (format "%4d W%2d" thisyear thisweek))
+         (header-lastweek (format "%4d W%2d" last-weeks-year lastweek)))
     (find-file path)
     (+org/open-all-folds)
     (goto-char (point-min))
-    (re-search-forward header)
+    (when (not (re-search-forward header nil t))
+      (re-search-forward header-lastweek)
+      (org-insert-heading)
+      (yas-expand-snippet (yas-lookup-snippet "Week of Cycling Training")))
     (re-search-forward "^|") ;; Go to start of table
     (evil-beginning-of-line)
     (while  (s-matches? "^|" (thing-at-point 'line t)) ;; test first char on line == |
@@ -518,6 +527,40 @@ With prefix arg, find the previous file."
   (interactive)
   (message "Total TSS: %d" (cd/org-table-sum-column 4)))
 
+(defun collect-duplicate-headings ()
+  (let (dups contents hls)
+    (save-excursion
+      (goto-char (point-max))
+      (while (re-search-backward org-complex-heading-regexp nil t)
+        (let* ((el (org-element-at-point))
+               (hl (org-element-property :title el))
+               (pos (org-element-property :begin el)))
+          (push (cons hl pos) hls)))
+      (setq contents
+            (cl-loop for hl in hls
+                     for pos = (goto-char (cdr hl))
+                     for beg = (progn pos (line-beginning-position))
+                     for end = (progn pos (org-end-of-subtree nil t))
+                     for content = (buffer-substring-no-properties beg end)
+                     collect (list (car hl) (cdr hl) content)))
+      (dolist (elt contents)
+        (when (> (cl-count (last elt) (mapcar #'last contents)
+                           :test 'equal)
+                 1)
+          (push (cons (car elt)
+                      (nth 1 elt))
+                dups)))
+      (nreverse dups))))
+
+(defun show-duplicate-headings ()
+  (interactive)
+  (helm :sources (helm-build-sync-source "Duplicate headings"
+                   :candidates (lambda ()
+                                 (with-helm-current-buffer
+                                   (collect-duplicate-headings)))
+                   :follow 1
+                   :action 'goto-char)))
+
 (load-library "find-lisp")
 
 (defun remove-org-mode-properties ()
@@ -526,14 +569,6 @@ With prefix arg, find the previous file."
   (query-replace-regexp
    (rx bol (* " ") ":" (+ (any alnum "_")) ":" (* (seq " " (+ nonl))) "\n")
    ""))
-
-(defun cd/text-header (msg &optional char)
-  (let* ((shades '("░" "▒" "▓"))
-         (char "╌");;(if char char (nth 0 shades)))
-         (n-tokens (/ (- 78 1 (length msg)) 2))
-         (token-str (s-repeat n-tokens char))
-         (extra (if (eq 0 (mod n-tokens 2)) "" char)))
-    (format "%s%s  %s  %s" token-str extra msg token-str)))
 
 (defun headercount (&optional level)
   (interactive)
@@ -559,11 +594,12 @@ With prefix arg, find the previous file."
   "Find the first top-level list, or insert one if it doesn't exist."
   (interactive)
   (goto-char (point-min))
-  (if (re-search-forward "^-" (cd/point-of-first-header) t)
-      (progn (org-forward-paragraph) t)
+  (if (re-search-forward "^-" (or (cd/point-of-first-header) (point-max)) t)
+      (org-forward-paragraph)
     (progn
-      (+evil/insert-newline-below 2)
-      (evil-next-visual-line 2)
+      (org-forward-paragraph)
+      (+evil/insert-newline-below 1)
+      (evil-next-visual-line 1)
       nil)))
 
 (defun cd/insert-in-toplevel-list (thing)
@@ -587,7 +623,7 @@ In the new file, promote all direct children of the original
 
 If called with the universal argument, prompt for new filename,
 otherwise use the subtree title."
-  (interactive "F")
+  (interactive "FFile: ")
   (let* ((filename (concat "~/" (file-relative-name filename "~")))
          (link (file-relative-name filename (file-name-directory (buffer-file-name))))
          (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename)))))
@@ -994,7 +1030,7 @@ exist after each headings's drawers."
                :file "work.org" :olp ("Admin") :template "* TODO %?")
 
               ("todo [CYBELE]" :keys "c"
-               :file "work.org" :olp ("CYBELE" "Tasks")
+               :file "work.org" :olp ("Research" "CYBELE")
                :template "* TODO %?")
 
               ("research" :keys "r"
@@ -1222,45 +1258,55 @@ exist after each headings's drawers."
                                     (tags priority-down category-keep)
                                     (search category-keep))
       )
+(defun agenda-header (msg)
+  (let* ((char       (nth 2 '("╌" "-" " " "=")))
+         (borderchar (nth 3 '("╌" "-" " " "=")))
+         (n-tokens (/ (- 80 2 1 (length msg)) 2))
+         (token-str (s-repeat n-tokens char))
+         (extra (s-repeat (mod n-tokens 2) char))
+         (spaced-str (format "%s%s  %s  %s" token-str extra msg token-str))
+         (border (s-repeat (length spaced-str) borderchar)))
+    (s-join "\n" `(,border ,spaced-str ,border))))
+
 (setq org-agenda-custom-commands
       `(("c" . "Custom agenda views")
 
         ("co" "Overview Agenda"
-         ((agenda "" ((org-agenda-overriding-header (cd/text-header "TODAY"))
+         ((agenda "" ((org-agenda-overriding-header (agenda-header "TODAY"))
                       (org-agenda-span 1)
                       (org-agenda-skip-function-global '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-start-day "-0d")))
 
           ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress -- Work"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (agenda-header "In Progress -- Work"))
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-files (cl-set-difference (cd/work-files)
                                                                  (cd/literature-files)
                                                                  :test 'equal))))
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress -- Personal"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (agenda-header "In Progress -- Personal"))
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-files (cd/non-work-files))))
 
-          (todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))))
-                ))
+          (todo "BLCK" ((org-agenda-overriding-header (agenda-header "BLOCKED"))))
+          ))
 
         ("cw" "Work tasks"
-         ((todo "BLCK" ((org-agenda-overriding-header (cd/text-header "BLOCKED"))
+         ((todo "BLCK" ((org-agenda-overriding-header (agenda-header "BLOCKED"))
                         (org-agenda-files (cl-set-difference (cd/work-files)
-                                                                 (cd/literature-files)
-                                                                 :test 'equal))))
+                                                             (cd/literature-files)
+                                                             :test 'equal))))
 
           ;; show a todo list of IN-PROGRESS
-          (todo "WIP|NEXT" ((org-agenda-overriding-header (cd/text-header "In Progress"))
+          (todo "WIP|NEXT" ((org-agenda-overriding-header (agenda-header "In Progress"))
                             (org-agenda-todo-ignore-scheduled t)
                             (org-agenda-files (cl-set-difference (cd/work-files)
                                                                  (cd/literature-files)
                                                                  :test 'equal))))
-          (todo "TODO" ((org-agenda-overriding-header (cd/text-header "Todo"))
+          (todo "TODO" ((org-agenda-overriding-header (agenda-header "Todo"))
                         (org-agenda-todo-ignore-scheduled t)
                         (org-agenda-files (cl-set-difference (cd/work-files)
-                                                                 (cd/literature-files)
-                                                                 :test 'equal))))))
+                                                             (cd/literature-files)
+                                                             :test 'equal))))))
 
         ("cr" "Review the last week"
          ((agenda "" ((org-agenda-start-day "-7d")
@@ -1274,10 +1320,10 @@ exist after each headings's drawers."
         ("cR" "Reading -- in progress, and possible future books"
          ((todo ""
                 ((org-agenda-files (cd/reading-files))
-                 (org-agenda-overriding-header (cd/text-header "Books in Progress"))))
+                 (org-agenda-overriding-header (cd/text-header "Books in Progress" nil t))))
           (todo ""
                 ((org-agenda-files (cd/literature-files))
-                 (org-agenda-overriding-header (cd/text-header "Literature in Progress"))))))
+                 (org-agenda-overriding-header (cd/text-header "Literature in Progress" nil t))))))
         ))
 
 (defun cd/refile-to-top-level ()
