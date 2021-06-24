@@ -753,9 +753,7 @@ Jump to magit-status for a DIFFERENT project.
 (load-library "find-lisp")
 #+END_SRC
 
-** Functions and Advice
-
-*** Remove all property drawers
+** FUNC - Remove all property drawers
 #+BEGIN_SRC emacs-lisp
 (defun remove-org-mode-properties ()
   (interactive)
@@ -765,7 +763,7 @@ Jump to magit-status for a DIFFERENT project.
    ""))
 #+END_SRC
 
-*** Find pairs of md-org files
+** FUNC - Find pairs of md-org files
 
 This was primarily when converting from an =.md= repo to =.org=
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -787,7 +785,7 @@ With prefix arg, find the previous file."
       (find-file-other-window (s-concat (buffer-file-name (find-file (nth pos files))) ".org")))))
 #+END_SRC
 
-*** Count headers
+** FUNC - Count headers
 
 #+BEGIN_SRC emacs-lisp
 (defun headercount (&optional level)
@@ -801,7 +799,7 @@ With prefix arg, find the previous file."
       (message msg))))
 #+END_SRC
 
-*** UNFILED
+** FUNC - UNFILED
 
 #+BEGIN_SRC emacs-lisp
 (defun insert-newline-if-not-at-start ()
@@ -817,14 +815,21 @@ With prefix arg, find the previous file."
 (defun cd/goto-end-of-toplevel-list ()
   "Find the first top-level list, or insert one if it doesn't exist."
   (interactive)
-  (goto-char (point-min))
-  (if (re-search-forward "^-" (or (cd/point-of-first-header) (point-max)) t)
-      (org-forward-paragraph)
-    (progn
-      (org-forward-paragraph)
-      (+evil/insert-newline-below 1)
-      (evil-next-visual-line 1)
-      nil)))
+  (let ((pos-first-header (cd/point-of-first-header)))
+    (goto-char (point-min))
+    (if (re-search-forward "^-" (or pos-first-header (point-max)) t)
+        (org-forward-paragraph)
+      (if pos-first-header
+          (progn
+            (goto-char pos-first-header)
+            (+evil/insert-newline-above 2)
+            (evil-next-visual-line -2))
+        (progn
+          (org-forward-paragraph)
+          (+evil/insert-newline-below 1)
+          (evil-next-visual-line 1)
+          nil)
+        ))))
 
 (defun cd/insert-in-toplevel-list (thing)
   (interactive)
@@ -835,35 +840,101 @@ With prefix arg, find the previous file."
     (evil-normal-state)
     (insert " " thing)))
 
-(defun org-file-from-subtree (filename &optional clipboard-only)
+(defun filename-to-pretty-title (filename)
+  (s-capitalized-words
+   (s-replace "-" " "
+              (file-name-sans-extension (file-name-base filename)))))
+
+(defun create-or-add-to-see-also-header (text)
+  (save-excursion
+    (unless (re-search-forward "^\* See Also" nil t)
+      (goto-char (point-max))
+      (evil-insert-newline-below)
+      (insert "* See Also\n\n"))
+
+    (org-narrow-to-subtree)
+    (goto-char (point-max))
+    (insert "- " text)
+    (widen)))
+
+(defun cd/org-roam-insert-to-see-also ()
+  (interactive)
+  (save-excursion
+    (unless (re-search-forward "^\* See Also" nil t)
+      (goto-char (point-max))
+      (evil-insert-newline-below)
+      (insert "* See Also\n\n"))
+
+    (org-narrow-to-subtree)
+    (goto-char (point-max))
+    (insert "- ")
+    (org-roam-insert)
+    (widen)))
+
+
+(defun org-file-from-subtree (&optional arg)
   "Take the current subtree and create a new file from
-  it. Replace the current subtree with its main heading (i.e.,
-  delete all of its childen), and make the heading into a link
-  to the newly created file,
+  it. Add a link at the top of the file in the first pre-header list.
 
 In the new file, promote all direct children of the original
   subtree to be level 1-headings, and transform the original
   heading into the '#+TITLE' parameter.
 
 If called with the universal argument, prompt for new filename,
-otherwise use the subtree title."
-  (interactive "FFile: ")
-  (let* ((filename (concat "~/" (file-relative-name filename "~")))
-         (link (file-relative-name filename (file-name-directory (buffer-file-name))))
-         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename)))))
-         (link-text (format "[[file:%s][%s]]" link title)))
+otherwise use the subtree title.
+
+With ARG, also visit the file.
+"
+  (interactive "P")
+  (let* ((curdir (file-name-directory (buffer-file-name)))
+         (filename (read-file-name "File: " curdir))
+         (link (file-relative-name filename curdir))
+         (title (filename-to-pretty-title filename))
+         (link-text (format "[[file:%s][%s]]" link title))
+         (curfile-relative-to-new (file-relative-name (buffer-file-name) (file-name-directory filename)))
+         (curfile-title (filename-to-pretty-title buffer-file-name))
+         (curfile-link (format "[[file:%s][%s]]" curfile-relative-to-new curfile-title)))
     ;; Copy current subtree into clipboard
     (org-cut-subtree)
 
-    ;; Convert headline to a link of the to-be-created file
-    (if clipboard-only
-        (kill-new link-text)
-      (save-excursion (cd/insert-in-toplevel-list link-text)))
+    (save-excursion
+      (create-or-add-to-see-also-header link-text)
+      ;; (cd/insert-in-toplevel-list link-text)
+      )
+    (save-buffer)
 
     (with-temp-file filename
       (org-mode)
       (insert "#+TITLE: " title "\n\n")
-      (org-paste-subtree))))
+      (org-paste-subtree)
+      (create-or-add-to-see-also-header curfile-link))
+
+    (when arg
+      (find-file filename)))
+  (org-roam-db-build-cache))
+
+(defun org-roam-create-note-from-headline ()
+  "Create an Org-roam note from the current headline and jump to it.
+
+Normally, insert the headline’s title using the ’#title:’ file-level property
+and delete the Org-mode headline. However, if the current headline has a
+Org-mode properties drawer already, keep the headline and don’t insert
+‘#+title:'. Org-roam can extract the title from both kinds of notes, but using
+‘#+title:’ is a bit cleaner for a short note, which Org-roam encourages."
+  (interactive)
+  (let ((title (nth 4 (org-heading-components)))
+        (has-properties (org-get-property-block)))
+    (org-cut-subtree)
+    (org-roam-find-file title nil nil 'no-confirm)
+    (org-paste-subtree)
+    (unless has-properties
+      (kill-line)
+      (while (outline-next-heading)
+        (org-promote)))
+    (goto-char (point-min))
+    (when has-properties
+      (kill-line)
+      (kill-line))))
 
 
 (defun org-file-from-selection (&optional clipboard-only)
@@ -894,6 +965,11 @@ otherwise use the subtree title."
 (defun org-open-link-same-window ()
   (interactive)
   (let ((org-link-frame-setup '((file . find-file))))
+    (org-open-at-point)))
+
+(defun org-open-link-other-window ()
+  (interactive)
+  (let ((org-link-frame-setup '((file . find-file-other-window))))
     (org-open-at-point)))
 
 
@@ -1037,7 +1113,7 @@ exist after each headings's drawers."
   (org-update-checkbox-count t))
 #+END_SRC
 
-*** Copy Link
+** FUNC - Copy Link
 #+begin_src emacs-lisp
 (defun org-copy-link (&optional arg)
   "Copy org-mode links from anywhere within."
@@ -1048,7 +1124,7 @@ exist after each headings's drawers."
     (kill-new tidy)
     (message (concat "Copied Link: " tidy))))
 #+end_src
-*** Copy next org-mode link
+** FUNC - Copy next org-mode link
 Find the next link, copy it to the kill ring, and leave the curser at the end.
 #+begin_src emacs-lisp
 (defun cd/org-copy-next-link ()
@@ -1060,7 +1136,7 @@ Find the next link, copy it to the kill ring, and leave the curser at the end.
     (goto-char end)))
 #+end_src
 
-*** Find all org files under a directory
+** FUNC - Find all org files under a directory
 
 #+begin_src emacs-lisp
 (defun cd/org-files-under-dir (dir)
@@ -1068,7 +1144,7 @@ Find the next link, copy it to the kill ring, and leave the curser at the end.
       (find-lisp-find-files dir "\.org$")
     (find-lisp-find-files (f-join org-directory dir) "\.org$")))
 #+end_src
-*** Archive and change state
+** FUNC - Archive and change state
 
 #+begin_src emacs-lisp
 (defun cd/do-and-archive ()
@@ -1082,7 +1158,7 @@ Find the next link, copy it to the kill ring, and leave the curser at the end.
   (org-archive-subtree))
 #+end_src
 
-*** Refile to this file, matching regexp
+** FUNC - Refile to this file, matching regexp
 Refile to a regexp in current dir, matching target
 #+begin_src emacs-lisp :tangle no
 (defun cd/refile-here-with-regexp (&optional RE)
@@ -1091,7 +1167,7 @@ Refile to a regexp in current dir, matching target
          (org-refile-targets `((,(buffer-file-name) . (:regexp . ,RE)))))
     (org-refile)))
 #+end_src
-*** ADVICE - Refresh WSL before opening org links                                         :disabled:
+** FUNC - ADVICE - Refresh WSL before opening org links                                         :disabled:
 
 Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= causes a separate terminal to be launched. (Not sure if this is needed, now that I'm sourcing =wsl.sh= in by WSL helper bat script).
 
@@ -1104,7 +1180,7 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
 ;;            orig-fn)))
 #+END_SRC
 
-*** Pre-load org-mode files
+** FUNC - Pre-load org-mode files
 
 #+begin_src emacs-lisp
 ;; Visit every org file when emacs starts
