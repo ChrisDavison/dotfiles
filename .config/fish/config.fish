@@ -94,6 +94,7 @@ end
 
 if not test -z (which exa)
     alias ls="exa --group-directories-first"
+    alias l1="ls -1"
     alias lsa="exa --group-directories-first"
     alias ll="ls --long --group-directories-first"
     alias la="ll -a --group-directories-first"
