@@ -1444,23 +1444,34 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
       clip)))
 
 (setq org-capture-templates
-      (doct `(("todo" :keys "t"
-               :file "todo.org" :template "* TODO %?")
+      (doct `(
 
-              ("todo [WORK]" :keys "w"
-               :file "work.org" :olp ("Admin") :template "* TODO %?")
+              ;;   ("todo" :keys "t"
+              ;;  :file "todo.org" :template "* TODO %?")
 
-              ("todo [CYBELE]" :keys "c"
-               :file "work.org" :olp ("Research" "CYBELE")
-               :template "* TODO %?")
+              ;; ("todo [WORK]" :keys "w"
+              ;;  :file "work.org" :olp ("Admin") :template "* TODO %?")
 
-              ("research" :keys "r"
-               :file "todo.org" :headline "RESEARCH"
-               :template "* TODO %?")
+              ;; ("todo [CYBELE]" :keys "c"
+              ;;  :file "work.org" :olp ("Research" "CYBELE")
+              ;;  :template "* TODO %?")
 
-              ("journal" :keys "j"
-               :file "journal.org" :function cd/org-datetree-find-dayonly-create
-               :template "* %?")
+              ;; ("research" :keys "r"
+              ;;  :file "todo.org" :headline "RESEARCH"
+              ;;  :template "* TODO %?")
+
+              ;; ("journal" :keys "j"
+              ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* %?")
+              ("inbox" :keys "i"
+               :file "inbox.org"
+               :type entry
+               :template "* %<=%F %H:%M=> %?")
+
+              ("interstitial journal" :keys "I"
+               :file "~/.interstitial-journal.org"
+               :type item
+               :template "- %U %?")
 
               ;; ("journal TODO" :keys "J"
               ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
@@ -1474,10 +1485,10 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
               ;;  :file "logbook.org" :function cd/org-datetree-find-dayonly-create
               ;;  :template "* TODO %?")
 
-              ("URL" :keys "u"
-               :file "todo.org" :headline "Bookmarks"
-               :immediate-finish t
-               :template "* TODO %(cd/insert-or-make-org-link)")
+              ;; ("URL" :keys "u"
+              ;;  :file "todo.org" :headline "Bookmarks"
+              ;;  :immediate-finish t
+              ;;  :template "* TODO %(cd/insert-or-make-org-link)")
 
               ;; ("Literature" :keys "L"
               ;;  :file "literature.org" :headline "REFILE"
@@ -1485,9 +1496,9 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
               ;;  :immediate-finish t
               ;;  :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
 
-              ("Korean" :keys "k"
-               :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
-               :type checkitem :template "[ ] %?")
+              ;; ("Korean" :keys "k"
+              ;;  :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
+              ;;  :type checkitem :template "[ ] %?")
               )))
 #+end_src
 
