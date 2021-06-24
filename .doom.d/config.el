@@ -105,8 +105,9 @@
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
-      python-shell-interpreter "ipython"
-      python-shell-interpreter-args "console --simple-prompt"
+      python-shell-interpreter "python"
+      ;; python-shell-interpreter-args "console --simple-prompt"
+      python-shell-interpreter-args ""
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
 (add-hook! 'pyvenv-post-activate-hooks
@@ -199,6 +200,30 @@ When optional TAGS is a string, show only files matching those tags"
     (switch-to-buffer-other-window "*tagsearch*")
     (special-mode)
     (evil-insert 1)))
+
+(defun find-file-tagsearch (&optional tags directory)
+  (interactive)
+  (let* (
+         (tags (or tags (read-string "Tags: ")))
+         (default-directory (expand-file-name (or directory (read-directory-name "Dir: "))))
+         (command (s-concat "tagsearch " tags))
+         (files (s-split "\n" (s-trim (shell-command-to-string command))))
+         (chosen (ivy-read (format "@%s: " tags) files))
+         )
+    (find-file (f-join default-directory chosen))
+    ))
+
+(defun cd/find-thought-file ()
+  (interactive)
+  (find-file-tagsearch "thought" org-directory))
+
+(defun cd/find-index-file ()
+  (interactive)
+  (find-file-tagsearch "index" org-directory))
+
+(defun cd/find-book-list-file ()
+  (interactive)
+  (find-file-tagsearch "booklist" org-directory))
 
 (defun rg-journal (search)
   (interactive "Msearch string: ")
@@ -593,14 +618,21 @@ With prefix arg, find the previous file."
 (defun cd/goto-end-of-toplevel-list ()
   "Find the first top-level list, or insert one if it doesn't exist."
   (interactive)
-  (goto-char (point-min))
-  (if (re-search-forward "^-" (or (cd/point-of-first-header) (point-max)) t)
-      (org-forward-paragraph)
-    (progn
-      (org-forward-paragraph)
-      (+evil/insert-newline-below 1)
-      (evil-next-visual-line 1)
-      nil)))
+  (let ((pos-first-header (cd/point-of-first-header)))
+    (goto-char (point-min))
+    (if (re-search-forward "^-" (or pos-first-header (point-max)) t)
+        (org-forward-paragraph)
+      (if pos-first-header
+          (progn
+            (goto-char pos-first-header)
+            (+evil/insert-newline-above 2)
+            (evil-next-visual-line -2))
+        (progn
+          (org-forward-paragraph)
+          (+evil/insert-newline-below 1)
+          (evil-next-visual-line 1)
+          nil)
+        ))))
 
 (defun cd/insert-in-toplevel-list (thing)
   (interactive)
@@ -611,35 +643,101 @@ With prefix arg, find the previous file."
     (evil-normal-state)
     (insert " " thing)))
 
-(defun org-file-from-subtree (filename &optional clipboard-only)
+(defun filename-to-pretty-title (filename)
+  (s-capitalized-words
+   (s-replace "-" " "
+              (file-name-sans-extension (file-name-base filename)))))
+
+(defun create-or-add-to-see-also-header (text)
+  (save-excursion
+    (unless (re-search-forward "^\* See Also" nil t)
+      (goto-char (point-max))
+      (evil-insert-newline-below)
+      (insert "* See Also\n\n"))
+
+    (org-narrow-to-subtree)
+    (goto-char (point-max))
+    (insert "- " text)
+    (widen)))
+
+(defun cd/org-roam-insert-to-see-also ()
+  (interactive)
+  (save-excursion
+    (unless (re-search-forward "^\* See Also" nil t)
+      (goto-char (point-max))
+      (evil-insert-newline-below)
+      (insert "* See Also\n\n"))
+
+    (org-narrow-to-subtree)
+    (goto-char (point-max))
+    (insert "- ")
+    (org-roam-insert)
+    (widen)))
+
+
+(defun org-file-from-subtree (&optional arg)
   "Take the current subtree and create a new file from
-  it. Replace the current subtree with its main heading (i.e.,
-  delete all of its childen), and make the heading into a link
-  to the newly created file,
+  it. Add a link at the top of the file in the first pre-header list.
 
 In the new file, promote all direct children of the original
   subtree to be level 1-headings, and transform the original
   heading into the '#+TITLE' parameter.
 
 If called with the universal argument, prompt for new filename,
-otherwise use the subtree title."
-  (interactive "FFile: ")
-  (let* ((filename (concat "~/" (file-relative-name filename "~")))
-         (link (file-relative-name filename (file-name-directory (buffer-file-name))))
-         (title (s-capitalized-words (s-replace "-" " " (file-name-sans-extension (file-name-base filename)))))
-         (link-text (format "[[file:%s][%s]]" link title)))
+otherwise use the subtree title.
+
+With ARG, also visit the file.
+"
+  (interactive "P")
+  (let* ((curdir (file-name-directory (buffer-file-name)))
+         (filename (read-file-name "File: " curdir))
+         (link (file-relative-name filename curdir))
+         (title (filename-to-pretty-title filename))
+         (link-text (format "[[file:%s][%s]]" link title))
+         (curfile-relative-to-new (file-relative-name (buffer-file-name) (file-name-directory filename)))
+         (curfile-title (filename-to-pretty-title buffer-file-name))
+         (curfile-link (format "[[file:%s][%s]]" curfile-relative-to-new curfile-title)))
     ;; Copy current subtree into clipboard
     (org-cut-subtree)
 
-    ;; Convert headline to a link of the to-be-created file
-    (if clipboard-only
-        (kill-new link-text)
-      (save-excursion (cd/insert-in-toplevel-list link-text)))
+    (save-excursion
+      (create-or-add-to-see-also-header link-text)
+      ;; (cd/insert-in-toplevel-list link-text)
+      )
+    (save-buffer)
 
     (with-temp-file filename
       (org-mode)
       (insert "#+TITLE: " title "\n\n")
-      (org-paste-subtree))))
+      (org-paste-subtree)
+      (create-or-add-to-see-also-header curfile-link))
+
+    (when arg
+      (find-file filename)))
+  (org-roam-db-build-cache))
+
+(defun org-roam-create-note-from-headline ()
+  "Create an Org-roam note from the current headline and jump to it.
+
+Normally, insert the headline’s title using the ’#title:’ file-level property
+and delete the Org-mode headline. However, if the current headline has a
+Org-mode properties drawer already, keep the headline and don’t insert
+‘#+title:'. Org-roam can extract the title from both kinds of notes, but using
+‘#+title:’ is a bit cleaner for a short note, which Org-roam encourages."
+  (interactive)
+  (let ((title (nth 4 (org-heading-components)))
+        (has-properties (org-get-property-block)))
+    (org-cut-subtree)
+    (org-roam-find-file title nil nil 'no-confirm)
+    (org-paste-subtree)
+    (unless has-properties
+      (kill-line)
+      (while (outline-next-heading)
+        (org-promote)))
+    (goto-char (point-min))
+    (when has-properties
+      (kill-line)
+      (kill-line))))
 
 
 (defun org-file-from-selection (&optional clipboard-only)
@@ -670,6 +768,11 @@ otherwise use the subtree title."
 (defun org-open-link-same-window ()
   (interactive)
   (let ((org-link-frame-setup '((file . find-file))))
+    (org-open-at-point)))
+
+(defun org-open-link-other-window ()
+  (interactive)
+  (let ((org-link-frame-setup '((file . find-file-other-window))))
     (org-open-at-point)))
 
 
@@ -858,7 +961,9 @@ exist after each headings's drawers."
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
-      org-link-frame-setup '((file . find-file-other-window))
+      ;; by default, open org links in SAME window
+      org-link-frame-setup '((file . find-file))
+      ;; org-link-frame-setup '((file . find-file-other-window))
       org-hide-emphasis-markers t
       org-todo-keywords '((sequence "TODO(t)"
                                     "NEXT(n)" ; PRIORITISED todo
@@ -912,18 +1017,17 @@ exist after each headings's drawers."
            (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
       (downcase slug))))
 
-(setq org-roam-directory org-directory)
-(setq +org-roam-open-buffer-on-find-file nil)
+(setq org-roam-directory "~/code/knowledge")
+(setq +org-roam-open-buffer-on-find-file t)
 (setq org-roam-rename-file-on-title-change nil)
-;; (setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-tag-sources '(prop))
+(setq org-roam-tag-sources '(prop all-directories))
+;; (setq org-roam-tag-sources '(prop))
 (setq org-roam-title-to-slug-function 'cd/org-roam--title-to-slug)
 (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                     :file-name "${slug}"
                                     :head "#+title: ${title}\n"
                                     :unnarrowed t)))
-
-(map! "<f1>" 'org-capture)
+(setq org-roam-buffer-width 0.25)
 
 ;;; org-capture for literature
 (defun read-capitalized-title ()
@@ -1023,23 +1127,34 @@ exist after each headings's drawers."
       clip)))
 
 (setq org-capture-templates
-      (doct `(("todo" :keys "t"
-               :file "todo.org" :template "* TODO %?")
+      (doct `(
 
-              ("todo [WORK]" :keys "w"
-               :file "work.org" :olp ("Admin") :template "* TODO %?")
+              ;;   ("todo" :keys "t"
+              ;;  :file "todo.org" :template "* TODO %?")
 
-              ("todo [CYBELE]" :keys "c"
-               :file "work.org" :olp ("Research" "CYBELE")
-               :template "* TODO %?")
+              ;; ("todo [WORK]" :keys "w"
+              ;;  :file "work.org" :olp ("Admin") :template "* TODO %?")
 
-              ("research" :keys "r"
-               :file "todo.org" :headline "RESEARCH"
-               :template "* TODO %?")
+              ;; ("todo [CYBELE]" :keys "c"
+              ;;  :file "work.org" :olp ("Research" "CYBELE")
+              ;;  :template "* TODO %?")
 
-              ("journal" :keys "j"
-               :file "journal.org" :function cd/org-datetree-find-dayonly-create
-               :template "* %?")
+              ;; ("research" :keys "r"
+              ;;  :file "todo.org" :headline "RESEARCH"
+              ;;  :template "* TODO %?")
+
+              ;; ("journal" :keys "j"
+              ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
+              ;;  :template "* %?")
+              ("inbox" :keys "i"
+               :file "inbox.org"
+               :type entry
+               :template "* %<=%F %H:%M=> %?")
+
+              ("interstitial journal" :keys "I"
+               :file "~/.interstitial-journal.org"
+               :type item
+               :template "- %U %?")
 
               ;; ("journal TODO" :keys "J"
               ;;  :file "journal.org" :function cd/org-datetree-find-dayonly-create
@@ -1053,10 +1168,10 @@ exist after each headings's drawers."
               ;;  :file "logbook.org" :function cd/org-datetree-find-dayonly-create
               ;;  :template "* TODO %?")
 
-              ("URL" :keys "u"
-               :file "todo.org" :headline "Bookmarks"
-               :immediate-finish t
-               :template "* TODO %(cd/insert-or-make-org-link)")
+              ;; ("URL" :keys "u"
+              ;;  :file "todo.org" :headline "Bookmarks"
+              ;;  :immediate-finish t
+              ;;  :template "* TODO %(cd/insert-or-make-org-link)")
 
               ;; ("Literature" :keys "L"
               ;;  :file "literature.org" :headline "REFILE"
@@ -1064,14 +1179,20 @@ exist after each headings's drawers."
               ;;  :immediate-finish t
               ;;  :template "* TODO %(read-capitalized-title)\n\n%(read-authors)")
 
-              ("Korean" :keys "k"
-               :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
-               :type checkitem :template "[ ] %?")
+              ;; ("Korean" :keys "k"
+              ;;  :file "language-learning.org" :olp ("Korean" "Vocabulary to find")
+              ;;  :type checkitem :template "[ ] %?")
               )))
 
-(map! "<f2>" 'org-agenda
-      "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
-      "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min))))
+(map! "<f1>" '(lambda () (interactive) (org-capture nil "i"))
+      "<f2>" '(lambda () (interactive) (org-capture nil "l"))
+      "<f3>" 'org-roam-insert
+      "<f4>" 'cd/org-roam-insert-to-see-also
+      )
+;; (map! "<f1>" 'org-capture
+;;       "<f2>" 'org-agenda
+;;       "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
+;;       "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min))))
 
 ;;; Org AGENDA
 (setq org-agenda-window-setup 'current-window
@@ -1545,13 +1666,18 @@ exist after each headings's drawers."
         :desc "List all unclean repos" "u" #'repoutil-unclean)
        (:prefix ("g" . "ripgrep")
         :desc "org notes" "o" 'rg-org
-        :desc "journal" "j" 'rg-journal
         :desc "logbook" "l" 'rg-logbook)
        (:prefix ("d" . "downloader")
         :desc "quick add" "q" 'cd/nas/quick-add-download
         :desc "list" "l" 'cd/nas/list-downloads)
+       (:prefix ("j" . "jump to notes")
+        :desc "index notes" "i" 'cd/find-index-file
+        :desc "thought notes" "t" 'cd/find-thought-file
+        :desc "book lists" "b" 'cd/find-book-list-file
+        )
        ("n" 'new-in-git)
-
+       ("i" 'cd/what-was-I-doing)
+       ("I" (lambda () (interactive) (org-capture nil "I")))
        )
       (:prefix-map ("T" . "tagsearch")
        :desc "List tags in this dir" "l" 'tagsearch-list
@@ -1576,6 +1702,9 @@ exist after each headings's drawers."
 
 (map! "<f9>" 'er/expand-region)
 
+(map! "M-<left>" 'winner-undo
+      "M-<right>" 'winner-redo)
+
 ;; Emacs capture and org-mode
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
@@ -1588,6 +1717,7 @@ exist after each headings's drawers."
       "m d i" 'org-time-stamp-inactive
       "m h" 'headercount
       "o s" 'org-open-link-same-window
+      "o O" 'org-open-link-other-window
       "o o" 'org-open-at-point
       "o S" 'org-sidebar-toggle
       "Q" 'org-unfill-paragraph
@@ -1598,6 +1728,7 @@ exist after each headings's drawers."
 
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
+      ;; "C-x C-n" 'org-roam-create-note-from-headline
       :v "C-x C-n" 'org-file-from-selection)
 
 (map! :map dired-mode-map :n "/" 'dired-narrow)
@@ -1616,8 +1747,7 @@ exist after each headings's drawers."
 
 (map! :after projectile :leader
       :desc "Find Org-dir file (no archive)" "<SPC>"
-      '(lambda () (interactive) (find-file-filtered org-directory
-                                               '("archive" ".git" ".gitignore" "assets")))
+      'org-roam-find-file
       :desc "Find Org-dir file" "S-<SPC>"
       '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
       ))
@@ -1660,4 +1790,29 @@ exist after each headings's drawers."
 
 (setq calendar-week-start-day 1)
 
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(define-minor-mode dired-follow-mode
+  "Diplay file at point in dired after a move."
+  :lighter " dired-f"
+  :global t
+  (if dired-follow-mode
+      (advice-add 'dired-next-line :after (lambda (arg) (dired-display-file) (org-roam-update)))
+    (advice-remove 'dired-next-line (lambda (arg) (dired-display-file) (org-roam-update)))))
+
+(defun cd/what-was-I-doing ()
+  "Show the last interstitial journal item."
+  (interactive)
+  (let* ((bufname "*interstitial-journal*")
+         (fname (expand-file-name "~/.interstitial-journal.org"))
+         (contents (s-split "\n" (read-file-to-string fname)))
+         (matching (--filter  (s-matches? "^- " it) contents))
+         (last-item (car (last matching)))
+         (parts (s-split " " last-item))
+         (timestamp (s-join " " (-slice parts 1 4)))
+         (text (s-concat "    " (s-join " " (-slice parts 4))))
+         (title "Interstitial Journal")
+         (underline (s-repeat (length title) "="))
+         (msg (s-join "\n" `(,title ,underline "" ,(substring timestamp 1 (- (length timestamp) 1)) ,text))))
+    (cd/string-to-special-buffer msg bufname)))
+(set-popup-rule! "^\\*interstitial-journal*" :side 'bottom :size 0.30 :select t :ttl 1)
+
+(org-roam-mode t)

@@ -129,8 +129,9 @@
 ;;; Programming - Python
 ;; -----------------------------------------------------------------------------
 (setq python-environment-directory "~/.envs/py"
-      python-shell-interpreter "ipython"
-      python-shell-interpreter-args "console --simple-prompt"
+      python-shell-interpreter "python"
+      ;; python-shell-interpreter-args "console --simple-prompt"
+      python-shell-interpreter-args ""
       elpy-rpc-python-command "~/.envs/py/bin/python")
 
 (add-hook! 'pyvenv-post-activate-hooks
@@ -1189,7 +1190,7 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
   (dolist (it (org-agenda-files))
     (find-file-noselect it)))
 #+end_src
-** Settings
+** Org-mode Settings
 
 #+NAME: org-settings
 #+BEGIN_SRC emacs-lisp
@@ -1201,7 +1202,9 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
       org-pretty-entities t
       org-catch-invisible-edits 'show-and-error
       org-imenu-depth 4
-      org-link-frame-setup '((file . find-file-other-window))
+      ;; by default, open org links in SAME window
+      org-link-frame-setup '((file . find-file))
+      ;; org-link-frame-setup '((file . find-file-other-window))
       org-hide-emphasis-markers t
       org-todo-keywords '((sequence "TODO(t)"
                                     "NEXT(n)" ; PRIORITISED todo
@@ -1502,12 +1505,18 @@ Used in conjunction with simple =journal= and =logbook= captures to get somethin
               )))
 #+end_src
 
-** Org Agenda
+** Org mode keybinds
 
 #+begin_src emacs-lisp
-(map! "<f2>" 'org-agenda
-      "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
-      "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min))))
+(map! "<f1>" '(lambda () (interactive) (org-capture nil "i"))
+      "<f2>" '(lambda () (interactive) (org-capture nil "l"))
+      "<f3>" 'org-roam-insert
+      "<f4>" 'cd/org-roam-insert-to-see-also
+      )
+;; (map! "<f1>" 'org-capture
+;;       "<f2>" 'org-agenda
+;;       "<f3>" '(lambda () (interactive) (org-agenda nil "co") (goto-char (point-min)))
+;;       "<f4>" '(lambda () (interactive) (org-agenda nil "cr") (goto-char (point-min))))
 #+end_src
 
 *** Settings
@@ -1945,13 +1954,18 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
         :desc "List all unclean repos" "u" #'repoutil-unclean)
        (:prefix ("g" . "ripgrep")
         :desc "org notes" "o" 'rg-org
-        :desc "journal" "j" 'rg-journal
         :desc "logbook" "l" 'rg-logbook)
        (:prefix ("d" . "downloader")
         :desc "quick add" "q" 'cd/nas/quick-add-download
         :desc "list" "l" 'cd/nas/list-downloads)
+       (:prefix ("j" . "jump to notes")
+        :desc "index notes" "i" 'cd/find-index-file
+        :desc "thought notes" "t" 'cd/find-thought-file
+        :desc "book lists" "b" 'cd/find-book-list-file
+        )
        ("n" 'new-in-git)
-
+       ("i" 'cd/what-was-I-doing)
+       ("I" (lambda () (interactive) (org-capture nil "I")))
        )
       (:prefix-map ("T" . "tagsearch")
        :desc "List tags in this dir" "l" 'tagsearch-list
@@ -1982,6 +1996,9 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
 #+begin_src emacs-lisp
 (map! "<f9>" 'er/expand-region)
 
+(map! "M-<left>" 'winner-undo
+      "M-<right>" 'winner-redo)
+
 ;; Emacs capture and org-mode
 (map! :map org-mode-map :leader :n
       "m r a" 'org-change-state-and-archive
@@ -1994,6 +2011,7 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
       "m d i" 'org-time-stamp-inactive
       "m h" 'headercount
       "o s" 'org-open-link-same-window
+      "o O" 'org-open-link-other-window
       "o o" 'org-open-at-point
       "o S" 'org-sidebar-toggle
       "Q" 'org-unfill-paragraph
@@ -2004,6 +2022,7 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
 
 (map! :map org-mode-map :n
       "C-x C-n" 'org-file-from-subtree
+      ;; "C-x C-n" 'org-roam-create-note-from-headline
       :v "C-x C-n" 'org-file-from-selection)
 
 (map! :map dired-mode-map :n "/" 'dired-narrow)
@@ -2074,5 +2093,34 @@ Workaround to get the right WSL interop variable for clipboard usage used in com
 #+end_src
 
 #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(define-minor-mode dired-follow-mode
+  "Diplay file at point in dired after a move."
+  :lighter " dired-f"
+  :global t
+  (if dired-follow-mode
+      (advice-add 'dired-next-line :after (lambda (arg) (dired-display-file) (org-roam-update)))
+    (advice-remove 'dired-next-line (lambda (arg) (dired-display-file) (org-roam-update)))))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun cd/what-was-I-doing ()
+  "Show the last interstitial journal item."
+  (interactive)
+  (let* ((bufname "*interstitial-journal*")
+         (fname (expand-file-name "~/.interstitial-journal.org"))
+         (contents (s-split "\n" (read-file-to-string fname)))
+         (matching (--filter  (s-matches? "^- " it) contents))
+         (last-item (car (last matching)))
+         (parts (s-split " " last-item))
+         (timestamp (s-join " " (-slice parts 1 4)))
+         (text (s-concat "    " (s-join " " (-slice parts 4))))
+         (title "Interstitial Journal")
+         (underline (s-repeat (length title) "="))
+         (msg (s-join "\n" `(,title ,underline "" ,(substring timestamp 1 (- (length timestamp) 1)) ,text))))
+    (cd/string-to-special-buffer msg bufname)))
+(set-popup-rule! "^\\*interstitial-journal*" :side 'bottom :size 0.30 :select t :ttl 1)
+#+end_src
+
+#+begin_src emacs-lisp
+(org-roam-mode t)
 #+end_src
