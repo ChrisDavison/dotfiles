@@ -10,7 +10,6 @@
 (require 'f)  ;; Filepath functions
 (require 's)  ;; String functions
 (require 'rx) ;; Literate regular expressions
-(require 'org)  ;; Load this early so that my setting updates work
 #+end_src
 
 
@@ -20,6 +19,15 @@
 ;; -----------------------------------------------------------------------------
 ;;; General settings
 ;; -----------------------------------------------------------------------------
+(defvar my-code-dir
+  (expand-file-name "~/src/github.com/ChrisDavison")
+  "Where my code is stored.")
+(defvar my-work-code-dir
+  (expand-file-name "~/src/github.com/cidcom")
+  "Where my WORK code is stored.")
+(setq-default org-directory (f-join my-code-dir "knowledge"))
+(setq-default org-roam-directory org-directory)
+
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com"
       auto-save-default t
@@ -27,12 +35,13 @@
       avy-all-windows t
       recentf-auto-cleanup 60
       global-auto-revert-mode t
-      projectile-project-search-path `(,(expand-file-name "~/code"))
+      projectile-project-search-path `(,my-code-dir ,my-work-code-dir)
       display-line-numbers-type t
       search-invisible t  ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
       nov-text-width 80)
 
-(setq-default org-roam-directory "~/code/knowledge")
+
+(setq-default org-roam-directory (f-join my-code-dir "knowledge"))
 
 (add-to-list 'auth-sources "~/.authinfo")
 (add-hook! dired-mode 'dired-hide-details-mode)
@@ -150,11 +159,6 @@
 ;;; Programming - Haskell
 ;; -----------------------------------------------------------------------------
 (setq haskell-process-type 'stack-ghci)
-
-;; -----------------------------------------------------------------------------
-;;; Programming - Common Lisp
-;; -----------------------------------------------------------------------------
-(setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
 #+end_src
 
 * Functions
@@ -302,11 +306,11 @@ Basically a default query for 'thoughts'
 #+BEGIN_SRC emacs-lisp
 (defun rg-journal (search)
   (interactive "Msearch string: ")
-  (rg search "journal.org" "~/code/knowledge"))
+  (rg search "journal.org" (f-join my-code-dir "knowledge")))
 
 (defun rg-logbook (search)
   (interactive "Msearch string: ")
-  (rg search "logbook.org" "~/code/knowledge"))
+  (rg search "logbook.org" (f-join my-code-dir "knowledge")))
 
 (defun rg-org (search)
   (interactive "Msearch string: ")
@@ -590,7 +594,7 @@ This currently doesn't work in my WSL setup.
   (interactive)
   (let ((word (read-string "Word: "))
         (lang (read-string "Language: "))))
-  (shell-command (s-join " " '("~/code/scripts/ankivocab.py" word lang))))
+  (shell-command (s-join " " `(,(f-join my-code-dir "scripts" "ankivocab.py") word lang))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1194,7 +1198,7 @@ Ensure I'm using the correct wsl interop socket, as running emacs via =setsid= c
 
 #+NAME: org-settings
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/code/knowledge/"
+(setq org-directory (f-join my-code-dir "knowledge")
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
@@ -1267,7 +1271,7 @@ First, I don't want =org-roam= to prepend a filename with the date when I'm crea
 
 Now, update org-roam settings, and use the new 'slugger'.
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory "~/code/knowledge")
+(setq org-roam-directory (f-join my-code-dir "knowledge"))
 (setq +org-roam-open-buffer-on-find-file t)
 (setq org-roam-rename-file-on-title-change nil)
 (setq org-roam-tag-sources '(prop all-directories))
@@ -1933,9 +1937,9 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
 (map! :leader
       :desc "Toggle light/dark theme" "t t" 'theme-toggle-light-dark
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
-      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
-      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
+      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file (f-join my-code-dir "knowledge" "todo.org")))
+      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file (f-join my-code-dir "knowledge" "work.org")))
+      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/scratch/scratch.org"))
       :desc "[j]ournal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
       :desc "[l]ogbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "last [c]apture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
@@ -2079,7 +2083,7 @@ Workaround to get the right WSL interop variable for clipboard usage used in com
 (wsl_interop)
 
 (when is-wsl?
-  (cd "~/code/knowledge"))
+  (cd my-code-dir))
 #+end_src
 * UNFILED
 

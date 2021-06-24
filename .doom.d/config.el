@@ -2,11 +2,19 @@
 (require 'f)  ;; Filepath functions
 (require 's)  ;; String functions
 (require 'rx) ;; Literate regular expressions
-(require 'org)  ;; Load this early so that my setting updates work
 
 ;; -----------------------------------------------------------------------------
 ;;; General settings
 ;; -----------------------------------------------------------------------------
+(defvar my-code-dir
+  (expand-file-name "~/src/github.com/ChrisDavison")
+  "Where my code is stored.")
+(defvar my-work-code-dir
+  (expand-file-name "~/src/github.com/cidcom")
+  "Where my WORK code is stored.")
+(setq-default org-directory (f-join my-code-dir "knowledge"))
+(setq-default org-roam-directory org-directory)
+
 (setq user-full-name "Chris Davison"
       user-mail-address "c.jr.davison@gmail.com"
       auto-save-default t
@@ -14,12 +22,13 @@
       avy-all-windows t
       recentf-auto-cleanup 60
       global-auto-revert-mode t
-      projectile-project-search-path `(,(expand-file-name "~/code"))
+      projectile-project-search-path `(,my-code-dir ,my-work-code-dir)
       display-line-numbers-type t
       search-invisible t  ;; don't skip matches in query-replace when hidden (e.g. org-mode link urls)
       nov-text-width 80)
 
-(setq-default org-roam-directory "~/code/knowledge")
+
+(setq-default org-roam-directory (f-join my-code-dir "knowledge"))
 
 (add-to-list 'auth-sources "~/.authinfo")
 (add-hook! dired-mode 'dired-hide-details-mode)
@@ -127,11 +136,6 @@
 ;; -----------------------------------------------------------------------------
 (setq haskell-process-type 'stack-ghci)
 
-;; -----------------------------------------------------------------------------
-;;; Programming - Common Lisp
-;; -----------------------------------------------------------------------------
-(setq inferior-lisp-program (expand-file-name "~/code/z-external/ccl-dev/lx86cl64"))
-
 (defun insert-formatted-time (format)
   "Insert a timestamp matching a specific format"
   (insert (format-time-string format (current-time))))
@@ -227,11 +231,11 @@ When optional TAGS is a string, show only files matching those tags"
 
 (defun rg-journal (search)
   (interactive "Msearch string: ")
-  (rg search "journal.org" "~/code/knowledge"))
+  (rg search "journal.org" (f-join my-code-dir "knowledge")))
 
 (defun rg-logbook (search)
   (interactive "Msearch string: ")
-  (rg search "logbook.org" "~/code/knowledge"))
+  (rg search "logbook.org" (f-join my-code-dir "knowledge")))
 
 (defun rg-org (search)
   (interactive "Msearch string: ")
@@ -953,7 +957,7 @@ exist after each headings's drawers."
   (dolist (it (org-agenda-files))
     (find-file-noselect it)))
 
-(setq org-directory "~/code/knowledge/"
+(setq org-directory (f-join my-code-dir "knowledge")
       org-src-window-setup 'current-window
       org-indent-indentation-per-level 1
       org-adapt-indentation nil
@@ -1017,7 +1021,7 @@ exist after each headings's drawers."
            (slug (-reduce-from #'cl-replace (strip-nonspacing-marks title) pairs)))
       (downcase slug))))
 
-(setq org-roam-directory "~/code/knowledge")
+(setq org-roam-directory (f-join my-code-dir "knowledge"))
 (setq +org-roam-open-buffer-on-find-file t)
 (setq org-roam-rename-file-on-title-change nil)
 (setq org-roam-tag-sources '(prop all-directories))
@@ -1648,9 +1652,9 @@ exist after each headings's drawers."
 (map! :leader
       :desc "Toggle light/dark theme" "t t" 'theme-toggle-light-dark
       :desc "<<here>>" "j h" 'jump-to-here-anchor
-      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file "~/code/knowledge/todo.org"))
-      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file "~/code/knowledge/work.org"))
-      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/code/scratch/scratch.org"))
+      :desc "[t]odos" "j t" '(lambda () (interactive) (find-file (f-join my-code-dir "knowledge" "todo.org")))
+      :desc "[w]ork" "j w" '(lambda () (interactive) (find-file (f-join my-code-dir "knowledge" "work.org")))
+      :desc "[s]cratch" "j s" '(lambda () (interactive) (find-file "~/scratch/scratch.org"))
       :desc "[j]ournal" "j j" '(lambda () (interactive) (org-capture-goto-target "j"))
       :desc "[l]ogbook" "j l" '(lambda () (interactive) (org-capture-goto-target "l"))
       :desc "last [c]apture" "j c" '(lambda () (interactive) (org-capture-goto-last-stored))
@@ -1781,7 +1785,7 @@ exist after each headings's drawers."
 (wsl_interop)
 
 (when is-wsl?
-  (cd "~/code/knowledge"))
+  (cd my-code-dir))
 
 (add-hook! dired-mode #'dired-hide-dotfiles-mode)
 (setq pdf-info-epdfinfo-program "/usr/bin/epdfinfo")
