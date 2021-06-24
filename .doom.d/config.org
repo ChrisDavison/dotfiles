@@ -252,6 +252,50 @@ Also, make tagsearch only take up the bottom 30% of the screen in a special doom
     (special-mode)
     (evil-insert 1)))
 #+END_SRC
+*** Select file matching tagsearch
+
+Navigate to a file that matches a tagsearch query
+#+begin_src emacs-lisp
+(defun find-file-tagsearch (&optional tags directory)
+  (interactive)
+  (let* (
+         (tags (or tags (read-string "Tags: ")))
+         (default-directory (expand-file-name (or directory (read-directory-name "Dir: "))))
+         (command (s-concat "tagsearch " tags))
+         (files (s-split "\n" (s-trim (shell-command-to-string command))))
+         (chosen (ivy-read (format "@%s: " tags) files))
+         )
+    (find-file (f-join default-directory chosen))
+    ))
+#+end_src
+
+*** Find a file tagged 'thought'
+
+Basically a default query for 'thoughts'
+#+begin_src emacs-lisp
+(defun cd/find-thought-file ()
+  (interactive)
+  (find-file-tagsearch "thought" org-directory))
+#+end_src
+
+*** Find a file tagged 'index'
+
+Basically a default query for 'thoughts'
+#+begin_src emacs-lisp
+(defun cd/find-index-file ()
+  (interactive)
+  (find-file-tagsearch "index" org-directory))
+#+end_src
+
+*** Find a file tagged 'booklist'
+
+Basically a default query for 'thoughts'
+#+begin_src emacs-lisp
+(defun cd/find-book-list-file ()
+  (interactive)
+  (find-file-tagsearch "booklist" org-directory))
+#+end_src
+
 ** Ripgrep (=rg=) in specific locations
 
 #+BEGIN_SRC emacs-lisp
