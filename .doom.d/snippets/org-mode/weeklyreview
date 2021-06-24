@@ -6,21 +6,14 @@
 # --
 `(format-time-string "<%Y-%m-%d %a>")` Weekly Review
 
-`(cd/text-header "Personal")`
-
-- Guitar :: $1
-- Fitness :: $2
-- Reading :: $3
-
-`(cd/text-header "Thoughts")`
-
-- $4
-
-`(cd/text-header "Work")`
-
-- Thesis :: $5
-- Work :: $6
-
-`(cd/text-header "Next Focus...")`
-
-*$7*
+- *Personal*
+    + Guitar -- $1
+    + Fitness -- $2
+    + Reading -- $3
+- *Thoughts*
+    + $4
+- *Work*
+    + Thesis -- $5
+    + Work -- $6
+- *Next Focus...*
+    + $7

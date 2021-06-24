@@ -37,7 +37,7 @@
 
 ;;; Notetaking
 (package! doct)  ; org-capture, decleratively
-(package! helm-org-rifle)
-(package! toc-org)
+(package! org-roam-server)
 
 ;;; Themes
+(package! spacemacs-theme)

@@ -11,5 +11,5 @@
 
 Summary:
 
-- Total Training Stress Score :: (+ ...)
-- Total Training Stress Score :: (+ ...)
+- Total Training Stress Score :: (+ MON TUE WED THU FRI SAT SUN)
+- Total Training Duration :: (+ (* Nyoga 15) MON TUE WED THU FRI SAT SUN)
