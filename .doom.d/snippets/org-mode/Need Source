@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Need Source
+# uuid: needsource
+# key: .s
+# condition: t
+# --
+([[file:`(f-relative (f-join org-directory "need-source.org") (file-name-directory buffer-file-name))`][Need Source]])
