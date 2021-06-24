@@ -197,7 +197,6 @@ alias sedit="sudo $EDITOR"
 alias envml="source $HOME/.envs/ml/bin/activate"
 alias t="todo.sh -a -f -d $HOME/.todo/config"
 alias habits="todo.sh -a -f -d $HOME/.todo/config ls +habit"
-alias asmr="mpv \"$(randomasmr)\""
 
 if [ ! $(uname -s) = 'Darwin' ];then
     if grep -q Microsoft /proc/version; then
@@ -226,8 +225,6 @@ function o() {
 # MY CUSTOM PROMPT #
 ####################
 export PS1="\[\e[31m\][\[\e[m\]\[\e[35m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\W\[\e[31m\]]\[\e[m\] "
-
-source ~/code/dotfiles/.functions
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
