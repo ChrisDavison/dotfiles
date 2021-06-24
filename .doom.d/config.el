@@ -55,7 +55,7 @@
 ;; Nov.el - read epubs in emacs
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
-(add-to-list 'auto-mode-alist '("docker.*" . dockerfile-mode))
+(add-to-list 'auto-mode-alist '("docker[a-z\-]" . dockerfile-mode))
 (add-to-list 'auto-mode-alist '("\\.scratch\\'" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.org_archive\\'" . org-mode))
 
