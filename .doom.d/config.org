@@ -1144,23 +1144,21 @@ First, I don't want =org-roam= to prepend a filename with the date when I'm crea
 
 Now, update org-roam settings, and use the new 'slugger'.
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory org-directory)
-(setq +org-roam-open-buffer-on-find-file nil)
+(setq org-roam-directory "~/code/knowledge")
+(setq +org-roam-open-buffer-on-find-file t)
 (setq org-roam-rename-file-on-title-change nil)
-;; (setq org-roam-tag-sources '(prop all-directories))
-(setq org-roam-tag-sources '(prop))
+(setq org-roam-tag-sources '(prop all-directories))
+;; (setq org-roam-tag-sources '(prop))
 (setq org-roam-title-to-slug-function 'cd/org-roam--title-to-slug)
 (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                     :file-name "${slug}"
                                     :head "#+title: ${title}\n"
                                     :unnarrowed t)))
+(setq org-roam-buffer-width 0.25)
 #+END_SRC
 
 ** Org Capture
 
-#+begin_src emacs-lisp
-(map! "<f1>" 'org-capture)
-#+end_src
 
 *** FUNC for capturing literature
 
@@ -1893,8 +1891,7 @@ Prompt for a single char, and then show a hud to jump to any word beginning with
 
 (map! :after projectile :leader
       :desc "Find Org-dir file (no archive)" "<SPC>"
-      '(lambda () (interactive) (find-file-filtered org-directory
-                                               '("archive" ".git" ".gitignore" "assets")))
+      'org-roam-find-file
       :desc "Find Org-dir file" "S-<SPC>"
       '(lambda () (interactive) (projectile-find-file-in-directory org-directory)
       ))
